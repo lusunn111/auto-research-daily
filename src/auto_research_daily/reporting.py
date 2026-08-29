@@ -77,12 +77,16 @@ def render_markdown(report: RunReport, title: str) -> str:
         "本报告先以主题、个人 Zotero 语料、时效性和探索性排序，再对少量高排名论文读取全文。",
         "“摘要级解读”不应被当作全文结论；证据不足的作者机构、实验或局限会明确标注。",
         "",
-        "| 今日必读 | 值得浏览 | 探索发现 | 抓取 | 初筛 | 模型调用 | 缓存命中 |",
-        "|---:|---:|---:|---:|---:|---:|---:|",
+        (
+            "| 今日必读 | 值得浏览 | 探索发现 | 抓取 | 初筛 | 模型调用 | "
+            "缓存命中 | 输入令牌 | 输出令牌 |"
+        ),
+        "|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
         (
             f"| {tier_counts['deep_read']} | {tier_counts['browse']} | "
             f"{tier_counts['explore']} | {report.stats.fetched} | {report.stats.preselected} | "
-            f"{report.stats.model_calls} | {report.stats.cache_hits} |"
+            f"{report.stats.model_calls} | {report.stats.cache_hits} | "
+            f"{report.stats.input_tokens} | {report.stats.output_tokens} |"
         ),
         "",
     ]

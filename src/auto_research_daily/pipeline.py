@@ -193,27 +193,38 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
     ).hexdigest()
     if options.no_llm:
         analyzer: OpenAICompatibleAnalyzer | HeuristicAnalyzer = HeuristicAnalyzer()
-        model = analyzer.model
         results, cache, errors = analyze_ranked_papers(
             ranked,
             full_texts=full_texts,
             analyzer=analyzer,
             config=config.analysis,
             cache=cache,
-            model=model,
             profile_fingerprint=profile_fingerprint,
         )
     else:
         api_key = os.getenv("LLM_API_KEY")
         if not api_key:
             raise RuntimeError("缺少 LLM_API_KEY；本地流程验证可显式使用 --no-llm")
-        model = os.getenv("LLM_MODEL") or config.analysis.model_default
+        shared_model = os.getenv("LLM_MODEL")
+        brief_model = (
+            os.getenv("LLM_BRIEF_MODEL")
+            or shared_model
+            or config.analysis.brief_model_default
+        )
+        deep_model = (
+            os.getenv("LLM_DEEP_MODEL")
+            or shared_model
+            or config.analysis.deep_model_default
+        )
         base_url = os.getenv("LLM_BASE_URL") or config.analysis.base_url_default
         with OpenAICompatibleAnalyzer(
             config.analysis,
             config.research_profile,
             api_key=api_key,
-            model=model,
+            brief_model=brief_model,
+            deep_model=deep_model,
+            brief_reasoning_effort=config.analysis.brief_reasoning_effort,
+            deep_reasoning_effort=config.analysis.deep_reasoning_effort,
             base_url=base_url,
             prompt=prompt,
         ) as analyzer:
@@ -223,7 +234,6 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
                 analyzer=analyzer,
                 config=config.analysis,
                 cache=cache,
-                model=model,
                 profile_fingerprint=profile_fingerprint,
             )
 
@@ -235,6 +245,7 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
     published = _assign_tiers(quality)
     cache_hits = sum(result.cache_hit for result in results)
     model_calls = len(results) - cache_hits + len(errors)
+    input_tokens, output_tokens = analyzer.usage()
     report = RunReport(
         generated_at=generated_at,
         dry_run=options.dry_run,
@@ -247,6 +258,8 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
             full_text_reads=len(full_texts),
             published=len(published),
             failed=len(errors),
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
         ),
         papers=tuple(published),
     )

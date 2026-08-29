@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -73,10 +74,14 @@ class AnalysisConfig(ConfigModel):
     max_concurrency: int = Field(default=4, ge=1, le=16)
     max_failure_ratio: float = Field(default=0.30, ge=0, le=1)
     prompt_version: str
-    max_output_tokens: int = Field(default=2200, ge=256, le=16000)
+    brief_max_output_tokens: int = Field(default=3500, ge=256, le=32000)
+    deep_max_output_tokens: int = Field(default=8000, ge=256, le=64000)
     full_text_top_k: int = Field(default=12, ge=0)
     full_text_max_chars: int = Field(default=18000, ge=1000, le=100000)
-    model_default: str
+    brief_model_default: str
+    deep_model_default: str
+    brief_reasoning_effort: Literal["low", "high", "max"] = "low"
+    deep_reasoning_effort: Literal["low", "high", "max"] = "high"
     base_url_default: str
 
 

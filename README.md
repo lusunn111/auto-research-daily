@@ -66,7 +66,8 @@ export ZOTERO_API_KEY='...'
 |---|---|---|
 | `LLM_API_KEY` | 正式运行必需 | 大模型接口密钥 |
 | `LLM_BASE_URL` | 可选 | 兼容 OpenAI 接口的服务地址 |
-| `LLM_MODEL` | 可选 | 模型名 |
+| `LLM_BRIEF_MODEL` | 可选 | 摘要级批量解读模型，默认 `deepseek-v4-flash` |
+| `LLM_DEEP_MODEL` | 可选 | 全文级深读模型，默认 `deepseek-v4-pro` |
 | `ZOTERO_USER_ID` | 可选 | Zotero 用户标识 |
 | `ZOTERO_API_KEY` | 可选 | Zotero 只读接口密钥 |
 | `ARXIV_USER_AGENT` | 推荐 | 包含项目和联系方式的 arXiv 请求标识 |
@@ -91,7 +92,7 @@ Zotero 原始条目只在内存中参与排序，不会进入报告、缓存或 
 .venv/bin/pytest --cov=auto_research_daily --cov-report=term-missing
 ```
 
-持续集成完全使用固定夹具，不访问 arXiv、Zotero 或真实大模型。每日工作流则抓取真实数据、执行测试、仅提交允许的生成目录，并在同一次运行中部署 GitHub Pages。
+持续集成完全使用固定夹具，不访问 arXiv、Zotero 或真实大模型。每日工作流在北京时间 12:30 抓取真实数据，以 V4 Flash 批量处理摘要、V4 Pro 深读少量全文，执行测试后仅提交允许的生成目录，并在同一次运行中部署 GitHub Pages。运行报告会记录真实输入和输出令牌数。
 
 ## 上游来源
 

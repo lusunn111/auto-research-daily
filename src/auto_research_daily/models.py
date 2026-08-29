@@ -125,6 +125,8 @@ class RunStats(StrictModel):
     full_text_reads: int = Field(ge=0)
     published: int = Field(ge=0)
     failed: int = Field(ge=0)
+    input_tokens: int = Field(default=0, ge=0)
+    output_tokens: int = Field(default=0, ge=0)
 
 
 class RunReport(StrictModel):
