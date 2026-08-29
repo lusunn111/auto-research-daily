@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} · {{ report.generated_at.strftime('%Y-%m-%d') }}</title>
+  <style>
+    :root { --ink:#16211b; --muted:#5a6a61; --paper:#f5f1e8; --card:#fffdfa; --green:#1f5c42; --line:#d7d2c6; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.72 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    main { width:min(1120px,92vw); margin:0 auto; padding:56px 0 96px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:36px; }
+    h1 { font:700 clamp(2rem,6vw,4.8rem)/1.02 Georgia,serif; max-width:900px; margin:0 0 18px; }
+    h2 { margin:56px 0 18px; font-size:1.75rem; }
+    .lede,.meta { color:var(--muted); max-width:820px; }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-top:28px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; font-size:1.55rem; color:var(--green); }
+    article { background:var(--card); border:1px solid var(--line); padding:clamp(20px,4vw,38px); margin:18px 0; box-shadow:0 12px 30px rgba(34,42,36,.05); }
+    article h3 { margin:0 0 8px; font-size:1.35rem; line-height:1.35; }
+    a { color:var(--green); }
+    .badge { display:inline-block; border:1px solid var(--green); color:var(--green); padding:2px 9px; margin-right:8px; font-size:.78rem; letter-spacing:.04em; }
+    dl { display:grid; grid-template-columns:140px 1fr; gap:8px 18px; margin-top:24px; }
+    dt { color:var(--muted); font-weight:700; }
+    dd { margin:0; }
+    ul { margin-top:4px; padding-left:1.3rem; }
+    blockquote { margin:12px 0; padding:10px 16px; border-left:3px solid var(--green); background:#f2f5ef; }
+    @media (max-width:680px) { dl { grid-template-columns:1fr; gap:2px; } dt { margin-top:12px; } }
+  </style>
+</head>
+<body><main>
+  <header>
+    <p class="meta">AUTO RESEARCH DAILY · {{ report.generated_at.strftime('%Y-%m-%d %H:%M') }} · <a href="archive/index.html">历史日报</a> · <a href="feed.xml">RSS</a></p>
+    <h1>{{ title }}</h1>
+    <p class="lede">先做广覆盖科研发现，再用个人研究画像、多样性重排和分层证据阅读压缩成真正值得投入时间的论文。摘要级解读不等同于全文结论。</p>
+    <div class="stats">
+      <div class="stat"><strong>{{ report.stats.fetched }}</strong>抓取</div>
+      <div class="stat"><strong>{{ report.stats.preselected }}</strong>进入分析</div>
+      <div class="stat"><strong>{{ report.stats.full_text_reads }}</strong>全文阅读</div>
+      <div class="stat"><strong>{{ report.stats.cache_hits }}</strong>缓存命中</div>
+      <div class="stat"><strong>{{ report.stats.published }}</strong>最终发布</div>
+    </div>
+  </header>
+  {% for tier, label, entries in grouped %}
+    {% if entries %}
+    <section>
+      <h2>{{ label }} <small>({{ entries|length }})</small></h2>
+      {% for item in entries %}
+      <article>
+        <span class="badge">{{ '全文级解读' if item.provenance.reading_scope.value == 'full_text' else '摘要级解读' }}</span>
+        <span class="badge">相关性 {{ item.analysis.relevance_score }}/10</span>
+        <h3><a href="{{ item.ranked.paper.url }}">{{ item.analysis.title_zh }}</a></h3>
+        <p class="meta">{{ item.ranked.paper.title }} · {{ item.ranked.paper.authors|join(', ') }} · v{{ item.ranked.paper.version }}</p>
+        <dl>
+          <dt>第一单位</dt><dd>{{ item.analysis.first_affiliation }}</dd>
+          <dt>通讯作者</dt><dd>{{ item.analysis.corresponding_authors|join(', ') }}</dd>
+          <dt>首次上传</dt><dd>{{ item.ranked.paper.published_at.strftime('%Y-%m') }}</dd>
+          <dt>Setting</dt><dd>{{ item.analysis.setting }}</dd>
+          <dt>Motivation</dt><dd>{{ item.analysis.motivation }}</dd>
+          <dt>Insight</dt><dd>{{ item.analysis.insight }}</dd>
+          <dt>Challenge</dt><dd><ul>{% for value in item.analysis.challenges %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+          <dt>Analyze</dt><dd>{{ item.analysis.analysis }}</dd>
+          <dt>Method</dt><dd><ul>{% for value in item.analysis.method %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+          <dt>Experiments</dt><dd><ul>{% for value in item.analysis.experiments %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+          <dt>Limitations</dt><dd><ul>{% for value in item.analysis.limitations %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+          <dt>与你的研究关系</dt><dd>{{ item.analysis.relation_to_research }}</dd>
+          <dt>为何推荐</dt><dd>{{ item.analysis.why_recommended }}</dd>
+          <dt>证据与不确定性</dt><dd>{{ item.analysis.uncertainty }}{% for evidence in item.analysis.evidence %}<blockquote>{{ evidence.claim }}：{{ evidence.quote }}</blockquote>{% endfor %}</dd>
+        </dl>
+      </article>
+      {% endfor %}
+    </section>
+    {% endif %}
+  {% endfor %}
+</main></body>
+</html>

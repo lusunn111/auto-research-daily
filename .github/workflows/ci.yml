@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+          python-version: "3.13"
+          version: "0.9.0"
+      - name: Install locked dependencies
+        run: uv sync --frozen --extra dev
+      - name: Validate configuration
+        run: uv run auto-research-daily validate
+      - name: Lint
+        run: uv run ruff check src tests
+      - name: Test
+        run: uv run pytest --cov=auto_research_daily --cov-report=term-missing
+      - name: Offline end-to-end smoke test
+        run: >-
+          uv run auto-research-daily daily
+          --offline-fixture tests/fixtures/offline_daily.json
+          --no-llm
+          --dry-run

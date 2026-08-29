@@ -1,0 +1,171 @@
+name: Daily Research Update
+
+on:
+  schedule:
+    - cron: "30 1 * * *" # 北京时间每日 09:30
+  workflow_dispatch:
+    inputs:
+      lookback_days:
+        description: 向前检索多少天
+        type: number
+        default: 3
+      max_papers:
+        description: 最多送入大模型分析的论文数
+        type: number
+        default: 60
+      deep_limit:
+        description: 最多读取全文的论文数
+        type: number
+        default: 10
+      dry_run:
+        description: 只运行，不写入、提交或部署
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: auto-research-daily
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      dry_run: ${{ steps.options.outputs.dry_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+          python-version: "3.13"
+          version: "0.9.0"
+      - name: Install locked dependencies
+        run: uv sync --frozen --extra dev
+      - name: Validate inputs
+        id: options
+        shell: bash
+        env:
+          INPUT_LOOKBACK: ${{ inputs.lookback_days }}
+          INPUT_MAX_PAPERS: ${{ inputs.max_papers }}
+          INPUT_DEEP_LIMIT: ${{ inputs.deep_limit }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          lookback="${INPUT_LOOKBACK:-3}"
+          max_papers="${INPUT_MAX_PAPERS:-60}"
+          deep_limit="${INPUT_DEEP_LIMIT:-10}"
+          dry_run="${INPUT_DRY_RUN:-false}"
+          [[ "$lookback" =~ ^([1-9]|[12][0-9]|3[01])$ ]] || exit 2
+          [[ "$max_papers" =~ ^([1-9]|[1-9][0-9]|1[0-9][0-9]|200)$ ]] || exit 2
+          [[ "$deep_limit" =~ ^([0-9]|[1-3][0-9]|40)$ ]] || exit 2
+          [[ "$dry_run" == "true" || "$dry_run" == "false" ]] || exit 2
+          {
+            echo "lookback=$lookback"
+            echo "max_papers=$max_papers"
+            echo "deep_limit=$deep_limit"
+            echo "dry_run=$dry_run"
+          } >> "$GITHUB_OUTPUT"
+      - name: Run daily pipeline
+        shell: bash
+        env:
+          ARXIV_USER_AGENT: Auto-Research-Daily/0.1 (https://github.com/${{ github.repository }})
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          ZOTERO_API_KEY: ${{ secrets.ZOTERO_API_KEY }}
+          ZOTERO_USER_ID: ${{ secrets.ZOTERO_USER_ID }}
+          RUN_LOOKBACK: ${{ steps.options.outputs.lookback }}
+          RUN_MAX_PAPERS: ${{ steps.options.outputs.max_papers }}
+          RUN_DEEP_LIMIT: ${{ steps.options.outputs.deep_limit }}
+          RUN_DRY_RUN: ${{ steps.options.outputs.dry_run }}
+        run: |
+          set -euo pipefail
+          args=(
+            daily
+            --lookback-days "$RUN_LOOKBACK"
+            --max-papers "$RUN_MAX_PAPERS"
+            --deep-limit "$RUN_DEEP_LIMIT"
+          )
+          if [[ "$RUN_DRY_RUN" == "true" ]]; then
+            args+=(--dry-run)
+          fi
+          uv run auto-research-daily "${args[@]}" | tee run-summary.json
+      - name: Run regression tests
+        run: |
+          uv run ruff check src tests
+          uv run pytest
+      - name: Validate generated data
+        if: steps.options.outputs.dry_run == 'false'
+        run: |
+          uv run python - <<'PY'
+          from pathlib import Path
+          from auto_research_daily.models import RunReport
+
+          RunReport.model_validate_json(Path("data/latest.json").read_text(encoding="utf-8"))
+          if not Path("site/index.html").is_file():
+              raise SystemExit("site/index.html is missing")
+          PY
+      - name: Commit generated public data
+        if: steps.options.outputs.dry_run == 'false'
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git config user.name "auto-research-daily-bot"
+          git config user.email "auto-research-daily-bot@users.noreply.github.com"
+          git add -- data reports site
+          mapfile -t staged_paths < <(git diff --cached --name-only)
+          for staged_path in "${staged_paths[@]}"; do
+            case "$staged_path" in
+              data/*|reports/*|site/*) ;;
+              *) echo "拒绝提交意外路径：$staged_path" >&2; exit 1 ;;
+            esac
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "data: update daily research report"
+            git fetch origin "refs/heads/${DEFAULT_BRANCH}:refs/remotes/origin/${DEFAULT_BRANCH}"
+            git rebase "refs/remotes/origin/${DEFAULT_BRANCH}"
+            git push origin "HEAD:refs/heads/${DEFAULT_BRANCH}"
+          fi
+      - name: Upload run summary
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: run-summary
+          path: run-summary.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload Pages artifact
+        if: steps.options.outputs.dry_run == 'false'
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
+        with:
+          path: site
+
+  deploy:
+    needs: update
+    if: needs.update.outputs.dry_run == 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
