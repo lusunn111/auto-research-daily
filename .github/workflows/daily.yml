@@ -126,9 +126,22 @@ jobs:
           from pathlib import Path
           from auto_research_daily.models import RunReport
 
-          RunReport.model_validate_json(Path("data/latest.json").read_text(encoding="utf-8"))
+          report = RunReport.model_validate_json(
+              Path("data/latest.json").read_text(encoding="utf-8")
+          )
           if not Path("site/index.html").is_file():
               raise SystemExit("site/index.html is missing")
+          for paper in report.papers:
+              gallery = paper.figure_gallery
+              if gallery is None:
+                  continue
+              for figure in gallery.figures:
+                  for panel in figure.panels:
+                      if panel.cached_path is None:
+                          continue
+                      target = Path("site") / panel.cached_path
+                      if not target.is_file() or target.stat().st_size == 0:
+                          raise SystemExit(f"cached figure is missing: {target}")
           PY
       - name: Upload run summary
         if: always()

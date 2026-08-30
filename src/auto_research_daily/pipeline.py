@@ -20,6 +20,7 @@ from auto_research_daily.analysis import (
     load_prompt,
 )
 from auto_research_daily.config import AppConfig
+from auto_research_daily.figures import FigureRunStats, enrich_papers_with_figures
 from auto_research_daily.fulltext import fetch_arxiv_html
 from auto_research_daily.models import AnalyzedPaper, RawPaper, RunReport, RunStats, ZoteroDocument
 from auto_research_daily.ranking import deduplicate_papers, rank_papers
@@ -245,6 +246,25 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
         if result.paper.analysis.relevance_score >= config.ranking.min_llm_relevance
     ][: config.ranking.publish_limit]
     published = _assign_tiers(quality)
+    data_dir = _resolve(root, config.output.data_dir)
+    site_dir = _resolve(root, config.output.site_dir)
+    figure_stats = FigureRunStats()
+    if not options.dry_run and not options.offline_fixture:
+        try:
+            published, figure_stats = enrich_papers_with_figures(
+                published,
+                config=config.figures,
+                data_dir=data_dir,
+                site_dir=site_dir,
+                checked_at=generated_at,
+                user_agent=os.getenv(
+                    "ARXIV_USER_AGENT",
+                    "auto-research-daily/0.1 (set ARXIV_USER_AGENT with a contact address)",
+                ),
+            )
+        except Exception:
+            # Figures are an optional reading enhancement and must never block the report.
+            LOGGER.exception("论文图提取整体失败，本次继续发布纯文字日报")
     cache_hits = sum(result.cache_hit for result in results)
     model_calls = len(results) - cache_hits + len(errors)
     input_tokens, output_tokens = analyzer.usage()
@@ -262,13 +282,17 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
             failed=len(errors),
             input_tokens=input_tokens,
             output_tokens=output_tokens,
+            figure_cache_hits=figure_stats.cache_hits,
+            figure_requests=figure_stats.requests,
+            figure_available=figure_stats.available,
+            figure_failed=figure_stats.failed,
+            figure_panel_failed=figure_stats.panel_failed,
         ),
         papers=tuple(published),
     )
 
     if not options.dry_run:
         reports_dir = _resolve(root, config.output.reports_dir)
-        site_dir = _resolve(root, config.output.site_dir)
         write_report_artifacts(
             report,
             title=config.output.title,

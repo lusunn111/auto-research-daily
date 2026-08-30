@@ -24,6 +24,7 @@ arXiv OAI-PMH + Zotero 私有文献库
 → 最高排名论文按需获取 arXiv HTML
 → 兼容 OpenAI 接口的严格 JSON 解读
 → 证据范围、模型、提示词和内容哈希共同缓存
+→ 为最终入选论文提取并缓存官方 Figure 1 / Figure 2
 → 每日 Markdown、JSON、RSS 和 GitHub Pages 静态站点
 ```
 
@@ -88,10 +89,14 @@ Zotero 原始条目只在内存中参与排序，不会进入报告、缓存或 
 - `data/latest.json`：本次严格结构化结果。
 - `data/archive/YYYY-MM.json`：按月合并的论文归档。
 - `data/cache/analyses.json`：公开论文分析缓存。
+- `data/cache/figures.json`：论文原图状态、图注、原始地址与站内缓存路径。
 - `reports/YYYY-MM-DD.md`：适合深读的中文日报。
+- `site/figures/`：经过格式、体积、像素数和来源校验的当日论文图像缓存，仅随 Pages 制品部署，不进入 Git 历史。
 - `site/index.html`、`site/archive/` 与 `site/feed.xml`：最新日报、历史页面和 RSS，可由 GitHub Pages 直接发布。
 
 缓存键包含论文标识与版本、输入内容哈希、证据范围、研究画像指纹、模型、提示词版本和模式版本。任何一项发生变化都会自动重新分析；缓存只保存论文解读，当前排名和分数会在每天重新计算。
+
+论文图像是阅读增强层，不参与大模型摘要，也不影响论文能否发布。系统只在质量筛选完成后访问带版本号的 arXiv HTML，提取 Figure 1 和 Figure 2 的首面板；PNG、JPEG 与 WebP 会在真实解码后原子缓存，SVG 等未缓存格式仅保留受校验的 arXiv 原图地址。单次运行最多缓存 40 张图，并受 60 MB 与 120 秒全局预算约束。图像随当次 Pages 制品部署但不提交进 Git，避免仓库每天增长十几兆字节；历史页若找不到站内缓存，会自动回退到对应 arXiv 原图。图像元数据长期复用，失败结果 24 小时后重试。邮件不内嵌图片，避免客户端拦截和正文体积失控；完整图像与图注在网页中查看。
 
 ## 测试
 

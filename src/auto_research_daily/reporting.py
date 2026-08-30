@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import Counter
 from html import escape
 from pathlib import Path
+from urllib.parse import urljoin
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -28,6 +29,11 @@ def _markdown_paper(index: int, item: AnalyzedPaper) -> str:
     challenges = "\n".join(f"  - {value}" for value in analysis.challenges)
     experiments = "\n".join(f"  - {value}" for value in analysis.experiments)
     limitations = "\n".join(f"  - {value}" for value in analysis.limitations)
+    figure_links = "；".join(
+        f"[{figure.label}]({figure.source_url})"
+        for figure in (item.figure_gallery.figures if item.figure_gallery else ())
+    )
+    figures = f"<br>论文原图：{figure_links}" if figure_links else ""
     return f"""### {index}. {analysis.title_zh}
 
 原题：[{paper.title}]({paper.url})<br>
@@ -36,7 +42,8 @@ def _markdown_paper(index: int, item: AnalyzedPaper) -> str:
 作者：{", ".join(paper.authors)}<br>
 第一单位：{analysis.first_affiliation}<br>
 通讯作者：{", ".join(analysis.corresponding_authors)}<br>
-首次上传：{paper.published_at:%Y-%m}；版本：v{paper.version}；分类：{", ".join(paper.categories)}
+首次上传：{paper.published_at:%Y-%m}；版本：v{paper.version}；\
+分类：{", ".join(paper.categories)}{figures}
 
 Setting（研究设定）：{analysis.setting}
 
@@ -100,7 +107,7 @@ def render_markdown(report: RunReport, title: str) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def render_html(report: RunReport, title: str, template_dir: Path) -> str:
+def render_html(report: RunReport, title: str, template_dir: Path, site_url: str) -> str:
     environment = Environment(
         loader=FileSystemLoader(template_dir),
         autoescape=select_autoescape(("html", "xml", "j2")),
@@ -112,7 +119,15 @@ def render_html(report: RunReport, title: str, template_dir: Path) -> str:
         (tier, TIER_LABELS[tier], [paper for paper in report.papers if paper.tier == tier])
         for tier in ("deep_read", "browse", "explore")
     ]
-    return template.render(report=report, title=title, grouped=grouped)
+    normalized_site_url = site_url.rstrip("/") + "/"
+    return template.render(
+        report=report,
+        title=title,
+        grouped=grouped,
+        site_url=normalized_site_url,
+        archive_index_url=urljoin(normalized_site_url, "archive/"),
+        feed_url=urljoin(normalized_site_url, "feed.xml"),
+    )
 
 
 def render_rss(report: RunReport, title: str, site_url: str) -> str:
@@ -183,7 +198,7 @@ def write_report_artifacts(
 ) -> None:
     date_name = report.generated_at.strftime("%Y-%m-%d")
     markdown = render_markdown(report, title)
-    html = render_html(report, title, template_dir)
+    html = render_html(report, title, template_dir, site_url)
     atomic_write_text(reports_dir / f"{date_name}.md", markdown)
     atomic_write_text(site_dir / "index.html", html)
     atomic_write_text(site_dir / "archive" / f"{date_name}.html", html)
