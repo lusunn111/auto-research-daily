@@ -373,11 +373,11 @@ def analyze_ranked_papers(
                 errors.append(detail)
                 logger.warning("论文解读失败：%s", detail)
 
-    attempted = len(misses)
-    if attempted and len(errors) / attempted > config.max_failure_ratio:
+    candidate_count = len(results) + len(errors)
+    if candidate_count and len(errors) / candidate_count > config.max_failure_ratio:
         detail = "; ".join(errors[:3])
         raise RuntimeError(
-            f"analysis failure ratio {len(errors)}/{attempted} exceeds "
+            f"analysis failure ratio {len(errors)}/{candidate_count} exceeds "
             f"{config.max_failure_ratio:.0%}: {detail}"
         )
     results.sort(key=lambda item: (-item.paper.final_score, item.paper.ranked.paper.identity))

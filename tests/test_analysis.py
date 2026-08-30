@@ -7,10 +7,18 @@ import pytest
 from auto_research_daily.analysis import (
     HeuristicAnalyzer,
     OpenAICompatibleAnalyzer,
+    analyze_ranked_papers,
     make_cache_key,
 )
 from auto_research_daily.config import load_config
-from auto_research_daily.models import Evidence, RankedPaper, RawPaper, ScoreBreakdown
+from auto_research_daily.models import (
+    Evidence,
+    Provenance,
+    RankedPaper,
+    RawPaper,
+    ReadingScope,
+    ScoreBreakdown,
+)
 
 ROOT = Path(__file__).parents[1]
 
@@ -109,3 +117,52 @@ def test_deepseek_cost_controls_and_usage_accounting() -> None:
     analyzer._record_usage({"usage": {"prompt_tokens": 100, "completion_tokens": 25}})
     assert analyzer.usage() == (100, 25)
     client.close()
+
+
+def test_failure_ratio_counts_valid_cache_hits_in_the_publishable_batch() -> None:
+    config = load_config(ROOT / "config/research.yaml")
+    analysis_config = config.analysis.model_copy(
+        update={"max_concurrency": 1, "max_failure_ratio": 0.30}
+    )
+    ranked = [_ranked(version) for version in range(1, 5)]
+    cache = {}
+    for item in ranked[:3]:
+        analysis = HeuristicAnalyzer.analyze(item, None)
+        key = make_cache_key(
+            item,
+            full_text=None,
+            model=HeuristicAnalyzer.model,
+            prompt_version=analysis_config.prompt_version,
+        )
+        cache[key] = {
+            "analysis": analysis.model_dump(mode="json"),
+            "provenance": Provenance(
+                reading_scope=ReadingScope.ABSTRACT,
+                model=HeuristicAnalyzer.model,
+                prompt_version=analysis_config.prompt_version,
+                analyzed_at=datetime(2026, 8, 29, tzinfo=UTC),
+                input_hash="test-cache-entry",
+            ).model_dump(mode="json"),
+        }
+
+    class FailingAnalyzer:
+        model = HeuristicAnalyzer.model
+
+        @classmethod
+        def model_for(cls, full_text: str | None) -> str:
+            return cls.model
+
+        @staticmethod
+        def analyze(ranked: RankedPaper, full_text: str | None) -> None:
+            raise RuntimeError("deliberate model failure")
+
+    results, _, errors = analyze_ranked_papers(
+        ranked,
+        full_texts={},
+        analyzer=FailingAnalyzer(),  # type: ignore[arg-type]
+        config=analysis_config,
+        cache=cache,
+    )
+
+    assert len(results) == 3
+    assert len(errors) == 1
