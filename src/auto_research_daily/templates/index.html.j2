@@ -25,12 +25,21 @@
     dd { margin:0; }
     ul { margin-top:4px; padding-left:1.3rem; }
     blockquote { margin:12px 0; padding:10px 16px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:16px; margin:22px 0 28px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { position:relative; min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:520px; object-fit:contain; }
+    .paper-figure figcaption { padding:12px 14px; color:var(--muted); font-size:.9rem; line-height:1.55; }
+    .paper-figure figcaption strong { color:var(--ink); }
+    .figure-source { display:block; margin-top:6px; font-size:.82rem; }
+    .figure-error { padding:28px; color:var(--muted); text-align:center; }
+    .copyright { margin:8px 0 0; color:var(--muted); font-size:.78rem; }
     @media (max-width:680px) { dl { grid-template-columns:1fr; gap:2px; } dt { margin-top:12px; } }
   </style>
 </head>
 <body><main>
   <header>
-    <p class="meta">AUTO RESEARCH DAILY · {{ report.generated_at.strftime('%Y-%m-%d %H:%M') }} · <a href="archive/index.html">历史日报</a> · <a href="feed.xml">RSS</a></p>
+    <p class="meta">AUTO RESEARCH DAILY · {{ report.generated_at.strftime('%Y-%m-%d %H:%M') }} · <a href="{{ archive_index_url }}">历史日报</a> · <a href="{{ feed_url }}">RSS</a></p>
     <h1>{{ title }}</h1>
     <p class="lede">先做广覆盖科研发现，再用个人研究画像、多样性重排和分层证据阅读压缩成真正值得投入时间的论文。摘要级解读不等同于全文结论。</p>
     <div class="stats">
@@ -41,6 +50,7 @@
       <div class="stat"><strong>{{ report.stats.input_tokens }}</strong>输入令牌</div>
       <div class="stat"><strong>{{ report.stats.output_tokens }}</strong>输出令牌</div>
       <div class="stat"><strong>{{ report.stats.published }}</strong>最终发布</div>
+      <div class="stat"><strong>{{ report.stats.figure_available }}</strong>论文配图</div>
     </div>
   </header>
   {% for tier, label, entries in grouped %}
@@ -53,6 +63,32 @@
         <span class="badge">相关性 {{ item.analysis.relevance_score }}/10</span>
         <h3><a href="{{ item.ranked.paper.url }}">{{ item.analysis.title_zh }}</a></h3>
         <p class="meta">{{ item.ranked.paper.title }} · {{ item.ranked.paper.authors|join(', ') }} · v{{ item.ranked.paper.version }}</p>
+        {% if item.figure_gallery and item.figure_gallery.status == 'available' %}
+        <div class="paper-figures">
+          {% for figure in item.figure_gallery.figures %}
+          {% set panel = figure.panels[0] %}
+          <figure class="paper-figure">
+            <div class="paper-figure__media">
+              <img
+                src="{{ site_url ~ panel.cached_path if panel.cached_path else panel.original_url }}"
+                alt="{{ figure.label }}：{{ figure.caption }}"
+                loading="lazy"
+                decoding="async"
+                referrerpolicy="no-referrer"
+                data-paper-figure
+                data-original-url="{{ panel.original_url }}"
+              >
+              <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+            </div>
+            <figcaption>
+              <strong>{{ figure.label }}.</strong> {{ figure.caption }}
+              <a class="figure-source" href="{{ figure.source_url }}">来源：论文官方 arXiv HTML ↗</a>
+            </figcaption>
+          </figure>
+          {% endfor %}
+        </div>
+        <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+        {% endif %}
         <dl>
           <dt>第一单位</dt><dd>{{ item.analysis.first_affiliation }}</dd>
           <dt>通讯作者</dt><dd>{{ item.analysis.corresponding_authors|join(', ') }}</dd>
@@ -74,5 +110,22 @@
     </section>
     {% endif %}
   {% endfor %}
-</main></body>
+</main>
+<script>
+  document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+    const fail = () => {
+      const original = image.dataset.originalUrl;
+      if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) {
+        image.dataset.remoteFallback = 'used';
+        image.src = original;
+        return;
+      }
+      image.hidden = true;
+      image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+    };
+    image.addEventListener('error', fail);
+    if (image.complete && image.naturalWidth === 0) fail();
+  });
+</script>
+</body>
 </html>

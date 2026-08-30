@@ -95,6 +95,26 @@ class MailConfig(ConfigModel):
     template_version: str = "email-v1"
 
 
+class FigureConfig(ConfigModel):
+    enabled: bool = True
+    max_papers: int = Field(default=20, ge=0, le=80)
+    max_figures_per_paper: Literal[1, 2] = 2
+    request_delay_seconds: float = Field(default=0.35, ge=0, le=10)
+    timeout_seconds: float = Field(default=30.0, gt=0, le=120)
+    retries: int = Field(default=3, ge=1, le=8)
+    negative_cache_hours: int = Field(default=24, ge=1, le=168)
+    max_html_bytes: int = Field(default=5_000_000, ge=100_000, le=20_000_000)
+    max_image_bytes: int = Field(default=8_000_000, ge=100_000, le=50_000_000)
+    max_image_pixels: int = Field(default=25_000_000, ge=1_000_000, le=100_000_000)
+    max_total_images: int = Field(default=40, ge=1, le=160)
+    max_total_image_bytes: int = Field(
+        default=60_000_000,
+        ge=1_000_000,
+        le=500_000_000,
+    )
+    max_elapsed_seconds: float = Field(default=120.0, gt=0, le=600)
+
+
 class OutputConfig(ConfigModel):
     data_dir: Path
     reports_dir: Path
@@ -110,6 +130,7 @@ class AppConfig(ConfigModel):
     ranking: RankingConfig
     analysis: AnalysisConfig
     email: MailConfig
+    figures: FigureConfig = Field(default_factory=FigureConfig)
     output: OutputConfig
 
 

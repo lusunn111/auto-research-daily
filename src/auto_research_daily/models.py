@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from enum import StrEnum
 from typing import Literal
+from urllib.parse import unquote, urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -108,12 +110,123 @@ class Provenance(StrictModel):
     input_hash: str
 
 
+class FigurePanel(StrictModel):
+    original_url: str
+    cached_path: str | None = Field(
+        default=None,
+        pattern=(
+            r"^figures/arxiv/\d{4}\.\d{4,5}/v[1-9]\d*/"
+            r"fig[12]-panel[1-9]\d*\.(?:png|jpg|webp)$"
+        ),
+    )
+
+    @field_validator("original_url")
+    @classmethod
+    def validate_original_url(cls, value: str) -> str:
+        parsed = urlsplit(value)
+        try:
+            port = parsed.port
+        except ValueError as error:
+            raise ValueError("figure URL has an invalid port") from error
+        decoded_path = unquote(parsed.path)
+        encoded_path = parsed.path.casefold()
+        if (
+            parsed.scheme != "https"
+            or parsed.hostname not in {"arxiv.org", "www.arxiv.org"}
+            or parsed.username is not None
+            or parsed.password is not None
+            or port not in (None, 443)
+            or parsed.query
+            or parsed.fragment
+            or re.search(r"%(?:2e|2f|5c)", encoded_path) is not None
+            or "\\" in decoded_path
+            or "\x00" in decoded_path
+            or any(component in {".", ".."} for component in decoded_path.split("/"))
+        ):
+            raise ValueError("figure URL must be a safe arXiv HTTPS URL")
+        return value
+
+
+class FigureAsset(StrictModel):
+    number: Literal[1, 2]
+    label: str = Field(min_length=1)
+    caption: str = Field(min_length=1, max_length=4000)
+    panels: tuple[FigurePanel, ...] = Field(min_length=1, max_length=8)
+    source_url: str
+    source: Literal["arxiv_html"] = "arxiv_html"
+
+
+class FigureGallery(StrictModel):
+    status: Literal["available", "html_unavailable", "not_found", "fetch_failed"]
+    html_url: str
+    checked_at: datetime
+    figures: tuple[FigureAsset, ...] = Field(default=(), max_length=2)
+
+    @model_validator(mode="after")
+    def validate_gallery(self) -> FigureGallery:
+        if self.checked_at.tzinfo is None:
+            raise ValueError("figure timestamp must be timezone-aware")
+        if self.status == "available" and not self.figures:
+            raise ValueError("available figure gallery requires figures")
+        if self.status != "available" and self.figures:
+            raise ValueError("unavailable figure gallery cannot contain figures")
+        numbers = [figure.number for figure in self.figures]
+        if len(numbers) != len(set(numbers)):
+            raise ValueError("figure numbers must be unique")
+        parsed_html = urlsplit(self.html_url)
+        identity_match = re.fullmatch(
+            r"/html/(?P<arxiv_id>\d{4}\.\d{4,5})v(?P<version>[1-9]\d*)",
+            parsed_html.path,
+        )
+        if (
+            parsed_html.scheme != "https"
+            or parsed_html.hostname not in {"arxiv.org", "www.arxiv.org"}
+            or parsed_html.username is not None
+            or parsed_html.password is not None
+            or parsed_html.port not in (None, 443)
+            or parsed_html.query
+            or parsed_html.fragment
+            or identity_match is None
+        ):
+            raise ValueError("figure gallery must identify one versioned arXiv HTML paper")
+        arxiv_id = identity_match.group("arxiv_id")
+        version = int(identity_match.group("version"))
+        expected_prefix = f"{parsed_html.path}/"
+        for figure in self.figures:
+            source = urlsplit(figure.source_url)
+            if figure.source == "arxiv_html" and (
+                source.scheme != "https"
+                or source.hostname not in {"arxiv.org", "www.arxiv.org"}
+                or source.username is not None
+                or source.password is not None
+                or source.port not in (None, 443)
+                or source.path != parsed_html.path
+                or source.query
+                or not source.fragment
+                or re.fullmatch(r"[A-Za-z0-9._~%:-]+", source.fragment) is None
+            ):
+                raise ValueError("figure source must belong to the gallery paper")
+            for panel_number, panel in enumerate(figure.panels, start=1):
+                panel_url = urlsplit(panel.original_url)
+                if not panel_url.path.startswith(expected_prefix):
+                    raise ValueError("figure panel must belong to the gallery paper")
+                if panel.cached_path is not None:
+                    expected_path = (
+                        f"figures/arxiv/{arxiv_id}/v{version}/"
+                        f"fig{figure.number}-panel{panel_number}."
+                    )
+                    if not panel.cached_path.startswith(expected_path):
+                        raise ValueError("cached figure path does not match its panel")
+        return self
+
+
 class AnalyzedPaper(StrictModel):
     ranked: RankedPaper
     analysis: PaperAnalysis
     provenance: Provenance
     final_score: float = Field(ge=0.0, le=1.0)
     tier: Literal["deep_read", "browse", "explore"] = "browse"
+    figure_gallery: FigureGallery | None = None
 
 
 class RunStats(StrictModel):
@@ -127,6 +240,11 @@ class RunStats(StrictModel):
     failed: int = Field(ge=0)
     input_tokens: int = Field(default=0, ge=0)
     output_tokens: int = Field(default=0, ge=0)
+    figure_cache_hits: int = Field(default=0, ge=0)
+    figure_requests: int = Field(default=0, ge=0)
+    figure_available: int = Field(default=0, ge=0)
+    figure_failed: int = Field(default=0, ge=0)
+    figure_panel_failed: int = Field(default=0, ge=0)
 
 
 class RunReport(StrictModel):
