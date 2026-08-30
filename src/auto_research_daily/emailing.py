@@ -46,13 +46,13 @@ class MailSettings:
     host: str
     port: int
     username: str
-    auth_code: str
+    auth_code: str | None
     sender: str
     recipient: str
     site_url: str
 
     @classmethod
-    def from_env(cls) -> MailSettings:
+    def from_env(cls, *, require_auth: bool = True) -> MailSettings:
         username = _safe_header("SMTP_USERNAME", _required_env("SMTP_USERNAME"))
         sender = _safe_header("MAIL_FROM", os.getenv("MAIL_FROM", username).strip())
         recipient = _safe_header("MAIL_TO", _required_env("MAIL_TO"))
@@ -67,25 +67,38 @@ class MailSettings:
             host=os.getenv("SMTP_HOST", "smtp.qq.com").strip(),
             port=port,
             username=username,
-            auth_code=_required_env("SMTP_AUTH_CODE"),
+            auth_code=(
+                _required_env("SMTP_AUTH_CODE")
+                if require_auth
+                else os.getenv("SMTP_AUTH_CODE", "").strip() or None
+            ),
             sender=sender,
             recipient=recipient,
             site_url=_required_env("SITE_URL").rstrip("/") + "/",
         )
 
 
-def _analysis_identity(item: AnalyzedPaper) -> str:
-    return f"{item.ranked.paper.identity}:{item.provenance.input_hash}"
+def _analysis_identity(item: AnalyzedPaper) -> dict[str, Any]:
+    return {
+        "identity": item.ranked.paper.identity,
+        "input_hash": item.provenance.input_hash,
+        "analysis": item.analysis.model_dump(mode="json"),
+    }
 
 
 def edition_fingerprint(
     report: RunReport,
     papers: tuple[AnalyzedPaper, ...],
     template_version: str,
+    *,
+    recipient: str,
+    revision: int = 0,
 ) -> str:
     payload = {
         "schema_version": 1,
         "date": report.generated_at.date().isoformat(),
+        "recipient": recipient.casefold().strip(),
+        "revision": revision,
         "template_version": template_version,
         "papers": [_analysis_identity(item) for item in papers],
     }
@@ -184,9 +197,9 @@ def _render_html(
     )
 
 
-def _subject(report: RunReport, papers: tuple[AnalyzedPaper, ...], *, revision: bool) -> str:
+def _subject(report: RunReport, papers: tuple[AnalyzedPaper, ...], *, revision: int) -> str:
     deep_count = sum(item.tier == "deep_read" for item in papers)
-    prefix = "【修订】" if revision else ""
+    prefix = f"【修订 {revision}】" if revision else ""
     return (
         f"{prefix}【具身智能科研日报】{report.generated_at:%Y-%m-%d}｜"
         f"{deep_count} 篇必读，{len(papers)} 篇新增"
@@ -202,7 +215,7 @@ def build_report_message(
     title: str,
     template_dir: Path,
     fingerprint: str,
-    revision: bool = False,
+    revision: int = 0,
 ) -> EmailMessage:
     subject = _safe_header("Subject", _subject(report, papers, revision=revision))
     archive_url = _archive_url(settings, report)
@@ -266,6 +279,8 @@ def build_test_message(settings: MailSettings) -> EmailMessage:
 
 
 def send_message(message: EmailMessage, settings: MailSettings) -> None:
+    if not settings.auth_code:
+        raise RuntimeError("缺少 SMTP_AUTH_CODE，不能发送真实邮件")
     context = ssl.create_default_context()
     server = smtplib.SMTP_SSL(
         settings.host,
@@ -315,7 +330,15 @@ def notify_report(
     papers = tuple(report.papers) if force else select_new_papers(report, state)
     if not papers and not config.send_empty:
         return {"status": "skipped", "reason": "no_new_papers", "date": date_name}
-    fingerprint = edition_fingerprint(report, papers, config.template_version)
+    prior_revision = int(existing.get("revision", 0)) if isinstance(existing, dict) else 0
+    revision = prior_revision + 1 if existing else 0
+    fingerprint = edition_fingerprint(
+        report,
+        papers,
+        config.template_version,
+        recipient=settings.recipient,
+        revision=revision,
+    )
     message = build_report_message(
         report,
         papers,
@@ -324,7 +347,7 @@ def notify_report(
         title=title,
         template_dir=template_dir,
         fingerprint=fingerprint,
-        revision=bool(existing),
+        revision=revision,
     )
     if dry_run:
         return {
@@ -340,6 +363,7 @@ def notify_report(
         "fingerprint": fingerprint,
         "message_id": str(message["Message-ID"]),
         "sent_at": datetime.now(UTC).isoformat(),
+        "revision": revision,
         "paper_identities": identities,
     }
     atomic_write_json(state_path, state)

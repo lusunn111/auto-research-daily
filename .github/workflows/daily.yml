@@ -22,15 +22,16 @@ on:
         type: boolean
         default: false
       send_email:
-        description: 手动运行时是否在部署成功后发送邮件；定时任务默认发送
+        description: 手动运行时允许邮件通知；若当天已发则跳过，定时任务默认允许
         type: boolean
         default: false
 
 permissions: {}
 
 concurrency:
-  group: auto-research-daily
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   update:
@@ -213,6 +214,7 @@ jobs:
     concurrency:
       group: pages
       cancel-in-progress: false
+      queue: max
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -231,13 +233,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout deployed default branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
       - name: Set up uv and Python
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
@@ -246,6 +249,13 @@ jobs:
           version: "0.9.0"
       - name: Install locked dependencies
         run: uv sync --frozen
+      - name: Refresh deployed default branch before delivery decision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          clean: false
       - name: Send deployed daily report
         env:
           MAIL_FROM: ${{ vars.MAIL_FROM }}
@@ -256,6 +266,67 @@ jobs:
           SMTP_PORT: ${{ vars.SMTP_PORT }}
           SMTP_USERNAME: ${{ vars.SMTP_USERNAME }}
         run: uv run auto-research-daily notify
+      - name: Upload notification state
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: notification-state-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/notifications.json
+          if-no-files-found: error
+          retention-days: 7
+
+  record-notification:
+    needs: notify
+    if: needs.notify.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout latest default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Download notification state
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: notification-state-${{ github.run_id }}-${{ github.run_attempt }}
+          path: notification-state
+      - name: Merge notification state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import tempfile
+          from pathlib import Path
+
+          incoming_path = Path("notification-state/notifications.json")
+          destination = Path("data/notifications.json")
+          incoming = json.loads(incoming_path.read_text(encoding="utf-8"))
+          current = (
+              json.loads(destination.read_text(encoding="utf-8"))
+              if destination.exists()
+              else {"schema_version": 1, "editions": {}}
+          )
+          if incoming.get("schema_version") != 1 or current.get("schema_version") != 1:
+              raise SystemExit("unsupported notification state schema")
+          incoming_editions = incoming.get("editions")
+          current_editions = current.get("editions")
+          if not isinstance(incoming_editions, dict) or not isinstance(current_editions, dict):
+              raise SystemExit("invalid notification editions")
+          current_editions.update(incoming_editions)
+          destination.parent.mkdir(parents=True, exist_ok=True)
+          descriptor, temporary_name = tempfile.mkstemp(
+              prefix=".notifications.", dir=destination.parent
+          )
+          with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+              json.dump(current, stream, ensure_ascii=False, indent=2, sort_keys=True)
+              stream.write("\n")
+              stream.flush()
+              os.fsync(stream.fileno())
+          Path(temporary_name).replace(destination)
+          PY
       - name: Commit notification state only
         shell: bash
         env:
@@ -271,7 +342,5 @@ jobs:
           done
           if ! git diff --cached --quiet; then
             git commit -m "data: record daily email notification"
-            git fetch origin "refs/heads/${DEFAULT_BRANCH}:refs/remotes/origin/${DEFAULT_BRANCH}"
-            git rebase "refs/remotes/origin/${DEFAULT_BRANCH}"
             git push origin "HEAD:refs/heads/${DEFAULT_BRANCH}"
           fi

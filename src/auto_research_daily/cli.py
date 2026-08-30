@@ -61,7 +61,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "notify":
         if not config.email.enabled:
             parser.error("配置已禁用邮件通知")
-        settings = MailSettings.from_env()
+        settings = MailSettings.from_env(require_auth=not args.dry_run)
         if args.test:
             message = build_test_message(settings)
             if not args.dry_run:
