@@ -66,13 +66,22 @@ export ZOTERO_API_KEY='...'
 |---|---|---|
 | `LLM_API_KEY` | 正式运行必需 | 大模型接口密钥 |
 | `LLM_BASE_URL` | 可选 | 兼容 OpenAI 接口的服务地址 |
-| `LLM_MODEL` | 可选 | 模型名 |
+| `LLM_BRIEF_MODEL` | 可选 | 摘要级批量解读模型，默认 `deepseek-v4-flash` |
+| `LLM_DEEP_MODEL` | 可选 | 全文级解读模型，默认仍使用低成本的 `deepseek-v4-flash` |
 | `ZOTERO_USER_ID` | 可选 | Zotero 用户标识 |
 | `ZOTERO_API_KEY` | 可选 | Zotero 只读接口密钥 |
 | `ARXIV_USER_AGENT` | 推荐 | 包含项目和联系方式的 arXiv 请求标识 |
 | `SITE_URL` | 推荐 | 静态站点地址，用于 RSS |
+| `SMTP_AUTH_CODE` | 邮件必需 | QQ/Foxmail SMTP 授权码，只能放 GitHub Secret |
+| `SMTP_USERNAME` | 邮件必需 | 完整发件邮箱地址 |
+| `SMTP_HOST` | 邮件必需 | SMTP 服务器，QQ/Foxmail 使用 `smtp.qq.com` |
+| `SMTP_PORT` | 邮件必需 | 加密端口，当前仅允许 `465` |
+| `MAIL_FROM` | 邮件必需 | 邮件发件地址，必须与认证账号一致或为其授权别名 |
+| `MAIL_TO` | 邮件必需 | 科研日报收件地址 |
 
 Zotero 原始条目只在内存中参与排序，不会进入报告、缓存或 Git 历史。
+
+邮件是部署成功后的独立通知层：定时任务默认发送，手动任务只有显式勾选才发送。系统使用 SMTP SSL 加密连接，不允许明文降级，并通过 `data/notifications.json` 避免同一天重复发送以及跨日重复推荐同一论文版本。
 
 ## 输出
 
@@ -91,7 +100,7 @@ Zotero 原始条目只在内存中参与排序，不会进入报告、缓存或 
 .venv/bin/pytest --cov=auto_research_daily --cov-report=term-missing
 ```
 
-持续集成完全使用固定夹具，不访问 arXiv、Zotero 或真实大模型。每日工作流则抓取真实数据、执行测试、仅提交允许的生成目录，并在同一次运行中部署 GitHub Pages。
+持续集成完全使用固定夹具，不访问 arXiv、Zotero 或真实大模型。每日工作流在北京时间 12:30 抓取真实数据，逐篇论文统一使用低成本的 V4 Flash 非思考模式；未来的跨论文综合最多使用 V4 Flash 低强度思考，不启用 V4 Pro。执行测试后仅提交允许的生成目录，并在同一次运行中部署 GitHub Pages。运行报告会记录真实输入和输出令牌数。
 
 ## 上游来源
 

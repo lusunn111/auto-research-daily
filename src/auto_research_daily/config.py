@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -73,11 +74,25 @@ class AnalysisConfig(ConfigModel):
     max_concurrency: int = Field(default=4, ge=1, le=16)
     max_failure_ratio: float = Field(default=0.30, ge=0, le=1)
     prompt_version: str
-    max_output_tokens: int = Field(default=2200, ge=256, le=16000)
+    brief_max_output_tokens: int = Field(default=3500, ge=256, le=32000)
+    deep_max_output_tokens: int = Field(default=8000, ge=256, le=64000)
     full_text_top_k: int = Field(default=12, ge=0)
     full_text_max_chars: int = Field(default=18000, ge=1000, le=100000)
-    model_default: str
+    brief_model_default: str
+    deep_model_default: str
+    brief_thinking: bool = False
+    deep_thinking: bool = False
+    brief_reasoning_effort: Literal["low", "high", "max"] = "low"
+    deep_reasoning_effort: Literal["low", "high", "max"] = "low"
     base_url_default: str
+
+
+class MailConfig(ConfigModel):
+    enabled: bool = True
+    send_empty: bool = True
+    top_detail_limit: int = Field(default=5, ge=0, le=10)
+    html_byte_limit: int = Field(default=61440, ge=16384, le=262144)
+    template_version: str = "email-v1"
 
 
 class OutputConfig(ConfigModel):
@@ -94,6 +109,7 @@ class AppConfig(ConfigModel):
     sources: SourcesConfig
     ranking: RankingConfig
     analysis: AnalysisConfig
+    email: MailConfig
     output: OutputConfig
 
 

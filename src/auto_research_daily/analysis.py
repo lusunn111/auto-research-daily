@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from threading import Lock
 from typing import Any
 
 import httpx
@@ -21,6 +23,8 @@ from auto_research_daily.models import (
     RankedPaper,
     ReadingScope,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -76,15 +80,28 @@ class OpenAICompatibleAnalyzer:
         profile: ResearchProfileConfig,
         *,
         api_key: str,
-        model: str,
+        brief_model: str,
+        deep_model: str,
+        brief_thinking: bool,
+        deep_thinking: bool,
+        brief_reasoning_effort: str,
+        deep_reasoning_effort: str,
         base_url: str,
         prompt: str,
         client: httpx.Client | None = None,
     ) -> None:
         self.config = config
         self.profile = profile
-        self.model = model
+        self.brief_model = brief_model
+        self.deep_model = deep_model
+        self.brief_thinking = brief_thinking
+        self.deep_thinking = deep_thinking
+        self.brief_reasoning_effort = brief_reasoning_effort
+        self.deep_reasoning_effort = deep_reasoning_effort
         self.prompt = prompt
+        self._usage_lock = Lock()
+        self._input_tokens = 0
+        self._output_tokens = 0
         self._owns_client = client is None
         self.client = client or httpx.Client(
             base_url=base_url.rstrip("/"),
@@ -101,6 +118,36 @@ class OpenAICompatibleAnalyzer:
 
     def __exit__(self, *_: object) -> None:
         self.close()
+
+    def model_for(self, full_text: str | None) -> str:
+        return self.deep_model if full_text else self.brief_model
+
+    def reasoning_effort_for(self, full_text: str | None) -> str:
+        return self.deep_reasoning_effort if full_text else self.brief_reasoning_effort
+
+    def thinking_for(self, full_text: str | None) -> bool:
+        return self.deep_thinking if full_text else self.brief_thinking
+
+    def max_output_tokens_for(self, full_text: str | None) -> int:
+        return (
+            self.config.deep_max_output_tokens
+            if full_text
+            else self.config.brief_max_output_tokens
+        )
+
+    def usage(self) -> tuple[int, int]:
+        with self._usage_lock:
+            return self._input_tokens, self._output_tokens
+
+    def _record_usage(self, payload: dict[str, Any]) -> None:
+        usage = payload.get("usage", {})
+        if not isinstance(usage, dict):
+            return
+        input_tokens = int(usage.get("prompt_tokens", 0) or 0)
+        output_tokens = int(usage.get("completion_tokens", 0) or 0)
+        with self._usage_lock:
+            self._input_tokens += input_tokens
+            self._output_tokens += output_tokens
 
     def _user_message(self, ranked: RankedPaper, full_text: str | None) -> str:
         paper = ranked.paper
@@ -146,38 +193,65 @@ class OpenAICompatibleAnalyzer:
 
     def analyze(self, ranked: RankedPaper, full_text: str | None) -> PaperAnalysis:
         last_error: Exception | None = None
+        model = self.model_for(full_text)
+        repair_instruction = ""
         for attempt in range(3):
             try:
                 response = self.client.post(
                     "/chat/completions",
                     json={
-                        "model": self.model,
+                        "model": model,
                         "messages": [
                             {"role": "system", "content": self.prompt},
-                            {"role": "user", "content": self._user_message(ranked, full_text)},
+                            {
+                                "role": "user",
+                                "content": self._user_message(ranked, full_text)
+                                + repair_instruction,
+                            },
                         ],
-                        "temperature": 0.1,
-                        "max_tokens": self.config.max_output_tokens,
+                        "thinking": {
+                            "type": "enabled" if self.thinking_for(full_text) else "disabled"
+                        },
+                        "reasoning_effort": self.reasoning_effort_for(full_text),
+                        "max_tokens": self.max_output_tokens_for(full_text),
                         "response_format": {"type": "json_object"},
                     },
                 )
                 response.raise_for_status()
                 payload = response.json()
+                self._record_usage(payload)
                 content = payload["choices"][0]["message"]["content"]
                 analysis = PaperAnalysis.model_validate_json(self._extract_json(str(content)))
                 self._validate_grounding(analysis, ranked, full_text)
                 return analysis
             except (httpx.HTTPError, KeyError, IndexError, ValueError, ValidationError) as error:
                 last_error = error
+                repair_instruction = (
+                    "\n\n上一次输出未通过程序校验。请重新生成完整 JSON，特别检查："
+                    "字段不得缺失或增加；evidence.quote 必须逐字复制输入中的连续原文；"
+                    "只提供摘要时不得引用全文。"
+                    f"校验错误：{type(error).__name__}: {error}"
+                )
                 if attempt < 2:
                     time.sleep(2**attempt)
-        raise RuntimeError(f"analysis failed for {ranked.paper.identity}") from last_error
+        raise RuntimeError(
+            f"analysis failed for {ranked.paper.identity}: "
+            f"{type(last_error).__name__}: {last_error}"
+        ) from last_error
 
 
 class HeuristicAnalyzer:
     """Deterministic offline analyzer for tests and local smoke runs only."""
 
     model = "offline-heuristic"
+
+    @classmethod
+    def model_for(cls, full_text: str | None) -> str:
+        return cls.model
+
+    @staticmethod
+    def usage() -> tuple[int, int]:
+        return 0, 0
 
     @staticmethod
     def analyze(ranked: RankedPaper, full_text: str | None) -> PaperAnalysis:
@@ -218,7 +292,6 @@ def analyze_ranked_papers(
     analyzer: OpenAICompatibleAnalyzer | HeuristicAnalyzer,
     config: AnalysisConfig,
     cache: dict[str, dict[str, Any]],
-    model: str,
     profile_fingerprint: str = "",
 ) -> tuple[list[AnalysisResult], dict[str, dict[str, Any]], list[str]]:
     results: list[AnalysisResult] = []
@@ -227,6 +300,7 @@ def analyze_ranked_papers(
 
     for ranked in ranked_papers[: config.max_papers]:
         full_text = full_texts.get(ranked.paper.identity)
+        model = analyzer.model_for(full_text)
         key = make_cache_key(
             ranked,
             full_text=full_text,
@@ -265,6 +339,7 @@ def analyze_ranked_papers(
 
     def run_one(item: tuple[RankedPaper, str | None, str]) -> tuple[str, AnalyzedPaper]:
         ranked, full_text, key = item
+        model = analyzer.model_for(full_text)
         analysis = analyzer.analyze(ranked, full_text)
         final_score = 0.55 * ranked.score.base_score + 0.45 * (analysis.relevance_score / 10)
         analyzed = AnalyzedPaper(
@@ -294,13 +369,16 @@ def analyze_ranked_papers(
                 }
                 results.append(AnalysisResult(paper=analyzed, cache_hit=False))
             except Exception as error:  # Individual failures are gated below.
-                errors.append(f"{identity}: {type(error).__name__}: {error}")
+                detail = f"{identity}: {type(error).__name__}: {error}"
+                errors.append(detail)
+                logger.warning("论文解读失败：%s", detail)
 
     attempted = len(misses)
     if attempted and len(errors) / attempted > config.max_failure_ratio:
+        detail = "; ".join(errors[:3])
         raise RuntimeError(
             f"analysis failure ratio {len(errors)}/{attempted} exceeds "
-            f"{config.max_failure_ratio:.0%}"
+            f"{config.max_failure_ratio:.0%}: {detail}"
         )
     results.sort(key=lambda item: (-item.paper.final_score, item.paper.ranked.paper.identity))
     return results, cache, errors

@@ -2,7 +2,7 @@ name: Daily Research Update
 
 on:
   schedule:
-    - cron: "30 1 * * *" # 北京时间每日 09:30
+    - cron: "30 4 * * *" # 北京时间每日 12:30，避开当前 API 峰值时段
   workflow_dispatch:
     inputs:
       lookback_days:
@@ -18,22 +18,29 @@ on:
         type: number
         default: 10
       dry_run:
-        description: 只运行，不写入、提交或部署
+        description: 只运行，不写入、提交或部署；非默认分支将强制开启
+        type: boolean
+        default: false
+      send_email:
+        description: 手动运行时允许邮件通知；若当天已发则跳过，定时任务默认允许
         type: boolean
         default: false
 
 permissions: {}
 
 concurrency:
-  group: auto-research-daily
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   update:
-    if: github.ref_name == github.event.repository.default_branch
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     outputs:
       dry_run: ${{ steps.options.outputs.dry_run }}
     steps:
@@ -41,7 +48,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ github.ref }}
+          persist-credentials: false
       - name: Set up uv and Python
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
@@ -58,6 +66,8 @@ jobs:
           INPUT_MAX_PAPERS: ${{ inputs.max_papers }}
           INPUT_DEEP_LIMIT: ${{ inputs.deep_limit }}
           INPUT_DRY_RUN: ${{ inputs.dry_run }}
+          CURRENT_REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
           lookback="${INPUT_LOOKBACK:-3}"
@@ -68,6 +78,10 @@ jobs:
           [[ "$max_papers" =~ ^([1-9]|[1-9][0-9]|1[0-9][0-9]|200)$ ]] || exit 2
           [[ "$deep_limit" =~ ^([0-9]|[1-3][0-9]|40)$ ]] || exit 2
           [[ "$dry_run" == "true" || "$dry_run" == "false" ]] || exit 2
+          if [[ "$CURRENT_REF" != "refs/heads/$DEFAULT_BRANCH" ]]; then
+            echo "非默认分支 $CURRENT_REF：强制使用只读试运行。"
+            dry_run="true"
+          fi
           {
             echo "lookback=$lookback"
             echo "max_papers=$max_papers"
@@ -80,7 +94,8 @@ jobs:
           ARXIV_USER_AGENT: Auto-Research-Daily/0.1 (https://github.com/${{ github.repository }})
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
-          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_BRIEF_MODEL: ${{ vars.LLM_BRIEF_MODEL }}
+          LLM_DEEP_MODEL: ${{ vars.LLM_DEEP_MODEL }}
           SITE_URL: ${{ vars.SITE_URL }}
           ZOTERO_API_KEY: ${{ secrets.ZOTERO_API_KEY }}
           ZOTERO_USER_ID: ${{ secrets.ZOTERO_USER_ID }}
@@ -115,8 +130,52 @@ jobs:
           if not Path("site/index.html").is_file():
               raise SystemExit("site/index.html is missing")
           PY
-      - name: Commit generated public data
+      - name: Upload run summary
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: run-summary-${{ github.run_id }}-${{ github.run_attempt }}
+          path: run-summary.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload generated public data
         if: steps.options.outputs.dry_run == 'false'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: generated-public-data-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            data
+            reports
+            site
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: update
+    if: >-
+      needs.update.outputs.dry_run == 'false' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Download generated public data
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: generated-public-data-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .
+      - name: Validate downloaded paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f data/latest.json
+          test -f site/index.html
+      - name: Commit generated public data
         shell: bash
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -138,23 +197,16 @@ jobs:
             git rebase "refs/remotes/origin/${DEFAULT_BRANCH}"
             git push origin "HEAD:refs/heads/${DEFAULT_BRANCH}"
           fi
-      - name: Upload run summary
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: run-summary
-          path: run-summary.json
-          if-no-files-found: warn
-          retention-days: 14
       - name: Upload Pages artifact
-        if: steps.options.outputs.dry_run == 'false'
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: site
 
   deploy:
-    needs: update
-    if: needs.update.outputs.dry_run == 'false'
+    needs: [update, publish]
+    if: >-
+      needs.update.outputs.dry_run == 'false' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -162,6 +214,7 @@ jobs:
     concurrency:
       group: pages
       cancel-in-progress: false
+      queue: max
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -169,3 +222,125 @@ jobs:
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  notify:
+    needs: [update, publish, deploy]
+    if: >-
+      needs.update.outputs.dry_run == 'false' &&
+      needs.deploy.result == 'success' &&
+      (github.event_name == 'schedule' ||
+       (github.event_name == 'workflow_dispatch' && inputs.send_email == true))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout deployed default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+          python-version: "3.13"
+          version: "0.9.0"
+      - name: Install locked dependencies
+        run: uv sync --frozen
+      - name: Refresh deployed default branch before delivery decision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          clean: false
+      - name: Send deployed daily report
+        env:
+          MAIL_FROM: ${{ vars.MAIL_FROM }}
+          MAIL_TO: ${{ vars.MAIL_TO }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          SMTP_AUTH_CODE: ${{ secrets.SMTP_AUTH_CODE }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+          SMTP_USERNAME: ${{ vars.SMTP_USERNAME }}
+        run: uv run auto-research-daily notify
+      - name: Upload notification state
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: notification-state-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/notifications.json
+          if-no-files-found: error
+          retention-days: 7
+
+  record-notification:
+    needs: notify
+    if: needs.notify.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout latest default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Download notification state
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: notification-state-${{ github.run_id }}-${{ github.run_attempt }}
+          path: notification-state
+      - name: Merge notification state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import tempfile
+          from pathlib import Path
+
+          incoming_path = Path("notification-state/notifications.json")
+          destination = Path("data/notifications.json")
+          incoming = json.loads(incoming_path.read_text(encoding="utf-8"))
+          current = (
+              json.loads(destination.read_text(encoding="utf-8"))
+              if destination.exists()
+              else {"schema_version": 1, "editions": {}}
+          )
+          if incoming.get("schema_version") != 1 or current.get("schema_version") != 1:
+              raise SystemExit("unsupported notification state schema")
+          incoming_editions = incoming.get("editions")
+          current_editions = current.get("editions")
+          if not isinstance(incoming_editions, dict) or not isinstance(current_editions, dict):
+              raise SystemExit("invalid notification editions")
+          current_editions.update(incoming_editions)
+          destination.parent.mkdir(parents=True, exist_ok=True)
+          descriptor, temporary_name = tempfile.mkstemp(
+              prefix=".notifications.", dir=destination.parent
+          )
+          with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+              json.dump(current, stream, ensure_ascii=False, indent=2, sort_keys=True)
+              stream.write("\n")
+              stream.flush()
+              os.fsync(stream.fileno())
+          Path(temporary_name).replace(destination)
+          PY
+      - name: Commit notification state only
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git config user.name "auto-research-daily-bot"
+          git config user.email "auto-research-daily-bot@users.noreply.github.com"
+          git add -- data/notifications.json
+          mapfile -t staged_paths < <(git diff --cached --name-only)
+          for staged_path in "${staged_paths[@]}"; do
+            [[ "$staged_path" == "data/notifications.json" ]] || exit 1
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "data: record daily email notification"
+            git push origin "HEAD:refs/heads/${DEFAULT_BRANCH}"
+          fi
