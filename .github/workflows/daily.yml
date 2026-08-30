@@ -32,10 +32,10 @@ jobs:
   update:
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.ref_name == github.event.repository.default_branch
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     outputs:
       dry_run: ${{ steps.options.outputs.dry_run }}
     steps:
@@ -44,6 +44,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
+          persist-credentials: false
       - name: Set up uv and Python
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
@@ -60,7 +61,7 @@ jobs:
           INPUT_MAX_PAPERS: ${{ inputs.max_papers }}
           INPUT_DEEP_LIMIT: ${{ inputs.deep_limit }}
           INPUT_DRY_RUN: ${{ inputs.dry_run }}
-          CURRENT_BRANCH: ${{ github.ref_name }}
+          CURRENT_REF: ${{ github.ref }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
@@ -72,8 +73,8 @@ jobs:
           [[ "$max_papers" =~ ^([1-9]|[1-9][0-9]|1[0-9][0-9]|200)$ ]] || exit 2
           [[ "$deep_limit" =~ ^([0-9]|[1-3][0-9]|40)$ ]] || exit 2
           [[ "$dry_run" == "true" || "$dry_run" == "false" ]] || exit 2
-          if [[ "$CURRENT_BRANCH" != "$DEFAULT_BRANCH" ]]; then
-            echo "非默认分支 $CURRENT_BRANCH：强制使用只读试运行。"
+          if [[ "$CURRENT_REF" != "refs/heads/$DEFAULT_BRANCH" ]]; then
+            echo "非默认分支 $CURRENT_REF：强制使用只读试运行。"
             dry_run="true"
           fi
           {
@@ -124,8 +125,52 @@ jobs:
           if not Path("site/index.html").is_file():
               raise SystemExit("site/index.html is missing")
           PY
-      - name: Commit generated public data
+      - name: Upload run summary
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: run-summary
+          path: run-summary.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload generated public data
         if: steps.options.outputs.dry_run == 'false'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: generated-public-data
+          path: |
+            data
+            reports
+            site
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: update
+    if: >-
+      needs.update.outputs.dry_run == 'false' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Download generated public data
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: generated-public-data
+          path: .
+      - name: Validate downloaded paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f data/latest.json
+          test -f site/index.html
+      - name: Commit generated public data
         shell: bash
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -147,23 +192,16 @@ jobs:
             git rebase "refs/remotes/origin/${DEFAULT_BRANCH}"
             git push origin "HEAD:refs/heads/${DEFAULT_BRANCH}"
           fi
-      - name: Upload run summary
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: run-summary
-          path: run-summary.json
-          if-no-files-found: warn
-          retention-days: 14
       - name: Upload Pages artifact
-        if: steps.options.outputs.dry_run == 'false'
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: site
 
   deploy:
-    needs: update
-    if: needs.update.outputs.dry_run == 'false'
+    needs: [update, publish]
+    if: >-
+      needs.update.outputs.dry_run == 'false' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     permissions:
       pages: write
