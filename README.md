@@ -72,8 +72,16 @@ export ZOTERO_API_KEY='...'
 | `ZOTERO_API_KEY` | 可选 | Zotero 只读接口密钥 |
 | `ARXIV_USER_AGENT` | 推荐 | 包含项目和联系方式的 arXiv 请求标识 |
 | `SITE_URL` | 推荐 | 静态站点地址，用于 RSS |
+| `SMTP_AUTH_CODE` | 邮件必需 | QQ/Foxmail SMTP 授权码，只能放 GitHub Secret |
+| `SMTP_USERNAME` | 邮件必需 | 完整发件邮箱地址 |
+| `SMTP_HOST` | 邮件必需 | SMTP 服务器，QQ/Foxmail 使用 `smtp.qq.com` |
+| `SMTP_PORT` | 邮件必需 | 加密端口，当前仅允许 `465` |
+| `MAIL_FROM` | 邮件必需 | 邮件发件地址，必须与认证账号一致或为其授权别名 |
+| `MAIL_TO` | 邮件必需 | 科研日报收件地址 |
 
 Zotero 原始条目只在内存中参与排序，不会进入报告、缓存或 Git 历史。
+
+邮件是部署成功后的独立通知层：定时任务默认发送，手动任务只有显式勾选才发送。系统使用 SMTP SSL 加密连接，不允许明文降级，并通过 `data/notifications.json` 避免同一天重复发送以及跨日重复推荐同一论文版本。
 
 ## 输出
 

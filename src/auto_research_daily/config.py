@@ -87,6 +87,14 @@ class AnalysisConfig(ConfigModel):
     base_url_default: str
 
 
+class MailConfig(ConfigModel):
+    enabled: bool = True
+    send_empty: bool = True
+    top_detail_limit: int = Field(default=5, ge=0, le=10)
+    html_byte_limit: int = Field(default=61440, ge=16384, le=262144)
+    template_version: str = "email-v1"
+
+
 class OutputConfig(ConfigModel):
     data_dir: Path
     reports_dir: Path
@@ -101,6 +109,7 @@ class AppConfig(ConfigModel):
     sources: SourcesConfig
     ranking: RankingConfig
     analysis: AnalysisConfig
+    email: MailConfig
     output: OutputConfig
 
 

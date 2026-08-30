@@ -21,6 +21,10 @@ on:
         description: 只运行，不写入、提交或部署；非默认分支将强制开启
         type: boolean
         default: false
+      send_email:
+        description: 手动运行时是否在部署成功后发送邮件；定时任务默认发送
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -129,7 +133,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: run-summary
+          name: run-summary-${{ github.run_id }}-${{ github.run_attempt }}
           path: run-summary.json
           if-no-files-found: warn
           retention-days: 14
@@ -137,7 +141,7 @@ jobs:
         if: steps.options.outputs.dry_run == 'false'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: generated-public-data
+          name: generated-public-data-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             data
             reports
@@ -162,7 +166,7 @@ jobs:
       - name: Download generated public data
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
-          name: generated-public-data
+          name: generated-public-data-${{ github.run_id }}-${{ github.run_attempt }}
           path: .
       - name: Validate downloaded paths
         shell: bash
@@ -216,3 +220,58 @@ jobs:
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  notify:
+    needs: [update, publish, deploy]
+    if: >-
+      needs.update.outputs.dry_run == 'false' &&
+      needs.deploy.result == 'success' &&
+      (github.event_name == 'schedule' ||
+       (github.event_name == 'workflow_dispatch' && inputs.send_email == true))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout deployed default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+          python-version: "3.13"
+          version: "0.9.0"
+      - name: Install locked dependencies
+        run: uv sync --frozen
+      - name: Send deployed daily report
+        env:
+          MAIL_FROM: ${{ vars.MAIL_FROM }}
+          MAIL_TO: ${{ vars.MAIL_TO }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          SMTP_AUTH_CODE: ${{ secrets.SMTP_AUTH_CODE }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+          SMTP_USERNAME: ${{ vars.SMTP_USERNAME }}
+        run: uv run auto-research-daily notify
+      - name: Commit notification state only
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git config user.name "auto-research-daily-bot"
+          git config user.email "auto-research-daily-bot@users.noreply.github.com"
+          git add -- data/notifications.json
+          mapfile -t staged_paths < <(git diff --cached --name-only)
+          for staged_path in "${staged_paths[@]}"; do
+            [[ "$staged_path" == "data/notifications.json" ]] || exit 1
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "data: record daily email notification"
+            git fetch origin "refs/heads/${DEFAULT_BRANCH}:refs/remotes/origin/${DEFAULT_BRANCH}"
+            git rebase "refs/remotes/origin/${DEFAULT_BRANCH}"
+            git push origin "HEAD:refs/heads/${DEFAULT_BRANCH}"
+          fi

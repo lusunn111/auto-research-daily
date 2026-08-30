@@ -103,7 +103,7 @@ def render_markdown(report: RunReport, title: str) -> str:
 def render_html(report: RunReport, title: str, template_dir: Path) -> str:
     environment = Environment(
         loader=FileSystemLoader(template_dir),
-        autoescape=select_autoescape(("html", "xml")),
+        autoescape=select_autoescape(("html", "xml", "j2")),
         trim_blocks=True,
         lstrip_blocks=True,
     )

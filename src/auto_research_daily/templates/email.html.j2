@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;background:#f5f1e8;color:#16211b;font:16px/1.65 Arial,'Noto Sans SC',sans-serif">
+  <div style="display:none;max-height:0;overflow:hidden;color:transparent">
+    今日新增推荐 {{ papers|length }} 篇，其中全文级解读 {{ papers|selectattr('tier','equalto','deep_read')|list|length }} 篇。
+  </div>
+  <main style="max-width:760px;margin:0 auto;padding:32px 18px 64px">
+    <p style="color:#5a6a61">AUTO RESEARCH DAILY · {{ report.generated_at.strftime('%Y-%m-%d') }}</p>
+    <h1 style="font-size:34px;line-height:1.18;margin:8px 0 14px">{{ title }}</h1>
+    <p>今日新增推荐 <strong>{{ papers|length }}</strong> 篇；全文级解读 <strong>{{ papers|selectattr('tier','equalto','deep_read')|list|length }}</strong> 篇。</p>
+    <p><a href="{{ archive_url }}" style="display:inline-block;background:#1f5c42;color:#fff;text-decoration:none;padding:11px 18px">打开今日完整日报</a></p>
+    {% if not papers %}<p style="padding:20px;background:#fffdfa;border:1px solid #d7d2c6">今日没有新的高质量推荐，流水线运行正常。</p>{% endif %}
+    {% for item in papers %}
+    <article style="margin:18px 0;padding:22px;background:#fffdfa;border:1px solid #d7d2c6">
+      <p style="margin:0 0 8px;color:#1f5c42;font-size:13px">{{ tier_labels[item.tier] }} · {{ '全文级' if item.provenance.reading_scope.value == 'full_text' else '摘要级' }} · 相关性 {{ item.analysis.relevance_score }}/10</p>
+      <h2 style="font-size:21px;line-height:1.35;margin:0 0 6px"><a href="{{ item.ranked.paper.url }}" style="color:#163f31">{{ item.analysis.title_zh }}</a></h2>
+      <p style="margin:0 0 14px;color:#5a6a61;font-size:14px">{{ item.ranked.paper.title }}</p>
+      <p><strong>核心洞察：</strong>{{ item.analysis.insight }}</p>
+      <p><strong>推荐理由：</strong>{{ item.analysis.why_recommended }}</p>
+      {% if loop.index <= detail_limit %}
+      <p><strong>研究动机：</strong>{{ item.analysis.motivation }}</p>
+      <p><strong>实现方法：</strong>{{ item.analysis.method|join('；') }}</p>
+      <p><strong>实验：</strong>{{ item.analysis.experiments|join('；') }}</p>
+      <p><strong>与你的研究关系：</strong>{{ item.analysis.relation_to_research }}</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+    <footer style="margin-top:28px;padding-top:18px;border-top:1px solid #d7d2c6;color:#5a6a61;font-size:13px">
+      <p>摘要级解读不等同于阅读全文；完整证据、不确定性和历史归档请查看网页。</p>
+      <p><a href="{{ archive_url }}" style="color:#1f5c42">今日完整日报</a></p>
+    </footer>
+  </main>
+</body>
+</html>

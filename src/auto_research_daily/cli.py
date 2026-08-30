@@ -7,6 +7,13 @@ from pathlib import Path
 
 from auto_research_daily.analysis import load_prompt
 from auto_research_daily.config import load_config
+from auto_research_daily.emailing import (
+    MailSettings,
+    build_test_message,
+    notify_report,
+    send_message,
+)
+from auto_research_daily.models import RunReport
 from auto_research_daily.pipeline import RunOptions, run_daily
 
 
@@ -27,6 +34,12 @@ def _parser() -> argparse.ArgumentParser:
     daily.add_argument("--lookback-days", type=int)
     daily.add_argument("--max-papers", type=int)
     daily.add_argument("--deep-limit", type=int)
+    notify = subparsers.add_parser("notify", help="发送已经生成并部署的科研日报邮件")
+    notify.add_argument("--report", type=Path, default=Path("data/latest.json"))
+    notify.add_argument("--state", type=Path, default=Path("data/notifications.json"))
+    notify.add_argument("--dry-run", action="store_true", help="渲染并校验，但不连接邮箱")
+    notify.add_argument("--force", action="store_true", help="强制发送当日修订版")
+    notify.add_argument("--test", action="store_true", help="只发送一封邮件通道测试信")
     return parser
 
 
@@ -43,6 +56,30 @@ def main(argv: list[str] | None = None) -> int:
     load_prompt(project_root, config.analysis.prompt_version)
     if args.command == "validate":
         print(f"配置有效：{config_path}")
+        return 0
+
+    if args.command == "notify":
+        if not config.email.enabled:
+            parser.error("配置已禁用邮件通知")
+        settings = MailSettings.from_env()
+        if args.test:
+            message = build_test_message(settings)
+            if not args.dry_run:
+                send_message(message, settings)
+            print(json.dumps({"status": "dry_run" if args.dry_run else "sent_test"}))
+            return 0
+        report = RunReport.model_validate_json(args.report.read_text(encoding="utf-8"))
+        result = notify_report(
+            report,
+            settings=settings,
+            config=config.email,
+            title=config.output.title,
+            template_dir=project_root / "src" / "auto_research_daily" / "templates",
+            state_path=args.state,
+            dry_run=args.dry_run,
+            force=args.force,
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
 
     if args.lookback_days is not None and args.lookback_days < 1:
