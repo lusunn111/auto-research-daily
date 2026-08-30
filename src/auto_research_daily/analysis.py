@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
@@ -22,6 +23,8 @@ from auto_research_daily.models import (
     RankedPaper,
     ReadingScope,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -357,7 +360,9 @@ def analyze_ranked_papers(
                 }
                 results.append(AnalysisResult(paper=analyzed, cache_hit=False))
             except Exception as error:  # Individual failures are gated below.
-                errors.append(f"{identity}: {type(error).__name__}: {error}")
+                detail = f"{identity}: {type(error).__name__}: {error}"
+                errors.append(detail)
+                logger.warning("论文解读失败：%s", detail)
 
     attempted = len(misses)
     if attempted and len(errors) / attempted > config.max_failure_ratio:

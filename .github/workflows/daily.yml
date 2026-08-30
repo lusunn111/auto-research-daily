@@ -18,7 +18,7 @@ on:
         type: number
         default: 10
       dry_run:
-        description: 只运行，不写入、提交或部署
+        description: 只运行，不写入、提交或部署；非默认分支将强制开启
         type: boolean
         default: false
 
@@ -30,7 +30,9 @@ concurrency:
 
 jobs:
   update:
-    if: github.ref_name == github.event.repository.default_branch
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -41,7 +43,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ github.ref }}
       - name: Set up uv and Python
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
@@ -58,6 +60,8 @@ jobs:
           INPUT_MAX_PAPERS: ${{ inputs.max_papers }}
           INPUT_DEEP_LIMIT: ${{ inputs.deep_limit }}
           INPUT_DRY_RUN: ${{ inputs.dry_run }}
+          CURRENT_BRANCH: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
           lookback="${INPUT_LOOKBACK:-3}"
@@ -68,6 +72,10 @@ jobs:
           [[ "$max_papers" =~ ^([1-9]|[1-9][0-9]|1[0-9][0-9]|200)$ ]] || exit 2
           [[ "$deep_limit" =~ ^([0-9]|[1-3][0-9]|40)$ ]] || exit 2
           [[ "$dry_run" == "true" || "$dry_run" == "false" ]] || exit 2
+          if [[ "$CURRENT_BRANCH" != "$DEFAULT_BRANCH" ]]; then
+            echo "非默认分支 $CURRENT_BRANCH：强制使用只读试运行。"
+            dry_run="true"
+          fi
           {
             echo "lookback=$lookback"
             echo "max_papers=$max_papers"
