@@ -1,0 +1,127 @@
+{% macro paper_card(view, site_url) -%}
+{% set item = view.item %}
+{% set paper = item.ranked.paper %}
+{% set analysis = item.analysis %}
+<article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="{{ view.id }}"
+  data-topic="{{ view.topic.key }}"
+>
+  <div class="paper-card__cover">
+    {% if view.has_figure %}
+      {% set cover_figure = item.figure_gallery.figures[0] %}
+      {% set cover_panel = cover_figure.panels[0] %}
+      <img
+        src="{{ site_url ~ cover_panel.cached_path if cover_panel.cached_path else cover_panel.original_url }}"
+        alt="{{ cover_figure.label }}：{{ cover_figure.caption }}"
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="{{ cover_panel.original_url }}"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>{{ cover_figure.label }}</strong> {{ cover_figure.caption }}</p>
+    {% else %}
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>{{ view.topic.label }}</span>
+        <strong>arXiv:{{ paper.canonical_id }}</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">{{ view.topic.label }}</span>
+      <span>{{ '全文级' if item.provenance.reading_scope.value == 'full_text' else '摘要级' }}</span>
+      <span>相关性 {{ analysis.relevance_score }}/10</span>
+      <span>v{{ paper.version }}</span>
+    </div>
+
+    <h3><a href="{{ paper.url }}">{{ analysis.title_zh }}</a></h3>
+    <p class="original-title" lang="en">{{ paper.title }}</p>
+    <p class="authors">{{ paper.authors|join(' · ') }}</p>
+
+    <div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>{{ analysis.insight }}</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>{{ analysis.why_recommended }}</p>
+
+    <ul class="paper-tags" aria-label="研究标签">
+      {% for tag in analysis.tags[:5] %}
+      <li><button type="button" data-tag-filter="{{ tag }}">{{ tag }}</button></li>
+      {% endfor %}
+    </ul>
+
+    <details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>{{ analysis.primary_topic }}</p>
+        <p><strong>第一单位：</strong>{{ analysis.first_affiliation }}</p>
+        <p><strong>通讯作者：</strong>{{ analysis.corresponding_authors|join(', ') }}</p>
+        <p><strong>首次上传：</strong>{{ paper.published_at.strftime('%Y-%m') }}</p>
+        <p class="paper-links">
+          <a href="{{ paper.url }}">arXiv 摘要 ↗</a>
+          {% if paper.pdf_url %}<a href="{{ paper.pdf_url }}">PDF ↗</a>{% endif %}
+          {% if item.figure_gallery %}<a href="{{ item.figure_gallery.html_url }}">官方 HTML ↗</a>{% endif %}
+        </p>
+      </div>
+
+      {% if view.has_figure %}
+      <div class="paper-figures">
+        {% for figure in item.figure_gallery.figures %}
+        {% set panel = figure.panels[0] %}
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="{{ site_url ~ panel.cached_path if panel.cached_path else panel.original_url }}"
+              alt="{{ figure.label }}：{{ figure.caption }}"
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="{{ panel.original_url }}"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>{{ figure.label }}.</strong> {{ figure.caption }}
+            <a class="figure-source" href="{{ figure.source_url }}">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        {% endfor %}
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+      {% endif %}
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>{{ analysis.setting }}</dd>
+        <dt>Motivation（研究动机）</dt><dd>{{ analysis.motivation }}</dd>
+        <dt>Insight（核心洞察）</dt><dd>{{ analysis.insight }}</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul>{% for value in analysis.challenges %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>{{ analysis.analysis }}</dd>
+        <dt>Method（方法）</dt><dd><ul>{% for value in analysis.method %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul>{% for value in analysis.experiments %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul>{% for value in analysis.limitations %}<li>{{ value }}</li>{% endfor %}</ul></dd>
+        <dt>与你的研究关系</dt><dd>{{ analysis.relation_to_research }}</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>{{ analysis.uncertainty }}</p>
+          {% for evidence in analysis.evidence %}
+          <blockquote><strong>{{ evidence.claim }}：</strong>{{ evidence.quote }}</blockquote>
+          {% endfor %}
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 {{ item.provenance.model }} 分析；{{ '读取了全文节选' if item.provenance.reading_scope.value == 'full_text' else '仅依据标题与摘要' }}。证据范围不足的内容不应视为全文结论。</p>
+    </details>
+  </div>
+</article>
+{%- endmacro %}

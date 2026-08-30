@@ -80,6 +80,12 @@ def test_offline_pipeline_persists_and_reuses_cache(tmp_path: Path) -> None:
         "https://example.github.io/auto-research-daily/",
     )
     assert "loading=\"lazy\"" in html
+    assert "今日论文画廊" in html
+    assert html.count('class="paper-details"') == len(first.papers)
+    assert 'class="paper-details" open' not in html
+    assert "data-topic-choice" in html
+    assert "data-filter-query" in html
+    assert "展开完整解读" in html
     assert (
         "https://example.github.io/auto-research-daily/figures/arxiv/" in html
     )

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections import Counter
 from html import escape
 from pathlib import Path
@@ -9,6 +10,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from auto_research_daily.models import AnalyzedPaper, RunReport
 from auto_research_daily.storage import atomic_write_text
+from auto_research_daily.taxonomy import RESEARCH_TOPICS, classify_paper, paper_search_text
 
 TIER_LABELS = {
     "deep_read": "今日必读",
@@ -115,15 +117,60 @@ def render_html(report: RunReport, title: str, template_dir: Path, site_url: str
         lstrip_blocks=True,
     )
     template = environment.get_template("index.html.j2")
+    views = []
+    filter_records = []
+    topic_counts: Counter[str] = Counter()
+    for item in report.papers:
+        topic = classify_paper(item)
+        identity = item.ranked.paper.identity
+        has_figure = bool(
+            item.figure_gallery
+            and item.figure_gallery.status == "available"
+            and item.figure_gallery.figures
+        )
+        views.append(
+            {
+                "id": identity,
+                "item": item,
+                "topic": topic,
+                "has_figure": has_figure,
+            }
+        )
+        filter_records.append(
+            {
+                "id": identity,
+                "topic": topic.key,
+                "tier": item.tier,
+                "scope": item.provenance.reading_scope.value,
+                "score": item.analysis.relevance_score,
+                "hasFigure": has_figure,
+                "tags": list(item.analysis.tags),
+                "searchText": paper_search_text(item, topic),
+            }
+        )
+        topic_counts[topic.key] += 1
+
     grouped = [
-        (tier, TIER_LABELS[tier], [paper for paper in report.papers if paper.tier == tier])
+        (tier, TIER_LABELS[tier], [view for view in views if view["item"].tier == tier])
         for tier in ("deep_read", "browse", "explore")
     ]
+    topics = [
+        {"topic": topic, "count": topic_counts[topic.key]}
+        for topic in RESEARCH_TOPICS
+        if topic_counts[topic.key]
+    ]
+    filter_json = json.dumps(
+        filter_records,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).replace("<", "\\u003c").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
     normalized_site_url = site_url.rstrip("/") + "/"
     return template.render(
         report=report,
         title=title,
         grouped=grouped,
+        topics=topics,
+        filter_json=filter_json,
         site_url=normalized_site_url,
         archive_index_url=urljoin(normalized_site_url, "archive/"),
         feed_url=urljoin(normalized_site_url, "feed.xml"),
