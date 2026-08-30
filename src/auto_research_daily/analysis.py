@@ -82,6 +82,8 @@ class OpenAICompatibleAnalyzer:
         api_key: str,
         brief_model: str,
         deep_model: str,
+        brief_thinking: bool,
+        deep_thinking: bool,
         brief_reasoning_effort: str,
         deep_reasoning_effort: str,
         base_url: str,
@@ -92,6 +94,8 @@ class OpenAICompatibleAnalyzer:
         self.profile = profile
         self.brief_model = brief_model
         self.deep_model = deep_model
+        self.brief_thinking = brief_thinking
+        self.deep_thinking = deep_thinking
         self.brief_reasoning_effort = brief_reasoning_effort
         self.deep_reasoning_effort = deep_reasoning_effort
         self.prompt = prompt
@@ -120,6 +124,9 @@ class OpenAICompatibleAnalyzer:
 
     def reasoning_effort_for(self, full_text: str | None) -> str:
         return self.deep_reasoning_effort if full_text else self.brief_reasoning_effort
+
+    def thinking_for(self, full_text: str | None) -> bool:
+        return self.deep_thinking if full_text else self.brief_thinking
 
     def max_output_tokens_for(self, full_text: str | None) -> int:
         return (
@@ -202,7 +209,9 @@ class OpenAICompatibleAnalyzer:
                                 + repair_instruction,
                             },
                         ],
-                        "thinking": {"type": "enabled"},
+                        "thinking": {
+                            "type": "enabled" if self.thinking_for(full_text) else "disabled"
+                        },
                         "reasoning_effort": self.reasoning_effort_for(full_text),
                         "max_tokens": self.max_output_tokens_for(full_text),
                         "response_format": {"type": "json_object"},

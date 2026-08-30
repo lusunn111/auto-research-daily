@@ -223,6 +223,8 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
             api_key=api_key,
             brief_model=brief_model,
             deep_model=deep_model,
+            brief_thinking=config.analysis.brief_thinking,
+            deep_thinking=config.analysis.deep_thinking,
             brief_reasoning_effort=config.analysis.brief_reasoning_effort,
             deep_reasoning_effort=config.analysis.deep_reasoning_effort,
             base_url=base_url,

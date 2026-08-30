@@ -80,8 +80,10 @@ class AnalysisConfig(ConfigModel):
     full_text_max_chars: int = Field(default=18000, ge=1000, le=100000)
     brief_model_default: str
     deep_model_default: str
+    brief_thinking: bool = False
+    deep_thinking: bool = False
     brief_reasoning_effort: Literal["low", "high", "max"] = "low"
-    deep_reasoning_effort: Literal["low", "high", "max"] = "high"
+    deep_reasoning_effort: Literal["low", "high", "max"] = "low"
     base_url_default: str
 
 
