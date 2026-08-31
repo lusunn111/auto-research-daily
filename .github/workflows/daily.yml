@@ -2,7 +2,12 @@ name: Daily Research Update
 
 on:
   schedule:
-    - cron: "30 4 * * *" # 北京时间每日 12:30，避开当前 API 峰值时段
+    - cron: "30 12 * * *"
+      timezone: "Asia/Shanghai"
+    - cron: "17 15 * * *"
+      timezone: "Asia/Shanghai"
+    - cron: "43 18 * * *"
+      timezone: "Asia/Shanghai"
   workflow_dispatch:
     inputs:
       lookback_days:
@@ -42,6 +47,7 @@ jobs:
     permissions:
       contents: read
     outputs:
+      should_run: ${{ steps.gate.outputs.should_run }}
       dry_run: ${{ steps.options.outputs.dry_run }}
     steps:
       - name: Checkout
@@ -50,15 +56,65 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.ref }}
           persist-credentials: false
+      - name: Decide whether today's delivery is complete
+        id: gate
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          today="$(TZ=Asia/Shanghai date +%F)"
+          should_run=true
+          reason="manual_or_missing_daily_delivery"
+          if [[ "$EVENT_NAME" == "schedule" && -f "data/daily/${today}.json" ]]; then
+            notified="$(python - "$today" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          target_date = sys.argv[1]
+          state_path = Path("data/notifications.json")
+          if not state_path.is_file():
+              print("false")
+              raise SystemExit
+          state = json.loads(state_path.read_text(encoding="utf-8"))
+          editions = state.get("editions", {})
+          print("true" if isinstance(editions, dict) and target_date in editions else "false")
+          PY
+            )"
+            if [[ "$notified" == "true" ]]; then
+              should_run=false
+              reason="daily_snapshot_and_email_already_recorded"
+            else
+              reason="daily_snapshot_exists_but_email_is_unrecorded"
+            fi
+          fi
+          {
+            echo "should_run=$should_run"
+            echo "today=$today"
+            echo "reason=$reason"
+          } >> "$GITHUB_OUTPUT"
+          echo "should_run=$should_run today=$today reason=$reason"
+      - name: Record an idempotent skip
+        if: steps.gate.outputs.should_run != 'true'
+        env:
+          RUN_DATE: ${{ steps.gate.outputs.today }}
+          RUN_REASON: ${{ steps.gate.outputs.reason }}
+        run: |
+          printf '{"status":"skipped","date":"%s","reason":"%s"}\n' \
+            "$RUN_DATE" "$RUN_REASON" > run-summary.json
       - name: Set up uv and Python
+        if: steps.gate.outputs.should_run == 'true'
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           enable-cache: true
           python-version: "3.13"
           version: "0.9.0"
       - name: Install locked dependencies
+        if: steps.gate.outputs.should_run == 'true'
         run: uv sync --frozen --extra dev
       - name: Validate inputs
+        if: steps.gate.outputs.should_run == 'true'
         id: options
         shell: bash
         env:
@@ -89,6 +145,7 @@ jobs:
             echo "dry_run=$dry_run"
           } >> "$GITHUB_OUTPUT"
       - name: Run daily pipeline
+        if: steps.gate.outputs.should_run == 'true'
         shell: bash
         env:
           ARXIV_USER_AGENT: Auto-Research-Daily/0.1 (https://github.com/${{ github.repository }})
@@ -116,11 +173,14 @@ jobs:
           fi
           uv run auto-research-daily "${args[@]}" | tee run-summary.json
       - name: Run regression tests
+        if: steps.gate.outputs.should_run == 'true'
         run: |
           uv run ruff check src tests
           uv run pytest
       - name: Validate generated data
-        if: steps.options.outputs.dry_run == 'false'
+        if: >-
+          steps.gate.outputs.should_run == 'true' &&
+          steps.options.outputs.dry_run == 'false'
         run: |
           uv run python - <<'PY'
           from pathlib import Path
@@ -169,7 +229,9 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
       - name: Upload generated public data
-        if: steps.options.outputs.dry_run == 'false'
+        if: >-
+          steps.gate.outputs.should_run == 'true' &&
+          steps.options.outputs.dry_run == 'false'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: generated-public-data-${{ github.run_id }}-${{ github.run_attempt }}
@@ -183,6 +245,7 @@ jobs:
   publish:
     needs: update
     if: >-
+      needs.update.outputs.should_run == 'true' &&
       needs.update.outputs.dry_run == 'false' &&
       github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
@@ -235,6 +298,7 @@ jobs:
   deploy:
     needs: [update, publish]
     if: >-
+      needs.update.outputs.should_run == 'true' &&
       needs.update.outputs.dry_run == 'false' &&
       github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
@@ -256,6 +320,7 @@ jobs:
   notify:
     needs: [update, publish, deploy]
     if: >-
+      needs.update.outputs.should_run == 'true' &&
       needs.update.outputs.dry_run == 'false' &&
       needs.deploy.result == 'success' &&
       (github.event_name == 'schedule' ||
