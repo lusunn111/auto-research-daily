@@ -1,14 +1,14 @@
-{% macro paper_card(view, site_url) -%}
+{% macro paper_card(view, site_url, expanded=false, compact=false) -%}
 {% set item = view.item %}
 {% set paper = item.ranked.paper %}
 {% set analysis = item.analysis %}
 <article
-  class="paper-card"
+  class="paper-card{% if compact %} paper-card--compact{% endif %}"
   data-paper-card
   data-paper-id="{{ view.id }}"
   data-topic="{{ view.topic.key }}"
 >
-  <div class="paper-card__cover">
+  {% if not compact %}<div class="paper-card__cover">
     {% if view.has_figure %}
       {% set cover_figure = item.figure_gallery.figures[0] %}
       {% set cover_panel = cover_figure.panels[0] %}
@@ -30,7 +30,7 @@
         <small>本期暂无可用论文原图</small>
       </div>
     {% endif %}
-  </div>
+  </div>{% endif %}
 
   <div class="paper-card__body">
     <div class="paper-card__rubric">
@@ -40,23 +40,23 @@
       <span>v{{ paper.version }}</span>
     </div>
 
-    <h3><a href="{{ paper.url }}">{{ analysis.title_zh }}</a></h3>
+    <h3><a href="{{ view.detail_url }}">{{ analysis.title_zh }}</a></h3>
     <p class="original-title" lang="en">{{ paper.title }}</p>
     <p class="authors">{{ paper.authors|join(' · ') }}</p>
 
-    <div class="paper-card__takeaway">
+    {% if not compact %}<div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
       <p>{{ analysis.insight }}</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>{{ analysis.why_recommended }}</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>{{ analysis.why_recommended }}</p>{% endif %}
 
     <ul class="paper-tags" aria-label="研究标签">
-      {% for tag in analysis.tags[:5] %}
-      <li><button type="button" data-tag-filter="{{ tag }}">{{ tag }}</button></li>
+      {% for tag in view.tags[:5] %}
+      <li><a href="{{ tag.url }}" data-tag-filter="{{ tag.key }}">{{ tag.label }}</a></li>
       {% endfor %}
     </ul>
 
-    <details class="paper-details">
+    {% if not compact %}<details class="paper-details"{% if expanded %} open{% endif %}>
       <summary>
         <span class="summary-open">展开完整解读</span>
         <span class="summary-close">收起完整解读</span>
@@ -65,6 +65,7 @@
 
       <div class="paper-details__meta">
         <p><strong>模型细分主题：</strong>{{ analysis.primary_topic }}</p>
+        <p><strong>模型原始标签：</strong>{{ analysis.tags|join('、') }}</p>
         <p><strong>第一单位：</strong>{{ analysis.first_affiliation }}</p>
         <p><strong>通讯作者：</strong>{{ analysis.corresponding_authors|join(', ') }}</p>
         <p><strong>首次上传：</strong>{{ paper.published_at.strftime('%Y-%m') }}</p>
@@ -121,7 +122,7 @@
         </dd>
       </dl>
       <p class="analysis-scope">本条由 {{ item.provenance.model }} 分析；{{ '读取了全文节选' if item.provenance.reading_scope.value == 'full_text' else '仅依据标题与摘要' }}。证据范围不足的内容不应视为全文结论。</p>
-    </details>
+    </details>{% endif %}
   </div>
 </article>
 {%- endmacro %}

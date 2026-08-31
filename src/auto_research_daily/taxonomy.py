@@ -15,6 +15,14 @@ class ResearchTopic:
     abstract_weight: int = 1
 
 
+@dataclass(frozen=True, slots=True)
+class ResearchTag:
+    key: str
+    label: str
+    description: str
+    aliases: tuple[str, ...]
+
+
 # The public taxonomy deliberately stays small and stable. Model-generated
 # ``primary_topic`` remains available as a fine-grained description, while this
 # layer gives the website predictable shelves that can be linked and filtered.
@@ -188,6 +196,204 @@ RESEARCH_TOPICS: tuple[ResearchTopic, ...] = (
 
 TOPIC_BY_KEY = {topic.key: topic for topic in RESEARCH_TOPICS}
 
+RESEARCH_TAGS: tuple[ResearchTag, ...] = (
+    ResearchTag(
+        "action-prediction",
+        "动作预测",
+        "动作生成、动作条件预测与轨迹建模。",
+        ("动作预测", "动作生成", "action prediction", "action-conditioned", "trajectory"),
+    ),
+    ResearchTag(
+        "data",
+        "具身数据",
+        "机器人数据采集、整理、生成与训练语料。",
+        (
+            "数据集",
+            "数据采集",
+            "数据整理",
+            "训练数据",
+            "dataset",
+            "data collection",
+            "data curation",
+        ),
+    ),
+    ResearchTag(
+        "efficient-inference",
+        "高效推理",
+        "推理时延、吞吐、令牌压缩与早停。",
+        (
+            "高效推理",
+            "推理加速",
+            "推理效率",
+            "计算效率",
+            "令牌剪枝",
+            "token pruning",
+            "efficient inference",
+            "latency",
+            "throughput",
+            "早停",
+        ),
+    ),
+    ResearchTag(
+        "evaluation",
+        "评测与可靠性",
+        "基准、指标、鲁棒性、安全与可靠性评估。",
+        (
+            "评测",
+            "评估",
+            "基准",
+            "可靠性",
+            "鲁棒性",
+            "安全",
+            "benchmark",
+            "evaluation",
+            "robustness",
+            "safety",
+        ),
+    ),
+    ResearchTag(
+        "generalist-robotics",
+        "通用机器人",
+        "通用策略、跨任务与跨具身泛化。",
+        (
+            "通用机器人",
+            "通用策略",
+            "跨具身",
+            "任务泛化",
+            "generalist",
+            "cross-embodiment",
+            "cross embodiment",
+        ),
+    ),
+    ResearchTag(
+        "model-quantization",
+        "模型量化",
+        "低比特、混合精度、剪枝与模型压缩。",
+        (
+            "量化",
+            "低比特",
+            "混合精度",
+            "模型压缩",
+            "剪枝",
+            "quantization",
+            "quantized",
+            "low-bit",
+            "mixed precision",
+            "pruning",
+        ),
+    ),
+    ResearchTag(
+        "navigation",
+        "具身导航",
+        "机器人导航、路径规划与空间推理。",
+        ("具身导航", "机器人导航", "人群导航", "路径规划", "navigation", "spatial reasoning"),
+    ),
+    ResearchTag(
+        "physical-ai",
+        "物理智能",
+        "物理交互、动力学、控制与真实世界执行。",
+        (
+            "物理智能",
+            "物理人工智能",
+            "物理交互",
+            "动力学",
+            "真实机器人",
+            "physical ai",
+            "physical interaction",
+            "dynamics",
+        ),
+    ),
+    ResearchTag(
+        "policy-learning",
+        "策略学习",
+        "模仿学习、强化学习、扩散与流式策略。",
+        (
+            "策略学习",
+            "模仿学习",
+            "强化学习",
+            "扩散策略",
+            "流匹配",
+            "policy learning",
+            "imitation learning",
+            "reinforcement learning",
+            "diffusion policy",
+            "flow matching",
+        ),
+    ),
+    ResearchTag(
+        "robot-learning",
+        "机器人学习",
+        "在线学习、技能学习与跨任务迁移。",
+        (
+            "机器人学习",
+            "在线学习",
+            "技能学习",
+            "robot learning",
+            "online learning",
+            "skill learning",
+        ),
+    ),
+    ResearchTag(
+        "robot-manipulation",
+        "机器人操作",
+        "抓取、双臂操作、长时程和精细操作。",
+        ("机器人操作", "抓取", "夹持器", "长时程操作", "manipulation", "grasping", "bimanual"),
+    ),
+    ResearchTag(
+        "simulation",
+        "仿真与生成",
+        "世界模拟、视频生成和交互式环境生成。",
+        (
+            "仿真",
+            "模拟器",
+            "世界模拟",
+            "视频生成",
+            "生成式仿真",
+            "simulation",
+            "simulator",
+            "world simulation",
+            "video generation",
+        ),
+    ),
+    ResearchTag(
+        "speculative-decoding",
+        "推测解码",
+        "草稿、验证与并行解码加速。",
+        ("推测解码", "并行解码", "speculative decoding", "parallel decoding"),
+    ),
+    ResearchTag(
+        "vision-language",
+        "视觉语言",
+        "视觉语言模型、多模态理解与语言条件控制。",
+        (
+            "视觉语言",
+            "多模态大语言模型",
+            "视觉语言模型",
+            "vision-language",
+            "vision language",
+            "multimodal large language model",
+            "mllm",
+            "lvlm",
+        ),
+    ),
+    ResearchTag(
+        "world-modeling",
+        "世界建模",
+        "世界模型、世界动作模型和潜在动态预测。",
+        (
+            "世界模型",
+            "世界动作模型",
+            "视频世界模型",
+            "world model",
+            "world action model",
+            "world modeling",
+            "latent dynamics",
+        ),
+    ),
+)
+
+TAG_BY_KEY = {tag.key: tag for tag in RESEARCH_TAGS}
+
 
 def _normalize(value: str) -> str:
     return " ".join(unicodedata.normalize("NFKC", value).casefold().split())
@@ -225,6 +431,25 @@ def classify_paper(item: AnalyzedPaper) -> ResearchTopic:
 
     best_score, _, best_topic = max(scored, key=lambda entry: (entry[0], entry[1]))
     return best_topic if best_score else TOPIC_BY_KEY["frontier"]
+
+
+def classify_tags(item: AnalyzedPaper) -> tuple[ResearchTag, ...]:
+    analysis = item.analysis
+    paper = item.ranked.paper
+    signal = _normalize(
+        " ".join(
+            (
+                analysis.primary_topic,
+                *analysis.tags,
+                *item.ranked.score.matched_terms,
+                paper.title,
+                paper.abstract,
+            )
+        )
+    )
+    return tuple(
+        tag for tag in RESEARCH_TAGS if any(_normalize(alias) in signal for alias in tag.aliases)
+    )
 
 
 def paper_search_text(item: AnalyzedPaper, topic: ResearchTopic) -> str:

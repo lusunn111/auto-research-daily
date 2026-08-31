@@ -131,7 +131,24 @@ jobs:
           )
           if not Path("site/index.html").is_file():
               raise SystemExit("site/index.html is missing")
+          date_name = report.generated_at.strftime("%Y-%m-%d")
+          required_paths = (
+              Path("data/daily") / f"{date_name}.json",
+              Path("site/daily") / date_name / "index.html",
+              Path("site/daily/index.html"),
+              Path("site/library/index.html"),
+              Path("site/topics/index.html"),
+              Path("site/tags/index.html"),
+              Path("site/archive/index.html"),
+              Path("site/search/index.html"),
+          )
+          for required_path in required_paths:
+              if not required_path.is_file():
+                  raise SystemExit(f"generated page is missing: {required_path}")
           for paper in report.papers:
+              detail_path = Path("site/papers") / paper.ranked.paper.source / paper.ranked.paper.canonical_id / "index.html"
+              if not detail_path.is_file():
+                  raise SystemExit(f"paper detail is missing: {detail_path}")
               gallery = paper.figure_gallery
               if gallery is None:
                   continue

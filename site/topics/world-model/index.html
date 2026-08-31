@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>世界模型（World Model）</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-08-30 18:02</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>世界模型（World Model）</h1>
+<p class="lede">动态预测、视频生成、世界模拟与物理交互建模。</p>    <div class="stats" aria-label="长期档案统计">
+      <div class="stat"><strong>9</strong>当前页面论文</div>
+      <div class="stat"><strong>43</strong>长期论文</div>
+      <div class="stat"><strong>7</strong>稳定主题</div>
+      <div class="stat"><strong>15</strong>固定标签</div>
+      <div class="stat"><strong>22</strong>已有配图</div>
+    </div>
+  </header>
+
+  <section class="gallery-intro" aria-labelledby="gallery-title">
+    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">世界模型（World Model）长期档案</h2></div>
+    <p>来自全部月份归档的当前首选版本。</p>
+  </section>
+
+  <section data-explorer>
+    <div class="topic-shelves" role="group" aria-label="按研究主题筛选">
+      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>9 篇</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="world-model" aria-pressed="false" title="动态预测、视频生成、世界模拟与物理交互建模。"><strong>世界模型（World Model）</strong><span>9 篇 · 动态预测、视频生成、世界模拟与物理交互建模。</span></button>
+    </div>
+
+    <form class="explorer-controls" data-filter-form aria-label="筛选论文">
+      <label class="control control--query"><span>关键词</span><input type="search" name="q" maxlength="200" autocomplete="off" placeholder="标题、作者、方法、标签……" data-filter-query></label>
+      <label class="control"><span>编辑层级</span><select name="tier" data-filter-tier><option value="">全部层级</option><option value="deep_read">今日必读</option><option value="browse">值得浏览</option><option value="explore">探索发现</option></select></label>
+      <label class="control"><span>证据范围</span><select name="scope" data-filter-scope><option value="">全部范围</option><option value="full_text">全文级</option><option value="abstract">摘要级</option></select></label>
+      <label class="control"><span>最低相关性</span><select name="score" data-filter-score><option value="0">全部</option><option value="8">8 分以上</option><option value="9">9 分以上</option></select></label>
+      <label class="control"><span>论文配图</span><select name="figure" data-filter-figure><option value="">全部</option><option value="yes">已有原图</option><option value="no">暂无原图</option></select></label>
+      <div class="explorer-actions"><button type="button" data-expand-visible>展开结果</button><button type="button" data-collapse-visible>全部收起</button><button type="reset">重置</button></div>
+    </form>
+    <noscript><p class="noscript-notice">筛选功能需要启用 JavaScript；未启用时仍会显示全部论文。</p></noscript>
+    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">9</strong> 篇论文 <span class="active-tag" data-active-tag></span></p><p>标签有稳定永久网址，也可在当前画廊内继续筛选。</p></div>
+
+      <section class="tier-section" data-tier-section="deep_read">
+        <header class="tier-heading"><h2>今日必读</h2><p><span data-tier-count>2</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27406:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27406/v1/fig1-panel1.png"
+        alt="Figure 1：We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.27406v1/teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>全文级</span>
+      <span>相关性 10/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27406/">CLAP：跨具身视频世界模型作为零样本物理模拟器</a></h3>
+    <p class="original-title" lang="en">CLAP: Cross-Embodiment Video World Models are Zero-Shot Physical Simulators</p>
+    <p class="authors">Kechen Liu · Ola Shorinwa</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通用物理定律支配所有具身的时空动态，因此可以通过跨具身数据扩展学习可泛化的物理知识。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文突破单具身限制，提出跨具身视频世界模型，实现了零样本物理模拟，对具身智能和世界模型研究具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>跨具身视频世界模型</p>
+        <p><strong>模型原始标签：</strong>视频世界模型、跨具身学习、动作条件视频生成、零样本部署、物理模拟器</p>
+        <p><strong>第一单位：</strong>Princeton University</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27406">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27406">PDF ↗</a><a href="https://arxiv.org/html/2608.27406v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27406/v1/fig1-panel1.png"
+              alt="Figure 1：We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27406v1/teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27406v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27406/v1/fig2-panel1.png"
+              alt="Figure 2：CLAP CLAP reconciles disparate action spaces across human and robot morphologies to train high-fidelity cross-embodiment video models."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27406v1/clap_architecture.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> CLAP CLAP reconciles disparate action spaces across human and robot morphologies to train high-fidelity cross-embodiment video models.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27406v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>研究设定</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有动作条件视频模型局限于单一机器人具身，无法利用互联网规模的多异构视频数据，阻碍学习通用物理先验。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通用物理定律支配所有具身的时空动态，因此可以通过跨具身数据扩展学习可泛化的物理知识。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>不同机器人平台的动作表示差异大</li><li>人类视频通常缺乏动作标注</li><li>动作表示（如末端执行器位姿、语言、潜在动作）各有局限</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者分析动作表示的局限：端到端动作需要稠密标注，语言动作受限于文本分词精度，潜在动作需下游对齐。通过课程学习结合不同动作表示的优点。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>统一动作空间：使用端到端位姿、语言指令和潜在动作表示跨具身对齐</li><li>课程学习：先在大规模未标注视频上用潜在动作学习基础物理先验，再在端到端动作空间上微调实现零样本部署</li><li>少样本适应：通过少量样本适应新具身，建立单具身视频世界模型的新范式</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在DROID环境中，CLAP达到或超过SOTA单具身基线（如Ctrl-World）的性能</li><li>在Bridge环境中，训练了Bridge-Base基线，优于现有替代</li><li>在OXE-Mix异构混合数据中，CLAP-LAM和CLAP-CURR获得最高预测精度</li><li>通过推理时跨策略规划和强化学习策略微调，展示了真实世界任务的零样本泛化，提升了π0.5和MolmoAct-2等策略的性能</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>CLAP仍存在幻觉问题，与其他视频世界模型类似</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>与具身智能、世界模型、物理人工智能高度相关，直接涉及可执行动作生成、长时序预测和真实机器人评测，为视频世界模型作为物理模拟器提供了新范式。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>论文未提供具体的定量实验数据，且部分细节（如具体数字）未在摘要中明确，需参考全文。第一单位根据提供的机构信息推断，通讯作者未明确。</p>
+          <blockquote><strong>CLAP实现了跨具身动作条件视频生成：</strong>we introduce CLAP, a framework for cross-embodiment action-conditioned video generation capable of being trained on diverse, internet-scale videos across human and robotic agents.</blockquote>
+          <blockquote><strong>CLAP使用课程学习结合潜在动作和端到端动作：</strong>CLAP introduces a curriculum-based cross-embodiment learning recipe that first learns foundational physical priors across unlabeled video data using latent actions and subsequently grounds them in end-effector action spaces for zero-shot deployment to real-world tasks.</blockquote>
+          <blockquote><strong>CLAP达到或超过SOTA单具身视频模型：</strong>CLAP approaches or surpasses state-of-the-art single-embodiment video models in challenging environments like DROID</blockquote>
+          <blockquote><strong>CLAP存在幻觉问题：</strong>Despite its high prediction fidelity, CLAP is still prone to hallucinations, like other video world models.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27345:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27345/v1/fig1-panel1.png"
+        alt="Figure 1：One plausible future is not enough. A single rollout from a video generation model can appear physically plausible, yet repeated rollouts from the same initial observation and action may reveal a probabilistically unaligned world: outcomes concentrate on a narrow subset of futures instead of matching the valid stochastic support. PAWBench evaluates this induced distribution or support over repeated futures, rather than judging a model by one sampled video."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.27345v1/one_plausible_future.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> One plausible future is not enough. A single rollout from a video generation model can appear physically plausible, yet repeated rollouts from the same initial observation and action may reveal a probabilistically unaligned world: outcomes concentrate on a narrow subset of futures instead of matching the valid stochastic support. PAWBench evaluates this induced distribution or support over repeated futures, rather than judging a model by one sampled video.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27345/">PAWBench：我们在概率对齐世界建模方面走了多远？</a></h3>
+    <p class="original-title" lang="en">PAWBench: How Far Are We from Probabilistically Aligned World Modeling?</p>
+    <p class="authors">Yuandong Pu · Le Zhuo · Sayak Paul · Gabriel Jorge Menezes · Avram {\DJ}or{\dj}evi\&#39;c · Shiyang Li · Yifan Zhou · Bin Fu · Wenlong Zhang · Junjun He · Yu Qiao · Yihao Liu · Jingbo Xing · Xi Chen</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>当前视频生成模型即使生成看似合理的视频，其输出分布也未能与参考分布对齐，且支持覆盖与概率校准是互补的失败模式。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>当前世界模型研究多关注生成质量，本文首次系统评估分布级对齐，揭示了现有模型的根本缺陷，为构建可靠世界模型提供了基准和方向。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视频生成模型作为世界模型的概率对齐评估</p>
+        <p><strong>模型原始标签：</strong>世界模型、视频生成、概率对齐、随机采样、基准测试、物理AI</p>
+        <p><strong>第一单位：</strong>上海交通大学</p>
+        <p><strong>通讯作者：</strong>Junjun He, Qiao Yu, Yihao Liu, Jinbo Xing, Xi Chen</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27345">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27345">PDF ↗</a><a href="https://arxiv.org/html/2608.27345v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27345/v1/fig1-panel1.png"
+              alt="Figure 1：One plausible future is not enough. A single rollout from a video generation model can appear physically plausible, yet repeated rollouts from the same initial observation and action may reveal a probabilistically unaligned world: outcomes concentrate on a narrow subset of futures instead of matching the valid stochastic support. PAWBench evaluates this induced distribution or support over repeated futures, rather than judging a model by one sampled video."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27345v1/one_plausible_future.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> One plausible future is not enough. A single rollout from a video generation model can appear physically plausible, yet repeated rollouts from the same initial observation and action may reveal a probabilistically unaligned world: outcomes concentrate on a narrow subset of futures instead of matching the valid stochastic support. PAWBench evaluates this induced distribution or support over repeated futures, rather than judging a model by one sampled video.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27345v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27345/v1/fig2-panel1.png"
+              alt="Figure 2：PAWBench scenario taxonomy. PAWBench covers eight mechanism groups under fixed initial observations and actions. PAW-Calibration contains calibrated probability scenarios with analytically specified reference distributions, while PAW-Coverage contains complex stochastic interactions evaluated by valid-support coverage. Each scenario fixes the source image and action prompt, then scores repeated model rollouts by their terminal outcomes."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27345v1/scenario_taxonomy.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> PAWBench scenario taxonomy. PAWBench covers eight mechanism groups under fixed initial observations and actions. PAW-Calibration contains calibrated probability scenarios with analytically specified reference distributions, while PAW-Coverage contains complex stochastic interactions evaluated by valid-support coverage. Each scenario fixes the source image and action prompt, then scores repeated model rollouts by their terminal outcomes.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27345v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>视频生成模型的分布级评估基准，包含50个场景和11个当前系统</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有评估只检验单个视频的合理性，不检验重复生成是否恢复正确的未来分布，因此需要量化当前视频生成器与概率对齐世界建模的差距。</dd>
+        <dt>Insight（核心洞察）</dt><dd>当前视频生成模型即使生成看似合理的视频，其输出分布也未能与参考分布对齐，且支持覆盖与概率校准是互补的失败模式。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有评估缺乏分布级标准</li><li>需要将重复视频生成转化为经验分布</li><li>区分因果与非因果干预对模型预测分布的影响</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将概率对齐形式化为世界模型的分布性标准，并引入基准和评估协议，通过重复滚动生成与参考分布比较，并检测支持覆盖与概率质量错配。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>形式化概率对齐为分布性要求，提出支持对齐和概率质量对齐两个层级</li><li>构建PAWBench，包含50个场景，分为PAW-Calibration和PAW-Coverage</li><li>引入PAWEval协议，将重复视频滚动转化为物理行为的经验分布</li><li>评估11个系统，发现没有模型能一致匹配参考概率并恢复全部有效行为</li><li>通过语言提示、初始噪声采样和微调探测分布重塑的可行性</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>50个场景，11个系统，无模型一致匹配参考概率且不遗漏有效结果</li><li>PAW-Calibration中，模型概率质量分配存在偏差；PAW-Coverage中，部分有效未来从不出现</li><li>因果干预下模型分布转移不充分或方向错误；非因果干预下干扰文本错误重定向概率质量</li><li>人类一致性：在888个视频比较中，PAWEval与人工标签在81.3%上完全一致，高共识子集上达91.7%</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>仅覆盖终端标签级别的分布，未扩展到更丰富的状态轨迹</li><li>评价方法依赖重复滚动，效率有限</li><li>基准局限于终端标签和物理场景，未涉及交互式或具身环境</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接关联世界模型和物理AI，提供评估世界模型概率对齐的方法，对具身智能的规划与决策有重要意义。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>材料仅提供摘要和部分全文，部分实验细节（如具体模型名称）可能不完整，但核心结论和基准描述已明确。</p>
+          <blockquote><strong>当前视频生成模型在概率对齐上不匹配参考分布：</strong>Across 50 scenarios and eleven current systems, no model consistently matches the reference probabilities while recovering the range of valid behaviors.</blockquote>
+          <blockquote><strong>现有评估仅关注单视频合理性：</strong>However, existing evaluations largely assess individual-video plausibility and do not test whether repeated generations recover the correct distribution.</blockquote>
+          <blockquote><strong>模型不能区分因果和非因果变化：</strong>model distributions shift incompletely or in the wrong direction under physically causal interventions. Under non-causal interventions, distractor text redirects probability mass despite an unchanged r</blockquote>
+          <blockquote><strong>部分模型在覆盖和校准上表现互补：</strong>A generator may expose many plausible outcomes while allocating probability mass incorrectly, or closely match the frequencies of observed outcomes while leaving valid alternatives unseen.</blockquote>
+          <blockquote><strong>人类一致性达到81.3%：</strong>Overall 888 722 81.3%</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="browse">
+        <header class="tier-heading"><h2>值得浏览</h2><p><span data-tier-count>5</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.25479:v2"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.25479/v2/fig1-panel1.png"
+        alt="Figure 1：Overview of 4 D S t r e a m C t r l capabilities. (a) Motion transfer . Given a source video (top row), we extract decomposed 4D representations of camera motion, human motion, and background structure (middle row), which transfer to a new scene via image style transfer while preserving the original 3D-consistent motion (bottom row). (b) Joint 4D control . 3D point tracks, camera parameters, and depth are unified into a single representation, enabling simultaneous control of camera and object motion. (c) Real-time streaming control . Users steer the generation with control signals ( e.g . , dragging objects) as the video streams. (d) Long-term video generation . Through causal autoregressive distillation, 4 D S t r e a m C t r l generates arbitrarily long, temporally coherent videos at a memory cost independent of length."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.25479v2/overview.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of 4 D S t r e a m C t r l capabilities. (a) Motion transfer . Given a source video (top row), we extract decomposed 4D representations of camera motion, human motion, and background structure (middle row), which transfer to a new scene via image style transfer while preserving the original 3D-consistent motion (bottom row). (b) Joint 4D control . 3D point tracks, camera parameters, and depth are unified into a single representation, enabling simultaneous control of camera and object motion. (c) Real-time streaming control . Users steer the generation with control signals ( e.g . , dragging objects) as the video streams. (d) Long-term video generation . Through causal autoregressive distillation, 4 D S t r e a m C t r l generates arbitrarily long, temporally coherent videos at a memory cost independent of length.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.25479/">4DStreamCtrl：具有在线4D控制的交互式视频生成</a></h3>
+    <p class="original-title" lang="en">4DStreamCtrl: Interactive Video Generation with Online 4D Control</p>
+    <p class="authors">Shiqian Li · Chenguo Lin · Zhiguang Liu · Yu Tang · Jiarong Ou · Rui Chen · Yixin Zhu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>相机运动、物体轨迹和深度可以统一为单一3D点轨迹表示，从而在一个前向过程中实现联合相机和物体控制、深度编辑和运动迁移。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作统一了多种控制模式并实现实时流式生成，在多模态控制、生成效率方面具有创新性，对将视频生成用于具身智能任务提供参考。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>交互式视频生成中的4D控制</p>
+        <p><strong>模型原始标签：</strong>4D控制、视频生成、流式生成、因果推理、扩散模型</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.25479">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.25479">PDF ↗</a><a href="https://arxiv.org/html/2608.25479v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.25479/v2/fig1-panel1.png"
+              alt="Figure 1：Overview of 4 D S t r e a m C t r l capabilities. (a) Motion transfer . Given a source video (top row), we extract decomposed 4D representations of camera motion, human motion, and background structure (middle row), which transfer to a new scene via image style transfer while preserving the original 3D-consistent motion (bottom row). (b) Joint 4D control . 3D point tracks, camera parameters, and depth are unified into a single representation, enabling simultaneous control of camera and object motion. (c) Real-time streaming control . Users steer the generation with control signals ( e.g . , dragging objects) as the video streams. (d) Long-term video generation . Through causal autoregressive distillation, 4 D S t r e a m C t r l generates arbitrarily long, temporally coherent videos at a memory cost independent of length."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.25479v2/overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of 4 D S t r e a m C t r l capabilities. (a) Motion transfer . Given a source video (top row), we extract decomposed 4D representations of camera motion, human motion, and background structure (middle row), which transfer to a new scene via image style transfer while preserving the original 3D-consistent motion (bottom row). (b) Joint 4D control . 3D point tracks, camera parameters, and depth are unified into a single representation, enabling simultaneous control of camera and object motion. (c) Real-time streaming control . Users steer the generation with control signals ( e.g . , dragging objects) as the video streams. (d) Long-term video generation . Through causal autoregressive distillation, 4 D S t r e a m C t r l generates arbitrarily long, temporally coherent videos at a memory cost independent of length.
+            <a class="figure-source" href="https://arxiv.org/html/2608.25479v2#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.25479/v2/fig2-panel1.png"
+              alt="Figure 2：Overview of 4 D S t r e a m C t r l . Geometric 3D tracks and text are encoded into 2D and depth motion features, fused with noisy latents in a DiT with 3D RoPE, then decoded to video for precise trajectory, camera, and motion control."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.25479v2/model.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Overview of 4 D S t r e a m C t r l . Geometric 3D tracks and text are encoded into 2D and depth motion features, fused with noisy latents in a DiT with 3D RoPE, then decoded to video for precise trajectory, camera, and motion control.
+            <a class="figure-source" href="https://arxiv.org/html/2608.25479v2#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>视频生成研究，涉及交互式、实时控制能力</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有视频生成控制方法只覆盖部分控制（相机、2D轨迹、离线3D），缺少同时支持3D一致性的相机和物体控制以及实时流式生成的统一方法。</dd>
+        <dt>Insight（核心洞察）</dt><dd>相机运动、物体轨迹和深度可以统一为单一3D点轨迹表示，从而在一个前向过程中实现联合相机和物体控制、深度编辑和运动迁移。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>控制方法碎片化</li><li>实时流式生成与3D一致性结合</li><li>训练数据缺乏3D运动监督</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过分析现有方法的局限性，提出统一表示和学习框架，并利用因果蒸馏实现流式生成，表明需要结合几何表示和高效推理。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>统一3D点轨迹表示，涵盖相机和物体运动及深度</li><li>从野外视频挖掘3D运动监督，构建OpenVidHD-Motion3D数据集</li><li>设计轻量级几何运动头接入预训练视频扩散模型</li><li>通过时间可分性蒸馏为因果流式学生模型，支持任意长度视频生成和固定内存</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在运动控制精度上超越了现有仅相机、2D和离线3D方法</li><li>实现了480p视频20 FPS的生成速度，并保持数百帧的时间一致性</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该研究直接涉及世界模型和物理人工智能，特别是交互式世界模型和闭环时空控制；其流式推理和效率优化与系统优化相关，同时对具身智能的实时视觉想象有潜在应用。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>未提供全文和具体实验细节，第一单位、通讯作者等未在摘要中说明，数据来源和局限不明。</p>
+          <blockquote><strong>现有方法无法同时支持相机和物体控制的3D一致性和实时流式生成：</strong>none combines 3D-consistent control of both camera and objects with real-time, streaming generation.</blockquote>
+          <blockquote><strong>所提出的统一表示和模型能够同时处理相机和物体控制、深度编辑和运动迁移：</strong>camera motion, object trajectories, and depth can be unified into a single 3D point-track representation, from which one model performs joint camera and object control, depth editing, and motion transfer in a single forward pass.</blockquote>
+          <blockquote><strong>模型实现20 FPS和数百帧的长时间一致性：</strong>4DStreamCtrl runs at 20 FPS on a single high-end GPU for 480p video and stays temporally coherent over hundreds of frames</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.24199:v2"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>世界模型（World Model）</span>
+        <strong>arXiv:2608.24199</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.24199/">NVIDIA Cosmos-H-Dreams：用于手术机器人的实时生成式物理仿真</a></h3>
+    <p class="original-title" lang="en">NVIDIA Cosmos-H-Dreams: Real-Time Generative Physics Simulation for Surgical Robotics</p>
+    <p class="authors">Javier Gamazo Tejero · Lukas Zbinden · Keyur Sheth · Raghavendra K M · Nadim Daher · Diego Granero Mara\~na · Filip Binkiewicz · Patrick Thornycroft · Mahdi Azizian · Sean D. Huver</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过将动作条件生成模型蒸馏为因果少步学生模型，并配备流式推理库，可以实现被动视频生成器转化为可控、实时的交互式手术仿真器。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提出首个交互式手术世界模型，支持实时人类和策略控制，展示了生成模型从被动到主动的转变，对研究生成式仿真、模型蒸馏和部署优化有重要参考。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>手术机器人的生成式世界模型与实时交互仿真</p>
+        <p><strong>模型原始标签：</strong>生成式仿真、世界模型、动作条件视频生成、模型蒸馏、实时推理</p>
+        <p><strong>第一单位：</strong>NVIDIA（依据作者信息推断，但摘要未明确；证据未提供）</p>
+        <p><strong>通讯作者：</strong>Sean D. Huver（依据作者列表最后一位，但未明确；证据未提供）</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.24199">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.24199">PDF ↗</a><a href="https://arxiv.org/html/2608.24199v2">官方 HTML ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>手术机器人仿真，支持人类和策略的实时闭环控制</dd>
+        <dt>Motivation（研究动机）</dt><dd>手术机器人的物理实验耗时、昂贵且难以复现，传统仿真器无法捕捉逼真外观和组织动力学，缺乏实时交互能力。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过将动作条件生成模型蒸馏为因果少步学生模型，并配备流式推理库，可以实现被动视频生成器转化为可控、实时的交互式手术仿真器。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>实时交互生成仿真缺乏</li><li>物理实验成本高且难以复现</li><li>传统仿真器无法捕捉逼真外观和变形组织动力学</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
+        <dt>Method（方法）</dt><dd><ul><li>基于多具身动作条件手术视频世界模型（Cosmos-H-Surgical-Simulator）微调特定任务数据。</li><li>采用教师到学生蒸馏（Self Forcing）将双向教师转化为因果少步学生模型。</li><li>部署基于NVIDIA FlashDreams流式推理库，实现实时推理。</li><li>控制器无关：任何输出机器人运动学流的接口均可驱动。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在单个NVIDIA RTX PRO 6000 Blackwell工作站GPU上实现约160推理FPS；演示了浏览器键盘（WebRTC）、Meta Quest（WebXR）、商用手术机器人控制台（CMR Versius）和学习策略的闭环控制。未提供更多定量结果。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>涉及世界模型生成可执行动作、长时序预测（视频序列）、实时控制、推理效率和真实机器人评测（手术机器人），与具身智能和物理人工智能直接相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>第一单位和通讯作者仅基于元数据推断，摘要未明确；实验细节有限，仅提供推理FPS和演示方式。</p>
+          <blockquote><strong>系统在单GPU上实现约160推理FPS：</strong>streams at $\sim$160 inference FPS on a single NVIDIA RTX PRO 6000 Blackwell workstation GPU</blockquote>
+          <blockquote><strong>这是首个交互式手术世界模型：</strong>To our knowledge, this is the first interactive surgical world model supporting live human and policy control.</blockquote>
+          <blockquote><strong>系统是控制器无关的：</strong>Cosmos-H-Dreams is controller-agnostic: any interface that emits a stream of robot kinematics can drive it.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.22294:v2"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>世界模型（World Model）</span>
+        <strong>arXiv:2608.22294</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 9/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.22294/">超越实例槽：用于物理交互规划的语义丰富世界模型</a></h3>
+    <p class="original-title" lang="en">Beyond Instance Slots: Semantically Rich World Models for Physical Interaction Planning</p>
+    <p class="authors">Juntao Cheng · Jingkai Wang · Yijun Shen · Xiansheng Chen · Zhiwei Yu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过引入五种功能角色（夹爪、目标、目标状态、关系、阶段）构建任务条件世界模型，将对象中心预测转化为语义界面，连接视觉动态与规划决策。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文创新性地将语义角色引入世界模型，解决实例槽缺乏任务上下文的问题，为物理交互规划提供新范式，对当前研究者理解世界模型在具身智能中的应用具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>语义丰富的世界模型用于物理交互规划</p>
+        <p><strong>模型原始标签：</strong>世界模型、物理交互、动作生成、任务规划、LIBERO、语义角色</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.22294">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.22294">PDF ↗</a><a href="https://arxiv.org/html/2608.22294v2">官方 HTML ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>具身智能仿真环境（LIBERO）中的物理交互规划任务</dd>
+        <dt>Motivation（研究动机）</dt><dd>传统世界模型预测未来观测或潜在特征，但规划导向的模型需要判断候选动作是否产生任务一致且保持关键关系的未来；实例级对象槽仅识别物体存在而忽略其在任务中的角色，缺乏任务上下文的语义信息。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过引入五种功能角色（夹爪、目标、目标状态、关系、阶段）构建任务条件世界模型，将对象中心预测转化为语义界面，连接视觉动态与规划决策。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>单体状态表示掩盖底层实体</li><li>标准实例槽缺乏任务角色语义</li><li>需要动作条件动态预测角色转变与细粒度语义</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者分析了传统世界模型与规划导向模型的差异，指出实例槽的不足，并提出角色绑定机制以映射任务特定角色。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出SR-WM世界模型，结构化为五个功能角色：gripper, target, goal, relation, phase</li><li>视觉实体编码器从预训练补丁特征提取软实体假设，分割掩码作为可选提议先验而非必需状态表示</li><li>角色绑定器将实体假设映射到任务特定角色</li><li>动作条件动态模型预测角色转变及细粒度语义，包括抓取/接触、谓词建立、关系保持、夹具状态和阶段变化</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在LIBERO所有四个仿真套件上进行评估，包括跨套件迁移、感知诊断和动作敏感性分析，实验结果支持模型有效性（摘要未提供具体数字）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>与具身智能和世界模型高度相关，该工作提出规划导向的世界模型，强调语义角色和动作条件动态预测，支撑可执行动作生成和长时序预测，与物理人工智能及世界动作模型关联紧密。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>由于仅基于摘要，缺少实验具体数字、作者单位、通讯作者等细节；技术实现细节和局限未完整呈现。</p>
+          <blockquote><strong>传统世界模型不可用于规划，因为需要预测任务一致未来并保持关键关系。：</strong>a planning-oriented model must answer a fundamentally different question: whether a candidate action produces a task consistent future while preserving essential relations.</blockquote>
+          <blockquote><strong>标准实例槽缺乏任务角色语义。：</strong>standard instance-level object slots merely identify what is present without specifying what role each entity plays in the task context.</blockquote>
+          <blockquote><strong>SR-WM以五个功能角色构建世界模型。：</strong>a task-conditioned world model structured around five functional roles: gripper, target, goal, relation, and phase.</blockquote>
+          <blockquote><strong>统一角色状态支持多候选动作生成等规划机制。：</strong>this unified role state grounds downstream multi-candidate action generation, stage-aware reranking, and violation-aware suffix resampling.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.22187:v2"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.22187/v2/fig1-panel1.png"
+        alt="Figure 1：The overview of our framework."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.22187v2/overview.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> The overview of our framework.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 9/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.22187/">行为世界生成：通过可控行为感知的结构化世界生成闭环动作模型与世界模拟器</a></h3>
+    <p class="original-title" lang="en">BehaviorWorldGen: Closing the Loop between Action Models and World Simulators via Controllable Behavior-Aware Structured World Generation</p>
+    <p class="authors">Jiaqi Wang · Zhuo Zhang · Haining Guan · Tingguang Zhou · Haowen Cui · ChuanYe Wang · Zhongyang Zhu · Yulong Zheng · Xuefeng Chen · Zhen Yang · Tianchen Deng · Feiyang Tan · Xiwu Chen · Hangning Zhou · Bo Dai · Lixia Shen · Xiyang Wang · Jiajun Zhu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过引入可解释的行为控制（元动作条件）生成多智能体轨迹，能够实现行为感知的结构化世界生成，从而改善世界模拟器生成数据的交互合理性和分布平衡性，进而提升动作模型的性能。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>本文提出了一个新颖的闭环框架，通过可控行为感知的世界生成解决模拟器生成数据不合理和不均衡的问题，对提升动作模型在交互场景下的性能有直接帮助，且其模块化接口设计使得方法可迁移至不同的动作模型和世界模拟器，对当前研究者具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>自动驾驶中的动作模型与世界模拟器闭环</p>
+        <p><strong>模型原始标签：</strong>具身智能、世界模型、动作模型、世界生成、交通流模型、交互场景、策略优化、闭环学习</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.22187">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.22187">PDF ↗</a><a href="https://arxiv.org/html/2608.22187v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.22187/v2/fig1-panel1.png"
+              alt="Figure 1：The overview of our framework."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.22187v2/overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> The overview of our framework.
+            <a class="figure-source" href="https://arxiv.org/html/2608.22187v2#S2.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.22187/v2/fig2-panel1.png"
+              alt="Figure 2：The overview of our DiT-based action-conditioned world model."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.22187v2/AWM0.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> The overview of our DiT-based action-conditioned world model.
+            <a class="figure-source" href="https://arxiv.org/html/2608.22187v2#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>自动驾驶场景，涉及多智能体交通交互和世界模型的生成与利用</dd>
+        <dt>Motivation（研究动机）</dt><dd>现代驾驶动作模型通过自改进闭环不断提升，但瓶颈在于世界模拟器无法生成行为上合理的周围主体响应，导致生成数据交互不真实且分布不均衡。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过引入可解释的行为控制（元动作条件）生成多智能体轨迹，能够实现行为感知的结构化世界生成，从而改善世界模拟器生成数据的交互合理性和分布平衡性，进而提升动作模型的性能。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>世界模拟器难以生成行为上合理的周围主体响应</li><li>生成数据交互不真实</li><li>生成数据分布不均衡</li><li>困难交互场景下的策略改进</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明作者如何具体分析问题。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出BehaviorWorldGen框架，通过可控行为感知的结构化世界生成来闭环动作模型与世界模拟器</li><li>核心组件为BehaviorFlow，一种元动作条件的交通流模型，注入可解释的行为控制并联合生成多智能体轨迹</li><li>BehaviorFlow实现指定的智能体行为，同时允许周围车辆响应自车及彼此</li><li>生成的轨迹由世界模拟器渲染为多视角观测，并与修正后的交互感知轨迹配对用于动作模型精炼</li><li>整个框架以结构化轨迹作为模块间接口，因此兼容多种动作模型和世界模拟器</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>实验涉及世界生成、场景外推和策略精炼，显示一致改进</li><li>最大收益集中在困难交互场景</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接涉及具身智能中的自动驾驶场景，核心是动作模型与世界模拟器的闭环学习，与世界模型和世界动作模型相关，同时涉及策略优化和系统级别的模块集成，与当前研究画像高度契合。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供具体实验数字、作者机构、代码地址等信息，因此这些字段只能标注为证据未提供；另外，第一作者和通讯作者的确认需要依赖更多材料，但摘要未给出。</p>
+          <blockquote><strong>现代驾驶动作模型在自改进闭环中提升，但世界模拟器无法生成行为上合理的周围主体响应：</strong>Modern driving action models are increasingly improved in a self-improvement loop, where a learned world simulator imagines future observations and the resulting data is fed back to refine the action model. However, the bottleneck of this loop lies in the simulators&#39; inability to generate behaviorally plausible responses by surrounding agents, making generated data both unrealistic in interaction and imbalanced in distribution.</blockquote>
+          <blockquote><strong>BehaviorWorldGen通过行为感知的结构化世界生成闭环动作模型与世界模拟器，其核心是BehaviorFlow：</strong>We introduce BehaviorWorldGen, a framework that closes the loop between action models and world simulators through controllable behavior-aware structured world generation. Its core component is BehaviorFlow, a meta-action-conditioned traffic-flow model that injects interpretable behavior controls and jointly generates multi-agent rollouts.</blockquote>
+          <blockquote><strong>BehaviorFlow能够实现指定行为并使周围车辆响应：</strong>BehaviorFlow realizes the specified agent behaviors while allowing surrounding vehicles to respond to the ego and to one another.</blockquote>
+          <blockquote><strong>生成的轨迹与世界模型生成的观测配对用于策略精炼：</strong>The resulting rollouts are rendered by a world simulator into realistic multi-view observations, which are paired with corrected interaction-aware trajectories for action-model refinement.</blockquote>
+          <blockquote><strong>该框架以结构化轨迹为接口，兼容多种模块：</strong>Since BehaviorWorldGen uses structured trajectories as the interface between its modules, it is compatible with diverse action models and world simulators.</blockquote>
+          <blockquote><strong>实验显示一致改进，最大收益在困难交互场景：</strong>Experiments on world generation, scene extrapolation, and policy refinement demonstrate consistent improvements, with the largest benefits concentrated on difficult interactive scenarios.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2606.09828:v2"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2606.09828/v2/fig1-panel1.png"
+        alt="Figure 1：Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2606.09828v2/teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2606.09828/">视频世界模型的潜在空间记忆</a></h3>
+    <p class="original-title" lang="en">Latent Spatial Memory for Video World Models</p>
+    <p class="authors">Weijie Wang · Haoyu Zhao · Yifan Yang · Feng Chen · Zeyu Zhang · Yefei He · Zicheng Duan · Donny Y. Chen · Yuqing Yang · Bohan Zhuang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将场景信息直接存储在扩散潜在空间，通过深度引导的反投影构建3D记忆，并直接在潜在空间进行视图合成，可避免像素空间重建的损失与开销。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作提出了世界模型中内存与效率的优化方案，且取得了显著加速和压缩效果，是视频世界模型迈向实时应用的重要一步，值得研究与系统优化结合。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视频世界模型中的潜在空间记忆与高效生成</p>
+        <p><strong>模型原始标签：</strong>视频世界模型、潜在空间、3D记忆、扩散模型、计算效率</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-06</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2606.09828">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2606.09828">PDF ↗</a><a href="https://arxiv.org/html/2606.09828v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2606.09828/v2/fig1-panel1.png"
+              alt="Figure 1：Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2606.09828v2/teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines.
+            <a class="figure-source" href="https://arxiv.org/html/2606.09828v2#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2606.09828/v2/fig2-panel1.png"
+              alt="Figure 2：Latent spatial memory vs. RGB point cloud based memory. (a): prior systems store memory in RGB point clouds and pay a render-and-encode round trip at every conditioning step. (b): latent spatial memory is stored in diffusion latent space and can be read through simple projections, eliminating the per-step pixel-space detour and shrinking the cache footprint by the squared VAE compression factor. (c): pipeline profiling shows that maintaining explicit memory is a major efficiency bottleneck."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2606.09828v2/concept.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Latent spatial memory vs. RGB point cloud based memory. (a): prior systems store memory in RGB point clouds and pay a render-and-encode round trip at every conditioning step. (b): latent spatial memory is stored in diffusion latent space and can be read through simple projections, eliminating the per-step pixel-space detour and shrinking the cache footprint by the squared VAE compression factor. (c): pipeline profiling shows that maintaining explicit memory is a major efficiency bottleneck.
+            <a class="figure-source" href="https://arxiv.org/html/2606.09828v2#S1.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>视频世界模型的生成任务，关注3D空间一致性与高效推理</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有视频世界模型依赖RGB空间的显式点云记忆，造成计算开销大且存在信息损失，因此需要直接在潜在空间构建记忆以提升效率与保真度。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将场景信息直接存储在扩散潜在空间，通过深度引导的反投影构建3D记忆，并直接在潜在空间进行视图合成，可避免像素空间重建的损失与开销。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有显式点云记忆需要重复渲染和VAE编码，计算昂贵</li><li>像素空间往返导致潜在表征的丰富特征丢失</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
+        <dt>Method（方法）</dt><dd><ul><li>在扩散潜在空间中构建持久3D缓存，存储场景信息</li><li>通过深度引导的反投影将潜在token提升至3D空间</li><li>通过潜在空间扭曲合成新视图，统一记忆构建与查询过程</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>相比显式3D基线，端到端视频生成速度提升最高10.57倍，内存占用减少55倍</li><li>在WorldScore上达到最先进性能，在RealEstate10K上重建质量强</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该研究直接面向视频世界模型，通过潜在空间记忆提升生成效率和空间一致性，对于物理AI和具身智能中长时序预测有直接参考价值，其高效推理设计也与系统优化相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>由于只提供了摘要，第一单位、通讯作者、方法细节和局限均无法确认；实验具体设置和归一化方法未说明，相关性分数基于摘要判断。</p>
+          <blockquote><strong>现有视频世界模型依赖显式点云记忆，存在计算开销和信息损失：</strong>Video world models that maintain 3D spatial consistency across generated frames typically rely on explicit point cloud memory constructed in RGB space. This design is both computationally expensive, requiring repeated rendering and VAE encoding, and inherently lossy, as the round trip through pixel space discards rich features of the learned latent representation.</blockquote>
+          <blockquote><strong>潜在空间记忆可直接在扩散潜在空间存储场景信息，避免像素空间重建：</strong>we introduce \emph{latent spatial memory} for video world models, a persistent 3D cache that stores scene information directly in the diffusion latent space, avoiding pixel-space reconstruction.</blockquote>
+          <blockquote><strong>提出Mirage框架，通过深度引导反投影和潜在空间扭曲构建并查询记忆：</strong>we propose Mirage, a latent-space spatial memory framework that constructs the memory by lifting latent tokens into 3D via depth-guided back-projection and queries it by synthesizing novel views through direct latent-space warping.</blockquote>
+          <blockquote><strong>实验显示加速和内存减少：</strong>Experiments show that latent spatial memory achieves up to \textbf{10.57}$\times$ faster end-to-end video generation and \textbf{55}$\times$ reduction in memory footprint relative to explicit 3D baselines.</blockquote>
+          <blockquote><strong>利用扩散模型几何先验达到最先进性能：</strong>Leveraging the geometric prior of the diffusion model, Mirage attains state-of-the-art performance on WorldScore and strong reconstruction quality on RealEstate10K.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="explore">
+        <header class="tier-heading"><h2>探索发现</h2><p><span data-tier-count>2</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27367:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>世界模型（World Model）</span>
+        <strong>arXiv:2608.27367</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27367/">持续性容量增长：基于任务复杂度的宽度与深度扩展以用于JEPA世界模型中的视觉Transformer编码器</a></h3>
+    <p class="original-title" lang="en">Successive Capacity Growth: Task-Complexity-Driven Width and Depth Expansion for Vision Transformer Encoders in JEPA World Models</p>
+    <p class="authors">Frederik Berenz</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>JEPA世界模型的编码器可以不必预分配最大容量，而是随任务需求逐步增长（宽度或深度），通过函数保持的扩展和回滚机制，既能匹配或超越固定小基线，又比固定大模型参数效率高得多，同时保持表示质量。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对于研究者而言，该工作提出了一种新颖的容量增长策略，突破了固定架构的局限，在保持或提升预测性能的同时大幅提高参数效率，对资源受限的机器人应用和边缘设备有潜在价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>JEPA世界模型的动态自适应编码器设计</p>
+        <p><strong>模型原始标签：</strong>JEPA、世界模型、视觉Transformer、动态架构、计算效率、模型增长、自监督学习</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27367">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27367">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>世界模型中的视觉编码器，通过测试-验证机制进行宽度和深度扩展，在60维多物体动力学和2D导航等任务上评估。</dd>
+        <dt>Motivation（研究动机）</dt><dd>传统的JEPA世界模型使用固定大小的ViT编码器，对简单任务过度配置，对复杂任务配置不足，且注意力头存在冗余。目标是通过按任务需求逐步增长编码器容量，避免预分配最大容量，提高计算和数据效率。</dd>
+        <dt>Insight（核心洞察）</dt><dd>JEPA世界模型的编码器可以不必预分配最大容量，而是随任务需求逐步增长（宽度或深度），通过函数保持的扩展和回滚机制，既能匹配或超越固定小基线，又比固定大模型参数效率高得多，同时保持表示质量。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>如何在不破坏学习表示的前提下动态调整编码器容量</li><li>如何避免扩展时出现的表示坍塌</li><li>如何确保扩展的决策是有效且可回滚的</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者提出任务无关的测试-验证机制，利用函数保持的扩展安全尝试架构变化，若预测损失不改善则回滚，以此驱动增长。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>从最小编码器开始（1头、2层、283K参数）</li><li>宽度扩展：增加注意力头以提升低层语义容量；深度扩展：增加Transformer块以提升高阶语义抽象</li><li>任务无关的测试-验证机制，使用函数保持的扩展进行安全试验，若预测损失不改善则回滚</li><li>引入Sketched Isotropic Gaussian Regularizer (SIGReg)确保语义维度的统计独立性和与预测目标对齐，防止坍塌</li><li>通过预测损失改进与否来决定扩展类型（宽度或深度）</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在60维多物体动力学任务中，SCG自然触发深度扩展，预测损失比固定小基线改善20.3%，参数效率比放大到固定大模型高56倍</li><li>在2D导航任务中，单次宽度扩展比固定大模型改善23%</li><li>在三个复杂度递增的环境中，自适应编码器匹配或超过固定小基线，零假阳性扩展，位精确函数保持（比例=1.0，绝对差=0.0）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接涉及世界模型（JEPA）的编码器设计，通过动态架构增长优化模型容量，提升计算和数据效率，与物理人工智能中高效世界模型构建和系统优化相关，同时与具身智能中需要实时处理复杂动态场景相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>本次分析仅基于摘要，未提供全文细节，对方法内部机制、实验设置（如具体任务细节）和通信作者信息只能推断。</p>
+          <blockquote><strong>SCG方法从最小编码器开始，逐步扩展宽度或深度。：</strong>Successive Capacity Growth (SCG), a method that starts from a minimal encoder (1 head, 2 layers, 283K parameters) and grows incrementally in width (adding attention heads for low-level semantic capacity) or depth (adding transformer blocks for higher-order semantic abstraction)</blockquote>
+          <blockquote><strong>SIGReg防止表示坍塌，保持语义维度独立。：</strong>The Sketched Isotropic Gaussian Regularizer (SIGReg) ensures that all learned semantic dimensions remain statistically independent and aligned with the predictive objective, preventing collapse even as the architecture grows.</blockquote>
+          <blockquote><strong>SCG在60维多物体任务上改善了预测损失，参数效率更高。：</strong>On a 60-dimensional multi-object dynamics task, SCG naturally triggers depth expansion, improving prediction loss by 20.3% over the fixed small baseline with 56 times greater parameter efficiency than scaling to the fixed large model</blockquote>
+          <blockquote><strong>SCG在多个环境中匹配或超过固定小基线，无误扩展，函数保持精确。：</strong>Across all three tested environments of increasing complexity, the adaptive encoder matches or exceeds the fixed small baseline, with zero false-positive expansions and bit-exact function preservation (ratio = 1.0, absolute difference = 0.0).</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26766:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>世界模型（World Model）</span>
+        <strong>arXiv:2608.26766</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26766/">MeshPriorDiT：用于动作条件布料动力学的层次建模</a></h3>
+    <p class="original-title" lang="en">MeshPriorDiT: Hierarchical Modeling for Action-Conditioned Cloth Dynamics</p>
+    <p class="authors">Zihang Wang · Jianming Hu · Shang Su · Hao Huang · Mengkai Shi · Jun Gao · Shuo Feng</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将布料运动分解为结构化的网格先验和生成残差，通过层次建模结合GNN的拓扑感知和扩散模型的生成能力，实现既局部合理又全局协调的动力学预测。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文提出了一种结合GNN和扩散模型的层次动力学建模方法，显著提升了动作条件布料预测的准确性，对于具身智能中的长时序预测和物理交互学习具有启发意义。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>动作条件布料动力学预测</p>
+        <p><strong>模型原始标签：</strong>布料动力学、层次建模、图神经网络、扩散模型、动作条件预测、机器人操纵</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26766">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26766">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>机器人布料操纵任务中的动作条件轨迹预测，涉及15步自回归滚动预测</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有的布料动力学预测方法要么基于网格的GNN捕获局部物理响应但受限于消息传递范围，要么基于Transformer的模型捕获长程交互但缺乏显式材料连接，难以兼顾局部几何和长程协调。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将布料运动分解为结构化的网格先验和生成残差，通过层次建模结合GNN的拓扑感知和扩散模型的生成能力，实现既局部合理又全局协调的动力学预测。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>局部物理响应的精确建模</li><li>长距离协调（拓扑远距离区域之间）</li><li>自回归滚动预测中的误差累积</li><li>隐式材料连接导致的局部拓扑学习困难</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过将预测任务分解为网格先验和生成残差，利用GNN提供拓扑先验，利用DiT生成残差，并利用材料邻接体重标定和解码协调相邻顶点，以解决两类模型各自的局限性。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>使用动作条件网格GNN预测多步顶点位移，生成参考轨迹，该轨迹尊重材料拓扑和抓取约束</li><li>基于历史状态、计划动作和网格先验，使用Residual DiT结合条件流动匹配生成残差运动</li><li>生成的残差进一步使用材料邻接体重标定和解码，以协调相邻顶点之间的修正</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在三个布料操纵任务上评估15步自回归滚动预测</li><li>平均Global MSE相较GNN-Only基线降低43.42%</li><li>平均Global MSE相较DiT-DDPM基线降低75.03%</li><li>Edge-strain MSE与GNN-Only相当</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该研究直接涉及具身智能中的布料操纵，动作条件动力学预测为视觉语言动作模型中的物理交互提供基础，与物理人工智能中的动力学建模和世界模型相关，同时体现了生成模型在机器人系统中的应用。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅基于摘要，缺乏方法细节和限制说明；且对象为布料动力学，与典型的视觉语言动作模型有距离，但方法论可迁移。</p>
+          <blockquote><strong>现有方法存在局部与全局建模的权衡：</strong>Existing approaches largely follow two paradigms. Mesh-based GNNs capture local physical responses through material connectivity. However, their finite message-passing range limits coordination between topologically distant regions, while autoregressive rollouts tend to accumulate prediction errors. Transformer-based dynamics models capture long-range interactions through global attention, but often operate without explicit material connectivity and must learn local topological responses directly from data.</blockquote>
+          <blockquote><strong>MeshPriorDiT通过分解先验和残差实现层次建模：</strong>We propose MeshPriorDiT, a hierarchical dynamics model that decomposes future cloth motion into a structured mesh prior and a generative residual.</blockquote>
+          <blockquote><strong>实验表明显著优于基线：</strong>Averaged over the three tasks, MeshPriorDiT reduces average Global MSE by 43.42% relative to the GNN-Only baseline and by 75.03% relative to the DiT-DDPM baseline, while maintaining a favorable Edge-strain MSE comparable to that of GNN-Only.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、标签、层级或相关性条件。</p>
+    <script type="application/json" data-paper-json>[{"id":"arxiv:2608.27406:v1","topic":"world-model","tier":"deep_read","scope":"full_text","score":10,"hasFigure":true,"tags":["action-prediction","generalist-robotics","physical-ai","robot-manipulation","simulation","world-modeling"],"searchText":"世界模型(world model) 跨具身视频世界模型 视频世界模型 跨具身学习 动作条件视频生成 零样本部署 物理模拟器 clap: cross-embodiment video world models are zero-shot physical simulators clap:跨具身视频世界模型作为零样本物理模拟器 kechen liu ola shorinwa state-of-the-art action-conditioned video models are typically restricted to a single robot embodiment, preventing them from leveraging the vast corpus of heterogeneous video data that contains rich signals for learning generalizable physics. to bridge this gap, we introduce clap, a framework for cross-embodiment action-conditioned video generation capable of being trained on diverse, internet-scale videos across human and robotic agents. clap is grounded in the insight that universal physical laws govern spatiotemporal dynamics regardless of the actor. however, cross-embodiment learning is non-trivial because action representations vary sharply across robot platforms and are typically absent in human videos. clap addresses this fundamental challenge through the following core contributions. first, clap reconciles disparate action spaces using end-effector poses, language instructions, and latent actions. second, to resolve their individual limitations, clap introduces a curriculum-based cross-embodiment learning recipe that first learns foundational physical priors across unlabeled video data using latent actions and subsequently grounds them in end-effector action spaces for zero-shot deployment to real-world tasks. crucially, clap approaches or surpasses state-of-the-art single-embodiment video models in challenging environments like droid. these performance advantages compound via few-shot adaptation to establish a novel paradigm for training single-embodiment video world models. ultimately, clap delivers the most comprehensive suite of action-conditioned video world models to date - spanning diverse action-conditioning spaces (end-effector, language, and latent) and robot morphologies (including cross-embodiment, droid, bridge, bimanual yam robots, and g1 humanoids). we open-source all code and models. project website at https://omni-clap.github.io . 研究设定 现有动作条件视频模型局限于单一机器人具身,无法利用互联网规模的多异构视频数据,阻碍学习通用物理先验。 通用物理定律支配所有具身的时空动态,因此可以通过跨具身数据扩展学习可泛化的物理知识。 作者分析动作表示的局限:端到端动作需要稠密标注,语言动作受限于文本分词精度,潜在动作需下游对齐。通过课程学习结合不同动作表示的优点。 统一动作空间:使用端到端位姿、语言指令和潜在动作表示跨具身对齐 课程学习:先在大规模未标注视频上用潜在动作学习基础物理先验,再在端到端动作空间上微调实现零样本部署 少样本适应:通过少量样本适应新具身,建立单具身视频世界模型的新范式 在droid环境中,clap达到或超过sota单具身基线(如ctrl-world)的性能 在bridge环境中,训练了bridge-base基线,优于现有替代 在oxe-mix异构混合数据中,clap-lam和clap-curr获得最高预测精度 通过推理时跨策略规划和强化学习策略微调,展示了真实世界任务的零样本泛化,提升了π0.5和molmoact-2等策略的性能 与具身智能、世界模型、物理人工智能高度相关,直接涉及可执行动作生成、长时序预测和真实机器人评测,为视频世界模型作为物理模拟器提供了新范式。 该论文突破单具身限制,提出跨具身视频世界模型,实现了零样本物理模拟,对具身智能和世界模型研究具有重要参考价值。"},{"id":"arxiv:2608.27367:v1","topic":"world-model","tier":"explore","scope":"abstract","score":8,"hasFigure":false,"tags":["efficient-inference","navigation","physical-ai","world-modeling"],"searchText":"世界模型(world model) jepa世界模型的动态自适应编码器设计 jepa 世界模型 视觉transformer 动态架构 计算效率 模型增长 自监督学习 successive capacity growth: task-complexity-driven width and depth expansion for vision transformer encoders in jepa world models 持续性容量增长:基于任务复杂度的宽度与深度扩展以用于jepa世界模型中的视觉transformer编码器 frederik berenz joint-embedding predictive architectures (jepas) for world modeling typically employ fixed-size vision transformer encoders that are over-provisioned for simple tasks and under-provisioned for complex ones, with significant redundancy across attention heads. we propose successive capacity growth (scg), a method that starts from a minimal encoder (1 head, 2 layers, 283k parameters) and grows incrementally in width (adding attention heads for low-level semantic capacity) or depth (adding transformer blocks for higher-order semantic abstraction), driven by a task-agnostic test-and-verify mechanism that exploits function-preserving expansion to safely trial architectural changes and roll back if they do not improve prediction loss. the sketched isotropic gaussian regularizer (sigreg) ensures that all learned semantic dimensions remain statistically independent and aligned with the predictive objective, preventing collapse even as the architecture grows. on a 60-dimensional multi-object dynamics task, scg naturally triggers depth expansion, improving prediction loss by 20.3% over the fixed small baseline with 56 times greater parameter efficiency than scaling to the fixed large model; on a 2d navigation task, a single width expansion yields even an 23% improvement over the fixed large model. across all three tested environments of increasing complexity, the adaptive encoder matches or exceeds the fixed small baseline, with zero false-positive expansions and bit-exact function preservation (ratio = 1.0, absolute difference = 0.0). the take-away is that jepa world model encoders need not be pre-allocated at maximum capacity - they can grow successively as the task demands, achieving significant compute and data efficiency while maintaining representation quality. 世界模型中的视觉编码器,通过测试-验证机制进行宽度和深度扩展,在60维多物体动力学和2d导航等任务上评估。 传统的jepa世界模型使用固定大小的vit编码器,对简单任务过度配置,对复杂任务配置不足,且注意力头存在冗余。目标是通过按任务需求逐步增长编码器容量,避免预分配最大容量,提高计算和数据效率。 jepa世界模型的编码器可以不必预分配最大容量,而是随任务需求逐步增长(宽度或深度),通过函数保持的扩展和回滚机制,既能匹配或超越固定小基线,又比固定大模型参数效率高得多,同时保持表示质量。 作者提出任务无关的测试-验证机制,利用函数保持的扩展安全尝试架构变化,若预测损失不改善则回滚,以此驱动增长。 从最小编码器开始(1头、2层、283k参数) 宽度扩展:增加注意力头以提升低层语义容量;深度扩展:增加transformer块以提升高阶语义抽象 任务无关的测试-验证机制,使用函数保持的扩展进行安全试验,若预测损失不改善则回滚 引入sketched isotropic gaussian regularizer (sigreg)确保语义维度的统计独立性和与预测目标对齐,防止坍塌 通过预测损失改进与否来决定扩展类型(宽度或深度) 在60维多物体动力学任务中,scg自然触发深度扩展,预测损失比固定小基线改善20.3%,参数效率比放大到固定大模型高56倍 在2d导航任务中,单次宽度扩展比固定大模型改善23% 在三个复杂度递增的环境中,自适应编码器匹配或超过固定小基线,零假阳性扩展,位精确函数保持(比例=1.0,绝对差=0.0) 该论文直接涉及世界模型(jepa)的编码器设计,通过动态架构增长优化模型容量,提升计算和数据效率,与物理人工智能中高效世界模型构建和系统优化相关,同时与具身智能中需要实时处理复杂动态场景相关。 对于研究者而言,该工作提出了一种新颖的容量增长策略,突破了固定架构的局限,在保持或提升预测性能的同时大幅提高参数效率,对资源受限的机器人应用和边缘设备有潜在价值。"},{"id":"arxiv:2608.27345:v1","topic":"world-model","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["action-prediction","evaluation","physical-ai","simulation","world-modeling"],"searchText":"世界模型(world model) 视频生成模型作为世界模型的概率对齐评估 世界模型 视频生成 概率对齐 随机采样 基准测试 物理ai pawbench: how far are we from probabilistically aligned world modeling? pawbench:我们在概率对齐世界建模方面走了多远? yuandong pu le zhuo sayak paul gabriel jorge menezes avram {\\dj}or{\\dj}evi\\'c shiyang li yifan zhou bin fu wenlong zhang junjun he yu qiao yihao liu jingbo xing xi chen recent video generation models are increasingly framed as world models. many physical processes can unfold in more than one valid way. therefore, a world model should reproduce not only a plausible trajectory, but also the distribution of possible behaviors under the same initial observation and action. we call this distribution-level requirement probabilistic alignment. however, existing evaluations largely assess individual-video plausibility and do not test whether repeated generations recover the correct distribution. this raises a central question: how far are current video generators from probabilistically aligned world modeling? to answer it, we formalize probabilistic alignment as a distributional criterion for world models and introduce pawbench, a benchmark for evaluating video generators as stochastic samplers of world dynamics. we further introduce paweval, an outcome-level protocol that converts repeated video rollouts into empirical distributions over possible physical behaviors. across 50 scenarios and eleven current systems, no model consistently matches the reference probabilities while recovering the range of valid behaviors. having established this gap, we test whether language prompts, initial noise sampling, or model training can reshape the model's predictive distribution. we believe our work can serve as a foundation for future efforts to move towards probabilistically aligned world modeling. 视频生成模型的分布级评估基准,包含50个场景和11个当前系统 现有评估只检验单个视频的合理性,不检验重复生成是否恢复正确的未来分布,因此需要量化当前视频生成器与概率对齐世界建模的差距。 当前视频生成模型即使生成看似合理的视频,其输出分布也未能与参考分布对齐,且支持覆盖与概率校准是互补的失败模式。 作者将概率对齐形式化为世界模型的分布性标准,并引入基准和评估协议,通过重复滚动生成与参考分布比较,并检测支持覆盖与概率质量错配。 形式化概率对齐为分布性要求,提出支持对齐和概率质量对齐两个层级 构建pawbench,包含50个场景,分为paw-calibration和paw-coverage 引入paweval协议,将重复视频滚动转化为物理行为的经验分布 评估11个系统,发现没有模型能一致匹配参考概率并恢复全部有效行为 通过语言提示、初始噪声采样和微调探测分布重塑的可行性 50个场景,11个系统,无模型一致匹配参考概率且不遗漏有效结果 paw-calibration中,模型概率质量分配存在偏差;paw-coverage中,部分有效未来从不出现 因果干预下模型分布转移不充分或方向错误;非因果干预下干扰文本错误重定向概率质量 人类一致性:在888个视频比较中,paweval与人工标签在81.3%上完全一致,高共识子集上达91.7% 直接关联世界模型和物理ai,提供评估世界模型概率对齐的方法,对具身智能的规划与决策有重要意义。 当前世界模型研究多关注生成质量,本文首次系统评估分布级对齐,揭示了现有模型的根本缺陷,为构建可靠世界模型提供了基准和方向。"},{"id":"arxiv:2608.26766:v1","topic":"world-model","tier":"explore","scope":"abstract","score":8,"hasFigure":false,"tags":["action-prediction","physical-ai","policy-learning","robot-manipulation"],"searchText":"世界模型(world model) 动作条件布料动力学预测 布料动力学 层次建模 图神经网络 扩散模型 动作条件预测 机器人操纵 meshpriordit: hierarchical modeling for action-conditioned cloth dynamics meshpriordit:用于动作条件布料动力学的层次建模 zihang wang jianming hu shang su hao huang mengkai shi jun gao shuo feng action-conditioned cloth dynamics prediction requires both locally plausible deformation and long-range coordination. existing approaches largely follow two paradigms. mesh-based gnns capture local physical responses through material connectivity. however, their finite message-passing range limits coordination between topologically distant regions, while autoregressive rollouts tend to accumulate prediction errors. transformer-based dynamics models capture long-range interactions through global attention, but often operate without explicit material connectivity and must learn local topological responses directly from data. we propose meshpriordit, a hierarchical dynamics model that decomposes future cloth motion into a structured mesh prior and a generative residual. an action-conditioned mesh gnn first predicts multi-step vertex displacements, yielding a reference trajectory that respects material topology and grasp constraints. conditioned on historical states, planned actions, and the mesh prior, a residual dit then uses conditional flow matching to jointly generate the residual motion not captured by the prior. the generated residual is further rescaled and decoded using material adjacency to coordinate corrections across neighboring vertices. we evaluate meshpriordit on 15-step autoregressive rollouts across three cloth manipulation tasks. averaged over the three tasks, meshpriordit reduces average global mse by 43.42% relative to the gnn-only baseline and by 75.03% relative to the dit-ddpm baseline, while maintaining a favorable edge-strain mse comparable to that of gnn-only. 机器人布料操纵任务中的动作条件轨迹预测,涉及15步自回归滚动预测 现有的布料动力学预测方法要么基于网格的gnn捕获局部物理响应但受限于消息传递范围,要么基于transformer的模型捕获长程交互但缺乏显式材料连接,难以兼顾局部几何和长程协调。 将布料运动分解为结构化的网格先验和生成残差,通过层次建模结合gnn的拓扑感知和扩散模型的生成能力,实现既局部合理又全局协调的动力学预测。 作者通过将预测任务分解为网格先验和生成残差,利用gnn提供拓扑先验,利用dit生成残差,并利用材料邻接体重标定和解码协调相邻顶点,以解决两类模型各自的局限性。 使用动作条件网格gnn预测多步顶点位移,生成参考轨迹,该轨迹尊重材料拓扑和抓取约束 基于历史状态、计划动作和网格先验,使用residual dit结合条件流动匹配生成残差运动 生成的残差进一步使用材料邻接体重标定和解码,以协调相邻顶点之间的修正 在三个布料操纵任务上评估15步自回归滚动预测 平均global mse相较gnn-only基线降低43.42% 平均global mse相较dit-ddpm基线降低75.03% edge-strain mse与gnn-only相当 该研究直接涉及具身智能中的布料操纵,动作条件动力学预测为视觉语言动作模型中的物理交互提供基础,与物理人工智能中的动力学建模和世界模型相关,同时体现了生成模型在机器人系统中的应用。 该论文提出了一种结合gnn和扩散模型的层次动力学建模方法,显著提升了动作条件布料预测的准确性,对于具身智能中的长时序预测和物理交互学习具有启发意义。"},{"id":"arxiv:2608.25479:v2","topic":"world-model","tier":"browse","scope":"abstract","score":8,"hasFigure":true,"tags":["action-prediction","simulation","world-modeling"],"searchText":"世界模型(world model) 交互式视频生成中的4d控制 4d控制 视频生成 流式生成 因果推理 扩散模型 4dstreamctrl: interactive video generation with online 4d control 4dstreamctrl:具有在线4d控制的交互式视频生成 shiqian li chenguo lin zhiguang liu yu tang jiarong ou rui chen yixin zhu generative video models now synthesize footage nearly indistinguishable from reality. their promise as interactive tools hinges on fine-grained control of how objects and the camera move over time, yet each existing approach captures only part of this: camera-parameter methods steer the viewpoint but cannot move objects, 2d-trajectory methods act in the image plane and ignore depth and occlusion, and recent 3d methods add geometry but run only offline at a fixed length. in particular, none combines 3d-consistent control of both camera and objects with real-time, streaming generation. here we show that camera motion, object trajectories, and depth can be unified into a single 3d point-track representation, from which one model performs joint camera and object control, depth editing, and motion transfer in a single forward pass. to learn this interface at scale, we mine in-the-wild video for 3d motion supervision, yielding openvidhd-motion3d, and encode it with a lightweight geometric motion head that plugs into a pretrained video diffusion model. because this encoder is temporally separable, we distill the model into a causal streaming student that generates arbitrarily long video in four denoising steps at memory independent of length. this unified design surpasses prior camera-only, 2d, and offline-3d methods in motion-control precision while covering modalities they address only in isolation. 4dstreamctrl runs at 20 fps on a single high-end gpu for 480p video and stays temporally coherent over hundreds of frames, enabling, to our knowledge, interactive 4d-controllable streaming generation for the first time. more broadly, grounding generation in explicit 3d geometry with efficient causal inference points toward interactive world models with closed-loop spatiotemporal control, from controllable simulators to real-time visual imagination for embodied agents. 视频生成研究,涉及交互式、实时控制能力 现有视频生成控制方法只覆盖部分控制(相机、2d轨迹、离线3d),缺少同时支持3d一致性的相机和物体控制以及实时流式生成的统一方法。 相机运动、物体轨迹和深度可以统一为单一3d点轨迹表示,从而在一个前向过程中实现联合相机和物体控制、深度编辑和运动迁移。 作者通过分析现有方法的局限性,提出统一表示和学习框架,并利用因果蒸馏实现流式生成,表明需要结合几何表示和高效推理。 统一3d点轨迹表示,涵盖相机和物体运动及深度 从野外视频挖掘3d运动监督,构建openvidhd-motion3d数据集 设计轻量级几何运动头接入预训练视频扩散模型 通过时间可分性蒸馏为因果流式学生模型,支持任意长度视频生成和固定内存 在运动控制精度上超越了现有仅相机、2d和离线3d方法 实现了480p视频20 fps的生成速度,并保持数百帧的时间一致性 该研究直接涉及世界模型和物理人工智能,特别是交互式世界模型和闭环时空控制;其流式推理和效率优化与系统优化相关,同时对具身智能的实时视觉想象有潜在应用。 该工作统一了多种控制模式并实现实时流式生成,在多模态控制、生成效率方面具有创新性,对将视频生成用于具身智能任务提供参考。"},{"id":"arxiv:2608.24199:v2","topic":"world-model","tier":"browse","scope":"abstract","score":8,"hasFigure":false,"tags":["action-prediction","physical-ai","simulation","world-modeling"],"searchText":"世界模型(world model) 手术机器人的生成式世界模型与实时交互仿真 生成式仿真 世界模型 动作条件视频生成 模型蒸馏 实时推理 nvidia cosmos-h-dreams: real-time generative physics simulation for surgical robotics nvidia cosmos-h-dreams:用于手术机器人的实时生成式物理仿真 javier gamazo tejero lukas zbinden keyur sheth raghavendra k m nadim daher diego granero mara\\~na filip binkiewicz patrick thornycroft mahdi azizian sean d. huver generative simulation for surgical robotics still lacks real-time interaction. physical-robot experiments, often involving animal or cadaver labs, are time-consuming, costly, and difficult to reproduce, while classical simulators struggle to capture photorealistic appearance and deformable-tissue dynamics. we address this gap with cosmos-h-dreams, an integrated real-time surgical world-model system combining an action-conditioned generative model, a teacher-to-student distillation recipe, and a deployment stack built on the nvidia flashdreams streaming-inference library. starting from cosmos-h-surgical-simulator, a multi-embodiment action-conditioned surgical video world model fine-tuned on the large-scale open-h-embodiment corpus, we post-train this checkpoint on embodiment- and procedure-specific data. by distilling the resulting bidirectional teacher into a causal, few-step student with self forcing, we turn a passive video generator into a controllable surgical simulator that streams at $\\sim$160 inference fps on a single nvidia rtx pro 6000 blackwell workstation gpu. crucially, cosmos-h-dreams is controller-agnostic: any interface that emits a stream of robot kinematics can drive it. we demonstrate live control through a browser keyboard over webrtc, a meta quest headset over webxr, a commercial surgical robot console such as cmr surgical's versius, and learned policies operating in closed loop. to our knowledge, this is the first interactive surgical world model supporting live human and policy control. human operators and policies alike can act inside the synthesized world and observe the consequences in real time. we release cosmos-h-dreams as an open surgical simulation system, providing a common foundation for surgical education, scalable synthetic data generation, and future intraoperative decision support. 手术机器人仿真,支持人类和策略的实时闭环控制 手术机器人的物理实验耗时、昂贵且难以复现,传统仿真器无法捕捉逼真外观和组织动力学,缺乏实时交互能力。 通过将动作条件生成模型蒸馏为因果少步学生模型,并配备流式推理库,可以实现被动视频生成器转化为可控、实时的交互式手术仿真器。 材料未说明 基于多具身动作条件手术视频世界模型(cosmos-h-surgical-simulator)微调特定任务数据。 采用教师到学生蒸馏(self forcing)将双向教师转化为因果少步学生模型。 部署基于nvidia flashdreams流式推理库,实现实时推理。 控制器无关:任何输出机器人运动学流的接口均可驱动。 在单个nvidia rtx pro 6000 blackwell工作站gpu上实现约160推理fps;演示了浏览器键盘(webrtc)、meta quest(webxr)、商用手术机器人控制台(cmr versius)和学习策略的闭环控制。未提供更多定量结果。 涉及世界模型生成可执行动作、长时序预测(视频序列)、实时控制、推理效率和真实机器人评测(手术机器人),与具身智能和物理人工智能直接相关。 提出首个交互式手术世界模型,支持实时人类和策略控制,展示了生成模型从被动到主动的转变,对研究生成式仿真、模型蒸馏和部署优化有重要参考。"},{"id":"arxiv:2608.22294:v2","topic":"world-model","tier":"browse","scope":"abstract","score":9,"hasFigure":false,"tags":["action-prediction","evaluation","physical-ai","simulation","world-modeling"],"searchText":"世界模型(world model) 语义丰富的世界模型用于物理交互规划 世界模型 物理交互 动作生成 任务规划 libero 语义角色 beyond instance slots: semantically rich world models for physical interaction planning 超越实例槽:用于物理交互规划的语义丰富世界模型 juntao cheng jingkai wang yijun shen xiansheng chen zhiwei yu world models for physical interaction are typically trained to predict future observations or latent features; however, a planning-oriented model must answer a fundamentally different question: whether a candidate action produces a task consistent future while preserving essential relations. monolithic state representations obscure the underlying entities, while standard instance-level object slots merely identify what is present without specifying what role each entity plays in the task context. to bridge this gap, we present the semantically rich world model (sr-wm), a task-conditioned world model structured around five functional roles: gripper, target, goal, relation, and phase. within sr-wm, a visual entity encoder extracts soft entity hypotheses from pretrained patch features, allowing segmentation masks to serve as optional proposal priors without mandating them as required state representations or inference inputs. a role binder subsequently maps these hypotheses to task-specific roles, while an action conditioned dynamics model predicts role transitions alongside fine-grained semantics, including grasp/contact, predicate establishment, relation preservation, fixture state, and phase change. crucially, this unified role state grounds downstream multi-candidate action generation, stage-aware reranking, and violation-aware suffix resampling. our comprehensive evaluation protocol spans all four libero simulation suites, cross-suite transfer, perception diagnostics, and action sensitivity analysis. ultimately, this formulation transforms object-centric prediction into a semantic interface linking visual dynamics with planning-oriented decision making 具身智能仿真环境(libero)中的物理交互规划任务 传统世界模型预测未来观测或潜在特征,但规划导向的模型需要判断候选动作是否产生任务一致且保持关键关系的未来;实例级对象槽仅识别物体存在而忽略其在任务中的角色,缺乏任务上下文的语义信息。 通过引入五种功能角色(夹爪、目标、目标状态、关系、阶段)构建任务条件世界模型,将对象中心预测转化为语义界面,连接视觉动态与规划决策。 作者分析了传统世界模型与规划导向模型的差异,指出实例槽的不足,并提出角色绑定机制以映射任务特定角色。 提出sr-wm世界模型,结构化为五个功能角色:gripper, target, goal, relation, phase 视觉实体编码器从预训练补丁特征提取软实体假设,分割掩码作为可选提议先验而非必需状态表示 角色绑定器将实体假设映射到任务特定角色 动作条件动态模型预测角色转变及细粒度语义,包括抓取/接触、谓词建立、关系保持、夹具状态和阶段变化 在libero所有四个仿真套件上进行评估,包括跨套件迁移、感知诊断和动作敏感性分析,实验结果支持模型有效性(摘要未提供具体数字) 与具身智能和世界模型高度相关,该工作提出规划导向的世界模型,强调语义角色和动作条件动态预测,支撑可执行动作生成和长时序预测,与物理人工智能及世界动作模型关联紧密。 该论文创新性地将语义角色引入世界模型,解决实例槽缺乏任务上下文的问题,为物理交互规划提供新范式,对当前研究者理解世界模型在具身智能中的应用具有重要参考价值。"},{"id":"arxiv:2608.22187:v2","topic":"world-model","tier":"browse","scope":"abstract","score":9,"hasFigure":true,"tags":["action-prediction","simulation","world-modeling"],"searchText":"世界模型(world model) 自动驾驶中的动作模型与世界模拟器闭环 具身智能 世界模型 动作模型 世界生成 交通流模型 交互场景 策略优化 闭环学习 behaviorworldgen: closing the loop between action models and world simulators via controllable behavior-aware structured world generation 行为世界生成:通过可控行为感知的结构化世界生成闭环动作模型与世界模拟器 jiaqi wang zhuo zhang haining guan tingguang zhou haowen cui chuanye wang zhongyang zhu yulong zheng xuefeng chen zhen yang tianchen deng feiyang tan xiwu chen hangning zhou bo dai lixia shen xiyang wang jiajun zhu modern driving action models are increasingly improved in a self-improvement loop, where a learned world simulator imagines future observations and the resulting data is fed back to refine the action model. however, the bottleneck of this loop lies in the simulators' inability to generate behaviorally plausible responses by surrounding agents, making generated data both unrealistic in interaction and imbalanced in distribution. we introduce behaviorworldgen, a framework that closes the loop between action models and world simulators through controllable behavior-aware structured world generation. its core component is behaviorflow, a meta-action-conditioned traffic-flow model that injects interpretable behavior controls and jointly generates multi-agent rollouts. behaviorflow realizes the specified agent behaviors while allowing surrounding vehicles to respond to the ego and to one another. the resulting rollouts are rendered by a world simulator into realistic multi-view observations, which are paired with corrected interaction-aware trajectories for action-model refinement. since behaviorworldgen uses structured trajectories as the interface between its modules, it is compatible with diverse action models and world simulators. experiments on world generation, scene extrapolation, and policy refinement demonstrate consistent improvements, with the largest benefits concentrated on difficult interactive scenarios. 自动驾驶场景,涉及多智能体交通交互和世界模型的生成与利用 现代驾驶动作模型通过自改进闭环不断提升,但瓶颈在于世界模拟器无法生成行为上合理的周围主体响应,导致生成数据交互不真实且分布不均衡。 通过引入可解释的行为控制(元动作条件)生成多智能体轨迹,能够实现行为感知的结构化世界生成,从而改善世界模拟器生成数据的交互合理性和分布平衡性,进而提升动作模型的性能。 材料未说明作者如何具体分析问题。 提出behaviorworldgen框架,通过可控行为感知的结构化世界生成来闭环动作模型与世界模拟器 核心组件为behaviorflow,一种元动作条件的交通流模型,注入可解释的行为控制并联合生成多智能体轨迹 behaviorflow实现指定的智能体行为,同时允许周围车辆响应自车及彼此 生成的轨迹由世界模拟器渲染为多视角观测,并与修正后的交互感知轨迹配对用于动作模型精炼 整个框架以结构化轨迹作为模块间接口,因此兼容多种动作模型和世界模拟器 实验涉及世界生成、场景外推和策略精炼,显示一致改进 最大收益集中在困难交互场景 该论文直接涉及具身智能中的自动驾驶场景,核心是动作模型与世界模拟器的闭环学习,与世界模型和世界动作模型相关,同时涉及策略优化和系统级别的模块集成,与当前研究画像高度契合。 本文提出了一个新颖的闭环框架,通过可控行为感知的世界生成解决模拟器生成数据不合理和不均衡的问题,对提升动作模型在交互场景下的性能有直接帮助,且其模块化接口设计使得方法可迁移至不同的动作模型和世界模拟器,对当前研究者具有重要参考价值。"},{"id":"arxiv:2606.09828:v2","topic":"world-model","tier":"browse","scope":"abstract","score":8,"hasFigure":true,"tags":["efficient-inference","simulation","world-modeling"],"searchText":"世界模型(world model) 视频世界模型中的潜在空间记忆与高效生成 视频世界模型 潜在空间 3d记忆 扩散模型 计算效率 latent spatial memory for video world models 视频世界模型的潜在空间记忆 weijie wang haoyu zhao yifan yang feng chen zeyu zhang yefei he zicheng duan donny y. chen yuqing yang bohan zhuang video world models that maintain 3d spatial consistency across generated frames typically rely on explicit point cloud memory constructed in rgb space. this design is both computationally expensive, requiring repeated rendering and vae encoding, and inherently lossy, as the round trip through pixel space discards rich features of the learned latent representation. in this paper, we introduce \\emph{latent spatial memory} for video world models, a persistent 3d cache that stores scene information directly in the diffusion latent space, avoiding pixel-space reconstruction. building on this, we propose mirage, a latent-space spatial memory framework that constructs the memory by lifting latent tokens into 3d via depth-guided back-projection and queries it by synthesizing novel views through direct latent-space warping. this unified formulation eliminates both the information loss of pixel-space reconstruction and the computational burden of repeated encoding and rendering. experiments show that latent spatial memory achieves up to \\textbf{10.57}$\\times$ faster end-to-end video generation and \\textbf{55}$\\times$ reduction in memory footprint relative to explicit 3d baselines. leveraging the geometric prior of the diffusion model, mirage attains state-of-the-art performance on worldscore and strong reconstruction quality on realestate10k. 视频世界模型的生成任务,关注3d空间一致性与高效推理 现有视频世界模型依赖rgb空间的显式点云记忆,造成计算开销大且存在信息损失,因此需要直接在潜在空间构建记忆以提升效率与保真度。 将场景信息直接存储在扩散潜在空间,通过深度引导的反投影构建3d记忆,并直接在潜在空间进行视图合成,可避免像素空间重建的损失与开销。 材料未说明 在扩散潜在空间中构建持久3d缓存,存储场景信息 通过深度引导的反投影将潜在token提升至3d空间 通过潜在空间扭曲合成新视图,统一记忆构建与查询过程 相比显式3d基线,端到端视频生成速度提升最高10.57倍,内存占用减少55倍 在worldscore上达到最先进性能,在realestate10k上重建质量强 该研究直接面向视频世界模型,通过潜在空间记忆提升生成效率和空间一致性,对于物理ai和具身智能中长时序预测有直接参考价值,其高效推理设计也与系统优化相关。 该工作提出了世界模型中内存与效率的优化方案,且取得了显著加速和压缩效果,是视频世界模型迈向实时应用的重要一步,值得研究与系统优化结合。"}]</script>
+  </section>
+
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>

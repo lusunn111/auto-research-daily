@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>通用机器人</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-08-30 18:02</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>通用机器人</h1>
+<p class="lede">通用策略、跨任务与跨具身泛化。</p>    <div class="stats" aria-label="长期档案统计">
+      <div class="stat"><strong>3</strong>当前页面论文</div>
+      <div class="stat"><strong>43</strong>长期论文</div>
+      <div class="stat"><strong>7</strong>稳定主题</div>
+      <div class="stat"><strong>15</strong>固定标签</div>
+      <div class="stat"><strong>22</strong>已有配图</div>
+    </div>
+  </header>
+
+  <section class="gallery-intro" aria-labelledby="gallery-title">
+    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">通用机器人标签档案</h2></div>
+    <p>标签由固定别名表归一化，不直接使用模型自由文本生成网址。</p>
+  </section>
+
+  <section data-explorer>
+    <div class="topic-shelves" role="group" aria-label="按研究主题筛选">
+      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>3 篇</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="vla" aria-pressed="false" title="视觉、语言与机器人动作的统一建模、适配与安全。"><strong>视觉语言动作（VLA）</strong><span>1 篇 · 视觉、语言与机器人动作的统一建模、适配与安全。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="wam" aria-pressed="false" title="联合建模世界状态、动作与未来转移的具身模型。"><strong>世界动作模型（WAM）</strong><span>1 篇 · 联合建模世界状态、动作与未来转移的具身模型。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="world-model" aria-pressed="false" title="动态预测、视频生成、世界模拟与物理交互建模。"><strong>世界模型（World Model）</strong><span>1 篇 · 动态预测、视频生成、世界模拟与物理交互建模。</span></button>
+    </div>
+
+    <form class="explorer-controls" data-filter-form aria-label="筛选论文">
+      <label class="control control--query"><span>关键词</span><input type="search" name="q" maxlength="200" autocomplete="off" placeholder="标题、作者、方法、标签……" data-filter-query></label>
+      <label class="control"><span>编辑层级</span><select name="tier" data-filter-tier><option value="">全部层级</option><option value="deep_read">今日必读</option><option value="browse">值得浏览</option><option value="explore">探索发现</option></select></label>
+      <label class="control"><span>证据范围</span><select name="scope" data-filter-scope><option value="">全部范围</option><option value="full_text">全文级</option><option value="abstract">摘要级</option></select></label>
+      <label class="control"><span>最低相关性</span><select name="score" data-filter-score><option value="0">全部</option><option value="8">8 分以上</option><option value="9">9 分以上</option></select></label>
+      <label class="control"><span>论文配图</span><select name="figure" data-filter-figure><option value="">全部</option><option value="yes">已有原图</option><option value="no">暂无原图</option></select></label>
+      <div class="explorer-actions"><button type="button" data-expand-visible>展开结果</button><button type="button" data-collapse-visible>全部收起</button><button type="reset">重置</button></div>
+    </form>
+    <noscript><p class="noscript-notice">筛选功能需要启用 JavaScript；未启用时仍会显示全部论文。</p></noscript>
+    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">3</strong> 篇论文 <span class="active-tag" data-active-tag></span></p><p>标签有稳定永久网址，也可在当前画廊内继续筛选。</p></div>
+
+      <section class="tier-section" data-tier-section="deep_read">
+        <header class="tier-heading"><h2>今日必读</h2><p><span data-tier-count>3</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27406:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27406/v1/fig1-panel1.png"
+        alt="Figure 1：We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.27406v1/teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>全文级</span>
+      <span>相关性 10/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27406/">CLAP：跨具身视频世界模型作为零样本物理模拟器</a></h3>
+    <p class="original-title" lang="en">CLAP: Cross-Embodiment Video World Models are Zero-Shot Physical Simulators</p>
+    <p class="authors">Kechen Liu · Ola Shorinwa</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通用物理定律支配所有具身的时空动态，因此可以通过跨具身数据扩展学习可泛化的物理知识。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文突破单具身限制，提出跨具身视频世界模型，实现了零样本物理模拟，对具身智能和世界模型研究具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>跨具身视频世界模型</p>
+        <p><strong>模型原始标签：</strong>视频世界模型、跨具身学习、动作条件视频生成、零样本部署、物理模拟器</p>
+        <p><strong>第一单位：</strong>Princeton University</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27406">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27406">PDF ↗</a><a href="https://arxiv.org/html/2608.27406v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27406/v1/fig1-panel1.png"
+              alt="Figure 1：We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27406v1/teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> We introduce CLAP , a cross-embodiment learning framework that trains action-conditioned video models on diverse human and robot video data to learn fundamental physical priors that are critical for fine-grained dynamics prediction.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27406v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27406/v1/fig2-panel1.png"
+              alt="Figure 2：CLAP CLAP reconciles disparate action spaces across human and robot morphologies to train high-fidelity cross-embodiment video models."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27406v1/clap_architecture.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> CLAP CLAP reconciles disparate action spaces across human and robot morphologies to train high-fidelity cross-embodiment video models.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27406v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>研究设定</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有动作条件视频模型局限于单一机器人具身，无法利用互联网规模的多异构视频数据，阻碍学习通用物理先验。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通用物理定律支配所有具身的时空动态，因此可以通过跨具身数据扩展学习可泛化的物理知识。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>不同机器人平台的动作表示差异大</li><li>人类视频通常缺乏动作标注</li><li>动作表示（如末端执行器位姿、语言、潜在动作）各有局限</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者分析动作表示的局限：端到端动作需要稠密标注，语言动作受限于文本分词精度，潜在动作需下游对齐。通过课程学习结合不同动作表示的优点。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>统一动作空间：使用端到端位姿、语言指令和潜在动作表示跨具身对齐</li><li>课程学习：先在大规模未标注视频上用潜在动作学习基础物理先验，再在端到端动作空间上微调实现零样本部署</li><li>少样本适应：通过少量样本适应新具身，建立单具身视频世界模型的新范式</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在DROID环境中，CLAP达到或超过SOTA单具身基线（如Ctrl-World）的性能</li><li>在Bridge环境中，训练了Bridge-Base基线，优于现有替代</li><li>在OXE-Mix异构混合数据中，CLAP-LAM和CLAP-CURR获得最高预测精度</li><li>通过推理时跨策略规划和强化学习策略微调，展示了真实世界任务的零样本泛化，提升了π0.5和MolmoAct-2等策略的性能</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>CLAP仍存在幻觉问题，与其他视频世界模型类似</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>与具身智能、世界模型、物理人工智能高度相关，直接涉及可执行动作生成、长时序预测和真实机器人评测，为视频世界模型作为物理模拟器提供了新范式。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>论文未提供具体的定量实验数据，且部分细节（如具体数字）未在摘要中明确，需参考全文。第一单位根据提供的机构信息推断，通讯作者未明确。</p>
+          <blockquote><strong>CLAP实现了跨具身动作条件视频生成：</strong>we introduce CLAP, a framework for cross-embodiment action-conditioned video generation capable of being trained on diverse, internet-scale videos across human and robotic agents.</blockquote>
+          <blockquote><strong>CLAP使用课程学习结合潜在动作和端到端动作：</strong>CLAP introduces a curriculum-based cross-embodiment learning recipe that first learns foundational physical priors across unlabeled video data using latent actions and subsequently grounds them in end-effector action spaces for zero-shot deployment to real-world tasks.</blockquote>
+          <blockquote><strong>CLAP达到或超过SOTA单具身视频模型：</strong>CLAP approaches or surpasses state-of-the-art single-embodiment video models in challenging environments like DROID</blockquote>
+          <blockquote><strong>CLAP存在幻觉问题：</strong>Despite its high prediction fidelity, CLAP is still prone to hallucinations, like other video world models.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26103:v2"
+  data-topic="wam"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26103/v2/fig1-panel1.png"
+        alt="Figure 1：Overview of Zero-WAM. Zero-WAM predicts future robot videos and executable actions from an in-context human video prompt or a language instruction. The human video instructions are generated at scale from task-sampled robot trajectories, alongside a task-balanced robotic video-action pre-training corpus. We validate the effectiveness of Zero-WAM on unseen simulated tasks and complex real-world tasks."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.26103v2/framework_v1.0.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of Zero-WAM. Zero-WAM predicts future robot videos and executable actions from an in-context human video prompt or a language instruction. The human video instructions are generated at scale from task-sampled robot trajectories, alongside a task-balanced robotic video-action pre-training corpus. We validate the effectiveness of Zero-WAM on unseen simulated tasks and complex real-world tasks.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界动作模型（WAM）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26103/">零样本世界动作建模：从人类视频中进行上下文任务泛化</a></h3>
+    <p class="original-title" lang="en">Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization</p>
+    <p class="authors">Jiaming Zhou · Qihang Zhang · Gangwei Xu · Cunxin Fan · Yujie Zhao · Ruilin Wang · Yiming Luo · Shuai Yang · Xing Zhu · Yujun Shen · Junwei Liang · Yinghao Xu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>利用人类视频作为上下文任务说明，通过因果视频动作模型实现零样本跨任务泛化；通过数据生成流水线解决人机配对数据稀缺，并通过未来块预测目标抑制捷径学习。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>本文首次将人类视频作为上下文任务说明用于零样本泛化，提出了数据生成流水线和训练目标，对实现通用机器人策略具有重要价值，且提供了仿真和真实实验证据。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/data/" data-tag-filter="data">具身数据</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-learning/" data-tag-filter="robot-learning">机器人学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>零样本跨任务泛化的机器人操作，基于上下文世界动作建模</p>
+        <p><strong>模型原始标签：</strong>世界动作模型、上下文学习、人类视频、机器人操作、因果视频动作模型、任务泛化</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26103">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26103">PDF ↗</a><a href="https://arxiv.org/html/2608.26103v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26103/v2/fig1-panel1.png"
+              alt="Figure 1：Overview of Zero-WAM. Zero-WAM predicts future robot videos and executable actions from an in-context human video prompt or a language instruction. The human video instructions are generated at scale from task-sampled robot trajectories, alongside a task-balanced robotic video-action pre-training corpus. We validate the effectiveness of Zero-WAM on unseen simulated tasks and complex real-world tasks."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.26103v2/framework_v1.0.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of Zero-WAM. Zero-WAM predicts future robot videos and executable actions from an in-context human video prompt or a language instruction. The human video instructions are generated at scale from task-sampled robot trajectories, alongside a task-balanced robotic video-action pre-training corpus. We validate the effectiveness of Zero-WAM on unseen simulated tasks and complex real-world tasks.
+            <a class="figure-source" href="https://arxiv.org/html/2608.26103v2#Sx1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26103/v2/fig2-panel1.png"
+              alt="Figure 2：Data construction and in-context human video generation. Top: Task-diverse VA data provide task-balanced robotic video-action pre-training data, while HumanGen contains Pre-train ICL (External), Pre-train ICL (In-house), Simulation ICL, and Real-world ICL pairs. Bottom: the in-context human video generation pipeline converts task-sampled robot videos into human video instructions."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.26103v2/data_combine_v1.1.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Data construction and in-context human video generation. Top: Task-diverse VA data provide task-balanced robotic video-action pre-training data, while HumanGen contains Pre-train ICL (External), Pre-train ICL (In-house), Simulation ICL, and Real-world ICL pairs. Bottom: the in-context human video generation pipeline converts task-sampled robot videos into human video instructions.
+            <a class="figure-source" href="https://arxiv.org/html/2608.26103v2#S2.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>机器人操作，仿真（RoboTwin 2.0）和真实世界部署</dd>
+        <dt>Motivation（研究动机）</dt><dd>语言指令不足以完全指定操作任务，人类视频提供了丰富的视觉线索；零样本跨任务泛化可类比于大语言模型中的上下文学习，将泛化问题转化为任务指定问题。</dd>
+        <dt>Insight（核心洞察）</dt><dd>利用人类视频作为上下文任务说明，通过因果视频动作模型实现零样本跨任务泛化；通过数据生成流水线解决人机配对数据稀缺，并通过未来块预测目标抑制捷径学习。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>大规模、任务丰富的人机配对数据稀缺且人工采集昂贵。</li><li>策略可能学习到捷径，忽略上下文视频提示。</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将零样本泛化视为任务指定问题，主张人类视频是自然且丰富的任务说明；通过自动流水线生成人机配对数据，并提出IFP目标强制模型从视频提示中提取任务信息。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出Zero-WAM，一个因果视频动作模型，以人类视频作为上下文条件，预测未来的机器人视频和可执行动作。</li><li>构建HumanGen数据集：从任务采样的机器人轨迹自动转换为语义匹配的人类视频指令，生成74.2K对、8.6K任务。</li><li>设计in-context future chunk prediction (IFP)目标，通过预测远期视频块来抑制捷径学习，鼓励模型利用视频提示。</li><li>使用任务级采样构建Task-diverse VA预训练语料，平衡任务多样性。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在RoboTwin 2.0仿真中，Zero-WAM在7个未见任务上的平均成功率达到47.0%，比最强视频动作基线（LingBot-VA）提高29.5个百分点。</li><li>在真实世界评估中，Zero-WAM遵循人类视频指令，泛化到未见任务配置，包括多物体场景、长时序操作和精细插入。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>本文直接提出世界动作模型（WAM）的概念，将世界模型与动作生成结合，通过上下文学习实现零样本泛化，与具身智能、世界动作模型和系统优化（数据效率、任务泛化）高度相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>作者身份和单位未在摘要中提供；具体技术细节来自全文节选，但部分内容不完整；实验数字来自摘要和引用的表格。</p>
+          <blockquote><strong>Zero-WAM通过上下文人类视频指导执行未见任务。：</strong>We present Zero-WAM, a causal video-action model that executes unseen tasks by following in-context human video guidance.</blockquote>
+          <blockquote><strong>自动流水线生成了HumanGen数据集。：</strong>we propose an automatic pipeline that converts task-sampled robot trajectories into semantically matched human videos, yielding HumanGen, a dataset of 74.2K human-robot ICL pairs across 8.6K tasks.</blockquote>
+          <blockquote><strong>IFP目标抑制了捷径学习。：</strong>we further introduce an in-context future chunk prediction (IFP) objective that suppresses shortcuts learned from seen tasks and forces the policy to draw task information from the video prompt.</blockquote>
+          <blockquote><strong>仿真实验结果。：</strong>On seven unseen tasks in RoboTwin 2.0 simulation, Zero-WAM achieves a 47.0% average success rate, an absolute improvement of 29.5 percentage points over the strongest video-action baseline.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.25757:v2"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.25757/v2/fig1-panel1.png"
+        alt="Figure 1：Explainable, brain-inspired multi-timescale organization of LM-X . Return-to-go (RTG), event-to-go (ETG), and variance explicitly expose progress, intermediate intention, and local action reliability. RTG conditions the event head; its event representation and RTG then condition fine-grained action generation, while uncertainty is estimated inside the action expert. Arrows denote computational conditioning, not anatomical correspondences."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.25757v2/polished_algorithm_overview_v18.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Explainable, brain-inspired multi-timescale organization of LM-X . Return-to-go (RTG), event-to-go (ETG), and variance explicitly expose progress, intermediate intention, and local action reliability. RTG conditions the event head; its event representation and RTG then condition fine-grained action generation, while uncertainty is estimated inside the action expert. Arrows denote computational conditioning, not anatomical correspondences.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.25757/">LM-X：面向通用机器人操作的可解释动作建模——进度、事件与不确定性预测</a></h3>
+    <p class="original-title" lang="en">LM-X: Explainable Action Modeling with Progress, Event, and Uncertainty Prediction for Generalist Robot Manipulation</p>
+    <p class="authors">Jin Lou · Zhiyuan Jing · Andong Chen · Xupeng Wang · Yuan Xu · Yuexuan Li · Xingdong Zhu · Zhijie Zhu · Yingwei Ji · Wenpeng Nie · Yufei Liu · Boyang Xing · Lei Jiang · Yan Cui · Ying Chu · Jingxuan Zhu · Jingyi Li · Liangliang Chen · Jinyan Liu · Zhiqi Song · Jidong Zhang · Hongming Li · Yuchen Zhu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>借鉴生物感觉运动控制的多时间尺度预测状态，显式监督并联合预训练return-to-go、event-to-go和异方差动作不确定性，使解释内生于控制过程，同时提升任务性能。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文首次在大规模通用VLA中联合预训练异方差动作不确定性，并显式建模任务进度和事件意图，使解释内生于控制，显著提升仿真与真实机器人任务成功率，为可解释、可靠具身智能提供实证基础。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>具身智能中的可解释视觉-语言-动作（VLA）建模</p>
+        <p><strong>模型原始标签：</strong>视觉语言动作模型、异方差不确定性、进度预测、事件预测、流匹配、真实机器人评测</p>
+        <p><strong>第一单位：</strong>Humanoid Robot (Shanghai) Co., Ltd.</p>
+        <p><strong>通讯作者：</strong>Hongming Li, Yuchen Zhu</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.25757">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.25757">PDF ↗</a><a href="https://arxiv.org/html/2608.25757v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.25757/v2/fig1-panel1.png"
+              alt="Figure 1：Explainable, brain-inspired multi-timescale organization of LM-X . Return-to-go (RTG), event-to-go (ETG), and variance explicitly expose progress, intermediate intention, and local action reliability. RTG conditions the event head; its event representation and RTG then condition fine-grained action generation, while uncertainty is estimated inside the action expert. Arrows denote computational conditioning, not anatomical correspondences."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.25757v2/polished_algorithm_overview_v18.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Explainable, brain-inspired multi-timescale organization of LM-X . Return-to-go (RTG), event-to-go (ETG), and variance explicitly expose progress, intermediate intention, and local action reliability. RTG conditions the event head; its event representation and RTG then condition fine-grained action generation, while uncertainty is estimated inside the action expert. Arrows denote computational conditioning, not anatomical correspondences.
+            <a class="figure-source" href="https://arxiv.org/html/2608.25757v2#S2.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.25757/v2/fig2-panel1.png"
+              alt="Figure 2：Precision part insertion on Astribot S1. From left to right, the robot picks up the part from the blue triangular region, inserts its 3 mm × \times 0.5 mm tip into the slot (blue circles), refines the pose to align three screw tips with the corresponding holes (red circles), and completes the assembly. The sequence couples discrete semantic transitions with millimeter-scale contact."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.25757v2/precise_insert_whole.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Precision part insertion on Astribot S1. From left to right, the robot picks up the part from the blue triangular region, inserts its 3 mm × \times 0.5 mm tip into the slot (blue circles), refines the pose to align three screw tips with the corresponding holes (red circles), and completes the assembly. The sequence couples discrete semantic transitions with millimeter-scale contact.
+            <a class="figure-source" href="https://arxiv.org/html/2608.25757v2#S2.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>通用机器人操作，大规模预训练与真实机器人评测</dd>
+        <dt>Motivation（研究动机）</dt><dd>当前的通用VLA策略仅输出动作，隐式包含任务进度、中间意图和局部可靠性，缺乏可解释性，且不确定性通常事后推断而非显式学习。</dd>
+        <dt>Insight（核心洞察）</dt><dd>借鉴生物感觉运动控制的多时间尺度预测状态，显式监督并联合预训练return-to-go、event-to-go和异方差动作不确定性，使解释内生于控制过程，同时提升任务性能。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>动作黑箱：无法揭示任务是否推进、中间意图和动作可靠性</li><li>不确定性通常事后推断，缺乏原生学习</li><li>显式预测信号与动作生成的联合训练</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将动作方差分解为任务阶段和事件意图条件下的期望与方差，表明动作仅拟合边际分布不足以分离不确定性来源，从而支持显式预测状态的设计。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>模型输出RTG（任务进度）、ETG（事件意图）和异方差动作不确定性，均直接监督并实时输出</li><li>架构基于Cosmos-Reason2-2B，采用RTG专家（2层Transformer）和事件/动作专家（32层Diffusion Transformer）</li><li>事件专家接收RTG和本体感觉，动作专家条件于RTG和事件隐藏状态，形成层级条件生成</li><li>动作生成使用流匹配，预测均值和log方差，最小化高斯负对数似然损失</li><li>预训练前使用五任务门控验证信号互补性，再在2万小时真实机器人数据上训练</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>预训练门控消融：完整模型成功率比仅动作骨干高16.0个百分点，比最强单头变体高10.8个百分点</li><li>仿真：50个随机困难RoboTwin2.0任务，LM-X成功率74.1%，GR00T N1.7为55.4%</li><li>真实机器人：7个任务，LM-X成功率68.6%，基线为50.7%</li><li>RTG跟踪语义进度和回归，方差在犹豫和振荡控制时上升（定性分析）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>不确定性分析是定性的，缺乏量化的失败检测指标</li><li>ETG缺少边界准确性和语义一致性的定量评估</li><li>真实评测每任务仅20次试验，未报告置信区间</li><li>仿真研究每次配置仅一次训练运行</li><li>预训练门控任务集小，无法保证普遍益处</li><li>信号仅作为预测评估，未用于恢复动作选择</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接相关：该方法面向具身智能，提出可解释的VLA建模，显式预测任务进度、事件和不确定性，强化了动作生成的可解释性和控制性，涉及世界模型中多时间尺度预测状态，且与系统优化中的模型压缩和推理效率相关（但未主要讨论效率）。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>我们未获取全文，仅基于摘要和部分节选。部分细节（如门控任务具体列表、真实机器人任务清单）未验证。</p>
+          <blockquote><strong>LM-X通过显式预测RTG、ETG和方差，在预训练门控中提升成功率16.0个百分点：</strong>the complete model improves success by 16.0 points over the action-only backbone and by 10.8 points over the strongest single-head variant</blockquote>
+          <blockquote><strong>LM-X在仿真和真实机器人任务上超越GR00T N1.7：</strong>LM-X achieves 74.1\% across 50 randomized-hard RoboTwin2.0 tasks versus 55.4\% for GR00T N1.7, and 68.6\% versus 50.7\% across seven real-robot tasks</blockquote>
+          <blockquote><strong>不确定性在动作专家内部原生学习，不同于事后推断：</strong>to our knowledge the first large-scale generalist VLA to jointly pretrain heteroscedastic action uncertainty inside its action expert with explicit progress, event intention, and action generation</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、标签、层级或相关性条件。</p>
+    <script type="application/json" data-paper-json>[{"id":"arxiv:2608.27406:v1","topic":"world-model","tier":"deep_read","scope":"full_text","score":10,"hasFigure":true,"tags":["action-prediction","generalist-robotics","physical-ai","robot-manipulation","simulation","world-modeling"],"searchText":"世界模型(world model) 跨具身视频世界模型 视频世界模型 跨具身学习 动作条件视频生成 零样本部署 物理模拟器 clap: cross-embodiment video world models are zero-shot physical simulators clap:跨具身视频世界模型作为零样本物理模拟器 kechen liu ola shorinwa state-of-the-art action-conditioned video models are typically restricted to a single robot embodiment, preventing them from leveraging the vast corpus of heterogeneous video data that contains rich signals for learning generalizable physics. to bridge this gap, we introduce clap, a framework for cross-embodiment action-conditioned video generation capable of being trained on diverse, internet-scale videos across human and robotic agents. clap is grounded in the insight that universal physical laws govern spatiotemporal dynamics regardless of the actor. however, cross-embodiment learning is non-trivial because action representations vary sharply across robot platforms and are typically absent in human videos. clap addresses this fundamental challenge through the following core contributions. first, clap reconciles disparate action spaces using end-effector poses, language instructions, and latent actions. second, to resolve their individual limitations, clap introduces a curriculum-based cross-embodiment learning recipe that first learns foundational physical priors across unlabeled video data using latent actions and subsequently grounds them in end-effector action spaces for zero-shot deployment to real-world tasks. crucially, clap approaches or surpasses state-of-the-art single-embodiment video models in challenging environments like droid. these performance advantages compound via few-shot adaptation to establish a novel paradigm for training single-embodiment video world models. ultimately, clap delivers the most comprehensive suite of action-conditioned video world models to date - spanning diverse action-conditioning spaces (end-effector, language, and latent) and robot morphologies (including cross-embodiment, droid, bridge, bimanual yam robots, and g1 humanoids). we open-source all code and models. project website at https://omni-clap.github.io . 研究设定 现有动作条件视频模型局限于单一机器人具身,无法利用互联网规模的多异构视频数据,阻碍学习通用物理先验。 通用物理定律支配所有具身的时空动态,因此可以通过跨具身数据扩展学习可泛化的物理知识。 作者分析动作表示的局限:端到端动作需要稠密标注,语言动作受限于文本分词精度,潜在动作需下游对齐。通过课程学习结合不同动作表示的优点。 统一动作空间:使用端到端位姿、语言指令和潜在动作表示跨具身对齐 课程学习:先在大规模未标注视频上用潜在动作学习基础物理先验,再在端到端动作空间上微调实现零样本部署 少样本适应:通过少量样本适应新具身,建立单具身视频世界模型的新范式 在droid环境中,clap达到或超过sota单具身基线(如ctrl-world)的性能 在bridge环境中,训练了bridge-base基线,优于现有替代 在oxe-mix异构混合数据中,clap-lam和clap-curr获得最高预测精度 通过推理时跨策略规划和强化学习策略微调,展示了真实世界任务的零样本泛化,提升了π0.5和molmoact-2等策略的性能 与具身智能、世界模型、物理人工智能高度相关,直接涉及可执行动作生成、长时序预测和真实机器人评测,为视频世界模型作为物理模拟器提供了新范式。 该论文突破单具身限制,提出跨具身视频世界模型,实现了零样本物理模拟,对具身智能和世界模型研究具有重要参考价值。"},{"id":"arxiv:2608.26103:v2","topic":"wam","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["data","evaluation","generalist-robotics","robot-learning","robot-manipulation","simulation","world-modeling"],"searchText":"世界动作模型(wam) 零样本跨任务泛化的机器人操作,基于上下文世界动作建模 世界动作模型 上下文学习 人类视频 机器人操作 因果视频动作模型 任务泛化 zero-wam: in-context world-action modeling from human videos for open-ended task generalization 零样本世界动作建模:从人类视频中进行上下文任务泛化 jiaming zhou qihang zhang gangwei xu cunxin fan yujie zhao ruilin wang yiming luo shuai yang xing zhu yujun shen junwei liang yinghao xu zero-shot cross-task generalization, where a policy must execute manipulation tasks never seen during training, remains a central challenge in robot learning. in large language models, a novel task can be performed simply by specifying it in the context, without any parameter update. this form of in-context learning (icl) turns generalization into a problem of task specification. to achieve cross-task generalization, we bring this paradigm to robotic manipulation, and argue that the natural task specification for manipulation is a human video: unlike language, it provides rich visual cues about the intended task evolution. we present zero-wam, a causal video-action model that executes unseen tasks by following in-context human video guidance. to address the scarcity of task-rich paired human-robot data, we propose an automatic pipeline that converts task-sampled robot trajectories into semantically matched human videos, yielding humangen, a dataset of 74.2k human-robot icl pairs across 8.6k tasks. for model training, we further introduce an in-context future chunk prediction (ifp) objective that suppresses shortcuts learned from seen tasks and forces the policy to draw task information from the video prompt. on seven unseen tasks in robotwin 2.0 simulation, zero-wam achieves a 47.0% average success rate, an absolute improvement of 29.5 percentage points over the strongest video-action baseline. in real-world evaluations, it follows human video guidance to generalize to unseen task configurations involving multi-object scenes, long-horizon manipulation, and fine-grained insertion. 机器人操作,仿真(robotwin 2.0)和真实世界部署 语言指令不足以完全指定操作任务,人类视频提供了丰富的视觉线索;零样本跨任务泛化可类比于大语言模型中的上下文学习,将泛化问题转化为任务指定问题。 利用人类视频作为上下文任务说明,通过因果视频动作模型实现零样本跨任务泛化;通过数据生成流水线解决人机配对数据稀缺,并通过未来块预测目标抑制捷径学习。 作者将零样本泛化视为任务指定问题,主张人类视频是自然且丰富的任务说明;通过自动流水线生成人机配对数据,并提出ifp目标强制模型从视频提示中提取任务信息。 提出zero-wam,一个因果视频动作模型,以人类视频作为上下文条件,预测未来的机器人视频和可执行动作。 构建humangen数据集:从任务采样的机器人轨迹自动转换为语义匹配的人类视频指令,生成74.2k对、8.6k任务。 设计in-context future chunk prediction (ifp)目标,通过预测远期视频块来抑制捷径学习,鼓励模型利用视频提示。 使用任务级采样构建task-diverse va预训练语料,平衡任务多样性。 在robotwin 2.0仿真中,zero-wam在7个未见任务上的平均成功率达到47.0%,比最强视频动作基线(lingbot-va)提高29.5个百分点。 在真实世界评估中,zero-wam遵循人类视频指令,泛化到未见任务配置,包括多物体场景、长时序操作和精细插入。 本文直接提出世界动作模型(wam)的概念,将世界模型与动作生成结合,通过上下文学习实现零样本泛化,与具身智能、世界动作模型和系统优化(数据效率、任务泛化)高度相关。 本文首次将人类视频作为上下文任务说明用于零样本泛化,提出了数据生成流水线和训练目标,对实现通用机器人策略具有重要价值,且提供了仿真和真实实验证据。"},{"id":"arxiv:2608.25757:v2","topic":"vla","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["action-prediction","evaluation","generalist-robotics","physical-ai","policy-learning","robot-manipulation","vision-language"],"searchText":"视觉语言动作(vla) 具身智能中的可解释视觉-语言-动作(vla)建模 视觉语言动作模型 异方差不确定性 进度预测 事件预测 流匹配 真实机器人评测 lm-x: explainable action modeling with progress, event, and uncertainty prediction for generalist robot manipulation lm-x:面向通用机器人操作的可解释动作建模——进度、事件与不确定性预测 jin lou zhiyuan jing andong chen xupeng wang yuan xu yuexuan li xingdong zhu zhijie zhu yingwei ji wenpeng nie yufei liu boyang xing lei jiang yan cui ying chu jingxuan zhu jingyi li liangliang chen jinyan liu zhiqi song jidong zhang hongming li yuchen zhu generalist vision--language--action (vla) policies learn long-horizon behavior mainly through short-horizon action prediction and reveal little beyond sampled commands. this creates two coupled bottlenecks: a single action target must implicitly absorb task progress, intermediate intent, and local reliability, while these control states remain hidden during execution. inspired by functional principles of biological sensorimotor control, we introduce lm-x , which organizes prediction across task, event, and motor scales without claiming anatomical correspondence. three explicitly supervised signals are emitted online and directly condition action generation: return-to-go (rtg) measures visible task progress, event-to-go (etg) identifies the next semantic transition, and heteroscedastic action flow estimates local reliability through propagated variance. explanation is therefore intrinsic to control rather than generated post hoc. before a costly 20-day pretraining run on 64 nvidia b200 gpus, a controlled five-task pretraining gate verifies the design: the complete model improves success by 16.0 points over the action-only backbone and by 10.8 points over the strongest single-head variant. we then train lm-x on more than 20,000 hours of real-robot trajectories, including over 1,000 hours of failed policy rollouts. lm-x achieves 74.1\\% across 50 randomized-hard robotwin2.0 tasks versus 55.4\\% for gr00t n1.7, and 68.6\\% versus 50.7\\% across seven real-robot tasks. rtg tracks semantic progress and visible regression, while variance rises during hesitation and oscillatory control. these results show that explicit multi-timescale predictive state can strengthen control while exposing interpretable internal estimates. 通用机器人操作,大规模预训练与真实机器人评测 当前的通用vla策略仅输出动作,隐式包含任务进度、中间意图和局部可靠性,缺乏可解释性,且不确定性通常事后推断而非显式学习。 借鉴生物感觉运动控制的多时间尺度预测状态,显式监督并联合预训练return-to-go、event-to-go和异方差动作不确定性,使解释内生于控制过程,同时提升任务性能。 作者将动作方差分解为任务阶段和事件意图条件下的期望与方差,表明动作仅拟合边际分布不足以分离不确定性来源,从而支持显式预测状态的设计。 模型输出rtg(任务进度)、etg(事件意图)和异方差动作不确定性,均直接监督并实时输出 架构基于cosmos-reason2-2b,采用rtg专家(2层transformer)和事件/动作专家(32层diffusion transformer) 事件专家接收rtg和本体感觉,动作专家条件于rtg和事件隐藏状态,形成层级条件生成 动作生成使用流匹配,预测均值和log方差,最小化高斯负对数似然损失 预训练前使用五任务门控验证信号互补性,再在2万小时真实机器人数据上训练 预训练门控消融:完整模型成功率比仅动作骨干高16.0个百分点,比最强单头变体高10.8个百分点 仿真:50个随机困难robotwin2.0任务,lm-x成功率74.1%,gr00t n1.7为55.4% 真实机器人:7个任务,lm-x成功率68.6%,基线为50.7% rtg跟踪语义进度和回归,方差在犹豫和振荡控制时上升(定性分析) 直接相关:该方法面向具身智能,提出可解释的vla建模,显式预测任务进度、事件和不确定性,强化了动作生成的可解释性和控制性,涉及世界模型中多时间尺度预测状态,且与系统优化中的模型压缩和推理效率相关(但未主要讨论效率)。 该论文首次在大规模通用vla中联合预训练异方差动作不确定性,并显式建模任务进度和事件意图,使解释内生于控制,显著提升仿真与真实机器人任务成功率,为可解释、可靠具身智能提供实证基础。"}]</script>
+  </section>
+
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>

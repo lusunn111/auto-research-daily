@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高效推理</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-08-30 18:02</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>高效推理</h1>
+<p class="lede">推理时延、吞吐、令牌压缩与早停。</p>    <div class="stats" aria-label="长期档案统计">
+      <div class="stat"><strong>9</strong>当前页面论文</div>
+      <div class="stat"><strong>43</strong>长期论文</div>
+      <div class="stat"><strong>7</strong>稳定主题</div>
+      <div class="stat"><strong>15</strong>固定标签</div>
+      <div class="stat"><strong>22</strong>已有配图</div>
+    </div>
+  </header>
+
+  <section class="gallery-intro" aria-labelledby="gallery-title">
+    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">高效推理标签档案</h2></div>
+    <p>标签由固定别名表归一化，不直接使用模型自由文本生成网址。</p>
+  </section>
+
+  <section data-explorer>
+    <div class="topic-shelves" role="group" aria-label="按研究主题筛选">
+      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>9 篇</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="vla" aria-pressed="false" title="视觉、语言与机器人动作的统一建模、适配与安全。"><strong>视觉语言动作（VLA）</strong><span>2 篇 · 视觉、语言与机器人动作的统一建模、适配与安全。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="world-model" aria-pressed="false" title="动态预测、视频生成、世界模拟与物理交互建模。"><strong>世界模型（World Model）</strong><span>2 篇 · 动态预测、视频生成、世界模拟与物理交互建模。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="robot-learning" aria-pressed="false" title="操作、导航、规划、强化学习与跨具身策略。"><strong>机器人学习与控制</strong><span>1 篇 · 操作、导航、规划、强化学习与跨具身策略。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="efficient-inference" aria-pressed="false" title="推理解码、令牌压缩、早停、时延与吞吐优化。"><strong>高效推理</strong><span>3 篇 · 推理解码、令牌压缩、早停、时延与吞吐优化。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="quantization" aria-pressed="false" title="低比特、混合精度、校准与模型压缩。"><strong>模型量化（Quantization）</strong><span>1 篇 · 低比特、混合精度、校准与模型压缩。</span></button>
+    </div>
+
+    <form class="explorer-controls" data-filter-form aria-label="筛选论文">
+      <label class="control control--query"><span>关键词</span><input type="search" name="q" maxlength="200" autocomplete="off" placeholder="标题、作者、方法、标签……" data-filter-query></label>
+      <label class="control"><span>编辑层级</span><select name="tier" data-filter-tier><option value="">全部层级</option><option value="deep_read">今日必读</option><option value="browse">值得浏览</option><option value="explore">探索发现</option></select></label>
+      <label class="control"><span>证据范围</span><select name="scope" data-filter-scope><option value="">全部范围</option><option value="full_text">全文级</option><option value="abstract">摘要级</option></select></label>
+      <label class="control"><span>最低相关性</span><select name="score" data-filter-score><option value="0">全部</option><option value="8">8 分以上</option><option value="9">9 分以上</option></select></label>
+      <label class="control"><span>论文配图</span><select name="figure" data-filter-figure><option value="">全部</option><option value="yes">已有原图</option><option value="no">暂无原图</option></select></label>
+      <div class="explorer-actions"><button type="button" data-expand-visible>展开结果</button><button type="button" data-collapse-visible>全部收起</button><button type="reset">重置</button></div>
+    </form>
+    <noscript><p class="noscript-notice">筛选功能需要启用 JavaScript；未启用时仍会显示全部论文。</p></noscript>
+    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">9</strong> 篇论文 <span class="active-tag" data-active-tag></span></p><p>标签有稳定永久网址，也可在当前画廊内继续筛选。</p></div>
+
+      <section class="tier-section" data-tier-section="deep_read">
+        <header class="tier-heading"><h2>今日必读</h2><p><span data-tier-count>2</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26821:v1"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26821/v1/fig2-panel1.png"
+        alt="Figure 2：History-use diagnostic. The baseline is trained with chronologically ordered history. At evaluation, shuffling the three historical observations while fixing the current frame leaves the offline action flow-matching loss nearly unchanged, whereas removing history increases it by about 4.6%."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.26821v1/figures/fig02_history_diagnostic.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 2</strong> History-use diagnostic. The baseline is trained with chronologically ordered history. At evaluation, shuffling the three historical observations while fixing the current frame leaves the offline action flow-matching loss nearly unchanged, whereas removing history increases it by about 4.6%.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26821/">TemporalFlow-VLA：学习基于物理的执行历史用于长时程机器人操作</a></h3>
+    <p class="original-title" lang="en">TemporalFlow-VLA: Learning Physically Grounded Execution History for Long-Horizon Robot Manipulation</p>
+    <p class="authors">Jiarui Yang · Yehao Lu · Yuning Su · Yu Zhong · Yufeng Xie · Yazhou Zhang · Haiyu Lan · Kaixiang Lu · Peiwen Lin · Chuang Wang · Junwei Liang · Enyu Li</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将物理基础的机器人表面时间流作为训练目标，监督紧凑的历史查询，从而在不增加部署计算的前提下提供有序的执行历史，比直接多帧条件化更有效。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文提出一种新颖的物理基础时间流监督方法，有效提升VLA在长时程多阶段操作中的表现，且部署成本低，对具身智能和机械臂操作研究具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视觉语言动作模型中的历史信息表征与长时程操作</p>
+        <p><strong>模型原始标签：</strong>VLA、长时程操作、时间流监督、物理基础、多阶段操作</p>
+        <p><strong>第一单位：</strong>香港科技大学（广州）</p>
+        <p><strong>通讯作者：</strong>Enyu Li</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26821">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26821">PDF ↗</a><a href="https://arxiv.org/html/2608.26821v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26821/v1/fig2-panel1.png"
+              alt="Figure 2：History-use diagnostic. The baseline is trained with chronologically ordered history. At evaluation, shuffling the three historical observations while fixing the current frame leaves the offline action flow-matching loss nearly unchanged, whereas removing history increases it by about 4.6%."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.26821v1/figures/fig02_history_diagnostic.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> History-use diagnostic. The baseline is trained with chronologically ordered history. At evaluation, shuffling the three historical observations while fixing the current frame leaves the offline action flow-matching loss nearly unchanged, whereas removing history increases it by about 4.6%.
+            <a class="figure-source" href="https://arxiv.org/html/2608.26821v1#S1.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>仿真（LIBERO, RoboTwin 2.0）与真实机器人实验（简单堆叠、叠杯任务），采用固定历史观测的VLA策略</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有VLA模型通常仅依赖当前RGB观测，忽略历史物理变化，导致多阶段操作中视觉相似状态需不同动作时产生歧义，历史顺序未被有效利用。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将物理基础的机器人表面时间流作为训练目标，监督紧凑的历史查询，从而在不增加部署计算的前提下提供有序的执行历史，比直接多帧条件化更有效。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>历史帧的时序信息难以被VLA有效捕捉</li><li>多阶段操作中视觉相似状态可能对应不同动作</li><li>显式运动估计或几何处理在部署时不可行</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>通过诊断实验（shuffling历史帧）表明标准基线对历史顺序不敏感，而TraceVLA以轨迹提示有效，因此关键挑战在于以结构化形式表征物理演化。作者提出用机器人表面时间流监督两个时序查询，使历史表征具有物理语义。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>使用记录的机器人状态和URDF几何构造机器人表面时间流作为训练目标</li><li>两个与执行对齐的时间查询Q15和Q8在分块时间尺度上受监督</li><li>通过联合掩码注意力将查询提供给动作专家</li><li>联合优化动作流匹配损失和时间流重建损失</li><li>部署时仅保留稀疏历史观测/特征，使用异步缓存降低延迟</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>LIBERO平均成功率97.63±0.26%，其中LIBERO Long 96.60±0.87%</li><li>RoboTwin 12个任务清洁/随机成功率85.5%/84.2%</li><li>在长时程多阶段任务中优势最明显</li><li>历史干预实验表明动作预测依赖历史内容和时序</li><li>异步特征缓存使服务器端采样时间减少7.8%</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>使用固定的历史观测集合，未系统研究历史帧的数量和时间间隔对时间表征学习的影响</li><li>未来需探索不同操作任务的最优时间范围和采样粒度</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接相关于视觉语言动作模型和长时程操作，通过物理基础的时间流监督改进历史信息利用，提升多阶段操作性能，且部署高效，与物理人工智能和系统优化紧密关联。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>部分实验细节和具体数字来自全文节选，摘要中未详尽，但主要结果已知。</p>
+          <blockquote><strong>TemporalFlow-VLA在LIBERO上平均成功率为97.63±0.26%，LIBERO Long上为96.60±0.87%：</strong>TemporalFlow-VLA achieves 97.63 +/- 0.26% average success on LIBERO, including 96.60 +/- 0.87% on LIBERO Long</blockquote>
+          <blockquote><strong>在RoboTwin上清洁和随机成功率分别为85.5%和84.2%：</strong>85.5%/84.2% Clean/Randomized success across 12 RoboTwin tasks</blockquote>
+          <blockquote><strong>历史干预实验表明动作预测依赖历史内容和时序：</strong>Controlled history interventions show that action prediction depends on both historical content and temporal order.</blockquote>
+          <blockquote><strong>异步特征缓存保持单帧级延迟无额外历史编码开销：</strong>With asynchronous feature caching, temporal conditioning maintains single-frame-level server-side sampling latency without additional historical-encoding overhead.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26788:v1"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26788/v1/fig1-panel1.png"
+        alt="Figure 1：Illustration of inference with a VLM planner and trained controller."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.26788v1/dynamicmodel.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Illustration of inference with a VLM planner and trained controller.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26788/">可指令智能体的规划与控制解耦</a></h3>
+    <p class="original-title" lang="en">Decoupling Planning and Control for Instructable Agents</p>
+    <p class="authors">Zineng Tang · Kelsey R. Allen · Sjoerd van Steenkiste · Ishita Dasgupta · Alane Suhr</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将VLM规划器与世界模型控制器解耦，通过语言接口连接，实现高效实时控制与高层推理的互补。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供了一种解耦规划与控制的范式，有助于提升实时性和可扩展性，对具身智能和世界模型研究有参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视觉语言模型与世界模型控制器的解耦规划与控制</p>
+        <p><strong>模型原始标签：</strong>视觉语言模型、世界模型、控制器、规划、控制、多智能体、DreamerV3、RL</p>
+        <p><strong>第一单位：</strong>UC Berkeley</p>
+        <p><strong>通讯作者：</strong>Alane Suhr</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26788">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26788">PDF ↗</a><a href="https://arxiv.org/html/2608.26788v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26788/v1/fig1-panel1.png"
+              alt="Figure 1：Illustration of inference with a VLM planner and trained controller."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.26788v1/dynamicmodel.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Illustration of inference with a VLM planner and trained controller.
+            <a class="figure-source" href="https://arxiv.org/html/2608.26788v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>具身智能体在部分可观察环境中的实时控制与高层规划</dd>
+        <dt>Motivation（研究动机）</dt><dd>预训练的VLM善于从指令生成高层计划，但难以在陌生环境中生成可靠的低延迟动作序列；世界模型控制器擅长快速观察-动作映射，但缺乏开放式任务指导。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将VLM规划器与世界模型控制器解耦，通过语言接口连接，实现高效实时控制与高层推理的互补。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>VLM规划器生成低延迟动作困难</li><li>世界模型控制器缺乏开放式任务指导</li><li>语言条件化控制器训练需要重标注数据</li><li>多智能体协调与异步推理同步</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者指出VLM与控制器能力分离，提出解耦框架，并通过实验验证其有效性（材料未详细说明分析过程）。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>使用预训练VLM作为规划器，生成高层文本指令</li><li>训练语言条件化的世界模型控制器，使用行为克隆目标结合原有世界模型目标</li><li>在推理时异步运行规划器和控制器，支持多智能体并行</li><li>通过重标注控制器策略轨迹段为合成指令来训练控制器</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在七个具身环境上评估，包括Atari、MineRL、Crafter等，以及多智能体环境</li><li>解耦方法在匹配观测和动作空间下优于仅控制器和直接VLM行动生成变体</li><li>保持快速控制，支持不同预训练VLM规划器免微调切换</li><li>与强VLA和多智能体RL基线相比在六个任务上表现相当</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>学生未明确陈述局限；但提到未来工作包括人类规划器在环、多任务控制器训练等</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接相关于具身智能：结合了VLM规划与世界模型控制，体现世界模型在控制中的应用，并涉及系统优化（异步推理）和多智能体协调。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>因材料为节选，部分细节如实验数字、具体架构参数等未完全提供，但核心结论清晰。</p>
+          <blockquote><strong>预训练VLM规划高层面但难以生成低延迟动作序列：</strong>Recent work shows that pre-trained, instruction-tuned vision-language models (VLMs) perform well at mapping from instructions and observations to high-level plans, but struggle to realize such plans as reliable low-latency action sequences in unfamiliar environments.</blockquote>
+          <blockquote><strong>世界模型控制器擅长快速控制但缺乏任务指导：</strong>At the same time, world-model controllers excel at fast observation-to-action control, but lack open-ended task guidance.</blockquote>
+          <blockquote><strong>所提方法解耦规划和控制并训练语言指令控制的世界模型：</strong>In this work, we combine these strengths into a single system, Instruct-to-Act, where we train a world-model controller to act autonomously at high frequency when conditioned on sparse, higher-latency, and high-level text instructions generated by a VLM planner.</blockquote>
+          <blockquote><strong>通过重标注控制器轨迹并联合优化行为克隆目标训练：</strong>To train controllers to be language-instructable, we relabel segments of controller policy rollouts with synthetic instructions and jointly optimize a behavior-cloning objective along with existing reward-maximizing and world-modeling objectives.</blockquote>
+          <blockquote><strong>在七个环境上评估，包括多智能体环境：</strong>We evaluate our proposed approach across seven embodied environments, including three multi-agent environments where VLM planners coordinate through language while trained controllers serve as their actuators.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="browse">
+        <header class="tier-heading"><h2>值得浏览</h2><p><span data-tier-count>5</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27206:v1"
+  data-topic="efficient-inference"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27206/v1/fig1-panel1.png"
+        alt="Figure 1：Accuracy–TTFT trade-off at 10% visual-token retention. PACE preserves accuracy while reducing pre-generation latency on Qwen2.5-VL-7B; standard denotes Vanilla inference of the original model."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.27206v1/figures/Pace.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Accuracy–TTFT trade-off at 10% visual-token retention. PACE preserves accuracy while reducing pre-generation latency on Qwen2.5-VL-7B; standard denotes Vanilla inference of the original model.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">高效推理</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27206/">PACE：一种统一的压缩-提取范式，用于快速视觉语言模型推理</a></h3>
+    <p class="original-title" lang="en">PACE: A Unified Condense-and-Extract Paradigm for Fast VLM Inference</p>
+    <p class="authors">Junjie Liu · Shengyuan Ye · Xu Chen</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过压缩阶段的自适应像素压缩器在编码前降低冗余输入，提取阶段的双注意力选择器融合内部视觉与语义信号保留关键token，实现统一加速。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供训练自由的视觉token压缩方法，显著加速VLM推理，对需要实时视觉处理的具身智能系统有参考意义。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/model-quantization/" data-tag-filter="model-quantization">模型量化</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视觉语言模型推理加速</p>
+        <p><strong>模型原始标签：</strong>推理效率、模型压缩、视觉语言模型、token剪枝、时间到首个token</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27206">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27206">PDF ↗</a><a href="https://arxiv.org/html/2608.27206v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27206/v1/fig1-panel1.png"
+              alt="Figure 1：Accuracy–TTFT trade-off at 10% visual-token retention. PACE preserves accuracy while reducing pre-generation latency on Qwen2.5-VL-7B; standard denotes Vanilla inference of the original model."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27206v1/figures/Pace.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Accuracy–TTFT trade-off at 10% visual-token retention. PACE preserves accuracy while reducing pre-generation latency on Qwen2.5-VL-7B; standard denotes Vanilla inference of the original model.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27206v1#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>训练自由推理加速</dd>
+        <dt>Motivation（研究动机）</dt><dd>视觉语言模型推理成本随视觉token数量增加而激增，现有剪枝方法仅在视觉编码后操作且无法兼顾全局上下文与细节。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过压缩阶段的自适应像素压缩器在编码前降低冗余输入，提取阶段的双注意力选择器融合内部视觉与语义信号保留关键token，实现统一加速。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有方法未优化视觉编码阶段延迟</li><li>严格token预算下难以兼顾全局上下文与细节</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过分析现有方法在加速阶段的局限性和token预算下的性能瓶颈，提出训练自由的统一压缩-提取框架。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>压缩阶段：自适应像素压缩器评估视觉信息密度，自适应下采样冗余输入，减少编码器计算</li><li>提取阶段：动态双注意力提取器融合编码器内部信号与LLM语义信号，选择保留关键视觉token</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在Qwen2.5-VL-7B上，仅用10%视觉token保留93.8%原始性能，实现3.1倍TTFT加速</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>主要与模型压缩和推理效率相关，视觉token剪枝方法对具身智能中视觉处理的实时性具有潜在迁移价值。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供实验细节、具体基准和部署场景，相关性评估基于方法可迁移性。</p>
+          <blockquote><strong>推理成本随视觉token数量增加而激增：</strong>Vision-Language Models (VLMs) demonstrate exceptional visual reasoning capabilities, yet their inference costs escalate rapidly with the proliferation of visual tokens.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26806:v1"
+  data-topic="efficient-inference"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>高效推理</span>
+        <strong>arXiv:2608.26806</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">高效推理</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26806/">大型视觉语言模型中的多图像视觉令牌剪枝</a></h3>
+    <p class="original-title" lang="en">Multi-Image Visual Token Pruning in Large Visual Language Models</p>
+    <p class="authors">Rongyang Zhang · Chengqiang Lu · Cong Li · Hongchao Gu · Tingjia Shen · Xuyang Zhi · Qimeng Wang · Yan Gao · Yi Wu · Yao Hu · Hao Wang · Enhong Chen</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>根据视觉注意力分布的经验分析确定剪枝层，并在多图像场景中实现自适应剪枝比率，重要图像保留更多令牌。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供了一种无训练的自适应令牌剪枝方法，可显著加速多图像推理，对需要实时处理视觉输入的边缘设备或机器人系统有借鉴价值；其自适应思想和兼容高效注意力机制的设计具有通用性。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/model-quantization/" data-tag-filter="model-quantization">模型量化</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>大型视觉语言模型中的视觉令牌剪枝与推理加速</p>
+        <p><strong>模型原始标签：</strong>视觉令牌剪枝、推理加速、LVLM、多图像、无训练、自适应</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26806">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26806">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>多图像视觉语言模型的推理优化，适用于不同LVLM架构</dd>
+        <dt>Motivation（研究动机）</dt><dd>多图像序列处理需求增长，现有剪枝方法依赖静态策略，难以适应不同架构和多图像场景，且受限于注意力计算与高效技术不兼容。</dd>
+        <dt>Insight（核心洞察）</dt><dd>根据视觉注意力分布的经验分析确定剪枝层，并在多图像场景中实现自适应剪枝比率，重要图像保留更多令牌。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有剪枝方法静态不适应</li><li>依赖注意力计算不兼容FlashAttention</li><li>多图像场景中重要性差异未考虑</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者基于不同LVLM的视觉注意力分布进行经验分析来确定剪枝层，材料未更详细说明。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出无训练的自适应视觉令牌剪枝（AVTP）框架</li><li>基于经验分析确定剪枝层</li><li>实现多图像自适应剪枝比率，重要图像保留更多令牌</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>Qwen3VL-8B: 2倍推理加速，保持96.1%原始准确率</li><li>InternVL3.5-8B: 保持94.1%准确率</li><li>LLaVA-OV-7B: 超过原始基线性能</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该研究关注视觉语言模型的推理效率优化，通过令牌剪枝加速多图像处理，与系统优化和高效推理相关，但与具身智能和世界模型的核心主题关联较弱，但可作为效率优化技术参考。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供作者单位、通讯作者信息，也未给出实验设置的详细细节；相关性分数基于主题相关性，但具体方法与具身智能的直接关联仍需进一步评估。</p>
+          <blockquote><strong>该方法实现无训练的自适应剪枝，并适用于多种LVLM架构。：</strong>we propose a training-free, Adaptive Visual Token Pruning (AVTP) framework, applicable to diverse LVLM architectures</blockquote>
+          <blockquote><strong>实验结果表明推理加速和准确率保持。：</strong>Qwen3VL-8B achieves 2 times inference speedup while maintaining 96.1\% of its original accuracy on multiple multi-image benchmarks</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.16153:v4"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.16153/v4/fig1-panel1.png"
+        alt="Figure 1：Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.16153v4/figures/Motivation.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 9/10</span>
+      <span>v4</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.16153/">统一条件-动作建模用于精确的单步动作生成</a></h3>
+    <p class="original-title" lang="en">Unified Condition-Action Modeling for Accurate One-Step Action Generation</p>
+    <p class="authors">Xinyu Zhou · Zikun Cai · Kuangji Zuo · Gen Li · Boyu Ma · Yanshuo Lu · Yutong Song · Mingqi Yuan · Jiayu Chen · Jianfei Yang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过简单而有效的统一条件-动作建模设计，在共享token空间中表示条件和动作，可以使紧凑模型同时提高推理速度和准确性。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>本文提出了一种简单而有效的统一条件-动作建模方法，在保证准确性的同时大幅提升推理速度，对于实时控制和大模型压缩具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>机器人操作中的条件感知动作生成</p>
+        <p><strong>模型原始标签：</strong>统一条件-动作建模、单步动作生成、机器人操作、推理加速、UCA-Flow</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.16153">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.16153">PDF ↗</a><a href="https://arxiv.org/html/2608.16153v4">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.16153/v4/fig1-panel1.png"
+              alt="Figure 1：Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.16153v4/figures/Motivation.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld.
+            <a class="figure-source" href="https://arxiv.org/html/2608.16153v4#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.16153/v4/fig2-panel1.png"
+              alt="Figure 2：Overview of UCA-Flow . Observation, timestep, interval, and noisy action are unified as condition-action tokens and processed by a Unified Condition-Action Transformer to predict the interval-aware velocity."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.16153v4/overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Overview of UCA-Flow . Observation, timestep, interval, and noisy action are unified as condition-action tokens and processed by a Unified Condition-Action Transformer to predict the interval-aware velocity.
+            <a class="figure-source" href="https://arxiv.org/html/2608.16153v4#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>机器人操作策略，在紧延迟约束下需要准确且高效的控制</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有扩散和流策略将条件视为辅助信号，而不是与动作轨迹联合演化，限制了推理速度和准确性。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过简单而有效的统一条件-动作建模设计，在共享token空间中表示条件和动作，可以使紧凑模型同时提高推理速度和准确性。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>在紧延迟约束下实现准确和高效的机器人控制</li><li>现有方法将条件视为辅助信号导致性能受限</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者发现现有方法的限制可以通过统一条件-动作建模来缓解，并提出了动态重建条件表示以适应生成阶段的方法。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将观察条件、时间步条件、间隔条件和动作token统一到单一序列中</li><li>使用统一条件-动作Transformer进行联合条件-动作表示学习</li><li>条件表示根据当前生成阶段动态重建，突出与动作细化最相关的信息</li><li>引入改进的双通道监督方案（u和v）以优化统一条件-动作建模</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在多个任务上，UCA-Flow相比最强基线平均成功率提高9.3个百分点</li><li>推理速度比DP3和Simple DP3分别快45.6倍和33.4倍</li><li>比单步FlowPolicy和MP1分别快4.3倍和2.3倍</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>论文直接面向具身智能中的机器人操作，提出统一条件-动作建模以提升动作生成准确性和推理效率，与视觉语言动作模型、世界模型和系统优化紧密相关</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供作者单位、通讯作者和明确的局限性，因此这些字段标记为证据未提供。实验细节和具体任务未完全展开，但摘要提供的性能数字足够支持核心主张。</p>
+          <blockquote><strong>现有方法将条件视为辅助信号，而非与动作轨迹联合演化，这一限制可以通过统一条件-动作建模缓解：</strong>Recent diffusion and flow policies are promising, but they often treat conditions as auxiliary signals rather than jointly evolving them with action trajectories.</blockquote>
+          <blockquote><strong>UCA-Flow在多个任务上平均成功率比最强基线提高9.3个百分点，并显著加速：</strong>UCA-Flow improves the average success rate by 9.3 percentage points over the strongest baseline, while achieving $45.6\times$ and $33.4\times$ speedups over DP3 and Simple DP3, and remaining $4.3\times$ and $2.3\times$ faster than one-step FlowPolicy and MP1</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2606.09828:v2"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2606.09828/v2/fig1-panel1.png"
+        alt="Figure 1：Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2606.09828v2/teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2606.09828/">视频世界模型的潜在空间记忆</a></h3>
+    <p class="original-title" lang="en">Latent Spatial Memory for Video World Models</p>
+    <p class="authors">Weijie Wang · Haoyu Zhao · Yifan Yang · Feng Chen · Zeyu Zhang · Yefei He · Zicheng Duan · Donny Y. Chen · Yuqing Yang · Bohan Zhuang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将场景信息直接存储在扩散潜在空间，通过深度引导的反投影构建3D记忆，并直接在潜在空间进行视图合成，可避免像素空间重建的损失与开销。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作提出了世界模型中内存与效率的优化方案，且取得了显著加速和压缩效果，是视频世界模型迈向实时应用的重要一步，值得研究与系统优化结合。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视频世界模型中的潜在空间记忆与高效生成</p>
+        <p><strong>模型原始标签：</strong>视频世界模型、潜在空间、3D记忆、扩散模型、计算效率</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-06</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2606.09828">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2606.09828">PDF ↗</a><a href="https://arxiv.org/html/2606.09828v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2606.09828/v2/fig1-panel1.png"
+              alt="Figure 1：Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2606.09828v2/teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Geometrically consistent videos generated by LSM-World with latent spatial memory. Given a single input image and a user-specified camera trajectory (left), LSM-World preserves spatial consistency by caching 3D information directly in the latent space, rather than as an RGB-colored point cloud. This design enables memory queries through a single latent-resolution projection, avoiding the costly render-and-encode round trip required by prior RGB point cloud memories. Consequently, LSM-World can faithfully return to previously observed regions even after large camera movements, while achieving up to 10.57 × \mathbf{10.57\times} faster end-to-end video generation and 𝟓𝟓 × \mathbf{55\times} lower GPU memory usage than RGB-cache baselines.
+            <a class="figure-source" href="https://arxiv.org/html/2606.09828v2#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2606.09828/v2/fig2-panel1.png"
+              alt="Figure 2：Latent spatial memory vs. RGB point cloud based memory. (a): prior systems store memory in RGB point clouds and pay a render-and-encode round trip at every conditioning step. (b): latent spatial memory is stored in diffusion latent space and can be read through simple projections, eliminating the per-step pixel-space detour and shrinking the cache footprint by the squared VAE compression factor. (c): pipeline profiling shows that maintaining explicit memory is a major efficiency bottleneck."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2606.09828v2/concept.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Latent spatial memory vs. RGB point cloud based memory. (a): prior systems store memory in RGB point clouds and pay a render-and-encode round trip at every conditioning step. (b): latent spatial memory is stored in diffusion latent space and can be read through simple projections, eliminating the per-step pixel-space detour and shrinking the cache footprint by the squared VAE compression factor. (c): pipeline profiling shows that maintaining explicit memory is a major efficiency bottleneck.
+            <a class="figure-source" href="https://arxiv.org/html/2606.09828v2#S1.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>视频世界模型的生成任务，关注3D空间一致性与高效推理</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有视频世界模型依赖RGB空间的显式点云记忆，造成计算开销大且存在信息损失，因此需要直接在潜在空间构建记忆以提升效率与保真度。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将场景信息直接存储在扩散潜在空间，通过深度引导的反投影构建3D记忆，并直接在潜在空间进行视图合成，可避免像素空间重建的损失与开销。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有显式点云记忆需要重复渲染和VAE编码，计算昂贵</li><li>像素空间往返导致潜在表征的丰富特征丢失</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
+        <dt>Method（方法）</dt><dd><ul><li>在扩散潜在空间中构建持久3D缓存，存储场景信息</li><li>通过深度引导的反投影将潜在token提升至3D空间</li><li>通过潜在空间扭曲合成新视图，统一记忆构建与查询过程</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>相比显式3D基线，端到端视频生成速度提升最高10.57倍，内存占用减少55倍</li><li>在WorldScore上达到最先进性能，在RealEstate10K上重建质量强</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该研究直接面向视频世界模型，通过潜在空间记忆提升生成效率和空间一致性，对于物理AI和具身智能中长时序预测有直接参考价值，其高效推理设计也与系统优化相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>由于只提供了摘要，第一单位、通讯作者、方法细节和局限均无法确认；实验具体设置和归一化方法未说明，相关性分数基于摘要判断。</p>
+          <blockquote><strong>现有视频世界模型依赖显式点云记忆，存在计算开销和信息损失：</strong>Video world models that maintain 3D spatial consistency across generated frames typically rely on explicit point cloud memory constructed in RGB space. This design is both computationally expensive, requiring repeated rendering and VAE encoding, and inherently lossy, as the round trip through pixel space discards rich features of the learned latent representation.</blockquote>
+          <blockquote><strong>潜在空间记忆可直接在扩散潜在空间存储场景信息，避免像素空间重建：</strong>we introduce \emph{latent spatial memory} for video world models, a persistent 3D cache that stores scene information directly in the diffusion latent space, avoiding pixel-space reconstruction.</blockquote>
+          <blockquote><strong>提出Mirage框架，通过深度引导反投影和潜在空间扭曲构建并查询记忆：</strong>we propose Mirage, a latent-space spatial memory framework that constructs the memory by lifting latent tokens into 3D via depth-guided back-projection and queries it by synthesizing novel views through direct latent-space warping.</blockquote>
+          <blockquote><strong>实验显示加速和内存减少：</strong>Experiments show that latent spatial memory achieves up to \textbf{10.57}$\times$ faster end-to-end video generation and \textbf{55}$\times$ reduction in memory footprint relative to explicit 3D baselines.</blockquote>
+          <blockquote><strong>利用扩散模型几何先验达到最先进性能：</strong>Leveraging the geometric prior of the diffusion model, Mirage attains state-of-the-art performance on WorldScore and strong reconstruction quality on RealEstate10K.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2604.21057:v2"
+  data-topic="efficient-inference"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>高效推理</span>
+        <strong>arXiv:2604.21057</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">高效推理</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2604.21057/">TRACES：为自适应成本高效早停标记推理步骤</a></h3>
+    <p class="original-title" lang="en">TRACES: Tagging Reasoning Steps for Adaptive Cost-Efficient Early-Stopping</p>
+    <p class="authors">Yannis Belkhiter · Seshu Tirupathi · Giulio Zizzo · John D. Kelleher</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>语言推理模型在达到正确答案后倾向于改变推理行为，因此监测特定类型的推理步骤可以产生有效的可解释早停标准。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供了一种轻量级的推理步骤标记与早停方法，可有效减少生成计算量，对具身智能中实时控制和推理效率优化有借鉴价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>语言推理模型的推理步骤标记与自适应早停机制</p>
+        <p><strong>模型原始标签：</strong>推理模型、早停、成本效率、标记、数学推理</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-04</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2604.21057">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2604.21057">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>自然语言处理与大语言模型推理优化</dd>
+        <dt>Motivation（研究动机）</dt><dd>语言推理模型在推理时过度生成验证和反思步骤，导致效率低下；同时，不同推理步骤类型对正确回答生成的贡献尚未得到充分研究。</dd>
+        <dt>Insight（核心洞察）</dt><dd>语言推理模型在达到正确答案后倾向于改变推理行为，因此监测特定类型的推理步骤可以产生有效的可解释早停标准。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>推理步骤的高效实时标记</li><li>在不同难度任务上平衡准确率与效率</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过实时监测推理行为，分析推理步骤类型与正确答案生成的关系，从而提出基于步骤类型监测的早停标准。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出一个轻量级框架TRACES，实时标记推理步骤</li><li>利用标记信息监测推理行为，实现自适应、成本高效的早停</li><li>根据任务难度调整早停阈值</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在MATH500, GSM8K, AIME, MMLU和GPQA基准上，TRACES实现20%至50%的令牌减少，同时保持与标准生成相当的准确率</li><li>在更难的BeyondAIME和IMO AnswerBench任务上，准确率-效率权衡更陡峭，需要更保守的早停阈值</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>虽然主要面向语言推理模型，但其中推理步骤标记、自适应早停和成本效率优化的思想可迁移到视觉语言动作模型和世界模型的推理加速与计算优化。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供实验具体数字细节，且未提供全文，作者单位和通讯作者信息缺失；相关性评估基于研究主题迁移，非直接应用。</p>
+          <blockquote><strong>TRACES框架能够实现20-50%的令牌减少并保持准确率：</strong>Evaluated on three mathematical reasoning benchmarks (MATH500, GSM8K, AIME) and two knowledge and reasoning benchmarks (MMLU and GPQA), TRACES achieve 20 to 50% token reduction while maintaining comparable accuracy to standard generation.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="explore">
+        <header class="tier-heading"><h2>探索发现</h2><p><span data-tier-count>2</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27367:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>世界模型（World Model）</span>
+        <strong>arXiv:2608.27367</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27367/">持续性容量增长：基于任务复杂度的宽度与深度扩展以用于JEPA世界模型中的视觉Transformer编码器</a></h3>
+    <p class="original-title" lang="en">Successive Capacity Growth: Task-Complexity-Driven Width and Depth Expansion for Vision Transformer Encoders in JEPA World Models</p>
+    <p class="authors">Frederik Berenz</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>JEPA世界模型的编码器可以不必预分配最大容量，而是随任务需求逐步增长（宽度或深度），通过函数保持的扩展和回滚机制，既能匹配或超越固定小基线，又比固定大模型参数效率高得多，同时保持表示质量。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对于研究者而言，该工作提出了一种新颖的容量增长策略，突破了固定架构的局限，在保持或提升预测性能的同时大幅提高参数效率，对资源受限的机器人应用和边缘设备有潜在价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>JEPA世界模型的动态自适应编码器设计</p>
+        <p><strong>模型原始标签：</strong>JEPA、世界模型、视觉Transformer、动态架构、计算效率、模型增长、自监督学习</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27367">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27367">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>世界模型中的视觉编码器，通过测试-验证机制进行宽度和深度扩展，在60维多物体动力学和2D导航等任务上评估。</dd>
+        <dt>Motivation（研究动机）</dt><dd>传统的JEPA世界模型使用固定大小的ViT编码器，对简单任务过度配置，对复杂任务配置不足，且注意力头存在冗余。目标是通过按任务需求逐步增长编码器容量，避免预分配最大容量，提高计算和数据效率。</dd>
+        <dt>Insight（核心洞察）</dt><dd>JEPA世界模型的编码器可以不必预分配最大容量，而是随任务需求逐步增长（宽度或深度），通过函数保持的扩展和回滚机制，既能匹配或超越固定小基线，又比固定大模型参数效率高得多，同时保持表示质量。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>如何在不破坏学习表示的前提下动态调整编码器容量</li><li>如何避免扩展时出现的表示坍塌</li><li>如何确保扩展的决策是有效且可回滚的</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者提出任务无关的测试-验证机制，利用函数保持的扩展安全尝试架构变化，若预测损失不改善则回滚，以此驱动增长。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>从最小编码器开始（1头、2层、283K参数）</li><li>宽度扩展：增加注意力头以提升低层语义容量；深度扩展：增加Transformer块以提升高阶语义抽象</li><li>任务无关的测试-验证机制，使用函数保持的扩展进行安全试验，若预测损失不改善则回滚</li><li>引入Sketched Isotropic Gaussian Regularizer (SIGReg)确保语义维度的统计独立性和与预测目标对齐，防止坍塌</li><li>通过预测损失改进与否来决定扩展类型（宽度或深度）</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在60维多物体动力学任务中，SCG自然触发深度扩展，预测损失比固定小基线改善20.3%，参数效率比放大到固定大模型高56倍</li><li>在2D导航任务中，单次宽度扩展比固定大模型改善23%</li><li>在三个复杂度递增的环境中，自适应编码器匹配或超过固定小基线，零假阳性扩展，位精确函数保持（比例=1.0，绝对差=0.0）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接涉及世界模型（JEPA）的编码器设计，通过动态架构增长优化模型容量，提升计算和数据效率，与物理人工智能中高效世界模型构建和系统优化相关，同时与具身智能中需要实时处理复杂动态场景相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>本次分析仅基于摘要，未提供全文细节，对方法内部机制、实验设置（如具体任务细节）和通信作者信息只能推断。</p>
+          <blockquote><strong>SCG方法从最小编码器开始，逐步扩展宽度或深度。：</strong>Successive Capacity Growth (SCG), a method that starts from a minimal encoder (1 head, 2 layers, 283K parameters) and grows incrementally in width (adding attention heads for low-level semantic capacity) or depth (adding transformer blocks for higher-order semantic abstraction)</blockquote>
+          <blockquote><strong>SIGReg防止表示坍塌，保持语义维度独立。：</strong>The Sketched Isotropic Gaussian Regularizer (SIGReg) ensures that all learned semantic dimensions remain statistically independent and aligned with the predictive objective, preventing collapse even as the architecture grows.</blockquote>
+          <blockquote><strong>SCG在60维多物体任务上改善了预测损失，参数效率更高。：</strong>On a 60-dimensional multi-object dynamics task, SCG naturally triggers depth expansion, improving prediction loss by 20.3% over the fixed small baseline with 56 times greater parameter efficiency than scaling to the fixed large model</blockquote>
+          <blockquote><strong>SCG在多个环境中匹配或超过固定小基线，无误扩展，函数保持精确。：</strong>Across all three tested environments of increasing complexity, the adaptive encoder matches or exceeds the fixed small baseline, with zero false-positive expansions and bit-exact function preservation (ratio = 1.0, absolute difference = 0.0).</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26926:v1"
+  data-topic="quantization"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>模型量化（Quantization）</span>
+        <strong>arXiv:2608.26926</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">模型量化（Quantization）</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26926/">考虑自回归模型速度-质量权衡的层重要性量化指标</a></h3>
+    <p class="original-title" lang="en">A Layer Importance Metric for Quantization Accounting for the Speed-Quality Trade-off in Autoregressive Models</p>
+    <p class="authors">Artem Safronov</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过结合信息保持和吞吐增益两个正交标准的复合指标，可以仅基于模型分析无需实际执行来优选量化目标层，从而将量化工程变得可预测。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>为边缘设备上的自回归模型提供了一种预测性的量化方法，无需昂贵实验即可权衡速度和质量，适用于资源受限的部署场景。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/model-quantization/" data-tag-filter="model-quantization">模型量化</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>自回归模型量化的层重要性分析</p>
+        <p><strong>模型原始标签：</strong>模型压缩、量化、推理效率、速度-质量权衡</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26926">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26926">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>自回归小语言模型（sLLMs）在内存和计算资源受限设备上的推理，面向量化决策。</dd>
+        <dt>Motivation（研究动机）</dt><dd>小语言模型在边缘设备上内存带宽受限，均匀量化往往由于架构冗余有限且部分层对低精度不敏感而导致质量下降。需要一种预测性方法来指导量化以优化速度和质量。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过结合信息保持和吞吐增益两个正交标准的复合指标，可以仅基于模型分析无需实际执行来优选量化目标层，从而将量化工程变得可预测。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>自回归推理受限于存储带宽</li><li>模型架构冗余少，均匀量化易损害性能</li><li>需要平衡速度与质量</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者使用归一化的SQNR系数衡量信息保持，并结合基于roofline的延迟分析建模吞吐增益；对Gemma 3 1B进行性能剖析，识别出前馈网络和嵌入矩阵是加速的最有希望的候选目标。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出复合度量结合两种正交标准，即基于SQNR的信息保持和基于roofline的延迟分析吞吐增益</li><li>通过模拟量化和roofline建模估计每个层或子层的速度和归一化质量分数</li><li>组合两个分数形成合成优先级系数，以调整速度-质量权衡</li><li>该方法允许优先考虑单个块、投影子层或整个Transformer层</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在多种模型架构上评估，速度提升预测误差约为4%</li><li>与进化搜索、专用加速器和基于Shapley值的方法相比，本方法通常将更多资源分配给表现更丰富的层</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该方法涉及模型压缩和推理效率，对具身智能和世界模型的实时推理有直接关联，特别是视觉语言动作模型（VLA）部署到真实机器人时，量化优先层可提升推理速度。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供作者单位等细节，实验细节有限，相关性仅基于量化应用于自回归模型，与具身智能的关联不明显。</p>
+          <blockquote><strong>该方法能预测加速速度且误差在4%左右：</strong>showing that our estimates have at around 4% prediction error for the accelerated speedup</blockquote>
+          <blockquote><strong>该方法相比其他方法更有优势：</strong>our method generally allocates more resources to the most expressive layers compared to evolutionary search, specialized accelerators, or Shapley-value-based approaches</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、标签、层级或相关性条件。</p>
+    <script type="application/json" data-paper-json>[{"id":"arxiv:2608.27367:v1","topic":"world-model","tier":"explore","scope":"abstract","score":8,"hasFigure":false,"tags":["efficient-inference","navigation","physical-ai","world-modeling"],"searchText":"世界模型(world model) jepa世界模型的动态自适应编码器设计 jepa 世界模型 视觉transformer 动态架构 计算效率 模型增长 自监督学习 successive capacity growth: task-complexity-driven width and depth expansion for vision transformer encoders in jepa world models 持续性容量增长:基于任务复杂度的宽度与深度扩展以用于jepa世界模型中的视觉transformer编码器 frederik berenz joint-embedding predictive architectures (jepas) for world modeling typically employ fixed-size vision transformer encoders that are over-provisioned for simple tasks and under-provisioned for complex ones, with significant redundancy across attention heads. we propose successive capacity growth (scg), a method that starts from a minimal encoder (1 head, 2 layers, 283k parameters) and grows incrementally in width (adding attention heads for low-level semantic capacity) or depth (adding transformer blocks for higher-order semantic abstraction), driven by a task-agnostic test-and-verify mechanism that exploits function-preserving expansion to safely trial architectural changes and roll back if they do not improve prediction loss. the sketched isotropic gaussian regularizer (sigreg) ensures that all learned semantic dimensions remain statistically independent and aligned with the predictive objective, preventing collapse even as the architecture grows. on a 60-dimensional multi-object dynamics task, scg naturally triggers depth expansion, improving prediction loss by 20.3% over the fixed small baseline with 56 times greater parameter efficiency than scaling to the fixed large model; on a 2d navigation task, a single width expansion yields even an 23% improvement over the fixed large model. across all three tested environments of increasing complexity, the adaptive encoder matches or exceeds the fixed small baseline, with zero false-positive expansions and bit-exact function preservation (ratio = 1.0, absolute difference = 0.0). the take-away is that jepa world model encoders need not be pre-allocated at maximum capacity - they can grow successively as the task demands, achieving significant compute and data efficiency while maintaining representation quality. 世界模型中的视觉编码器,通过测试-验证机制进行宽度和深度扩展,在60维多物体动力学和2d导航等任务上评估。 传统的jepa世界模型使用固定大小的vit编码器,对简单任务过度配置,对复杂任务配置不足,且注意力头存在冗余。目标是通过按任务需求逐步增长编码器容量,避免预分配最大容量,提高计算和数据效率。 jepa世界模型的编码器可以不必预分配最大容量,而是随任务需求逐步增长(宽度或深度),通过函数保持的扩展和回滚机制,既能匹配或超越固定小基线,又比固定大模型参数效率高得多,同时保持表示质量。 作者提出任务无关的测试-验证机制,利用函数保持的扩展安全尝试架构变化,若预测损失不改善则回滚,以此驱动增长。 从最小编码器开始(1头、2层、283k参数) 宽度扩展:增加注意力头以提升低层语义容量;深度扩展:增加transformer块以提升高阶语义抽象 任务无关的测试-验证机制,使用函数保持的扩展进行安全试验,若预测损失不改善则回滚 引入sketched isotropic gaussian regularizer (sigreg)确保语义维度的统计独立性和与预测目标对齐,防止坍塌 通过预测损失改进与否来决定扩展类型(宽度或深度) 在60维多物体动力学任务中,scg自然触发深度扩展,预测损失比固定小基线改善20.3%,参数效率比放大到固定大模型高56倍 在2d导航任务中,单次宽度扩展比固定大模型改善23% 在三个复杂度递增的环境中,自适应编码器匹配或超过固定小基线,零假阳性扩展,位精确函数保持(比例=1.0,绝对差=0.0) 该论文直接涉及世界模型(jepa)的编码器设计,通过动态架构增长优化模型容量,提升计算和数据效率,与物理人工智能中高效世界模型构建和系统优化相关,同时与具身智能中需要实时处理复杂动态场景相关。 对于研究者而言,该工作提出了一种新颖的容量增长策略,突破了固定架构的局限,在保持或提升预测性能的同时大幅提高参数效率,对资源受限的机器人应用和边缘设备有潜在价值。"},{"id":"arxiv:2608.27206:v1","topic":"efficient-inference","tier":"browse","scope":"abstract","score":6,"hasFigure":true,"tags":["efficient-inference","model-quantization","vision-language"],"searchText":"高效推理 视觉语言模型推理加速 推理效率 模型压缩 视觉语言模型 token剪枝 时间到首个token pace: a unified condense-and-extract paradigm for fast vlm inference pace:一种统一的压缩-提取范式,用于快速视觉语言模型推理 junjie liu shengyuan ye xu chen vision-language models (vlms) demonstrate exceptional visual reasoning capabilities, yet their inference costs escalate rapidly with the proliferation of visual tokens. existing visual token pruning methods exhibit two fundamental limitations. first, most approaches operate exclusively post-vision encoder, leaving the substantial latency of the visual encoding phase unoptimized. second, under strict token budgets, these methods often fail to jointly preserve holistic visual contexts and fine-grained details, leading to performance degradation. to address these bottlenecks, we propose pace (pixel-adaptive condense and extract), a training-free inference framework that accelerates both the vision encoder and the large language model (llm) via a unified condense-and-extract paradigm. during the condense stage, an adaptive pixel compressor (apc) evaluates visual information density prior to encoding, adaptively downsampling redundant inputs, curtailing encoder computation while preserving global context and essential visual cues. in the extract stage, a dynamic dual-attention extractor (ddae) selectively retains visual tokens via a fusion of internal visual signals from the encoder and semantic signals from the llm, safeguarding task-critical details. by integrating pace into qwen2.5-vl-7b, the model retains 93.8% of its original performance while utilizing only 10% of the visual tokens, yielding a 3.1x speedup in time to first token (ttft). our code is available at https://github.com/jjl357/pace. 训练自由推理加速 视觉语言模型推理成本随视觉token数量增加而激增,现有剪枝方法仅在视觉编码后操作且无法兼顾全局上下文与细节。 通过压缩阶段的自适应像素压缩器在编码前降低冗余输入,提取阶段的双注意力选择器融合内部视觉与语义信号保留关键token,实现统一加速。 作者通过分析现有方法在加速阶段的局限性和token预算下的性能瓶颈,提出训练自由的统一压缩-提取框架。 压缩阶段:自适应像素压缩器评估视觉信息密度,自适应下采样冗余输入,减少编码器计算 提取阶段:动态双注意力提取器融合编码器内部信号与llm语义信号,选择保留关键视觉token 在qwen2.5-vl-7b上,仅用10%视觉token保留93.8%原始性能,实现3.1倍ttft加速 主要与模型压缩和推理效率相关,视觉token剪枝方法对具身智能中视觉处理的实时性具有潜在迁移价值。 提供训练自由的视觉token压缩方法,显著加速vlm推理,对需要实时视觉处理的具身智能系统有参考意义。"},{"id":"arxiv:2608.26926:v1","topic":"quantization","tier":"explore","scope":"abstract","score":6,"hasFigure":false,"tags":["efficient-inference","model-quantization"],"searchText":"模型量化(quantization) 自回归模型量化的层重要性分析 模型压缩 量化 推理效率 速度-质量权衡 a layer importance metric for quantization accounting for the speed-quality trade-off in autoregressive models 考虑自回归模型速度-质量权衡的层重要性量化指标 artem safronov small language models (sllms) are nowadays hosted on devices with limited memory and computational budget. in an autoregressive setup, inference is memory-bandwidth bound: uniform quantization is often detrimental to such models, since their architecture has limited redundancies and only a few layers are not very sensitive to lower precision. we propose a composite metric that combines two orthogonal criteria: information retention (measured in terms of a normalized sqnr-based coefficient) and throughput gains (modeled using a roofline-based latency analysis). by profiling gemma 3 1b, we find that feed-forward network blocks and the embedding matrix are the most promising targets for acceleration. for each candidate, we estimate a normalized quality score based on simulated quantization and a normalized speed score based on roofline modeling with no actual execution needed. we combine the two scores in a composite priority coefficient, allowing us to tune the trade-off between speed and quality as needed. our metric is general and can be used to prioritize individual blocks, their projection sublayers, or transformer layers as a whole. we evaluate our approach on several model architectures, showing that our estimates have at around 4% prediction error for the accelerated speedup. we find that our method generally allocates more resources to the most expressive layers compared to evolutionary search, specialized accelerators, or shapley-value-based approaches that require expensive approximate inference. our analytical approach makes sllm quantization a predictable engineering task. 自回归小语言模型(sllms)在内存和计算资源受限设备上的推理,面向量化决策。 小语言模型在边缘设备上内存带宽受限,均匀量化往往由于架构冗余有限且部分层对低精度不敏感而导致质量下降。需要一种预测性方法来指导量化以优化速度和质量。 通过结合信息保持和吞吐增益两个正交标准的复合指标,可以仅基于模型分析无需实际执行来优选量化目标层,从而将量化工程变得可预测。 作者使用归一化的sqnr系数衡量信息保持,并结合基于roofline的延迟分析建模吞吐增益;对gemma 3 1b进行性能剖析,识别出前馈网络和嵌入矩阵是加速的最有希望的候选目标。 提出复合度量结合两种正交标准,即基于sqnr的信息保持和基于roofline的延迟分析吞吐增益 通过模拟量化和roofline建模估计每个层或子层的速度和归一化质量分数 组合两个分数形成合成优先级系数,以调整速度-质量权衡 该方法允许优先考虑单个块、投影子层或整个transformer层 在多种模型架构上评估,速度提升预测误差约为4% 与进化搜索、专用加速器和基于shapley值的方法相比,本方法通常将更多资源分配给表现更丰富的层 该方法涉及模型压缩和推理效率,对具身智能和世界模型的实时推理有直接关联,特别是视觉语言动作模型(vla)部署到真实机器人时,量化优先层可提升推理速度。 为边缘设备上的自回归模型提供了一种预测性的量化方法,无需昂贵实验即可权衡速度和质量,适用于资源受限的部署场景。"},{"id":"arxiv:2608.26821:v1","topic":"vla","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["action-prediction","efficient-inference","robot-manipulation","vision-language"],"searchText":"视觉语言动作(vla) 视觉语言动作模型中的历史信息表征与长时程操作 vla 长时程操作 时间流监督 物理基础 多阶段操作 temporalflow-vla: learning physically grounded execution history for long-horizon robot manipulation temporalflow-vla:学习基于物理的执行历史用于长时程机器人操作 jiarui yang yehao lu yuning su yu zhong yufeng xie yazhou zhang haiyu lan kaixiang lu peiwen lin chuang wang junwei liang enyu li vision-language-action (vla) models leverage pretrained vision-language representations for robot control, yet simply adding historical frames does not reliably capture recent physical change. this is especially problematic in multi-stage manipulation, where visually similar states may require different actions depending on prior execution. to address this challenge, we present temporalflow-vla, which learns compact execution history through physically grounded temporal supervision. using recorded robot states, robot geometry, and calibrated cameras, we construct robot-surface temporal flow as a training-only target and supervise two execution-aligned temporal queries that provide structured history to the action expert. the geometric supervision path is not evaluated at deployment. temporalflow-vla achieves 97.63 +/- 0.26% average success on libero, including 96.60 +/- 0.87% on libero long, and 85.5%/84.2% clean/randomized success across 12 robotwin tasks. it shows its clearest advantage over prior methods on longer-horizon, multi-stage manipulation. controlled history interventions show that action prediction depends on both historical content and temporal order. with asynchronous feature caching, temporal conditioning maintains single-frame-level server-side sampling latency without additional historical-encoding overhead. overall, temporalflow-vla provides a compact, physically grounded interface for exploiting ordered execution history without explicit motion estimation or geometric processing at deployment. 仿真(libero, robotwin 2.0)与真实机器人实验(简单堆叠、叠杯任务),采用固定历史观测的vla策略 现有vla模型通常仅依赖当前rgb观测,忽略历史物理变化,导致多阶段操作中视觉相似状态需不同动作时产生歧义,历史顺序未被有效利用。 将物理基础的机器人表面时间流作为训练目标,监督紧凑的历史查询,从而在不增加部署计算的前提下提供有序的执行历史,比直接多帧条件化更有效。 通过诊断实验(shuffling历史帧)表明标准基线对历史顺序不敏感,而tracevla以轨迹提示有效,因此关键挑战在于以结构化形式表征物理演化。作者提出用机器人表面时间流监督两个时序查询,使历史表征具有物理语义。 使用记录的机器人状态和urdf几何构造机器人表面时间流作为训练目标 两个与执行对齐的时间查询q15和q8在分块时间尺度上受监督 通过联合掩码注意力将查询提供给动作专家 联合优化动作流匹配损失和时间流重建损失 部署时仅保留稀疏历史观测/特征,使用异步缓存降低延迟 libero平均成功率97.63±0.26%,其中libero long 96.60±0.87% robotwin 12个任务清洁/随机成功率85.5%/84.2% 在长时程多阶段任务中优势最明显 历史干预实验表明动作预测依赖历史内容和时序 异步特征缓存使服务器端采样时间减少7.8% 直接相关于视觉语言动作模型和长时程操作,通过物理基础的时间流监督改进历史信息利用,提升多阶段操作性能,且部署高效,与物理人工智能和系统优化紧密关联。 该论文提出一种新颖的物理基础时间流监督方法,有效提升vla在长时程多阶段操作中的表现,且部署成本低,对具身智能和机械臂操作研究具有重要参考价值。"},{"id":"arxiv:2608.26806:v1","topic":"efficient-inference","tier":"browse","scope":"abstract","score":6,"hasFigure":false,"tags":["efficient-inference","evaluation","model-quantization","vision-language"],"searchText":"高效推理 大型视觉语言模型中的视觉令牌剪枝与推理加速 视觉令牌剪枝 推理加速 lvlm 多图像 无训练 自适应 multi-image visual token pruning in large visual language models 大型视觉语言模型中的多图像视觉令牌剪枝 rongyang zhang chengqiang lu cong li hongchao gu tingjia shen xuyang zhi qimeng wang yan gao yi wu yao hu hao wang enhong chen with the growing demand for processing multiple image sequences in real-world applications, various visual token pruning methods have emerged to mitigate the computational and context length constraints faced by large vision language models (lvlms). however, most existing pruning approaches rely on static strategies that struggle to adapt across different architectural lvlms and multi-image scenarios, and are additionally constrained by their dependence on attention computations that are incompatible with efficient techniques like flashattention. to address these limitations, we propose a training-free, adaptive visual token pruning (avtp) framework, applicable to diverse lvlm architectures. we strategically determine pruning layers based on empirical analysis of visual attention distributions across various lvlms, and implement adaptive pruning ratios in multi-image contexts where images of higher importance retain proportionally more tokens. we conduct extensive experiments across different lvlms to demonstrate the effectiveness and robustness of avtp. specifically, qwen3vl-8b achieves 2 times inference speedup while maintaining 96.1\\% of its original accuracy on multiple multi-image benchmarks, internvl3.5-8b retains 94.1\\% accuracy, and llava-ov-7b even exceeds its original baseline performance. our code is available at \\href{https://github.com/zry13/avtp}{this link}. 多图像视觉语言模型的推理优化,适用于不同lvlm架构 多图像序列处理需求增长,现有剪枝方法依赖静态策略,难以适应不同架构和多图像场景,且受限于注意力计算与高效技术不兼容。 根据视觉注意力分布的经验分析确定剪枝层,并在多图像场景中实现自适应剪枝比率,重要图像保留更多令牌。 作者基于不同lvlm的视觉注意力分布进行经验分析来确定剪枝层,材料未更详细说明。 提出无训练的自适应视觉令牌剪枝(avtp)框架 基于经验分析确定剪枝层 实现多图像自适应剪枝比率,重要图像保留更多令牌 qwen3vl-8b: 2倍推理加速,保持96.1%原始准确率 internvl3.5-8b: 保持94.1%准确率 llava-ov-7b: 超过原始基线性能 该研究关注视觉语言模型的推理效率优化,通过令牌剪枝加速多图像处理,与系统优化和高效推理相关,但与具身智能和世界模型的核心主题关联较弱,但可作为效率优化技术参考。 提供了一种无训练的自适应令牌剪枝方法,可显著加速多图像推理,对需要实时处理视觉输入的边缘设备或机器人系统有借鉴价值;其自适应思想和兼容高效注意力机制的设计具有通用性。"},{"id":"arxiv:2608.26788:v1","topic":"vla","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["efficient-inference","vision-language","world-modeling"],"searchText":"视觉语言动作(vla) 视觉语言模型与世界模型控制器的解耦规划与控制 视觉语言模型 世界模型 控制器 规划 控制 多智能体 dreamerv3 rl decoupling planning and control for instructable agents 可指令智能体的规划与控制解耦 zineng tang kelsey r. allen sjoerd van steenkiste ishita dasgupta alane suhr recent work shows that pre-trained, instruction-tuned vision-language models (vlms) perform well at mapping from instructions and observations to high-level plans, but struggle to realize such plans as reliable low-latency action sequences in unfamiliar environments. at the same time, world-model controllers excel at fast observation-to-action control, but lack open-ended task guidance. in this work, we combine these strengths into a single system, instruct-to-act, where we train a world-model controller to act autonomously at high frequency when conditioned on sparse, higher-latency, and high-level text instructions generated by a vlm planner. to train controllers to be language-instructable, we relabel segments of controller policy rollouts with synthetic instructions and jointly optimize a behavior-cloning objective along with existing reward-maximizing and world-modeling objectives. we evaluate our proposed approach across seven embodied environments, including three multi-agent environments where vlm planners coordinate through language while trained controllers serve as their actuators. under matched observation and action spaces, our decoupled approach consistently outperforms controller-only and direct vlm action-generation variants, preserves fast control, and lets us swap in different pretrained vlm planners without fine-tuning, while remaining competitive with strong vision-language-action and multi-agent rl baselines on six of seven tasks. 具身智能体在部分可观察环境中的实时控制与高层规划 预训练的vlm善于从指令生成高层计划,但难以在陌生环境中生成可靠的低延迟动作序列;世界模型控制器擅长快速观察-动作映射,但缺乏开放式任务指导。 将vlm规划器与世界模型控制器解耦,通过语言接口连接,实现高效实时控制与高层推理的互补。 作者指出vlm与控制器能力分离,提出解耦框架,并通过实验验证其有效性(材料未详细说明分析过程)。 使用预训练vlm作为规划器,生成高层文本指令 训练语言条件化的世界模型控制器,使用行为克隆目标结合原有世界模型目标 在推理时异步运行规划器和控制器,支持多智能体并行 通过重标注控制器策略轨迹段为合成指令来训练控制器 在七个具身环境上评估,包括atari、minerl、crafter等,以及多智能体环境 解耦方法在匹配观测和动作空间下优于仅控制器和直接vlm行动生成变体 保持快速控制,支持不同预训练vlm规划器免微调切换 与强vla和多智能体rl基线相比在六个任务上表现相当 直接相关于具身智能:结合了vlm规划与世界模型控制,体现世界模型在控制中的应用,并涉及系统优化(异步推理)和多智能体协调。 提供了一种解耦规划与控制的范式,有助于提升实时性和可扩展性,对具身智能和世界模型研究有参考价值。"},{"id":"arxiv:2608.16153:v4","topic":"robot-learning","tier":"browse","scope":"abstract","score":9,"hasFigure":true,"tags":["action-prediction","efficient-inference","robot-manipulation"],"searchText":"机器人学习与控制 机器人操作中的条件感知动作生成 统一条件-动作建模 单步动作生成 机器人操作 推理加速 uca-flow unified condition-action modeling for accurate one-step action generation 统一条件-动作建模用于精确的单步动作生成 xinyu zhou zikun cai kuangji zuo gen li boyu ma yanshuo lu yutong song mingqi yuan jiayu chen jianfei yang robot manipulation requires policies that are both accurate and efficient, as robot control must respond to changing observations under tight latency constraints. recent diffusion and flow policies are promising, but they often treat conditions as auxiliary signals rather than jointly evolving them with action trajectories. we find that this limitation can be effectively mitigated by a \\textbf{simple yet effective unified condition-action modeling design} that represents conditions and actions in a shared token space, allowing a compact model to achieve high performance while improving both inference speed and accuracy. therefore, we propose uca-flow, a unified condition-action modeling framework for accurate one-step action generation. our method unifies observation conditions, timestep conditions, interval conditions, and action tokens into a single sequence, and processes them with a unified condition-action transformer for joint condition-action representation learning. as a result, condition representations are dynamically reconstructed according to the current generation stage, highlighting information most relevant for action refinement. furthermore, we introduce an improved dual-pass supervision scheme over $u$ and $v$ for stronger optimization of unified condition-action modeling. uca-flow improves the average success rate by 9.3 percentage points over the strongest baseline, while achieving $45.6\\times$ and $33.4\\times$ speedups over dp3 and simple dp3, and remaining $4.3\\times$ and $2.3\\times$ faster than one-step flowpolicy and mp1, respectively.project page: https://uca-policy.github.io/uca.github.io/. 机器人操作策略,在紧延迟约束下需要准确且高效的控制 现有扩散和流策略将条件视为辅助信号,而不是与动作轨迹联合演化,限制了推理速度和准确性。 通过简单而有效的统一条件-动作建模设计,在共享token空间中表示条件和动作,可以使紧凑模型同时提高推理速度和准确性。 作者发现现有方法的限制可以通过统一条件-动作建模来缓解,并提出了动态重建条件表示以适应生成阶段的方法。 将观察条件、时间步条件、间隔条件和动作token统一到单一序列中 使用统一条件-动作transformer进行联合条件-动作表示学习 条件表示根据当前生成阶段动态重建,突出与动作细化最相关的信息 引入改进的双通道监督方案(u和v)以优化统一条件-动作建模 在多个任务上,uca-flow相比最强基线平均成功率提高9.3个百分点 推理速度比dp3和simple dp3分别快45.6倍和33.4倍 比单步flowpolicy和mp1分别快4.3倍和2.3倍 论文直接面向具身智能中的机器人操作,提出统一条件-动作建模以提升动作生成准确性和推理效率,与视觉语言动作模型、世界模型和系统优化紧密相关 本文提出了一种简单而有效的统一条件-动作建模方法,在保证准确性的同时大幅提升推理速度,对于实时控制和大模型压缩具有重要参考价值。"},{"id":"arxiv:2606.09828:v2","topic":"world-model","tier":"browse","scope":"abstract","score":8,"hasFigure":true,"tags":["efficient-inference","simulation","world-modeling"],"searchText":"世界模型(world model) 视频世界模型中的潜在空间记忆与高效生成 视频世界模型 潜在空间 3d记忆 扩散模型 计算效率 latent spatial memory for video world models 视频世界模型的潜在空间记忆 weijie wang haoyu zhao yifan yang feng chen zeyu zhang yefei he zicheng duan donny y. chen yuqing yang bohan zhuang video world models that maintain 3d spatial consistency across generated frames typically rely on explicit point cloud memory constructed in rgb space. this design is both computationally expensive, requiring repeated rendering and vae encoding, and inherently lossy, as the round trip through pixel space discards rich features of the learned latent representation. in this paper, we introduce \\emph{latent spatial memory} for video world models, a persistent 3d cache that stores scene information directly in the diffusion latent space, avoiding pixel-space reconstruction. building on this, we propose mirage, a latent-space spatial memory framework that constructs the memory by lifting latent tokens into 3d via depth-guided back-projection and queries it by synthesizing novel views through direct latent-space warping. this unified formulation eliminates both the information loss of pixel-space reconstruction and the computational burden of repeated encoding and rendering. experiments show that latent spatial memory achieves up to \\textbf{10.57}$\\times$ faster end-to-end video generation and \\textbf{55}$\\times$ reduction in memory footprint relative to explicit 3d baselines. leveraging the geometric prior of the diffusion model, mirage attains state-of-the-art performance on worldscore and strong reconstruction quality on realestate10k. 视频世界模型的生成任务,关注3d空间一致性与高效推理 现有视频世界模型依赖rgb空间的显式点云记忆,造成计算开销大且存在信息损失,因此需要直接在潜在空间构建记忆以提升效率与保真度。 将场景信息直接存储在扩散潜在空间,通过深度引导的反投影构建3d记忆,并直接在潜在空间进行视图合成,可避免像素空间重建的损失与开销。 材料未说明 在扩散潜在空间中构建持久3d缓存,存储场景信息 通过深度引导的反投影将潜在token提升至3d空间 通过潜在空间扭曲合成新视图,统一记忆构建与查询过程 相比显式3d基线,端到端视频生成速度提升最高10.57倍,内存占用减少55倍 在worldscore上达到最先进性能,在realestate10k上重建质量强 该研究直接面向视频世界模型,通过潜在空间记忆提升生成效率和空间一致性,对于物理ai和具身智能中长时序预测有直接参考价值,其高效推理设计也与系统优化相关。 该工作提出了世界模型中内存与效率的优化方案,且取得了显著加速和压缩效果,是视频世界模型迈向实时应用的重要一步,值得研究与系统优化结合。"},{"id":"arxiv:2604.21057:v2","topic":"efficient-inference","tier":"browse","scope":"abstract","score":6,"hasFigure":false,"tags":["efficient-inference","evaluation"],"searchText":"高效推理 语言推理模型的推理步骤标记与自适应早停机制 推理模型 早停 成本效率 标记 数学推理 traces: tagging reasoning steps for adaptive cost-efficient early-stopping traces:为自适应成本高效早停标记推理步骤 yannis belkhiter seshu tirupathi giulio zizzo john d. kelleher the field of language reasoning models (lrms) has been very active over the past few years with advances in training and inference techniques enabling lrms to reason longer, and more accurately. however, a growing body of studies show that lrms are still inefficient, over-generating verification and reflection steps. additionally, the high-level role of each reasoning step and how different step types contribute to the generation of correct answers, is largely underexplored. to address this challenge, we introduce traces (tagging of the reasoning steps enabling adaptive cost-efficient early-stopping), a lightweight framework that tags reasoning steps in real-time, and enable adaptive, cost-efficient early stopping of large-language-model inferences. by monitoring reasoning behaviors during inferences, we find that lrms tend to shift their reasoning behavior after reaching a correct answer. we demonstrate that the monitoring of the specific type of steps can produce effective interpretable early stopping criteria. evaluated on three mathematical reasoning benchmarks (math500, gsm8k, aime) and two knowledge and reasoning benchmarks (mmlu and gpqa), traces achieve 20 to 50% token reduction while maintaining comparable accuracy to standard generation. on harder tasks (beyondaime, imo answerbench), the accuracy-efficiency trade-off is steeper, requiring a more conservative early-stopping threshold. this work offers a novel way to study and control the generation behavior of lrms. 自然语言处理与大语言模型推理优化 语言推理模型在推理时过度生成验证和反思步骤,导致效率低下;同时,不同推理步骤类型对正确回答生成的贡献尚未得到充分研究。 语言推理模型在达到正确答案后倾向于改变推理行为,因此监测特定类型的推理步骤可以产生有效的可解释早停标准。 作者通过实时监测推理行为,分析推理步骤类型与正确答案生成的关系,从而提出基于步骤类型监测的早停标准。 提出一个轻量级框架traces,实时标记推理步骤 利用标记信息监测推理行为,实现自适应、成本高效的早停 根据任务难度调整早停阈值 在math500, gsm8k, aime, mmlu和gpqa基准上,traces实现20%至50%的令牌减少,同时保持与标准生成相当的准确率 在更难的beyondaime和imo answerbench任务上,准确率-效率权衡更陡峭,需要更保守的早停阈值 虽然主要面向语言推理模型,但其中推理步骤标记、自适应早停和成本效率优化的思想可迁移到视觉语言动作模型和世界模型的推理加速与计算优化。 提供了一种轻量级的推理步骤标记与早停方法,可有效减少生成计算量,对具身智能中实时控制和推理效率优化有借鉴价值。"}]</script>
+  </section>
+
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>

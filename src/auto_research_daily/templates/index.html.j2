@@ -4,17 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title }} · {{ report.generated_at.strftime('%Y-%m-%d') }}</title>
+  <title>{{ page_title }}</title>
   <style>
     :root {
-      --ink:#16211b;
-      --muted:#5d6a62;
-      --paper:#f3efe6;
-      --card:#fffdfa;
-      --green:#1f5c42;
-      --green-soft:#e8f0e9;
-      --line:#d8d2c5;
-      --accent:#b44d2f;
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
       --shadow:0 16px 42px rgba(34,42,36,.07);
     }
     * { box-sizing:border-box; }
@@ -24,13 +18,15 @@
     button { color:inherit; }
     a { color:var(--green); }
     [hidden] { display:none !important; }
-    main { width:min(1440px,94vw); margin:0 auto; padding:48px 0 96px; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
 
     .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
-    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.86rem; letter-spacing:.04em; }
-    .masthead nav { display:flex; gap:16px; }
-    h1 { font:700 clamp(2.4rem,6vw,5.4rem)/1.02 Georgia,"Noto Serif SC",serif; max-width:1050px; margin:42px 0 20px; }
-    .lede { color:var(--muted); max-width:880px; font-size:1.08rem; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
     .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
     .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
     .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
@@ -38,7 +34,18 @@
     .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
     .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
     .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
-    .gallery-intro > p { max-width:600px; margin:0; color:var(--muted); }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
 
     .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
     .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
@@ -56,6 +63,7 @@
     .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
     .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
     .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
     .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
 
     .tier-section { margin-top:36px; }
@@ -73,6 +81,7 @@
     .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
     .paper-card__placeholder small { color:var(--muted); }
     .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
     .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
     .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
     .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
@@ -88,8 +97,8 @@
     .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
     .paper-card__recommendation strong { color:var(--ink); }
     .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
-    .paper-tags button { padding:3px 8px; border:0; color:var(--green); background:#edf3ed; font-size:.75rem; cursor:pointer; }
-    .paper-tags button:hover { text-decoration:underline; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
 
     .paper-details { margin-top:auto; border-top:1px solid var(--line); }
     .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
@@ -116,6 +125,10 @@
     .figure-error { padding:26px; color:var(--muted); text-align:center; }
     .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
     .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
 
     .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
     .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
@@ -127,12 +140,12 @@
       .stats { grid-template-columns:repeat(3,1fr); }
       .explorer-controls { grid-template-columns:repeat(3,1fr); }
       .control--query { grid-column:span 2; }
-      .explorer-actions { align-items:end; }
     }
     @media (max-width:760px) {
       main { width:min(94vw,680px); padding-top:24px; }
       .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
-      h1 { margin-top:28px; font-size:clamp(1.8rem,8.5vw,2.15rem); white-space:nowrap; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
       .stats { grid-template-columns:repeat(2,1fr); }
       .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
       .topic-filter { min-width:190px; scroll-snap-align:start; }
@@ -149,10 +162,16 @@
   <header class="page-header">
     <div class="masthead">
       <span>AUTO RESEARCH DAILY · {{ report.generated_at.strftime('%Y-%m-%d %H:%M') }}</span>
-      <nav aria-label="站点导航"><a href="{{ archive_index_url }}">历史日报</a><a href="{{ feed_url }}">RSS 订阅</a></nav>
+      <nav aria-label="站点导航">
+        <a href="{{ home_url }}">今日</a><a href="{{ daily_index_url }}">每日日报</a>
+        <a href="{{ library_url }}">长期论文库</a><a href="{{ topics_index_url }}">主题</a>
+        <a href="{{ tags_index_url }}">标签</a><a href="{{ archive_index_url }}">发表归档</a>
+        <a href="{{ search_url }}">搜索</a><a href="{{ feed_url }}">订阅</a>
+      </nav>
     </div>
-    <h1>{{ title }}</h1>
-    <p class="lede">先做广覆盖科研发现，再用个人研究画像、多样性重排和分层证据阅读压缩成真正值得投入时间的论文。首页采用论文画廊，默认只展示快速判断信息，完整研究笔记按需展开。</p>
+    <h1>{{ page_title }}</h1>
+    {% if page_lede %}<p class="lede">{{ page_lede }}</p>{% endif %}
+    {% if page_kind == 'home' %}
     <div class="stats" aria-label="本期统计">
       <div class="stat"><strong>{{ report.stats.fetched }}</strong>广泛抓取</div>
       <div class="stat"><strong>{{ report.stats.preselected }}</strong>进入分析</div>
@@ -160,24 +179,42 @@
       <div class="stat"><strong>{{ report.stats.published }}</strong>最终发布</div>
       <div class="stat"><strong>{{ report.stats.figure_available }}</strong>论文配图</div>
     </div>
+    {% elif page_kind in ('collection', 'directory') %}
+    <div class="stats" aria-label="长期档案统计">
+      <div class="stat"><strong>{{ paper_count if page_kind == 'collection' else directory_cards|length }}</strong>{{ '当前页面论文' if page_kind == 'collection' else '归档入口' }}</div>
+      <div class="stat"><strong>{{ archive_count }}</strong>长期论文</div>
+      <div class="stat"><strong>{{ archive_topic_count }}</strong>稳定主题</div>
+      <div class="stat"><strong>{{ archive_tag_count }}</strong>固定标签</div>
+      <div class="stat"><strong>{{ archive_figure_count }}</strong>已有配图</div>
+    </div>
+    {% endif %}
   </header>
 
+  {% if page_kind == 'directory' %}
+  <section class="portal-section" aria-label="目录">
+    <div class="portal-grid">
+      {% for card in directory_cards %}
+      <a class="portal-card" href="{{ card.url }}"><strong>{{ card.label }}</strong><p>{{ card.description }}</p><span>{{ card.count }} {{ '篇' if '论文' in card.label or '主题' in page_title or '标签' in page_title else '项' }} →</span></a>
+      {% endfor %}
+    </div>
+  </section>
+  {% elif page_kind == 'detail' and detail_view %}
+  <section class="detail-layout" aria-label="论文完整解读">{{ paper_card(detail_view, site_url, expanded=true) }}</section>
+  {% else %}
   <section class="gallery-intro" aria-labelledby="gallery-title">
-    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">今日论文画廊</h2></div>
-    <p>先按稳定主题逛一遍，再用层级、证据范围和相关性缩小范围。分类用于导航，模型生成的细粒度主题仍保留在完整解读中。</p>
+    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">{{ gallery_title }}</h2></div>
+    <p>{{ gallery_description }}</p>
   </section>
 
   <section data-explorer>
     <div class="topic-shelves" role="group" aria-label="按研究主题筛选">
-      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>{{ report.papers|length }} 篇</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>{{ paper_count }} 篇</span></button>
       {% for entry in topics %}
-      <button class="topic-filter" type="button" data-topic-choice="{{ entry.topic.key }}" aria-pressed="false" title="{{ entry.topic.description }}">
-        <strong>{{ entry.topic.label }}</strong><span>{{ entry.count }} 篇 · {{ entry.topic.description }}</span>
-      </button>
+      <button class="topic-filter" type="button" data-topic-choice="{{ entry.topic.key }}" aria-pressed="false" title="{{ entry.topic.description }}"><strong>{{ entry.topic.label }}</strong><span>{{ entry.count }} 篇 · {{ entry.topic.description }}</span></button>
       {% endfor %}
     </div>
 
-    <form class="explorer-controls" data-filter-form aria-label="筛选今日论文">
+    <form class="explorer-controls" data-filter-form aria-label="筛选论文">
       <label class="control control--query"><span>关键词</span><input type="search" name="q" maxlength="200" autocomplete="off" placeholder="标题、作者、方法、标签……" data-filter-query></label>
       <label class="control"><span>编辑层级</span><select name="tier" data-filter-tier><option value="">全部层级</option><option value="deep_read">今日必读</option><option value="browse">值得浏览</option><option value="explore">探索发现</option></select></label>
       <label class="control"><span>证据范围</span><select name="scope" data-filter-scope><option value="">全部范围</option><option value="full_text">全文级</option><option value="abstract">摘要级</option></select></label>
@@ -186,21 +223,36 @@
       <div class="explorer-actions"><button type="button" data-expand-visible>展开结果</button><button type="button" data-collapse-visible>全部收起</button><button type="reset">重置</button></div>
     </form>
     <noscript><p class="noscript-notice">筛选功能需要启用 JavaScript；未启用时仍会显示全部论文。</p></noscript>
-    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">{{ report.papers|length }}</strong> 篇论文</p><p>点击标签可继续筛选；筛选状态会保留在网址中。</p></div>
+    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">{{ paper_count }}</strong> 篇论文 <span class="active-tag" data-active-tag></span></p><p>标签有稳定永久网址，也可在当前画廊内继续筛选。</p></div>
 
     {% for tier, label, entries in grouped %}
       {% if entries %}
       <section class="tier-section" data-tier-section="{{ tier }}">
         <header class="tier-heading"><h2>{{ label }}</h2><p><span data-tier-count>{{ entries|length }}</span> 篇</p></header>
-        <div class="paper-grid">
-          {% for view in entries %}{{ paper_card(view, site_url) }}{% endfor %}
-        </div>
+        <div class="paper-grid">{% for view in entries %}{{ paper_card(view, site_url, expanded=expanded, compact=compact_cards) }}{% endfor %}</div>
       </section>
       {% endif %}
     {% endfor %}
-    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、层级或相关性条件。</p>
+    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、标签、层级或相关性条件。</p>
     <script type="application/json" data-paper-json>{{ filter_json|safe }}</script>
   </section>
+
+  {% if page_kind == 'home' %}
+  <section class="portal-section" aria-labelledby="long-term-title">
+    <h2 id="long-term-title">长期研究入口</h2>
+    <p>今日是一次运行结果；长期论文库、主题、标签与发表月份归档是持续累积的研究资产。</p>
+    <div class="portal-grid">
+      <a class="portal-card" href="{{ library_url }}"><strong>长期论文库</strong><p>同一论文去重并选择当前最高版本，支持组合筛选。</p><span>{{ archive_count }} 篇 →</span></a>
+      <a class="portal-card" href="{{ daily_index_url }}"><strong>每日日报</strong><p>按系统运行日期保留快照，不和发表时间混淆。</p><span>查看历史 →</span></a>
+      <a class="portal-card" href="{{ topics_index_url }}"><strong>稳定研究主题</strong><p>围绕视觉语言动作、世界动作模型、世界模型和系统优化组织。</p><span>{{ archive_topic_count }} 个主题 →</span></a>
+      <a class="portal-card" href="{{ tags_index_url }}"><strong>固定研究标签</strong><p>方法、任务、数据、评测与系统属性拥有永久网址。</p><span>{{ archive_tag_count }} 个标签 →</span></a>
+      <a class="portal-card" href="{{ archive_index_url }}"><strong>论文发表归档</strong><p>按论文首次发表月份浏览，与每日日报分开。</p><span>按月查看 →</span></a>
+      <a class="portal-card" href="{{ search_url }}"><strong>论文档案搜索</strong><p>检索元数据和结构化研究笔记。</p><span>开始搜索 →</span></a>
+    </div>
+    {% if portal_topics %}<h3 class="portal-subtitle">主题直达</h3><div class="portal-grid">{% for card in portal_topics %}<a class="portal-card" href="{{ card.url }}"><strong>{{ card.label }}</strong><p>{{ card.description }}</p><span>{{ card.count }} 篇 →</span></a>{% endfor %}</div>{% endif %}
+  </section>
+  {% endif %}
+  {% endif %}
 </main>
 <script>
 (() => {
@@ -211,6 +263,7 @@
   try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
   const byId = new Map(records.map((record) => [record.id, record]));
   const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
   const validTiers = new Set(['deep_read', 'browse', 'explore']);
   const validScopes = new Set(['full_text', 'abstract']);
   const validFigures = new Set(['yes', 'no']);
@@ -223,11 +276,12 @@
   const figureInput = explorer.querySelector('[data-filter-figure]');
   const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
   const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
-  let state = { query:'', topic:'', tier:'', scope:'', score:0, figure:'' };
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
 
   const canonicalState = (candidate) => ({
     query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
     topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
     tier: validTiers.has(candidate.tier) ? candidate.tier : '',
     scope: validScopes.has(candidate.scope) ? candidate.scope : '',
     score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
@@ -235,16 +289,13 @@
   });
   const readUrl = () => {
     const params = new URLSearchParams(location.search);
-    return canonicalState({
-      query: params.get('q') || '', topic: params.get('topic') || '',
-      tier: params.get('tier') || '', scope: params.get('scope') || '',
-      score: params.get('score') || 0, figure: params.get('figure') || '',
-    });
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
   };
   const writeUrl = () => {
     const params = new URLSearchParams();
     if (state.query) params.set('q', state.query);
     if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
     if (state.tier) params.set('tier', state.tier);
     if (state.scope) params.set('scope', state.scope);
     if (state.score) params.set('score', String(state.score));
@@ -256,6 +307,11 @@
     queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
     scoreInput.value = String(state.score); figureInput.value = state.figure;
     topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
   };
   const render = () => {
     state = canonicalState(state);
@@ -263,10 +319,7 @@
     let visibleCount = 0;
     explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
       const record = byId.get(card.dataset.paperId);
-      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) &&
-        (!state.topic || record.topic === state.topic) && (!state.tier || record.tier === state.tier) &&
-        (!state.scope || record.scope === state.scope) && record.score >= state.score &&
-        (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
       card.hidden = !visible;
       if (visible) visibleCount += 1;
     });
@@ -282,32 +335,20 @@
   };
 
   state = readUrl(); syncControls(); render();
-  form?.addEventListener('input', () => {
-    state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value };
-    render();
-  });
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
   form?.addEventListener('submit', (event) => event.preventDefault());
-  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
   topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
-  explorer.querySelectorAll('[data-tag-filter]').forEach((button) => button.addEventListener('click', () => {
-    state.query = button.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' });
-  }));
-  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => {
-    explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; });
-  });
-  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => {
-    explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; });
-  });
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
 })();
 
 document.querySelectorAll('[data-paper-figure]').forEach((image) => {
   const fail = () => {
     const original = image.dataset.originalUrl;
-    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) {
-      image.dataset.remoteFallback = 'used'; image.src = original; return;
-    }
-    image.hidden = true;
-    image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
   };
   image.addEventListener('error', fail);
   if (image.complete && image.naturalWidth === 0) fail();

@@ -124,9 +124,9 @@ def select_new_papers(report: RunReport, state: dict[str, Any]) -> tuple[Analyze
     return tuple(item for item in report.papers if item.ranked.paper.identity not in notified)
 
 
-def _archive_url(settings: MailSettings, report: RunReport) -> str:
+def _daily_url(settings: MailSettings, report: RunReport) -> str:
     date_name = report.generated_at.strftime("%Y-%m-%d")
-    return urljoin(settings.site_url, f"archive/{date_name}.html")
+    return urljoin(settings.site_url, f"daily/{date_name}/")
 
 
 def _render_plain_text(
@@ -134,7 +134,7 @@ def _render_plain_text(
     papers: tuple[AnalyzedPaper, ...],
     *,
     title: str,
-    archive_url: str,
+    daily_url: str,
     detail_limit: int,
 ) -> str:
     lines = [
@@ -142,7 +142,7 @@ def _render_plain_text(
         "",
         f"今日新增推荐 {len(papers)} 篇，全文级解读 "
         f"{sum(item.tier == 'deep_read' for item in papers)} 篇。",
-        f"完整日报：{archive_url}",
+        f"完整日报：{daily_url}",
         "",
     ]
     for index, item in enumerate(papers, start=1):
@@ -176,7 +176,7 @@ def _render_html(
     papers: tuple[AnalyzedPaper, ...],
     *,
     title: str,
-    archive_url: str,
+    daily_url: str,
     detail_limit: int,
     template_dir: Path,
 ) -> str:
@@ -191,7 +191,7 @@ def _render_html(
         report=report,
         papers=papers,
         title=title,
-        archive_url=archive_url,
+        daily_url=daily_url,
         detail_limit=detail_limit,
         tier_labels=TIER_LABELS,
     )
@@ -218,13 +218,13 @@ def build_report_message(
     revision: int = 0,
 ) -> EmailMessage:
     subject = _safe_header("Subject", _subject(report, papers, revision=revision))
-    archive_url = _archive_url(settings, report)
+    daily_url = _daily_url(settings, report)
     detail_limit = min(config.top_detail_limit, len(papers))
     html = _render_html(
         report,
         papers,
         title=title,
-        archive_url=archive_url,
+        daily_url=daily_url,
         detail_limit=detail_limit,
         template_dir=template_dir,
     )
@@ -234,7 +234,7 @@ def build_report_message(
             report,
             papers,
             title=title,
-            archive_url=archive_url,
+            daily_url=daily_url,
             detail_limit=detail_limit,
             template_dir=template_dir,
         )
@@ -244,7 +244,7 @@ def build_report_message(
         report,
         papers,
         title=title,
-        archive_url=archive_url,
+        daily_url=daily_url,
         detail_limit=detail_limit,
     )
     message = EmailMessage()

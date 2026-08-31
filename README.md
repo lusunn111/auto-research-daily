@@ -95,12 +95,19 @@ Zotero 原始条目只在内存中参与排序，不会进入报告、缓存或 
 ## 输出
 
 - `data/latest.json`：本次严格结构化结果。
+- `data/daily/YYYY-MM-DD.json`：按运行日期保存的结构化日报快照。
 - `data/archive/YYYY-MM.json`：按月合并的论文归档。
 - `data/cache/analyses.json`：公开论文分析缓存。
 - `data/cache/figures.json`：论文原图状态、图注、原始地址与站内缓存路径。
 - `reports/YYYY-MM-DD.md`：适合深读的中文日报。
 - `site/figures/`：经过格式、体积、像素数和来源校验的当日论文图像缓存，仅随 Pages 制品部署，不进入 Git 历史。
-- `site/index.html`、`site/archive/` 与 `site/feed.xml`：最新日报、历史页面和 RSS，可由 GitHub Pages 直接发布。
+- `site/index.html`：仅展示最新一次运行结果，并提供长期研究入口。
+- `site/daily/`：按运行日期组织的每日日报；邮件直接链接对应日期页面。
+- `site/library/`：跨日期、跨月份去重后的长期论文库。
+- `site/topics/` 与 `site/tags/`：拥有永久网址的稳定主题和固定标签档案。
+- `site/archive/YYYY-MM/`：按论文首次发表月份组织的归档，与运行日期分开。
+- `site/papers/<source>/<canonical_id>/`：单篇论文的永久详情与完整结构化解读。
+- `site/search/` 与 `site/feed.xml`：长期档案搜索和 RSS 订阅。
 
 缓存键包含论文标识与版本、输入内容哈希、证据范围、研究画像指纹、模型、提示词版本和模式版本。任何一项发生变化都会自动重新分析；缓存只保存论文解读，当前排名和分数会在每天重新计算。
 

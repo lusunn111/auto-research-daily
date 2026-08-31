@@ -120,7 +120,7 @@ def test_fingerprint_is_deterministic_and_state_filters_previous_version() -> No
     assert select_new_papers(report, state) == ()
 
 
-def test_email_is_escaped_and_links_stable_archive() -> None:
+def test_email_is_escaped_and_links_daily_snapshot() -> None:
     config = load_config(ROOT / "config/research.yaml")
     report = _report()
     fingerprint = edition_fingerprint(
@@ -140,7 +140,7 @@ def test_email_is_escaped_and_links_stable_archive() -> None:
     )
     html = message.get_body(preferencelist=("html",)).get_content()
     assert "Robot &lt;World&gt; Model" in html
-    assert "archive/2026-08-30.html" in html
+    assert "daily/2026-08-30/" in html
     assert len(html.encode()) <= config.email.html_byte_limit
     assert str(message["Message-ID"]).startswith("<auto-research-daily-20260830-")
 

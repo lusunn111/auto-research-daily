@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from auto_research_daily.taxonomy import classify_paper
+from auto_research_daily.taxonomy import classify_paper, classify_tags
 
 
 def paper_item(
@@ -74,3 +74,16 @@ def test_classify_paper_uses_stable_public_topics(
     item: SimpleNamespace,
 ) -> None:
     assert classify_paper(item).key == expected
+
+
+def test_classify_tags_uses_fixed_alias_registry() -> None:
+    item = paper_item(
+        title="Efficient Vision-Language-Action World Models",
+        abstract="We accelerate action-conditioned robot policy inference.",
+        primary_topic="视觉语言动作模型",
+        tags=("世界模型", "推理加速"),
+    )
+
+    keys = {tag.key for tag in classify_tags(item)}
+
+    assert {"efficient-inference", "vision-language", "world-modeling"} <= keys

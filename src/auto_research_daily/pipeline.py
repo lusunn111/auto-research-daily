@@ -297,6 +297,7 @@ def run_daily(config: AppConfig, options: RunOptions) -> RunReport:
             report,
             title=config.output.title,
             reports_dir=reports_dir,
+            data_dir=data_dir,
             site_dir=site_dir,
             template_dir=root / "src" / "auto_research_daily" / "templates",
             site_url=(

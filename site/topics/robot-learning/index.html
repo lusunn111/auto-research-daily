@@ -1,0 +1,1686 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>机器人学习与控制</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-08-30 18:02</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>机器人学习与控制</h1>
+<p class="lede">操作、导航、规划、强化学习与跨具身策略。</p>    <div class="stats" aria-label="长期档案统计">
+      <div class="stat"><strong>14</strong>当前页面论文</div>
+      <div class="stat"><strong>43</strong>长期论文</div>
+      <div class="stat"><strong>7</strong>稳定主题</div>
+      <div class="stat"><strong>15</strong>固定标签</div>
+      <div class="stat"><strong>22</strong>已有配图</div>
+    </div>
+  </header>
+
+  <section class="gallery-intro" aria-labelledby="gallery-title">
+    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">机器人学习与控制长期档案</h2></div>
+    <p>来自全部月份归档的当前首选版本。</p>
+  </section>
+
+  <section data-explorer>
+    <div class="topic-shelves" role="group" aria-label="按研究主题筛选">
+      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>14 篇</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="robot-learning" aria-pressed="false" title="操作、导航、规划、强化学习与跨具身策略。"><strong>机器人学习与控制</strong><span>14 篇 · 操作、导航、规划、强化学习与跨具身策略。</span></button>
+    </div>
+
+    <form class="explorer-controls" data-filter-form aria-label="筛选论文">
+      <label class="control control--query"><span>关键词</span><input type="search" name="q" maxlength="200" autocomplete="off" placeholder="标题、作者、方法、标签……" data-filter-query></label>
+      <label class="control"><span>编辑层级</span><select name="tier" data-filter-tier><option value="">全部层级</option><option value="deep_read">今日必读</option><option value="browse">值得浏览</option><option value="explore">探索发现</option></select></label>
+      <label class="control"><span>证据范围</span><select name="scope" data-filter-scope><option value="">全部范围</option><option value="full_text">全文级</option><option value="abstract">摘要级</option></select></label>
+      <label class="control"><span>最低相关性</span><select name="score" data-filter-score><option value="0">全部</option><option value="8">8 分以上</option><option value="9">9 分以上</option></select></label>
+      <label class="control"><span>论文配图</span><select name="figure" data-filter-figure><option value="">全部</option><option value="yes">已有原图</option><option value="no">暂无原图</option></select></label>
+      <div class="explorer-actions"><button type="button" data-expand-visible>展开结果</button><button type="button" data-collapse-visible>全部收起</button><button type="reset">重置</button></div>
+    </form>
+    <noscript><p class="noscript-notice">筛选功能需要启用 JavaScript；未启用时仍会显示全部论文。</p></noscript>
+    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">14</strong> 篇论文 <span class="active-tag" data-active-tag></span></p><p>标签有稳定永久网址，也可在当前画廊内继续筛选。</p></div>
+
+      <section class="tier-section" data-tier-section="deep_read">
+        <header class="tier-heading"><h2>今日必读</h2><p><span data-tier-count>2</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27158:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27158/v1/fig1-panel1.png"
+        alt="Figure 1：Representative snapshots of action chunks generated by PDPO during navigation through a dense crowd. In each snapshot, the dashed circle denotes the robot’s observation range, blue dots denote humans with predicted linear trajectories, the green dot denotes the robot, and the red cross the end of the action chunk. The generated chunks provide coherent short-horizon local plans that adapt to nearby pedestrians. Complete storyboards and multimodal samples are in Appendix C ."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.27158v1/figures_of_action_chunks_examples/step_0062.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Representative snapshots of action chunks generated by PDPO during navigation through a dense crowd. In each snapshot, the dashed circle denotes the robot’s observation range, blue dots denote humans with predicted linear trajectories, the green dot denotes the robot, and the red cross the end of the action chunk. The generated chunks provide coherent short-horizon local plans that adapt to nearby pedestrians. Complete storyboards and multimodal samples are in Appendix C .</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27158/">短视域规划中的扩散策略用于机器人人群导航</a></h3>
+    <p class="original-title" lang="en">Diffusion Policies for Short-Horizon Planning in Robot Crowd Navigation</p>
+    <p class="authors">Wendong Li · Jochen Garcke</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>扩散策略生成短视域动作块（五步）并以滚动时域方式执行，能够捕捉多模态的导航行为；同时，评估环境缺少边界约束会导致代理绕过密集人群，影响评估真实性</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文将扩散策略与短视域规划引入人群导航，提供了处理多模态行动分布的新方法，并指出评估环境中的常见伪影，对当前研究者的动作生成和评估设计有直接参考价值</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>机器人人群导航中的扩散策略与短视域规划</p>
+        <p><strong>模型原始标签：</strong>扩散策略、强化学习、人群导航、短视域规划、离线到在线</p>
+        <p><strong>第一单位：</strong>波恩大学数值模拟研究所</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27158">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27158">PDF ↗</a><a href="https://arxiv.org/html/2608.27158v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27158/v1/fig1-panel1.png"
+              alt="Figure 1：Representative snapshots of action chunks generated by PDPO during navigation through a dense crowd. In each snapshot, the dashed circle denotes the robot’s observation range, blue dots denote humans with predicted linear trajectories, the green dot denotes the robot, and the red cross the end of the action chunk. The generated chunks provide coherent short-horizon local plans that adapt to nearby pedestrians. Complete storyboards and multimodal samples are in Appendix C ."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27158v1/figures_of_action_chunks_examples/step_0062.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Representative snapshots of action chunks generated by PDPO during navigation through a dense crowd. In each snapshot, the dashed circle denotes the robot’s observation range, blue dots denote humans with predicted linear trajectories, the green dot denotes the robot, and the red cross the end of the action chunk. The generated chunks provide coherent short-horizon local plans that adapt to nearby pedestrians. Complete storyboards and multimodal samples are in Appendix C .
+            <a class="figure-source" href="https://arxiv.org/html/2608.27158v1#S5.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27158/v1/fig2-panel1.png"
+              alt="Figure 2：Online fine-tuning curves of PDPO and its ablation on Bounded CrowdNav over the common training horizon. Left: training success rate. Right: average training reward."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27158v1/training_curves/train_success_rate_compare_common_steps.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Online fine-tuning curves of PDPO and its ablation on Bounded CrowdNav over the common training horizon. Left: training success rate. Right: average training reward.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27158v1#A2.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>仿真环境中的机器人人群导航，采用离线演示预训练与在线PPO微调</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有强化学习方法在人群导航中输出单一反应动作，无法表示多样化的短期避障策略，且缺乏时间一致性</dd>
+        <dt>Insight（核心洞察）</dt><dd>扩散策略生成短视域动作块（五步）并以滚动时域方式执行，能够捕捉多模态的导航行为；同时，评估环境缺少边界约束会导致代理绕过密集人群，影响评估真实性</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>动态多智能体交互下的安全避障</li><li>多模态行动分布建模</li><li>评估基准中的边界约束缺失</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者观察到基准测试中的评估伪影：缺乏边界约束时学习代理可离开有效区域绕过人群，因此在修改的边界化基准中将边界违规视为碰撞，以更真实地评估</dd>
+        <dt>Method（方法）</dt><dd><ul><li>离线演示预训练扩散策略</li><li>在线PPO微调，去噪过程被视为内部决策过程</li><li>生成五步动作块并以滚动时域方式执行，每一步只执行第一个动作</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在标准人群导航基准上与强基线比较，PDPO获得改进的成功率；消融实验表明动作块在修改的边界化基准中尤为重要</li><li>具体数字未提供</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>评估仅在仿真中，人类遵循固定策略且不响应机器人，未完全捕捉真实人机交互</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>论文针对具身智能中的导航决策问题，采用扩散策略生成短视域动作序列，与视觉语言动作模型和世界动作模型中的可执行动作生成、长时序预测相关，并关注通过边界约束改进评估协议，涉及系统优化中的基准设计</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>由于仅提供全文节选，未获得完整的实验结果数据，具体改进幅度、基线对比细节和计算效率等信息不足；通讯作者信息未在提供材料中明确</p>
+          <blockquote><strong>PDPO 是一个离线到在线的强化学习框架，使用扩散策略生成短视域动作块：</strong>We propose Planning Diffusion Policy Optimization (PDPO), an offline-to-online reinforcement-learning framework that uses a diffusion policy to generate short-horizon action chunks for crowd navigation.</blockquote>
+          <blockquote><strong>生成五步动作块并以滚动时域方式执行：</strong>During execution, the policy generates a five-step action chunk and applies it in a receding-horizon manner.</blockquote>
+          <blockquote><strong>发现评估伪影，缺乏边界约束导致代理离开有效域绕过密集人群：</strong>we observe an evaluation artifact in common crowd-navigation benchmarks: without explicit boundary constraints, learned agents may leave the valid domain and bypass dense crowds.</blockquote>
+          <blockquote><strong>通过将边界违约视为碰撞来处理评估伪影：</strong>To address this, we introduce a setting in which boundary violations are treated as collisions.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26645:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26645/v1/fig1-panel1.png"
+        alt="Figure 1：FLARE: Failure-Aware Resilience in VLA. Previous methods are brittle, failing from minor perturbations (ID errors) or catastrophic states (OOD errors), and do not leverage the VLA’s inherent generative capability for continuous self-correction. Our FLARE framework introduces an ID/OOD error taxonomy to guide a dual Retry/Reset paradigm. We tackle ID errors via built-in Retry robustness and resolve OOD errors with MLLM-bootstrapped Reset skills, achieving robust, resilient autonomy."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.26645v1/teaser_v2.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> FLARE: Failure-Aware Resilience in VLA. Previous methods are brittle, failing from minor perturbations (ID errors) or catastrophic states (OOD errors), and do not leverage the VLA’s inherent generative capability for continuous self-correction. Our FLARE framework introduces an ID/OOD error taxonomy to guide a dual Retry/Reset paradigm. We tackle ID errors via built-in Retry robustness and resolve OOD errors with MLLM-bootstrapped Reset skills, achieving robust, resilient autonomy.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26645/">FLARE：视觉语言机器人操作中自主纠正与恢复的失败感知框架</a></h3>
+    <p class="original-title" lang="en">FLARE: A Failure-Aware Framework for Autonomous Correction and Recovery in Visual-Language Robotic Manipulation</p>
+    <p class="authors">Ganlong Zhao · Zijia Tang · Xingping Chen · Zhanghui Kuang · Ye Tian · Guanbin Li</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>VLA脆弱性的根源在于演示数据的轨迹单调性，导致策略过度拟合机器人自身姿态与环境状态之间的虚假关联，从而无法在有效但未见的状态下重试。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文提出了创新的失败恢复框架，解决了VLA在实际部署中的关键脆弱性问题，对提升机器人操作系统的鲁棒性和自主性具有重要价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视觉语言动作模型中的失败恢复与自主纠正</p>
+        <p><strong>模型原始标签：</strong>VLA、错误恢复、重试与重置、MLLM、机器人操作</p>
+        <p><strong>第一单位：</strong>香港中文大学</p>
+        <p><strong>通讯作者：</strong>Guanbin Li</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26645">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26645">PDF ↗</a><a href="https://arxiv.org/html/2608.26645v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26645/v1/fig1-panel1.png"
+              alt="Figure 1：FLARE: Failure-Aware Resilience in VLA. Previous methods are brittle, failing from minor perturbations (ID errors) or catastrophic states (OOD errors), and do not leverage the VLA’s inherent generative capability for continuous self-correction. Our FLARE framework introduces an ID/OOD error taxonomy to guide a dual Retry/Reset paradigm. We tackle ID errors via built-in Retry robustness and resolve OOD errors with MLLM-bootstrapped Reset skills, achieving robust, resilient autonomy."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.26645v1/teaser_v2.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> FLARE: Failure-Aware Resilience in VLA. Previous methods are brittle, failing from minor perturbations (ID errors) or catastrophic states (OOD errors), and do not leverage the VLA’s inherent generative capability for continuous self-correction. Our FLARE framework introduces an ID/OOD error taxonomy to guide a dual Retry/Reset paradigm. We tackle ID errors via built-in Retry robustness and resolve OOD errors with MLLM-bootstrapped Reset skills, achieving robust, resilient autonomy.
+            <a class="figure-source" href="https://arxiv.org/html/2608.26645v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.26645/v1/fig2-panel1.png"
+              alt="Figure 2：The overall framework of our method. We first collect the failure data with the VLA model trained with regular demonstrations. Then we perform the failure analysis with MLLM and formulate the failures with ID/OOD taxonomy. For ID errors, we perform the perturbation &amp; bridging augmentation to enhance the robustness and “retry” ability of VLA models. For OOD errors, we collect the object-centric reset skill data. All these data are utilized to obtained a skill bank for further close-loop inference."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.26645v1/figure_2_1113.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> The overall framework of our method. We first collect the failure data with the VLA model trained with regular demonstrations. Then we perform the failure analysis with MLLM and formulate the failures with ID/OOD taxonomy. For ID errors, we perform the perturbation &amp; bridging augmentation to enhance the robustness and “retry” ability of VLA models. For OOD errors, we collect the object-centric reset skill data. All these data are utilized to obtained a skill bank for further close-loop inference.
+            <a class="figure-source" href="https://arxiv.org/html/2608.26645v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>具身智能、视觉语言动作模型</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLA模型在复杂长程任务中表现脆弱，因为训练数据多为理想的无失败演示，导致无法处理常见的执行错误，如抓取失败、物体掉落或意外碰撞。</dd>
+        <dt>Insight（核心洞察）</dt><dd>VLA脆弱性的根源在于演示数据的轨迹单调性，导致策略过度拟合机器人自身姿态与环境状态之间的虚假关联，从而无法在有效但未见的状态下重试。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>处理分布内错误（ID错误）</li><li>处理分布外错误（OOD错误）</li><li>数据收集成本高且成功率偏置</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者引入ID/OOD错误分类法，通过理论分析指出轨迹单调性导致策略错误推断任务进度，并基于此设计双范式框架。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>重试机制：在演示中注入扰动和桥接片段，解耦机器人姿态与环境状态，使策略能自主处理执行偏差。</li><li>重置流程：利用MLLM进行离线失败分析，自动识别OOD状态，并高效收集小规模的以对象为中心的“重置”技能库。</li><li>推理时：在线MLLM监控器在任务执行和“重置”技能之间进行仲裁。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>实验在接触丰富的操作任务上进行，方法在9个任务中的8个上取得最佳性能，平均成功率84.0%，显著提升基线。</li><li>用于重置技能的失败案例识别中，Gemini-2.5-Pro在咖啡任务上的重置/重试分类准确率88%，重置对象识别88%，时间戳78%。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>当前硬件限制了对高度复杂物体姿态的纠正。</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接涉及视觉语言动作模型的执行动作生成与错误恢复，与长时序预测、实时控制相关，并通过系统优化提高鲁棒性。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>实验细节和具体结果来自全文节选，但可能不完整；成功率数值来自摘要和全文，但未提供所有任务的详细结果。</p>
+          <blockquote><strong>VLA模型在复杂长程任务中表现脆弱：</strong>Vision-Language-Action Models (VLAs) have demonstrated significant promise in generalizing to complex, long-horizon robotic manipulation tasks. However, their performance remains brittle</blockquote>
+          <blockquote><strong>FLARE框架通过重试和重置范式提高鲁棒性：</strong>we propose FLARE, a novel framework that endows VLAs with robust error recovery capabilities through a “Retry” and “Reset” paradigm.</blockquote>
+          <blockquote><strong>实验在接触丰富的操作任务上取得显著改进：</strong>Experiments on challenging, contact-rich manipulation tasks show our approach significantly improves task success and robustness.</blockquote>
+          <blockquote><strong>平均成功率84.0%：</strong>Our method achieves an average success rate of 84.0%</blockquote>
+          <blockquote><strong>当前硬件限制纠正复杂物体姿态：</strong>While current hardware limits the correction of highly complex object poses</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="browse">
+        <header class="tier-heading"><h2>值得浏览</h2><p><span data-tier-count>10</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27456:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27456/v1/fig1-panel1.png"
+        alt="Figure 1：U r b a n Ground is a real-scale urban sandbox built from territory-wide 3D geospatial data. It supports direct first-person play and programmatic control by MLLM agents. We release the sandbox on the web and as native builds for macOS, Windows, and Linux. It also includes diverse tasks for studying how multimodal agents perceive and act in a real city."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.27456v1/HK.drawio.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> U r b a n Ground is a real-scale urban sandbox built from territory-wide 3D geospatial data. It supports direct first-person play and programmatic control by MLLM agents. We release the sandbox on the web and as native builds for macOS, Windows, and Linux. It also includes diverse tasks for studying how multimodal agents perceive and act in a real city.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 7/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27456/">UrbanGround：从局部感知到真实尺度城市中的空间行动能力</a></h3>
+    <p class="original-title" lang="en">UrbanGround: From Local Perception to Spatial Agency in a Real-Scale City</p>
+    <p class="authors">Tianjie Ju · Zheng Wu · Yueqing Sun · Yuhan Cui · Bobo Li · Shengqiong Wu · Pengzhou Cheng · Haodong Zhao · Zongru Wu · Xinbei Ma · Doris Zhang · Kunling Li · Mong-Li Lee · Wynne Hsu · Hao Fei · Qi Gu · Gongshen Liu · Zhuosheng Zhang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>当前MLLM智能体在视觉识别和短距离空间推理等原子能力上表现良好，但定向和行人感知运动不可靠，核心失败出现在长时探索中：局部能力无法组合成持续的目标导向行为，且误差积累无法有效纠正。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文提出了一个全新的城市级测试平台UrbanGround，用于评估当前MLLM智能体的空间行动能力，揭示了长时探索中的核心失败模式，对研究具身智能的导航和决策能力具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>多模态大语言模型在城市环境中的空间行动能力评估</p>
+        <p><strong>模型原始标签：</strong>多模态大语言模型、具身智能、城市导航、闭环交互、空间推理、3D地理空间数据</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27456">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27456">PDF ↗</a><a href="https://arxiv.org/html/2608.27456v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27456/v1/fig1-panel1.png"
+              alt="Figure 1：U r b a n Ground is a real-scale urban sandbox built from territory-wide 3D geospatial data. It supports direct first-person play and programmatic control by MLLM agents. We release the sandbox on the web and as native builds for macOS, Windows, and Linux. It also includes diverse tasks for studying how multimodal agents perceive and act in a real city."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27456v1/HK.drawio.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> U r b a n Ground is a real-scale urban sandbox built from territory-wide 3D geospatial data. It supports direct first-person play and programmatic control by MLLM agents. We release the sandbox on the web and as native builds for macOS, Windows, and Linux. It also includes diverse tasks for studying how multimodal agents perceive and act in a real city.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27456v1#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.27456/v1/fig2-panel1.png"
+              alt="Figure 2：Dynamic simulation components of U r b a n Ground . The same urban environment can be rendered under different times of day and weather conditions, while a georeferenced pedestrian network supports animated pedestrian populations."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.27456v1/HKCase.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Dynamic simulation components of U r b a n Ground . The same urban environment can be rendered under different times of day and weather conditions, while a georeferenced pedestrian network supports animated pedestrian populations.
+            <a class="figure-source" href="https://arxiv.org/html/2608.27456v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>真实尺度城市模拟环境（基于香港3D地理空间数据构建）中的闭环交互任务</dd>
+        <dt>Motivation（研究动机）</dt><dd>多模态大语言模型（MLLM）能理解街景，但城市行动能力取决于局部证据在移动后是否依然有效，需要探究当前MLLM智能体在复杂真实尺度城市中能否将局部感知转化为可靠行动。</dd>
+        <dt>Insight（核心洞察）</dt><dd>当前MLLM智能体在视觉识别和短距离空间推理等原子能力上表现良好，但定向和行人感知运动不可靠，核心失败出现在长时探索中：局部能力无法组合成持续的目标导向行为，且误差积累无法有效纠正。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>长时序探索中局部能力无法组合成持续目标导向行为</li><li>误差累积且缺乏有效纠正机制</li><li>方向感和行人感知运动不可靠</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过三个递进的研究问题分析空间问题：首先测试智能体在主动观察后能否充分理解局部场景以回答空间问题；然后考察在目的地变远且不明确时，这种理解能否支持导航；最后检验在路线变化和行人运动条件下行为是否稳定。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>构建UrbanGround沙盒环境，基于香港全域3D地理空间数据，提供物理约束的复刻环境</li><li>支持第一人称视角的闭环交互，并提供交互式地图用于导航</li><li>智能体可直接进入3D城市，以第一人称视角探索</li><li>设计三个研究问题逐步增加空间任务难度，评估智能体能力</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>实验围绕三个研究问题展开，测试当前MLLM智能体的原子能力和长时探索表现，结果显示原子能力表现良好但长时探索存在明显失败；未提供具体数字。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>作者未明确陈述局限；依据摘要，局限可能包括当前MLLM智能体的能力不足，但材料未明确说明。</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接相关于具身智能和世界模型中的空间行动能力评估，尤其关注长时序预测和真实环境模拟，与物理人工智能和真实机器人评测有密切关系，但未涉及模型压缩或系统优化。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>由于只提供摘要，无法确定第一单位、通讯作者、具体实验数字和作者明确陈述的局限；相关性评分基于摘要内容，认为与具身智能和世界模型高度相关，但非系统优化直接主题。</p>
+          <blockquote><strong>当前MLLM智能体在长时探索中核心失败是局部能力无法组合成持续目标导向行为：</strong>Their central failure emerges over extended exploration, where local abilities do not compose into sustained goal-directed behavior and errors accumulate without effective correction.</blockquote>
+          <blockquote><strong>UrbanGround是首个在真实尺度城市中测试该问题的沙盒环境：</strong>We propose UrbanGround, the first sandbox to make this question testable in a physically constrained replica of Hong Kong built from territory-wide 3D geospatial data.</blockquote>
+          <blockquote><strong>当前MLLM智能体具有原子能力但运动能力不可靠：</strong>Contemporary MLLM agents usually show useful atomic abilities in visual recognition and short-range spatial reasoning, while orientation and pedestrian-aware movement remain unreliable.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26883:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>机器人学习与控制</span>
+        <strong>arXiv:2608.26883</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 7/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26883/">主动表面驱动可重构夹持器：薄物体的稳健抓取与顺序操作</a></h3>
+    <p class="original-title" lang="en">Active Surface-Driven Reconfigurable Gripper: Robust Grasping and Sequential Manipulation of Thin Objects</p>
+    <p class="authors">Ziyi Zheng · Keqi Zhu · Hao Wu · Yanzhe Wang · Huixu Dong</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将主动表面与欠驱动柔顺结合，可在无需复杂控制的情况下实现稳定抓取，并通过主动表面实现目标物体的手内重定位，避免调整机械臂或手指。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该研究为薄物体抓取提供了一种新颖的机械设计思路，通过主动表面和欠驱动结合提升鲁棒性，对具身智能中机器人操作的实际硬件实现有参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>主动表面驱动的可重构夹持器设计及其在薄物体稳健抓取与顺序操作中的应用</p>
+        <p><strong>模型原始标签：</strong>机器人夹持器、薄物体抓取、欠驱动、主动表面、顺序操作、结构优化</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26883">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26883">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>真实机器人抓取薄物体，如书本，包括平放和垂直书架两种场景</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有夹持器抓取薄物体需要高精度接近和抓取运动，鲁棒性差，实用性受限。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将主动表面与欠驱动柔顺结合，可在无需复杂控制的情况下实现稳定抓取，并通过主动表面实现目标物体的手内重定位，避免调整机械臂或手指。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>薄物体抓取需要高精度，鲁棒性不足</li><li>抓取时接触条件复杂，难以建模</li><li>长期顺序任务需要可靠执行</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
+        <dt>Method（方法）</dt><dd><ul><li>设计具有主动表面的欠驱动夹持器，主动表面拇指实现书本的手内重定位</li><li>建立夹持器的运动学模型，确定两个代表性场景的初始抓取姿态</li><li>分析桌上书本的物理模型及其与夹持器和环境交互，优化结构参数和抓取策略</li><li>进行广泛实验验证有效性</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>验证了当抓取平放薄物体（包括书、纸、织物、塑料薄膜和鼠标垫）时具有很强的鲁棒性和适应性</li><li>垂直包装书本的抓取成功率较高</li><li>可可靠完成长期顺序&#39;抓取-放置&#39;任务</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该研究涉及真实机器人抓取操作，与具身智能中的机器人操作、物理交互相关，但与视觉语言动作模型、世界模型或系统优化关系较弱，其结构优化涉及系统设计优化。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>本次解读基于摘要，作者机构、通讯作者、详细实验数字和局限未提供，相关性分数基于抓取操作与具身智能的关联，但主题偏机械设计。</p>
+          <blockquote><strong>现有夹持器抓取薄物体依赖高精度动作，鲁棒性差：</strong>Most existing grippers rely on highly precise approach and grasp motions, which limits robustness and reduces applicability.</blockquote>
+          <blockquote><strong>所提夹持器结合主动表面和欠驱动柔顺，实现稳定抓取：</strong>we propose a novel solution that integrates an active surface with underactuated compliance to achieve stable grasping of thin objects without complex control.</blockquote>
+          <blockquote><strong>主动表面拇指可实现手内重定位：</strong>The active-surface thumb performs in-hand repositioning of the target book without requiring adjustments of the robot arm or the other fingers</blockquote>
+          <blockquote><strong>通过物理模型优化结构参数和抓取策略：</strong>by analyzing the physical model of a book lying on a table and its interaction with the gripper and the environment, we systematically optimize the structural parameters and grasping strategy.</blockquote>
+          <blockquote><strong>实验验证了鲁棒性和高成功率：</strong>The results demonstrate strong robustness and adaptability when grasping thin objects placed flat (including books, paper, fabric, plastic film, and mouse pad), as well as a high success rate when grasping vertically packed books.</blockquote>
+          <blockquote><strong>能可靠完成长时序抓取放置任务：</strong>the proposed gripper can reliably complete long sequential &#34;grasp-place&#34; tasks.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26800:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>机器人学习与控制</span>
+        <strong>arXiv:2608.26800</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 7/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26800/">动态操控技能的快速在线机器人学习：机器人抛球</a></h3>
+    <p class="original-title" lang="en">Rapid On-Robot Learning for Dynamic Manipulation Skills: Robot Juggling</p>
+    <p class="authors">Taeyoon Lee · Chunpeng Wang · Christopher G. Atkeson · Alfred A. Rizzi · Nicolas Rojas</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>即使模型与现实有差距，也能极大促进学习；学习应建立在机器人当前知识之上，通过保留全局先验模型并在经验稀疏处外推，结合正则化的记忆基学习，实现高效稳定的在线学习。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文展示了在真实硬件上快速学习复杂动态技能的可能性，利用不完美的模型和记忆基学习，对于当前关注真实机器人评测、在线学习和安全性的研究者具有启发意义。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-learning/" data-tag-filter="robot-learning">机器人学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>机器人在线学习框架</p>
+        <p><strong>模型原始标签：</strong>在线学习、双手机器人、动态操控、记忆基学习、安全学习、模拟到现实差距</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26800">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26800">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>真实硬件上的双手机器人抛球任务，涉及多种三步球模式</dd>
+        <dt>Motivation（研究动机）</dt><dd>使机器人能够在真实硬件上快速学习动态操控技能，即使存在显著的 sim2real 差距；强调模型即使不完美也能用于学习，并主张学习应基于现有知识而非替换。</dd>
+        <dt>Insight（核心洞察）</dt><dd>即使模型与现实有差距，也能极大促进学习；学习应建立在机器人当前知识之上，通过保留全局先验模型并在经验稀疏处外推，结合正则化的记忆基学习，实现高效稳定的在线学习。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>在真实硬件上快速学习</li><li>处理模拟到现实的差距</li><li>确保在线学习过程中的安全性</li><li>避免在广阔行为空间中盲目探索</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
+        <dt>Method（方法）</dt><dd><ul><li>使用正则化的记忆基学习，从累积经验中学习局部模型，同时保留全局先验模型以进行外推。</li><li>构建互可达集合，确保连续投掷和接球之间的安全转换，避免违背关节或执行器限制。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在一个带有多指手和机载视觉的双手机器人上，在少于5分钟的真实交互内，安全地学习并组合出五种基本的三球抛球模式（cascade、tennis、half-shower、shower、box）。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接涉及真实机器人上的技能学习，与具身智能中的在线适应和操控相关；其在线学习框架和安全性考虑对于机器人系统中的实时控制和优化具有参考价值。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>本次判断基于摘要，且未提供第一单位和通讯作者信息；关于实验的具体数字（如时间、成功率）仅依据摘要所述，未提供额外细节。</p>
+          <blockquote><strong>该框架能使双手机器人直接在物理硬件上于数分钟内学习多种抛球模式，即使存在显著的模拟到现实差距。：</strong>We present an online learning framework that enables a bimanual robot to acquire diverse juggling patterns directly on physical hardware within minutes, even with a significant sim2real gap.</blockquote>
+          <blockquote><strong>即使模型与现实差距很大，也可以对学习非常有用。：</strong>One of the most important lessons from this work is that a model, even when far from reality, can be extremely useful for learning.</blockquote>
+          <blockquote><strong>学习应建立在机器人当前知识的基础上，而不是替换它。：</strong>This motivates a central philosophy of our approach: learning should build upon the robot&#39;s current knowledge rather than replace it.</blockquote>
+          <blockquote><strong>方法包括从累积经验中学习局部模型并保留全局先验模型进行外推。：</strong>Our regularized memory-based learning puts this principle into practice by learning a local model from accumulated experience while retaining the global prior model to extrapolate where experience is sparse.</blockquote>
+          <blockquote><strong>安全性通过构建互可达集合实现，确保连续动作的安全转换。：</strong>We construct a mutually reachable set that allows safe transitions between successive throws and catches, without driving either arm into a state from which its next action would require violating the robot&#39;s joint or actuator limits.</blockquote>
+          <blockquote><strong>在少于5分钟的真实交互内学会了五种模式。：</strong>enable a bimanual robot with multi-fingered hands and onboard vision to safely learn and compose five canonical three-ball juggling patterns, including cascade, tennis, half-shower, shower, and box, within less than 5 minutes of real-world interaction.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.26684:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>机器人学习与控制</span>
+        <strong>arXiv:2608.26684</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.26684/">用你所说的话语进行推理：视频大语言模型中基于个人语言风格的离策略轨迹改写用于推理蒸馏</a></h3>
+    <p class="original-title" lang="en">Reason in the Words You Speak: Idiolectal Paraphrasing Off-Policy Traces for Reasoning Distillation in VideoLLMs</p>
+    <p class="authors">Ji Soo Lee · Jinyoung Park · Seohyun Lee · Jongha Kim · Joonmyung Choi · Jinsung Yoon · Hyunwoo J. Kim</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将教师提供的离策略推理轨迹改写为学生策略自身的个人语言风格（idiolect），在保留语义的同时实现策略对齐，从而解决分布不匹配问题，让模型学会推理过程。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作提出了一种新颖的推理蒸馏策略，通过改写离策略轨迹解决分布不匹配问题，对提升模型推理能力有普遍意义，尤其在视频场景。对关注模型推理效率和训练方法的研究者有参考作用。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视频大语言模型的推理蒸馏方法（Echo-GRPO）</p>
+        <p><strong>模型原始标签：</strong>推理蒸馏、视频LLM、GRPO、离策略轨迹改写、个人语言风格、多模态</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.26684">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.26684">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>视频理解与推理任务的模型训练，具体为视频大语言模型的推理蒸馏</dd>
+        <dt>Motivation（研究动机）</dt><dd>GRPO等强化学习方法受限于策略自身可生成的推理轨迹，难以学习更高级的推理能力；注入教师模型的离策略轨迹虽能提供引导，但因其分布不匹配导致梯度裁剪，模型只学会答案而未学会推理过程。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将教师提供的离策略推理轨迹改写为学生策略自身的个人语言风格（idiolect），在保留语义的同时实现策略对齐，从而解决分布不匹配问题，让模型学会推理过程。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>GRPO等on-policy方法限制模型学习更高级推理能力</li><li>教师模型提供的高质量推理轨迹相对于学生策略是离策略的，导致梯度裁剪</li><li>如何既保留语义又让学生策略内化推理轨迹</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者观察到on-policy与off-policy轨迹的不匹配导致语义关键推理token上的梯度裁剪，最终模型只学习到正确答案而未学到推理过程。基于此分析，提出将离策略轨迹改写为学生策略的惯用语，以对齐策略分布。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出Echo-GRPO框架，将教师模型的轨迹改写成学生策略自身的惯用语</li><li>使用Dual-Reference Decoding在改写过程中保持语义一致性</li><li>将框架实例化为VideoEcho-R1，用于视频推理蒸馏</li><li>作为一种即插即用模块，可同时提升RL和SFT的推理蒸馏效果</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在三个多模态LLM骨干和五个基准上取得一致改进</li><li>显示idiolectal paraphrasing即插即用模块持续改进RL和SFT框架</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>与视觉语言动作模型、世界模型等具身智能方向无直接关系，但推理蒸馏方法可关联到视频理解和多模态推理，对系统优化中训练效率有一定参考价值。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>材料仅基于摘要和标题，标题中的“Idiolectal Paraphrasing”和“Off-Policy Traces”等概念未在摘要中完全展开，具体实验细节、数值和局限性未知。且第一单位和通讯作者信息未提供。</p>
+          <blockquote><strong>GRPO的on-policy特性限制了模型学习更高级的推理能力：</strong>the on-policy nature of GRPO bounds the model to the reasoning skills it can already produce, restricting to learn more advanced capabilities.</blockquote>
+          <blockquote><strong>教师轨迹与学生的分布不匹配导致梯度裁剪：</strong>this mismatch between on-policy and off-policy causes gradient clipping on semantically critical reasoning tokens</blockquote>
+          <blockquote><strong>Echo-GRPO将教师轨迹改写成学生自己的惯用语：</strong>Echo-GRPO rewrites them into the student policy&#39;s own \textit{idiolect}, that is, its own characteristic vocabulary and expression patterns, while preserving their semantics via Dual-Reference Decoding.</blockquote>
+          <blockquote><strong>VideoEcho-R1取得了一致改进：</strong>achieving consistent improvements across three multimodal LLM backbones and five benchmarks.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.17512:v2"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.17512/v2/fig1-panel1.png"
+        alt="Figure 1：The architecture of TAMP-Nav. Given visual-textual inputs, the agent compresses long-horizon history into an Anchor-Trajectory Memory, autonomously triggering reasoning at critical nodes. As a visual pointer, it selects the optimal multi-camera view and predicts a 2D pixel, which is projected into 3D for SLAM execution. Finally, the policy is optimized via Two-Level GRPO."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.17512v2/frame.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> The architecture of TAMP-Nav. Given visual-textual inputs, the agent compresses long-horizon history into an Anchor-Trajectory Memory, autonomously triggering reasoning at critical nodes. As a visual pointer, it selects the optimal multi-camera view and predicts a 2D pixel, which is projected into 3D for SLAM execution. Finally, the policy is optimized via Two-Level GRPO.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.17512/">具身导航器：高效导航中的点选、思考、记忆与对齐</a></h3>
+    <p class="original-title" lang="en">Embodied-Navigator: Point, Think, Memorize, and Align for Efficient Navigation</p>
+    <p class="authors">Hongyan Feng · Sunlai Chen · Xuanyu Liu · Miao Pan · Yangfan Xie · Yuxiang Cui · Zhongxiang Zhou · Rong Xiong · Wenqi Zhang · Jianwei Yin · Yueting Zhuang · Xuhong Zhang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过将导航动作重构为2D像素选择并投影至3D，能够自然对齐VLM的2D视觉能力；结合动态推理与关键节点记忆压缩，可在保持性能的同时提升效率。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作提出了一种新颖的像素到3D动作公式，巧妙地解决了VLM动作空间对齐问题，同时通过选择性推理和记忆压缩提升了效率，对高效具身导航系统设计具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>基于视觉语言模型的具身导航框架，结合动作空间重构、推理调度、记忆管理和强化学习对齐</p>
+        <p><strong>模型原始标签：</strong>具身导航、视觉语言模型、像素到3D动作、选择性推理、轨迹记忆压缩、GRPO对齐、R2R-CE</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.17512">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.17512">PDF ↗</a><a href="https://arxiv.org/html/2608.17512v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.17512/v2/fig1-panel1.png"
+              alt="Figure 1：The architecture of TAMP-Nav. Given visual-textual inputs, the agent compresses long-horizon history into an Anchor-Trajectory Memory, autonomously triggering reasoning at critical nodes. As a visual pointer, it selects the optimal multi-camera view and predicts a 2D pixel, which is projected into 3D for SLAM execution. Finally, the policy is optimized via Two-Level GRPO."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.17512v2/frame.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> The architecture of TAMP-Nav. Given visual-textual inputs, the agent compresses long-horizon history into an Anchor-Trajectory Memory, autonomously triggering reasoning at critical nodes. As a visual pointer, it selects the optimal multi-camera view and predicts a 2D pixel, which is projected into 3D for SLAM execution. Finally, the policy is optimized via Two-Level GRPO.
+            <a class="figure-source" href="https://arxiv.org/html/2608.17512v2#S3.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.17512/v2/fig2-panel1.png"
+              alt="Figure 2：The Two-Level GRPO paradigm. TAMP-Nav superimposes trajectory-level rollouts (competing for global navigation success) with step-level candidate rollouts (exploring diverse 2D visual-spatial actions via VLM temperature sampling)."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.17512v2/GRPO3.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> The Two-Level GRPO paradigm. TAMP-Nav superimposes trajectory-level rollouts (competing for global navigation success) with step-level candidate rollouts (exploring diverse 2D visual-spatial actions via VLM temperature sampling).
+            <a class="figure-source" href="https://arxiv.org/html/2608.17512v2#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>具身导航任务（R2R-CE），使用低层SLAM控制器，训练数据为90k条轨迹</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有方法将VLM直接部署于具身导航时，常迫使模型进入与其2D预训练先验不匹配的动作空间，推理调度僵化且记忆管理低效，导致部署困难。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过将导航动作重构为2D像素选择并投影至3D，能够自然对齐VLM的2D视觉能力；结合动态推理与关键节点记忆压缩，可在保持性能的同时提升效率。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>VLM动作空间与具身执行不匹配</li><li>推理调度固定导致效率低</li><li>长时导航历史记忆管理低效</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者分析问题在于动作空间错位、推理调度僵化、记忆冗余，因此设计统一框架分别应对。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>Pixel-to-3D动作公式化：VLM选择2D像素，投影至3D坐标供SLAM控制器执行</li><li>选择性推理与锚点轨迹记忆：动态触发思维链，仅在关键节点保留高保真记忆，压缩冗余轨迹为轻量时空指示器</li><li>两级对齐范式：通过GRPO叠加全局结果奖励和细粒度过程奖励，实现密集监督</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在R2R-CE上达到66.2%的成功率（SR），仅需90k训练轨迹，展现出高运行时和样本效率</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>本研究直接涉及具身智能中的视觉动作生成，通过VLM实现可执行动作，并关注推理效率（动态推理、记忆压缩）和真实环境评测（R2R-CE），与视觉语言动作模型和系统优化紧密相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供作者单位，故第一单位和通讯作者无法确认；实验仅提供R2R-CE单一数据点，未说明其他环境结果。</p>
+          <blockquote><strong>TAMP-Nav通过像素到3D动作公式将导航重构为2D视觉提示，对齐VLM的2D能力：</strong>we introduce a Pixel-to-3D Action Formulation (Point) that reformulates navigation into 2D visual prompting. Specifically, the VLM merely selects 2D pixels, which are then projected into 3D coordinates for a low-level SLAM controller.</blockquote>
+          <blockquote><strong>TAMP-Nav采用集成选择性推理与锚点轨迹记忆机制，压缩冗余轨迹为轻量指示器：</strong>we propose an integrated Selective Reasoning and Anchor-Trajectory Memory mechanism (Think and Memorize), which dynamically triggers Chain-of-Thought and retains high-fidelity memory only at critical nodes, compressing redundant trajectories into lightweight Space-Time Indicators</blockquote>
+          <blockquote><strong>TAMP-Nav通过GRPO的两级对齐范式，叠加全局和过程奖励实现密集监督：</strong>we design an efficient Two-Level Alignment Paradigm (Align) via Group Relative Policy Optimization (GRPO). By superimposing global outcome rewards with fine-grained process rewards</blockquote>
+          <blockquote><strong>TAMP-Nav在R2R-CE上达到66.2%成功率，仅需90k训练轨迹：</strong>TAMP-Nav achieves state-of-the-art performance (e.g., 66.2% SR on R2R-CE) with high runtime and sample efficiency (requiring only 90k training trajectories).</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.16153:v4"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.16153/v4/fig1-panel1.png"
+        alt="Figure 1：Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2608.16153v4/figures/Motivation.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 9/10</span>
+      <span>v4</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.16153/">统一条件-动作建模用于精确的单步动作生成</a></h3>
+    <p class="original-title" lang="en">Unified Condition-Action Modeling for Accurate One-Step Action Generation</p>
+    <p class="authors">Xinyu Zhou · Zikun Cai · Kuangji Zuo · Gen Li · Boyu Ma · Yanshuo Lu · Yutong Song · Mingqi Yuan · Jiayu Chen · Jianfei Yang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过简单而有效的统一条件-动作建模设计，在共享token空间中表示条件和动作，可以使紧凑模型同时提高推理速度和准确性。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>本文提出了一种简单而有效的统一条件-动作建模方法，在保证准确性的同时大幅提升推理速度，对于实时控制和大模型压缩具有重要参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>机器人操作中的条件感知动作生成</p>
+        <p><strong>模型原始标签：</strong>统一条件-动作建模、单步动作生成、机器人操作、推理加速、UCA-Flow</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.16153">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.16153">PDF ↗</a><a href="https://arxiv.org/html/2608.16153v4">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.16153/v4/fig1-panel1.png"
+              alt="Figure 1：Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.16153v4/figures/Motivation.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Motivation of UCA-Flow . (a) Existing policies often treat condition as auxiliary condition signals. Unified condition-action modeling enables conditions and actions to evolve together, allowing condition representations to adapt to the current generation stage and action. (b) UCA-Flow achieves a superior efficiency-performance trade-off, delivering the highest success rate with the lowest latency on Adroit and MetaWorld.
+            <a class="figure-source" href="https://arxiv.org/html/2608.16153v4#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2608.16153/v4/fig2-panel1.png"
+              alt="Figure 2：Overview of UCA-Flow . Observation, timestep, interval, and noisy action are unified as condition-action tokens and processed by a Unified Condition-Action Transformer to predict the interval-aware velocity."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2608.16153v4/overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Overview of UCA-Flow . Observation, timestep, interval, and noisy action are unified as condition-action tokens and processed by a Unified Condition-Action Transformer to predict the interval-aware velocity.
+            <a class="figure-source" href="https://arxiv.org/html/2608.16153v4#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>机器人操作策略，在紧延迟约束下需要准确且高效的控制</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有扩散和流策略将条件视为辅助信号，而不是与动作轨迹联合演化，限制了推理速度和准确性。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过简单而有效的统一条件-动作建模设计，在共享token空间中表示条件和动作，可以使紧凑模型同时提高推理速度和准确性。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>在紧延迟约束下实现准确和高效的机器人控制</li><li>现有方法将条件视为辅助信号导致性能受限</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者发现现有方法的限制可以通过统一条件-动作建模来缓解，并提出了动态重建条件表示以适应生成阶段的方法。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将观察条件、时间步条件、间隔条件和动作token统一到单一序列中</li><li>使用统一条件-动作Transformer进行联合条件-动作表示学习</li><li>条件表示根据当前生成阶段动态重建，突出与动作细化最相关的信息</li><li>引入改进的双通道监督方案（u和v）以优化统一条件-动作建模</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在多个任务上，UCA-Flow相比最强基线平均成功率提高9.3个百分点</li><li>推理速度比DP3和Simple DP3分别快45.6倍和33.4倍</li><li>比单步FlowPolicy和MP1分别快4.3倍和2.3倍</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>论文直接面向具身智能中的机器人操作，提出统一条件-动作建模以提升动作生成准确性和推理效率，与视觉语言动作模型、世界模型和系统优化紧密相关</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供作者单位、通讯作者和明确的局限性，因此这些字段标记为证据未提供。实验细节和具体任务未完全展开，但摘要提供的性能数字足够支持核心主张。</p>
+          <blockquote><strong>现有方法将条件视为辅助信号，而非与动作轨迹联合演化，这一限制可以通过统一条件-动作建模缓解：</strong>Recent diffusion and flow policies are promising, but they often treat conditions as auxiliary signals rather than jointly evolving them with action trajectories.</blockquote>
+          <blockquote><strong>UCA-Flow在多个任务上平均成功率比最强基线提高9.3个百分点，并显著加速：</strong>UCA-Flow improves the average success rate by 9.3 percentage points over the strongest baseline, while achieving $45.6\times$ and $33.4\times$ speedups over DP3 and Simple DP3, and remaining $4.3\times$ and $2.3\times$ faster than one-step FlowPolicy and MP1</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2607.19971:v2"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2607.19971/v2/fig1-panel1.png"
+        alt="Figure 1：Comparison of learning strategies in unified models. (a) In previous methods, the skills of each task are learned within a single shared encoder, causing conflicts between the two skills in the parameter space. (b) DPT resolves this issue by separately training the major parameter regions allocated to each task and Sparse Merging combines only their core parameter regions, thereby mitigating skill conflicts within the shared encoder."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2607.19971v2/intro.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Comparison of learning strategies in unified models. (a) In previous methods, the skills of each task are learned within a single shared encoder, causing conflicts between the two skills in the parameter space. (b) DPT resolves this issue by separately training the major parameter regions allocated to each task and Sparse Merging combines only their core parameter regions, thereby mitigating skill conflicts within the shared encoder.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2607.19971/">基于冲突感知的分离参数训练的统一预测与规划</a></h3>
+    <p class="original-title" lang="en">Unified Prediction and Planning via Conflict-Aware Disjoint Parameter Training</p>
+    <p class="authors">Taewon Seo · Seonae Jeon · Giwon Lee · Kuk-Jin Yoon · Daehee Park</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>识别出技能冲突现象，并提出分离参数训练框架（DPT），通过分布式参数学习分离各任务关键参数区域，并采用稀疏合并以提升性能。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提出解决多任务模型表征冲突的新方法，通过模型合并和稀疏合并提升资源受限下性能，对高效具身系统设计有启发。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>面向社交机器人导航的统一预测与规划</p>
+        <p><strong>模型原始标签：</strong>模型合并、参数训练、运动预测、运动规划、边缘设备、高效模型</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-07</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2607.19971">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2607.19971">PDF ↗</a><a href="https://arxiv.org/html/2607.19971v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2607.19971/v2/fig1-panel1.png"
+              alt="Figure 1：Comparison of learning strategies in unified models. (a) In previous methods, the skills of each task are learned within a single shared encoder, causing conflicts between the two skills in the parameter space. (b) DPT resolves this issue by separately training the major parameter regions allocated to each task and Sparse Merging combines only their core parameter regions, thereby mitigating skill conflicts within the shared encoder."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2607.19971v2/intro.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Comparison of learning strategies in unified models. (a) In previous methods, the skills of each task are learned within a single shared encoder, causing conflicts between the two skills in the parameter space. (b) DPT resolves this issue by separately training the major parameter regions allocated to each task and Sparse Merging combines only their core parameter regions, thereby mitigating skill conflicts within the shared encoder.
+            <a class="figure-source" href="https://arxiv.org/html/2607.19971v2#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2607.19971/v2/fig2-panel1.png"
+              alt="Figure 2：Planning and Prediction performance according to the mask ratio K K . Plan Merged and Pred Merged use the single task vectors corresponding to the mask ratio. In Both Merged , the parameter utilization of the non-target task is fixed at 40%, while that of the target task is used according to the given parameter ratio."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2607.19971v2/figure_sources/fig_2_Combined_Performance_EqualY_40p.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Planning and Prediction performance according to the mask ratio K K . Plan Merged and Pred Merged use the single task vectors corresponding to the mask ratio. In Both Merged , the parameter utilization of the non-target task is fixed at 40%, while that of the target task is used according to the given parameter ratio.
+            <a class="figure-source" href="https://arxiv.org/html/2607.19971v2#S3.F3.fig1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>资源受限边缘设备上的社交机器人导航</dd>
+        <dt>Motivation（研究动机）</dt><dd>在拥挤环境中，准确预测周围智能体运动和安全运动规划是两个紧密耦合的关键任务，但紧凑共享编码器中的统一模型常忽略预测与规划目标不同导致的表征冲突。</dd>
+        <dt>Insight（核心洞察）</dt><dd>识别出技能冲突现象，并提出分离参数训练框架（DPT），通过分布式参数学习分离各任务关键参数区域，并采用稀疏合并以提升性能。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>预测邻居行为与自我中心安全规划目标差异导致表征冲突</li><li>紧凑共享编码器中参数重叠造成任务间竞争</li><li>资源受限设备需同时保证性能和效率</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者首先识别技能冲突现象，指出重叠参数分配导致不同任务竞争同一权重，阻碍模型专业化；观察到稀疏合并优于全参数合并，因其防止相邻特征干扰并集中表征能力。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出模型合并框架Disjoint Parameter Training (DPT)</li><li>DPT通过分布式参数学习分离各任务关键参数区域，保留核心能力后合并</li><li>采用稀疏合并仅整合对每个任务最有影响力的参数</li><li>DPT可并行应用于各种合并方法</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在JRDB和JTA基准上评估，显示DPT优于现有方法，验证其多功能性和有效性</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>与具身智能和世界模型相关，因为其统一预测与规划，且关注资源效率，可迁移至真实机器人导航。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅基于摘要，缺乏具体实验数值和方法细节，且第一单位及通讯作者未提供。</p>
+          <blockquote><strong>紧凑共享编码器中统一模型存在表征冲突：</strong>recent unified models often overlook severe representational conflicts that arise from the distinct objectives of predicting neighbor behaviors versus ego-centric safety planning.</blockquote>
+          <blockquote><strong>DPT通过分离参数学习缓解技能冲突：</strong>DPT mitigates performance degradation caused by Skill Conflict through distributed parameter learning, which separates the key parameter regions of each task while preserving their core capabilities prior to merging.</blockquote>
+          <blockquote><strong>稀疏合并优于全参数合并：</strong>we observe that sparse merging, which selectively integrates only the most influential parameters for each task rather than combining all task-specific parameters, yields optimal performance</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2604.20468:v3"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2604.20468/v3/fig1-panel1.png"
+        alt="Figure 1：Overview of the framework. The three interaction modalities (physical, verbal, and graphical) enable complementary skill adaptation, demonstrated on industrial robot tasks at a trade fair. The MOMO ( Mo tion Mo dulation) module manages the different inputs and adapts the skill accordingly. The Execution Engine deploys the resulting trajectories on the robot."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2604.20468v3/graphical-abstract.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of the framework. The three interaction modalities (physical, verbal, and graphical) enable complementary skill adaptation, demonstrated on industrial robot tasks at a trade fair. The MOMO ( Mo tion Mo dulation) module manages the different inputs and adapts the skill accordingly. The Execution Engine deploys the resulting trajectories on the robot.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 7/10</span>
+      <span>v3</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2604.20468/">MOMO：一个实现物理、语言和图形化机器人技能学习与无缝适应的框架</a></h3>
+    <p class="original-title" lang="en">MOMO: A framework for seamless physical, verbal, and graphical robot skill learning and adaptation</p>
+    <p class="authors">Markus Knauer · Edoardo Fiorini · Maximilian M\&#34;uhlbauer · Stefan Schneyer · Promwat Angsuratanawech · Florian Samuel Lay · Timo Bachmann · Samuel Bustamante · Korbinian Nottensteiner · Freek Stulp · Alin Albu-Sch\&#34;affer · Jo\~ao Silv\&#39;erio · Thomas Eiband</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>利用工具型LLM架构（LLM选择并参数化预定义函数而非生成代码）能安全地实现自然语言适应，并能从KMPs泛化到遍历控制。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供了多模态交互和LLM在机器人技能适应中的实际应用，对研究安全高效的VLA系统有启示，尤其在推理效率和真实机器人评测方面有参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-learning/" data-tag-filter="robot-learning">机器人学习</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>交互式机器人技能学习与适应框架</p>
+        <p><strong>模型原始标签：</strong>机器人技能适应、语言模型、运动原语、人机交互、工业机器人</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-04</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2604.20468">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2604.20468">PDF ↗</a><a href="https://arxiv.org/html/2604.20468v3">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2604.20468/v3/fig1-panel1.png"
+              alt="Figure 1：Overview of the framework. The three interaction modalities (physical, verbal, and graphical) enable complementary skill adaptation, demonstrated on industrial robot tasks at a trade fair. The MOMO ( Mo tion Mo dulation) module manages the different inputs and adapts the skill accordingly. The Execution Engine deploys the resulting trajectories on the robot."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2604.20468v3/graphical-abstract.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of the framework. The three interaction modalities (physical, verbal, and graphical) enable complementary skill adaptation, demonstrated on industrial robot tasks at a trade fair. The MOMO ( Mo tion Mo dulation) module manages the different inputs and adapts the skill accordingly. The Execution Engine deploys the resulting trajectories on the robot.
+            <a class="figure-source" href="https://arxiv.org/html/2604.20468v3#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2604.20468/v3/fig2-panel1.png"
+              alt="Figure 2：(a) Bearing ring insertion task: the transparent robot shows original speed, the opaque one shows the adapted trajectory after the voice command “slow down between box and station.” (b) Ergodic surface finishing task with the LLM chat interface issuing a similar slow-down command, alongside a virtual twin of the robot workcell."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2604.20468v3/robot_slow_down_experiment.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> (a) Bearing ring insertion task: the transparent robot shows original speed, the opaque one shows the adapted trajectory after the voice command “slow down between box and station.” (b) Ergodic surface finishing task with the LLM chat interface issuing a similar slow-down command, alongside a virtual twin of the robot workcell.
+            <a class="figure-source" href="https://arxiv.org/html/2604.20468v3#S4.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>工业机器人应用场景，面向非专家用户的交互式技能适应，在7自由度力矩控制机器人上验证</dd>
+        <dt>Motivation（研究动机）</dt><dd>工业机器人需要灵活系统，非专家用户需轻松适应不同任务和环境，而不同适应方式需要不同的交互模态。</dd>
+        <dt>Insight（核心洞察）</dt><dd>利用工具型LLM架构（LLM选择并参数化预定义函数而非生成代码）能安全地实现自然语言适应，并能从KMPs泛化到遍历控制。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>非专家用户适应性</li><li>不同模态互补</li><li>安全自然语言适应</li><li>不同控制方法泛化</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者提出整合多种交互模态和组件的框架，并验证了工具型LLM架构的泛化能力，但摘要中未提供具体分析细节。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>采用三种互补模态：触觉（kinesthetic）、自然语言、图形界面</li><li>集成五个组件：基于能量的意图检测、工具型LLM架构、核化运动原语（KMPs）、概率虚拟夹具、遍历控制</li><li>工具型LLM架构通过选择预定义函数而非生成代码来保证安全</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在Automatica 2025贸易展上，在7自由度力矩控制机器人上验证了框架的实用适用性，并展示了语音指令表面处理任务</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该框架涉及机器人技能学习与适应，与具身智能中的交互式学习相关；工具型LLM架构和KMPs与世界模型中的动作原语有联系；但未直接涉及长时序预测或系统优化。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>摘要未提供作者单位、通讯作者和具体实验数据，因此这些字段依据不足；相关性评分基于方法可迁移性。</p>
+          <blockquote><strong>框架支持三种互补的交互模态：</strong>enables robot skill adaptation through three complementary modalities: kinesthetic touch for precise spatial corrections, natural language for high-level semantic modifications, and a graphical web interface for visualizing geometric relations and trajectories, inspecting and adjusting parameters, and editing via-points by drag-and-drop.</blockquote>
+          <blockquote><strong>工具型LLM架构能安全进行自然语言适应：</strong>a tool-based LLM architecture (where the LLM selects and parameterizes predefined functions rather than generating code) for safe natural language adaptation</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2510.04802:v2"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>机器人学习与控制</span>
+        <strong>arXiv:2510.04802</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2510.04802/">EgoSurg：从环境相机对手术室工作流程进行第一人称视角重放的任意视角合成</a></h3>
+    <p class="original-title" lang="en">Egosurg: Arbitrary view synthesis for egocentric replay of operating room workflows from ambient cameras</p>
+    <p class="authors">Han Zhang · Lalithkumar Seenivasan · Jose L. Porras · Roger D. Soberanis-Mukul · Hao Ding · Hongchao Shu · Benjamin D. Killeen · Ankita Ghosh · Lonny Yarmus · Jeffrey K. Jopling · Masaru Ishii · Angela C. Argento · Mathias Unberath</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>利用3D高斯泼溅和图像条件扩散模型，可以从稀疏的环境相机中重建并合成高质量的第一人称视角，且不干扰临床工作。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>展示了如何利用环境传感器和3D重建技术生成任意视角，对具身智能中场景理解和重放有参考价值，但主要用于手术场景。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>手术室场景的任意视角合成与第一人称重放</p>
+        <p><strong>模型原始标签：</strong>3D高斯泼溅、视角合成、手术室、工作流程分析、扩散模型</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2025-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2510.04802">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2510.04802">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>医疗手术室，使用墙壁安装的立体相机捕捉动态场景</dd>
+        <dt>Motivation（研究动机）</dt><dd>传统手术观察依赖固定视角或回忆，无法记录个体视角，EgoSurg旨在从环境相机重建动态手术室场景并渲染任意角色特定视角，无需给人员安装设备或干扰临床流程。</dd>
+        <dt>Insight（核心洞察）</dt><dd>利用3D高斯泼溅和图像条件扩散模型，可以从稀疏的环境相机中重建并合成高质量的第一人称视角，且不干扰临床工作。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>相机覆盖有限</li><li>拥挤和遮挡导致的伪影</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
+        <dt>Method（方法）</dt><dd><ul><li>初始化每时间戳的3D高斯泼溅表示，基于尺度感知体视深度</li><li>使用图像条件扩散模型校正辅助渲染视图，减轻伪影</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在四个真实机器人肺手术和两个模拟全流程会话中评估</li><li>近场重建一致性：PSNR 26.8 dB，SSIM 0.895</li><li>合成第一人称视角PSNR 17.8 dB，SSIM 0.766</li><li>三个案例研究：模拟无菌区违规判定、角色视角重放、人员位置反事实测试</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>虽然焦点是手术场景，但涉及到动态场景重建与视角合成，与具身智能中环境感知和模拟有关，但非直接相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>第一作者机构和通讯作者信息未在摘要中提供，相关性评估基于主题相关性。</p>
+          <blockquote><strong>EgoSurg使用3D高斯泼溅和扩散模型从环境相机合成视角：</strong>We present EgoSurg, a framework that reconstructs dynamic OR scenes from sparse wall-mounted stereo video and renders arbitrary, role-specific egocentric views without instrumenting personnel or interfering with clinical workflow.</blockquote>
+          <blockquote><strong>实验结果显示了重建质量：</strong>Near-field reconstruction fidelity was consistent (PSNR 26.8~dB, SSIM .895) across five workflow phases and both sites</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2505.20781:v2"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>机器人学习与控制</span>
+        <strong>arXiv:2505.20781</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 7/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2505.20781/">STITCH-OPE：基于引导扩散的轨迹拼接用于离线策略评估</a></h3>
+    <p class="original-title" lang="en">STITCH-OPE: Trajectory Stitching with Guided Diffusion for Off-Policy Evaluation</p>
+    <p class="authors">Hossein Goli · Michael Gimelfarb · Nathan Samuel de Lara · Haruki Nishimura · Masha Itkina · Florian Shkurti</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>利用扩散模型生成目标策略下的合成轨迹，并通过对目标策略的评分函数引导去噪过程，同时裁剪行为策略的评分以避免过度正则化，并通过拼接部分轨迹实现长时域生成，从而在理论上实现方差指数级降低。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>针对高维长时域的 OPE 提供了基于扩散模型的有效解决方案，其理论保证和实验验证展示了在真实机器人评估中的潜力，对研究长时序预测和生成式世界模型的研究者具有重要启发。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-learning/" data-tag-filter="robot-learning">机器人学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>离线策略评估中的生成式世界模型与长时序动作预测</p>
+        <p><strong>模型原始标签：</strong>离线策略评估、扩散模型、轨迹拼接、机器人学习、长时序预测</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2025-05</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2505.20781">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2505.20781">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>离线强化学习与机器人策略评估；高维状态和动作空间、长时域任务（D4RL 和 OpenAI Gym 基准）</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有 OPE 方法在高维、长时域问题上因重要性加权的方差指数爆炸或动力学模型的复合误差而失效，而机器人或医疗等场景直接交互成本高或不安全，需要更可靠的离线评估方法。</dd>
+        <dt>Insight（核心洞察）</dt><dd>利用扩散模型生成目标策略下的合成轨迹，并通过对目标策略的评分函数引导去噪过程，同时裁剪行为策略的评分以避免过度正则化，并通过拼接部分轨迹实现长时域生成，从而在理论上实现方差指数级降低。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>高维状态和动作空间导致重要性加权方差指数膨胀</li><li>长时域预测中动力学模型累积误差</li><li>现有 OPE 方法在长时域任务中失效</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过理论分析证明，在温和假设下，所提出的修改（评分引导中减去行为策略得分、轨迹拼接）相比长时域轨迹扩散实现了方差的指数级降低；实验评估验证了有效性。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>预训练行为数据的扩散模型作为基础</li><li>使用目标策略的评分函数引导去噪过程生成目标策略的合成轨迹</li><li>在引导过程中减去行为策略的评分以防止过度正则化（创新点1）</li><li>将部分轨迹端到端拼接以生成长时间跨度轨迹（创新点2）</li><li>提供理论保证，证明这些修改在温和假设下相对于长时域轨迹扩散实现了方差指数级降低</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在D4RL和OpenAI Gym基准上，与最先进的OPE方法相比，在均方误差、相关性和后悔指标上显示显著改进（具体数值未在摘要中提供）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该方法使用扩散模型作为生成式世界模型来模拟轨迹动态，与具身智能中的世界模型和长时序动作预测相关；其轨迹拼接和引导技术可迁移到世界动作模型（WAM）的动作生成和长时预测，同时也涉及离线策略评估，对机器人系统优化有参考价值。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>论文标题和摘要明确，但未提供作者单位、通讯作者信息，也未给出具体实验数值，因此这些字段存在不确定性；相关性评分基于主题匹配，方法可迁移性较强。</p>
+          <blockquote><strong>现有 OPE 方法在高维、长时域问题上因方差膨胀或复合误差而失效：</strong>Existing OPE methods are ineffective for high-dimensional, long-horizon problems, due to exponential blow-ups in variance from importance weighting or compounding errors from learned dynamics models.</blockquote>
+          <blockquote><strong>STITCH-OPE 利用扩散模型生成目标策略的合成轨迹，并引导去噪过程：</strong>Starting with a diffusion model pre-trained on the behavior data, STITCH-OPE generates synthetic trajectories from the target policy by guiding the denoising process using the score function of the target policy.</blockquote>
+          <blockquote><strong>STITCH-OPE 有两个技术创新：防止过度正则化和拼接部分轨迹：</strong>STITCH-OPE proposes two technical innovations that make it advantageous for OPE: (1) prevents over-regularization by subtracting the score of the behavior policy during guidance, and (2) generates long-horizon trajectories by stitching partial trajectories together end-to-end.</blockquote>
+          <blockquote><strong>理论上这些修改实现方差指数级降低：</strong>We provide a theoretical guarantee that under mild assumptions, these modifications result in an exponential reduction in variance versus long-horizon trajectory diffusion.</blockquote>
+          <blockquote><strong>实验在基准上显示显著改进：</strong>Experiments on the D4RL and OpenAI Gym benchmarks show substantial improvement in mean squared error, correlation, and regret metrics compared to state-of-the-art OPE methods.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="explore">
+        <header class="tier-heading"><h2>探索发现</h2><p><span data-tier-count>2</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27225:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>机器人学习与控制</span>
+        <strong>arXiv:2608.27225</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27225/">STEP：基于多模态大语言模型的状态感知任务估计与规划以促进人机协作</a></h3>
+    <p class="original-title" lang="en">STEP: State-Aware Task Estimation and Planning with Multi-Modal LLMs for Human-Robot Collaboration</p>
+    <p class="authors">Maitrey Gramopadhye · Prakash Baskaran · Xiao Liu · Songpo Li · Soshi Iba</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过显式估计系统状态并预测状态转换，可以确保任务收敛计划，并提供执行预测动作所需的额外辅助参数。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>本文针对多模态 LLM 在机器人规划中的状态理解问题进行改进，通过状态预测提升动作可执行性，对具身智能中基于大模型的规划方法有借鉴意义。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>基于多模态大语言模型的人机协作任务规划</p>
+        <p><strong>模型原始标签：</strong>多模态大语言模型、任务规划、状态估计、人机协作、状态转换预测</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27225">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27225">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>工业装配任务中的仿真环境</dd>
+        <dt>Motivation（研究动机）</dt><dd>多模态大语言模型在任务规划中缺乏对系统状态的理解，不跟踪状态转换，导致生成的动作产生幻觉，偏离预期目标；且自然语言动作计划过于高层，导致执行歧义。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过显式估计系统状态并预测状态转换，可以确保任务收敛计划，并提供执行预测动作所需的额外辅助参数。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>MM-LLMs 缺乏系统状态理解</li><li>不追踪状态转换导致动作幻觉</li><li>自然语言计划缺乏可执行性</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者分析了现有 MM-LLM 任务规划方法的不足，认为忽略状态转换是导致动作幻觉和计划不可行的关键原因，因此提出显式状态预测以增强任务收敛性。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>设计状态感知任务估计器与规划器（STEP）</li><li>提示 MM-LLM 显式估计系统当前状态</li><li>预测执行动作后的状态转换</li><li>同时生成动作和未来状态</li><li>提供执行动作所需的额外辅助参数</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在仿真环境中使用机器人装配任务进行评估</li><li>与最先进方法相比，动作可执行性提升 32.8%</li><li>最终状态误差降低 14.8%</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该方法涉及机器人任务规划与动作生成，与具身智能中的可执行动作生成和任务收敛性相关，但未涉及世界模型或推理效率优化，关联度中等。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>未提供全文，信息仅来自摘要，无法验证实验细节，通讯作者和单位信息未给出。</p>
+          <blockquote><strong>MM-LLM 缺乏状态理解导致动作幻觉：</strong>MM-LLMs inherently lack an understanding of system states and do not track state transitions, often leading to hallucinated actions that deviate from the intended goal.</blockquote>
+          <blockquote><strong>STEP 通过预测状态转换提高计划收敛性：</strong>By forecasting future states alongside actions, STEP ensures task-convergent planning while also providing additional assistance parameters necessary for executing the predicted actions.</blockquote>
+          <blockquote><strong>实验结果显示动作可执行性提升 32.8%：</strong>Our approach outperforms the state-of-the-art by 32.8% in action executability and 14.8% in final-state error.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2608.27198:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>机器人学习与控制</span>
+        <strong>arXiv:2608.27198</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2608.27198/">知识蒸馏驱动的带GAN细化的语义NOMA用于6G机器人车辆网络</a></h3>
+    <p class="original-title" lang="en">Knowledge Distillation Driven Semantic NOMA with GAN Refinement for 6G Robotic Vehicle Networks</p>
+    <p class="authors">Qifei Wang · Zhen Gao · Li Qiao · Ziwei Wan · De Mi · Dapeng Li · Ying Sun</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过知识蒸馏将正交传输教师模型的知识迁移到NOMA学生模型以减轻干扰，同时利用条件GAN细化重建图像以解决像素级优化的过度平滑问题</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>针对机器人车辆网络的通信与感知联合优化，提供知识蒸馏和生成模型结合的思路，可用于边缘智能设备的感知传输系统设计</p>
+    <ul class="paper-tags" aria-label="研究标签">
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>6G机器人车辆网络中的语义通信与干扰缓解</p>
+        <p><strong>模型原始标签：</strong>6G、机器人车辆、语义通信、NOMA、知识蒸馏、GAN、视觉感知、能效</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-08</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2608.27198">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2608.27198">PDF ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>6G机器人车辆网络的上行链路NOMA场景，受带宽和能量约束，需要高保真视觉感知</dd>
+        <dt>Motivation（研究动机）</dt><dd>实现可持续智能移动性，6G赋能的机器人车辆需要在严格带宽和能量约束下进行高保真视觉感知；语义通信虽频谱高效但受到NOMA网络中严重干扰的影响</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过知识蒸馏将正交传输教师模型的知识迁移到NOMA学生模型以减轻干扰，同时利用条件GAN细化重建图像以解决像素级优化的过度平滑问题</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>上行NOMA网络中的严重干扰</li><li>带宽和能量约束</li><li>像素级优化导致的过度平滑伪影</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者分析认为知识蒸馏可以无推理开销地缓解干扰，cGAN以第一阶段重建和信道状态为条件输入可细化粗输出为高保真图像</dd>
+        <dt>Method（方法）</dt><dd><ul><li>开发基于ConvNeXt的深度联合源信道编码架构，配备增强注意力特征模块以适应动态信道</li><li>采用两阶段知识蒸馏策略，通过正交传输教师模型指导学生模型</li><li>引入信道条件GAN，以初步重建和信道状态为条件，细化输出图像</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在FFHQ-256数据集上验证，KDG-SemNOMA在像素级准确性和感知保真度上显著优于现有方法（具体数值未提供）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>与具身智能相关度中等，涉及机器人车辆的视觉感知和通信优化，但侧重于通信层面而非动作生成或世界模型；与系统优化相关，通过知识蒸馏和GAN提升系统效率</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>基于摘要推断，具体实验数字、机构等信息未提供，相关性评分中等</p>
+          <blockquote><strong>KDG-SemNOMA框架显著优于现有方法：</strong>Experiments on FFHQ-256 demonstrate that KDG-SemNOMA significantly outperforms state-of-the-art methods in both pixel-level accuracy and perceptual fidelity.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、标签、层级或相关性条件。</p>
+    <script type="application/json" data-paper-json>[{"id":"arxiv:2608.27456:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":7,"hasFigure":true,"tags":["evaluation","navigation","vision-language"],"searchText":"机器人学习与控制 多模态大语言模型在城市环境中的空间行动能力评估 多模态大语言模型 具身智能 城市导航 闭环交互 空间推理 3d地理空间数据 urbanground: from local perception to spatial agency in a real-scale city urbanground:从局部感知到真实尺度城市中的空间行动能力 tianjie ju zheng wu yueqing sun yuhan cui bobo li shengqiong wu pengzhou cheng haodong zhao zongru wu xinbei ma doris zhang kunling li mong-li lee wynne hsu hao fei qi gu gongshen liu zhuosheng zhang multimodal large language models (mllms) can interpret a street view, but urban agency depends on whether such local evidence remains useful after the agent starts to move. in this paper, we investigate how far current mllm agents can turn local urban perception into reliable action in a complicated real-scale city. we propose urbanground, the first sandbox to make this question testable in a physically constrained replica of hong kong built from territory-wide 3d geospatial data. urbanground supports closed-loop interaction from a first-person view and provides an interactive map for navigation. agents can directly enter the 3d city and explore from a first-person view. our analysis follows the growth of the spatial problem through three research questions. we first test whether an agent can ground a local scene well enough to answer spatial questions after active observation. then we ask whether that grounding supports navigation as destinations become farther away and less explicit. finally, we examine whether the resulting behavior survives changes in route availability and pedestrian motion. contemporary mllm agents usually show useful atomic abilities in visual recognition and short-range spatial reasoning, while orientation and pedestrian-aware movement remain unreliable. their central failure emerges over extended exploration, where local abilities do not compose into sustained goal-directed behavior and errors accumulate without effective correction. we hope urbanground will support broader study of how far current mllm agents can explore reliably in complex, open-ended urban environments. 真实尺度城市模拟环境(基于香港3d地理空间数据构建)中的闭环交互任务 多模态大语言模型(mllm)能理解街景,但城市行动能力取决于局部证据在移动后是否依然有效,需要探究当前mllm智能体在复杂真实尺度城市中能否将局部感知转化为可靠行动。 当前mllm智能体在视觉识别和短距离空间推理等原子能力上表现良好,但定向和行人感知运动不可靠,核心失败出现在长时探索中:局部能力无法组合成持续的目标导向行为,且误差积累无法有效纠正。 作者通过三个递进的研究问题分析空间问题:首先测试智能体在主动观察后能否充分理解局部场景以回答空间问题;然后考察在目的地变远且不明确时,这种理解能否支持导航;最后检验在路线变化和行人运动条件下行为是否稳定。 构建urbanground沙盒环境,基于香港全域3d地理空间数据,提供物理约束的复刻环境 支持第一人称视角的闭环交互,并提供交互式地图用于导航 智能体可直接进入3d城市,以第一人称视角探索 设计三个研究问题逐步增加空间任务难度,评估智能体能力 实验围绕三个研究问题展开,测试当前mllm智能体的原子能力和长时探索表现,结果显示原子能力表现良好但长时探索存在明显失败;未提供具体数字。 该论文直接相关于具身智能和世界模型中的空间行动能力评估,尤其关注长时序预测和真实环境模拟,与物理人工智能和真实机器人评测有密切关系,但未涉及模型压缩或系统优化。 该论文提出了一个全新的城市级测试平台urbanground,用于评估当前mllm智能体的空间行动能力,揭示了长时探索中的核心失败模式,对研究具身智能的导航和决策能力具有重要参考价值。"},{"id":"arxiv:2608.27225:v1","topic":"robot-learning","tier":"explore","scope":"abstract","score":8,"hasFigure":false,"tags":["vision-language"],"searchText":"机器人学习与控制 基于多模态大语言模型的人机协作任务规划 多模态大语言模型 任务规划 状态估计 人机协作 状态转换预测 step: state-aware task estimation and planning with multi-modal llms for human-robot collaboration step:基于多模态大语言模型的状态感知任务估计与规划以促进人机协作 maitrey gramopadhye prakash baskaran xiao liu songpo li soshi iba effective human-robot collaboration in industrial settings requires robots to understand human intentions and assist with task planning, reducing workload. recent works have explored the use of multi-modal large language models (mm-llms) for task planning in such data-scarce scenarios, leveraging in-context learning to interpret user actions and generate long-horizon action plans in natural language. however, mm-llms inherently lack an understanding of system states and do not track state transitions, often leading to hallucinated actions that deviate from the intended goal. additionally, generating action plans in natural language tends to limit the generated plans to a high level, introducing ambiguity in action execution. to address these limitations, we propose the state-aware task estimator and planner (step), which prompts a mm-llm to explicitly estimate the state of the system and predict the state transitions resulting from executed actions. by forecasting future states alongside actions, step ensures task-convergent planning while also providing additional assistance parameters necessary for executing the predicted actions. we evaluate step in a simulated environment using a robot assembly task. our approach outperforms the state-of-the-art by 32.8% in action executability and 14.8% in final-state error. 工业装配任务中的仿真环境 多模态大语言模型在任务规划中缺乏对系统状态的理解,不跟踪状态转换,导致生成的动作产生幻觉,偏离预期目标;且自然语言动作计划过于高层,导致执行歧义。 通过显式估计系统状态并预测状态转换,可以确保任务收敛计划,并提供执行预测动作所需的额外辅助参数。 作者分析了现有 mm-llm 任务规划方法的不足,认为忽略状态转换是导致动作幻觉和计划不可行的关键原因,因此提出显式状态预测以增强任务收敛性。 设计状态感知任务估计器与规划器(step) 提示 mm-llm 显式估计系统当前状态 预测执行动作后的状态转换 同时生成动作和未来状态 提供执行动作所需的额外辅助参数 在仿真环境中使用机器人装配任务进行评估 与最先进方法相比,动作可执行性提升 32.8% 最终状态误差降低 14.8% 该方法涉及机器人任务规划与动作生成,与具身智能中的可执行动作生成和任务收敛性相关,但未涉及世界模型或推理效率优化,关联度中等。 本文针对多模态 llm 在机器人规划中的状态理解问题进行改进,通过状态预测提升动作可执行性,对具身智能中基于大模型的规划方法有借鉴意义。"},{"id":"arxiv:2608.27198:v1","topic":"robot-learning","tier":"explore","scope":"abstract","score":6,"hasFigure":false,"tags":[],"searchText":"机器人学习与控制 6g机器人车辆网络中的语义通信与干扰缓解 6g 机器人车辆 语义通信 noma 知识蒸馏 gan 视觉感知 能效 knowledge distillation driven semantic noma with gan refinement for 6g robotic vehicle networks 知识蒸馏驱动的带gan细化的语义noma用于6g机器人车辆网络 qifei wang zhen gao li qiao ziwei wan de mi dapeng li ying sun to achieve sustainable intelligent mobility, 6g-empowered robotic vehicles (rvs) require high-fidelity visual perception under stringent bandwidth and energy constraints. semantic communication offers a spectral-efficient solution but suffers from severe interference in uplink non-orthogonal multiple access (noma) rv networks. to address this, we propose a knowledge distillation-driven and generative models-enhanced noma framework for robust and green rv communications, named kdg-semnoma. first, we develop a convnext-based deep joint source-channel coding (deepjscc) architecture with an enhanced attention feature (af) module for dynamic channel adaptation. second, to mitigate interference without inference overhead, an orthogonal transmission teacher model guides the noma student model via a two-stage knowledge distillation strategy. finally, to address the over-smoothing artifacts of pixel-wise optimization, we introduce a channel-conditional gan (cgan). by explicitly taking the stage-i initial reconstruction and channel states as conditional inputs, this module refines coarse outputs into high-fidelity images with realistic textures. experiments on ffhq-256 demonstrate that kdg-semnoma significantly outperforms state-of-the-art methods in both pixel-level accuracy and perceptual fidelity. 6g机器人车辆网络的上行链路noma场景,受带宽和能量约束,需要高保真视觉感知 实现可持续智能移动性,6g赋能的机器人车辆需要在严格带宽和能量约束下进行高保真视觉感知;语义通信虽频谱高效但受到noma网络中严重干扰的影响 通过知识蒸馏将正交传输教师模型的知识迁移到noma学生模型以减轻干扰,同时利用条件gan细化重建图像以解决像素级优化的过度平滑问题 作者分析认为知识蒸馏可以无推理开销地缓解干扰,cgan以第一阶段重建和信道状态为条件输入可细化粗输出为高保真图像 开发基于convnext的深度联合源信道编码架构,配备增强注意力特征模块以适应动态信道 采用两阶段知识蒸馏策略,通过正交传输教师模型指导学生模型 引入信道条件gan,以初步重建和信道状态为条件,细化输出图像 在ffhq-256数据集上验证,kdg-semnoma在像素级准确性和感知保真度上显著优于现有方法(具体数值未提供) 与具身智能相关度中等,涉及机器人车辆的视觉感知和通信优化,但侧重于通信层面而非动作生成或世界模型;与系统优化相关,通过知识蒸馏和gan提升系统效率 针对机器人车辆网络的通信与感知联合优化,提供知识蒸馏和生成模型结合的思路,可用于边缘智能设备的感知传输系统设计"},{"id":"arxiv:2608.27158:v1","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":8,"hasFigure":true,"tags":["evaluation","navigation","policy-learning"],"searchText":"机器人学习与控制 机器人人群导航中的扩散策略与短视域规划 扩散策略 强化学习 人群导航 短视域规划 离线到在线 diffusion policies for short-horizon planning in robot crowd navigation 短视域规划中的扩散策略用于机器人人群导航 wendong li jochen garcke robot crowd navigation requires safe and efficient decision-making under dense, dynamic, and multimodal human--robot interactions. existing reinforcement-learning methods typically output a single reactive action at each timestep, which limits their ability to represent diverse short-term avoidance strategies. we propose planning diffusion policy optimization (pdpo), an offline-to-online reinforcement-learning framework that uses a diffusion policy to generate short-horizon action chunks for crowd navigation. pdpo is first pretrained on collision-avoidance demonstrations and then fine-tuned online with ppo by treating the denoising process as an internal decision process. during execution, the policy generates a five-step action chunk and applies it in a receding-horizon manner. furthermore, we observe an evaluation artifact in common crowd-navigation benchmarks: without explicit boundary constraints, learned agents may leave the valid domain and bypass dense crowds. to address this, we introduce a setting in which boundary violations are treated as collisions. experiments show that pdpo obtains an improved success rate over strong baselines, and ablations demonstrate that action chunks are especially important for the modified bounded benchmark. 仿真环境中的机器人人群导航,采用离线演示预训练与在线ppo微调 现有强化学习方法在人群导航中输出单一反应动作,无法表示多样化的短期避障策略,且缺乏时间一致性 扩散策略生成短视域动作块(五步)并以滚动时域方式执行,能够捕捉多模态的导航行为;同时,评估环境缺少边界约束会导致代理绕过密集人群,影响评估真实性 作者观察到基准测试中的评估伪影:缺乏边界约束时学习代理可离开有效区域绕过人群,因此在修改的边界化基准中将边界违规视为碰撞,以更真实地评估 离线演示预训练扩散策略 在线ppo微调,去噪过程被视为内部决策过程 生成五步动作块并以滚动时域方式执行,每一步只执行第一个动作 在标准人群导航基准上与强基线比较,pdpo获得改进的成功率;消融实验表明动作块在修改的边界化基准中尤为重要 具体数字未提供 论文针对具身智能中的导航决策问题,采用扩散策略生成短视域动作序列,与视觉语言动作模型和世界动作模型中的可执行动作生成、长时序预测相关,并关注通过边界约束改进评估协议,涉及系统优化中的基准设计 该论文将扩散策略与短视域规划引入人群导航,提供了处理多模态行动分布的新方法,并指出评估环境中的常见伪影,对当前研究者的动作生成和评估设计有直接参考价值"},{"id":"arxiv:2608.26883:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":7,"hasFigure":false,"tags":["evaluation","robot-manipulation"],"searchText":"机器人学习与控制 主动表面驱动的可重构夹持器设计及其在薄物体稳健抓取与顺序操作中的应用 机器人夹持器 薄物体抓取 欠驱动 主动表面 顺序操作 结构优化 active surface-driven reconfigurable gripper: robust grasping and sequential manipulation of thin objects 主动表面驱动可重构夹持器:薄物体的稳健抓取与顺序操作 ziyi zheng keqi zhu hao wu yanzhe wang huixu dong robotic grippers face substantial challenges in grasping and manipulating thin objects. most existing grippers rely on highly precise approach and grasp motions, which limits robustness and reduces applicability. this paper explores thin-object grasping using books as a representative example. here, we propose a novel solution that integrates an active surface with underactuated compliance to achieve stable grasping of thin objects without complex control. first, an underactuated gripper with an active surface is designed. the active-surface thumb performs in-hand repositioning of the target book without requiring adjustments of the robot arm or the other fingers, while the underactuated fingers establish compliant contact conditions with the environment, and the reconfigurable structure enables reliable grasping of books under different configurations. second, we establish a kinematic model of the gripper, and determine the initial grasp postures for two representative scenarios (books lying flat on a desktop and books vertically packed in a shelf). third, by analyzing the physical model of a book lying on a table and its interaction with the gripper and the environment, we systematically optimize the structural parameters and grasping strategy. finally, extensive experiments validate the effectiveness of the proposed gripper and strategy. the results demonstrate strong robustness and adaptability when grasping thin objects placed flat (including books, paper, fabric, plastic film, and mouse pad), as well as a high success rate when grasping vertically packed books. moreover, the proposed gripper can reliably complete long sequential \"grasp-place\" tasks. 真实机器人抓取薄物体,如书本,包括平放和垂直书架两种场景 现有夹持器抓取薄物体需要高精度接近和抓取运动,鲁棒性差,实用性受限。 将主动表面与欠驱动柔顺结合,可在无需复杂控制的情况下实现稳定抓取,并通过主动表面实现目标物体的手内重定位,避免调整机械臂或手指。 材料未说明 设计具有主动表面的欠驱动夹持器,主动表面拇指实现书本的手内重定位 建立夹持器的运动学模型,确定两个代表性场景的初始抓取姿态 分析桌上书本的物理模型及其与夹持器和环境交互,优化结构参数和抓取策略 进行广泛实验验证有效性 验证了当抓取平放薄物体(包括书、纸、织物、塑料薄膜和鼠标垫)时具有很强的鲁棒性和适应性 垂直包装书本的抓取成功率较高 可可靠完成长期顺序'抓取-放置'任务 该研究涉及真实机器人抓取操作,与具身智能中的机器人操作、物理交互相关,但与视觉语言动作模型、世界模型或系统优化关系较弱,其结构优化涉及系统设计优化。 该研究为薄物体抓取提供了一种新颖的机械设计思路,通过主动表面和欠驱动结合提升鲁棒性,对具身智能中机器人操作的实际硬件实现有参考价值。"},{"id":"arxiv:2608.26800:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":7,"hasFigure":false,"tags":["evaluation","robot-learning","robot-manipulation"],"searchText":"机器人学习与控制 机器人在线学习框架 在线学习 双手机器人 动态操控 记忆基学习 安全学习 模拟到现实差距 rapid on-robot learning for dynamic manipulation skills: robot juggling 动态操控技能的快速在线机器人学习:机器人抛球 taeyoon lee chunpeng wang christopher g. atkeson alfred a. rizzi nicolas rojas we present an online learning framework that enables a bimanual robot to acquire diverse juggling patterns directly on physical hardware within minutes, even with a significant sim2real gap. one of the most important lessons from this work is that a model, even when far from reality, can be extremely useful for learning. this motivates a central philosophy of our approach: learning should build upon the robot's current knowledge rather than replace it. our regularized memory-based learning puts this principle into practice by learning a local model from accumulated experience while retaining the global prior model to extrapolate where experience is sparse. this enables efficient and stable online learning from each new experience without resorting to uninformed exploration over a vast space of possible behaviors. equally important to continual on-robot learning is safety, allowing the robot to repeatedly practice and improve in the real world. we construct a mutually reachable set that allows safe transitions between successive throws and catches, without driving either arm into a state from which its next action would require violating the robot's joint or actuator limits. together, these ideas enable a bimanual robot with multi-fingered hands and onboard vision to safely learn and compose five canonical three-ball juggling patterns, including cascade, tennis, half-shower, shower, and box, within less than 5 minutes of real-world interaction. more broadly, this work points toward robots that build upon imperfect prior knowledge and continually refine their behavior through their own real-world experience. 真实硬件上的双手机器人抛球任务,涉及多种三步球模式 使机器人能够在真实硬件上快速学习动态操控技能,即使存在显著的 sim2real 差距;强调模型即使不完美也能用于学习,并主张学习应基于现有知识而非替换。 即使模型与现实有差距,也能极大促进学习;学习应建立在机器人当前知识之上,通过保留全局先验模型并在经验稀疏处外推,结合正则化的记忆基学习,实现高效稳定的在线学习。 材料未说明 使用正则化的记忆基学习,从累积经验中学习局部模型,同时保留全局先验模型以进行外推。 构建互可达集合,确保连续投掷和接球之间的安全转换,避免违背关节或执行器限制。 在一个带有多指手和机载视觉的双手机器人上,在少于5分钟的真实交互内,安全地学习并组合出五种基本的三球抛球模式(cascade、tennis、half-shower、shower、box)。 该工作直接涉及真实机器人上的技能学习,与具身智能中的在线适应和操控相关;其在线学习框架和安全性考虑对于机器人系统中的实时控制和优化具有参考价值。 该论文展示了在真实硬件上快速学习复杂动态技能的可能性,利用不完美的模型和记忆基学习,对于当前关注真实机器人评测、在线学习和安全性的研究者具有启发意义。"},{"id":"arxiv:2608.26684:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":6,"hasFigure":false,"tags":["evaluation","policy-learning"],"searchText":"机器人学习与控制 视频大语言模型的推理蒸馏方法(echo-grpo) 推理蒸馏 视频llm grpo 离策略轨迹改写 个人语言风格 多模态 reason in the words you speak: idiolectal paraphrasing off-policy traces for reasoning distillation in videollms 用你所说的话语进行推理:视频大语言模型中基于个人语言风格的离策略轨迹改写用于推理蒸馏 ji soo lee jinyoung park seohyun lee jongha kim joonmyung choi jinsung yoon hyunwoo j. kim recent large language models achieve strong performance on complex reasoning tasks, where reinforcement learning with group relative policy optimization (grpo) has emerged as a leading paradigm for optimizing models on self-generated trajectories. however, the on-policy nature of grpo bounds the model to the reasoning skills it can already produce, restricting to learn more advanced capabilities. prior works inject privileged reasoning traces from a stronger teacher policy to guide training, yet these traces are inherently out of distribution with respect to the student policy. we observe that this mismatch between on-policy and off-policy causes gradient clipping on semantically critical reasoning tokens, ultimately rewarding correct answers while leaving the reasoning that justifies them unlearned. hence, we propose \\textbf{echo-grpo}, a framework that lets the model reason in the words it speaks. rather than imitating low-probability privileged traces from the teacher model, echo-grpo rewrites them into the student policy's own \\textit{idiolect}, that is, its own characteristic vocabulary and expression patterns, while preserving their semantics via dual-reference decoding. we instantiate this framework as \\textbf{videoecho-r1} for video reasoning distillation, achieving consistent improvements across three multimodal llm backbones and five benchmarks. finally, we show that our idiolectal paraphrasing is a plug-in module that consistently improves both rl and supervised fine-tuning frameworks for reasoning distillation, demonstrating that policy-aligned supervision extends beyond grpo. 视频理解与推理任务的模型训练,具体为视频大语言模型的推理蒸馏 grpo等强化学习方法受限于策略自身可生成的推理轨迹,难以学习更高级的推理能力;注入教师模型的离策略轨迹虽能提供引导,但因其分布不匹配导致梯度裁剪,模型只学会答案而未学会推理过程。 将教师提供的离策略推理轨迹改写为学生策略自身的个人语言风格(idiolect),在保留语义的同时实现策略对齐,从而解决分布不匹配问题,让模型学会推理过程。 作者观察到on-policy与off-policy轨迹的不匹配导致语义关键推理token上的梯度裁剪,最终模型只学习到正确答案而未学到推理过程。基于此分析,提出将离策略轨迹改写为学生策略的惯用语,以对齐策略分布。 提出echo-grpo框架,将教师模型的轨迹改写成学生策略自身的惯用语 使用dual-reference decoding在改写过程中保持语义一致性 将框架实例化为videoecho-r1,用于视频推理蒸馏 作为一种即插即用模块,可同时提升rl和sft的推理蒸馏效果 在三个多模态llm骨干和五个基准上取得一致改进 显示idiolectal paraphrasing即插即用模块持续改进rl和sft框架 与视觉语言动作模型、世界模型等具身智能方向无直接关系,但推理蒸馏方法可关联到视频理解和多模态推理,对系统优化中训练效率有一定参考价值。 该工作提出了一种新颖的推理蒸馏策略,通过改写离策略轨迹解决分布不匹配问题,对提升模型推理能力有普遍意义,尤其在视频场景。对关注模型推理效率和训练方法的研究者有参考作用。"},{"id":"arxiv:2608.26645:v1","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["action-prediction","evaluation","robot-manipulation","vision-language"],"searchText":"机器人学习与控制 视觉语言动作模型中的失败恢复与自主纠正 vla 错误恢复 重试与重置 mllm 机器人操作 flare: a failure-aware framework for autonomous correction and recovery in visual-language robotic manipulation flare:视觉语言机器人操作中自主纠正与恢复的失败感知框架 ganlong zhao zijia tang xingping chen zhanghui kuang ye tian guanbin li vision-language-action models~(vlas) have demonstrated significant promise in generalizing to complex, long-horizon robotic manipulation tasks. however, their performance remains brittle, as they are typically trained on trajectory-monotonic, failure-free demonstrations. this reliance on ``perfect\" data leaves them unable to recover from common execution errors, such as a missed grasp, a dropped object, or an unexpected collision. in this paper, we propose flare, a novel framework that endows vlas with robust error recovery capabilities through a ``retry\" and ``reset\" paradigm. first, we introduce a ``retry\" mechanism by injecting perturbation and bridging segments that decouple robot pose from environment state into demonstrations, enabling the policy to autonomously handle execution deviations. second, to address critical, state-breaking (ood) failures, we introduce a ``reset\" pipeline. we leverage an mllm for offline failure analysis to automatically identify ood states from execution videos. this analysis enables the efficient, targeted collection of a small library of object-centric ``reset\" skills, which are trained to restore the environment to a task-valid state. our full framework integrates these learned policies. at inference, an online mllm monitor arbitrates between task execution and ``reset\" skills. experiments on challenging, contact-rich manipulation tasks show our approach significantly improves task success and robustness. 具身智能、视觉语言动作模型 vla模型在复杂长程任务中表现脆弱,因为训练数据多为理想的无失败演示,导致无法处理常见的执行错误,如抓取失败、物体掉落或意外碰撞。 vla脆弱性的根源在于演示数据的轨迹单调性,导致策略过度拟合机器人自身姿态与环境状态之间的虚假关联,从而无法在有效但未见的状态下重试。 作者引入id/ood错误分类法,通过理论分析指出轨迹单调性导致策略错误推断任务进度,并基于此设计双范式框架。 重试机制:在演示中注入扰动和桥接片段,解耦机器人姿态与环境状态,使策略能自主处理执行偏差。 重置流程:利用mllm进行离线失败分析,自动识别ood状态,并高效收集小规模的以对象为中心的“重置”技能库。 推理时:在线mllm监控器在任务执行和“重置”技能之间进行仲裁。 实验在接触丰富的操作任务上进行,方法在9个任务中的8个上取得最佳性能,平均成功率84.0%,显著提升基线。 用于重置技能的失败案例识别中,gemini-2.5-pro在咖啡任务上的重置/重试分类准确率88%,重置对象识别88%,时间戳78%。 该工作直接涉及视觉语言动作模型的执行动作生成与错误恢复,与长时序预测、实时控制相关,并通过系统优化提高鲁棒性。 该论文提出了创新的失败恢复框架,解决了vla在实际部署中的关键脆弱性问题,对提升机器人操作系统的鲁棒性和自主性具有重要价值。"},{"id":"arxiv:2608.17512:v2","topic":"robot-learning","tier":"browse","scope":"abstract","score":8,"hasFigure":true,"tags":["action-prediction","navigation","policy-learning","vision-language"],"searchText":"机器人学习与控制 基于视觉语言模型的具身导航框架,结合动作空间重构、推理调度、记忆管理和强化学习对齐 具身导航 视觉语言模型 像素到3d动作 选择性推理 轨迹记忆压缩 grpo对齐 r2r-ce embodied-navigator: point, think, memorize, and align for efficient navigation 具身导航器:高效导航中的点选、思考、记忆与对齐 hongyan feng sunlai chen xuanyu liu miao pan yangfan xie yuxiang cui zhongxiang zhou rong xiong wenqi zhang jianwei yin yueting zhuang xuhong zhang although large vision-language models (vlms) have significantly advanced embodied navigation, their direct deployment remains challenging, as existing methods often force vlms into unnatural action spaces that misalign with their 2d pre-training priors, compounded by rigid reasoning schedules and inefficient memory management. to overcome these limitations, we propose tamp-nav, a unified framework for efficient embodied navigation. first, we introduce a pixel-to-3d action formulation (point) that reformulates navigation into 2d visual prompting. specifically, the vlm merely selects 2d pixels, which are then projected into 3d coordinates for a low-level slam controller. this design naturally aligns embodied execution with the vlm's inherent 2d visual capabilities. second, we propose an integrated selective reasoning and anchor-trajectory memory mechanism (think and memorize), which dynamically triggers chain-of-thought and retains high-fidelity memory only at critical nodes, compressing redundant trajectories into lightweight space-time indicators, thereby preserving critical historical information and enhancing spatio-temporal perception. finally, we design an efficient two-level alignment paradigm (align) via group relative policy optimization (grpo). by superimposing global outcome rewards with fine-grained process rewards, this dense supervision tightly aligns the agent's cognitive planning with physical environmental feedback, endowing the model with adaptive reasoning capabilities. experiments demonstrate that tamp-nav achieves state-of-the-art performance (e.g., 66.2% sr on r2r-ce) with high runtime and sample efficiency (requiring only 90k training trajectories). 具身导航任务(r2r-ce),使用低层slam控制器,训练数据为90k条轨迹 现有方法将vlm直接部署于具身导航时,常迫使模型进入与其2d预训练先验不匹配的动作空间,推理调度僵化且记忆管理低效,导致部署困难。 通过将导航动作重构为2d像素选择并投影至3d,能够自然对齐vlm的2d视觉能力;结合动态推理与关键节点记忆压缩,可在保持性能的同时提升效率。 作者分析问题在于动作空间错位、推理调度僵化、记忆冗余,因此设计统一框架分别应对。 pixel-to-3d动作公式化:vlm选择2d像素,投影至3d坐标供slam控制器执行 选择性推理与锚点轨迹记忆:动态触发思维链,仅在关键节点保留高保真记忆,压缩冗余轨迹为轻量时空指示器 两级对齐范式:通过grpo叠加全局结果奖励和细粒度过程奖励,实现密集监督 在r2r-ce上达到66.2%的成功率(sr),仅需90k训练轨迹,展现出高运行时和样本效率 本研究直接涉及具身智能中的视觉动作生成,通过vlm实现可执行动作,并关注推理效率(动态推理、记忆压缩)和真实环境评测(r2r-ce),与视觉语言动作模型和系统优化紧密相关。 该工作提出了一种新颖的像素到3d动作公式,巧妙地解决了vlm动作空间对齐问题,同时通过选择性推理和记忆压缩提升了效率,对高效具身导航系统设计具有重要参考价值。"},{"id":"arxiv:2608.16153:v4","topic":"robot-learning","tier":"browse","scope":"abstract","score":9,"hasFigure":true,"tags":["action-prediction","efficient-inference","robot-manipulation"],"searchText":"机器人学习与控制 机器人操作中的条件感知动作生成 统一条件-动作建模 单步动作生成 机器人操作 推理加速 uca-flow unified condition-action modeling for accurate one-step action generation 统一条件-动作建模用于精确的单步动作生成 xinyu zhou zikun cai kuangji zuo gen li boyu ma yanshuo lu yutong song mingqi yuan jiayu chen jianfei yang robot manipulation requires policies that are both accurate and efficient, as robot control must respond to changing observations under tight latency constraints. recent diffusion and flow policies are promising, but they often treat conditions as auxiliary signals rather than jointly evolving them with action trajectories. we find that this limitation can be effectively mitigated by a \\textbf{simple yet effective unified condition-action modeling design} that represents conditions and actions in a shared token space, allowing a compact model to achieve high performance while improving both inference speed and accuracy. therefore, we propose uca-flow, a unified condition-action modeling framework for accurate one-step action generation. our method unifies observation conditions, timestep conditions, interval conditions, and action tokens into a single sequence, and processes them with a unified condition-action transformer for joint condition-action representation learning. as a result, condition representations are dynamically reconstructed according to the current generation stage, highlighting information most relevant for action refinement. furthermore, we introduce an improved dual-pass supervision scheme over $u$ and $v$ for stronger optimization of unified condition-action modeling. uca-flow improves the average success rate by 9.3 percentage points over the strongest baseline, while achieving $45.6\\times$ and $33.4\\times$ speedups over dp3 and simple dp3, and remaining $4.3\\times$ and $2.3\\times$ faster than one-step flowpolicy and mp1, respectively.project page: https://uca-policy.github.io/uca.github.io/. 机器人操作策略,在紧延迟约束下需要准确且高效的控制 现有扩散和流策略将条件视为辅助信号,而不是与动作轨迹联合演化,限制了推理速度和准确性。 通过简单而有效的统一条件-动作建模设计,在共享token空间中表示条件和动作,可以使紧凑模型同时提高推理速度和准确性。 作者发现现有方法的限制可以通过统一条件-动作建模来缓解,并提出了动态重建条件表示以适应生成阶段的方法。 将观察条件、时间步条件、间隔条件和动作token统一到单一序列中 使用统一条件-动作transformer进行联合条件-动作表示学习 条件表示根据当前生成阶段动态重建,突出与动作细化最相关的信息 引入改进的双通道监督方案(u和v)以优化统一条件-动作建模 在多个任务上,uca-flow相比最强基线平均成功率提高9.3个百分点 推理速度比dp3和simple dp3分别快45.6倍和33.4倍 比单步flowpolicy和mp1分别快4.3倍和2.3倍 论文直接面向具身智能中的机器人操作,提出统一条件-动作建模以提升动作生成准确性和推理效率,与视觉语言动作模型、世界模型和系统优化紧密相关 本文提出了一种简单而有效的统一条件-动作建模方法,在保证准确性的同时大幅提升推理速度,对于实时控制和大模型压缩具有重要参考价值。"},{"id":"arxiv:2607.19971:v2","topic":"robot-learning","tier":"browse","scope":"abstract","score":8,"hasFigure":true,"tags":["evaluation","navigation"],"searchText":"机器人学习与控制 面向社交机器人导航的统一预测与规划 模型合并 参数训练 运动预测 运动规划 边缘设备 高效模型 unified prediction and planning via conflict-aware disjoint parameter training 基于冲突感知的分离参数训练的统一预测与规划 taewon seo seonae jeon giwon lee kuk-jin yoon daehee park accurate motion prediction of surrounding agents and safe motion planning are two closely coupled key tasks for social robot navigation in crowded environments. deploying these systems on resource-constrained edge devices necessitates compact, unified models that can perform both tasks simultaneously. however, within these compact shared encoders, recent unified models often overlook severe representational conflicts that arise from the distinct objectives of predicting neighbor behaviors versus ego-centric safety planning. to address this issue, we first identify the skill conflict$\\unicode{x2014}$a phenomenon where overlapping parameter assignments cause distinct tasks to compete for the same weights, preventing the model from fully specializing in individual skills. to resolve this, we propose a novel model-merging-based framework, disjoint parameter training (dpt). dpt mitigates performance degradation caused by skill conflict through distributed parameter learning, which separates the key parameter regions of each task while preserving their core capabilities prior to merging. in addition, we observe that sparse merging, which selectively integrates only the most influential parameters for each task rather than combining all task-specific parameters, yields optimal performance by preventing interference among adjacent features and concentrating representational capacity. dpt can be applied in parallel with a variety of merging methods. evaluated on standard crowd navigation benchmarks (jrdb and jta), our framework demonstrates superior performance, validating its versatility and effectiveness for safe, resource-efficient robot navigation. 资源受限边缘设备上的社交机器人导航 在拥挤环境中,准确预测周围智能体运动和安全运动规划是两个紧密耦合的关键任务,但紧凑共享编码器中的统一模型常忽略预测与规划目标不同导致的表征冲突。 识别出技能冲突现象,并提出分离参数训练框架(dpt),通过分布式参数学习分离各任务关键参数区域,并采用稀疏合并以提升性能。 作者首先识别技能冲突现象,指出重叠参数分配导致不同任务竞争同一权重,阻碍模型专业化;观察到稀疏合并优于全参数合并,因其防止相邻特征干扰并集中表征能力。 提出模型合并框架disjoint parameter training (dpt) dpt通过分布式参数学习分离各任务关键参数区域,保留核心能力后合并 采用稀疏合并仅整合对每个任务最有影响力的参数 dpt可并行应用于各种合并方法 在jrdb和jta基准上评估,显示dpt优于现有方法,验证其多功能性和有效性 与具身智能和世界模型相关,因为其统一预测与规划,且关注资源效率,可迁移至真实机器人导航。 提出解决多任务模型表征冲突的新方法,通过模型合并和稀疏合并提升资源受限下性能,对高效具身系统设计有启发。"},{"id":"arxiv:2604.20468:v3","topic":"robot-learning","tier":"browse","scope":"abstract","score":7,"hasFigure":true,"tags":["robot-learning"],"searchText":"机器人学习与控制 交互式机器人技能学习与适应框架 机器人技能适应 语言模型 运动原语 人机交互 工业机器人 momo: a framework for seamless physical, verbal, and graphical robot skill learning and adaptation momo:一个实现物理、语言和图形化机器人技能学习与无缝适应的框架 markus knauer edoardo fiorini maximilian m\\\"uhlbauer stefan schneyer promwat angsuratanawech florian samuel lay timo bachmann samuel bustamante korbinian nottensteiner freek stulp alin albu-sch\\\"affer jo\\~ao silv\\'erio thomas eiband industrial robot applications require increasingly flexible systems that non-expert users can easily adapt for varying tasks and environments. however, different adaptations benefit from different interaction modalities. we present an interactive framework that enables robot skill adaptation through three complementary modalities: kinesthetic touch for precise spatial corrections, natural language for high-level semantic modifications, and a graphical web interface for visualizing geometric relations and trajectories, inspecting and adjusting parameters, and editing via-points by drag-and-drop. the framework integrates five components: energy-based human-intention detection, a tool-based llm architecture (where the llm selects and parameterizes predefined functions rather than generating code) for safe natural language adaptation, kernelized movement primitives (kmps) for motion encoding, probabilistic virtual fixtures for guided demonstration recording, and ergodic control for surface finishing. we demonstrate that this tool-based llm architecture generalizes skill adaptation from kmps to ergodic control, enabling voice-commanded surface finishing. validation on a 7-dof torque-controlled robot at the automatica 2025 trade fair demonstrates the practical applicability of our approach in industrial settings. 工业机器人应用场景,面向非专家用户的交互式技能适应,在7自由度力矩控制机器人上验证 工业机器人需要灵活系统,非专家用户需轻松适应不同任务和环境,而不同适应方式需要不同的交互模态。 利用工具型llm架构(llm选择并参数化预定义函数而非生成代码)能安全地实现自然语言适应,并能从kmps泛化到遍历控制。 作者提出整合多种交互模态和组件的框架,并验证了工具型llm架构的泛化能力,但摘要中未提供具体分析细节。 采用三种互补模态:触觉(kinesthetic)、自然语言、图形界面 集成五个组件:基于能量的意图检测、工具型llm架构、核化运动原语(kmps)、概率虚拟夹具、遍历控制 工具型llm架构通过选择预定义函数而非生成代码来保证安全 在automatica 2025贸易展上,在7自由度力矩控制机器人上验证了框架的实用适用性,并展示了语音指令表面处理任务 该框架涉及机器人技能学习与适应,与具身智能中的交互式学习相关;工具型llm架构和kmps与世界模型中的动作原语有联系;但未直接涉及长时序预测或系统优化。 提供了多模态交互和llm在机器人技能适应中的实际应用,对研究安全高效的vla系统有启示,尤其在推理效率和真实机器人评测方面有参考价值。"},{"id":"arxiv:2510.04802:v2","topic":"robot-learning","tier":"browse","scope":"abstract","score":6,"hasFigure":false,"tags":["evaluation"],"searchText":"机器人学习与控制 手术室场景的任意视角合成与第一人称重放 3d高斯泼溅 视角合成 手术室 工作流程分析 扩散模型 egosurg: arbitrary view synthesis for egocentric replay of operating room workflows from ambient cameras egosurg:从环境相机对手术室工作流程进行第一人称视角重放的任意视角合成 han zhang lalithkumar seenivasan jose l. porras roger d. soberanis-mukul hao ding hongchao shu benjamin d. killeen ankita ghosh lonny yarmus jeffrey k. jopling masaru ishii angela c. argento mathias unberath observing surgical practice has historically relied on fixed vantage points or recollections, leaving the egocentric perspectives that shape clinical decisions undocumented. ambient fixed cameras capture the operating room (or) at room scale but cannot recover what any individual team member actually saw. we present egosurg, a framework that reconstructs dynamic or scenes from sparse wall-mounted stereo video and renders arbitrary, role-specific egocentric views without instrumenting personnel or interfering with clinical workflow. egosurg initializes a per-timestamp 3d gaussian splatting representation from scale-aware stereo depth and refines it with an image-conditioned diffusion model that corrects auxiliary rendered views, mitigating artifacts caused by limited camera coverage, crowding, and occlusion. we evaluated the framework on four real robotic pulmonology procedures and two simulated full-workflow sessions across two hospital sites. near-field reconstruction fidelity was consistent (psnr 26.8~db, ssim .895) across five workflow phases and both sites, and synthesized egocentric views reached a psnr of 17.8~db and an ssim of .766 against paired hand-held point-of-view recordings. we further demonstrate three case studies for intended use: adjudicating a simulated sterile field violation, replaying a procedure from role-specific viewpoints, and testing a counterfactual change in personnel position. these results indicate that existing ambient camera infrastructure can be turned into a navigable 3d record of surgical work, supporting retrospective review of safety events, training, and workflow analysis from every angle. 医疗手术室,使用墙壁安装的立体相机捕捉动态场景 传统手术观察依赖固定视角或回忆,无法记录个体视角,egosurg旨在从环境相机重建动态手术室场景并渲染任意角色特定视角,无需给人员安装设备或干扰临床流程。 利用3d高斯泼溅和图像条件扩散模型,可以从稀疏的环境相机中重建并合成高质量的第一人称视角,且不干扰临床工作。 材料未说明 初始化每时间戳的3d高斯泼溅表示,基于尺度感知体视深度 使用图像条件扩散模型校正辅助渲染视图,减轻伪影 在四个真实机器人肺手术和两个模拟全流程会话中评估 近场重建一致性:psnr 26.8 db,ssim 0.895 合成第一人称视角psnr 17.8 db,ssim 0.766 三个案例研究:模拟无菌区违规判定、角色视角重放、人员位置反事实测试 虽然焦点是手术场景,但涉及到动态场景重建与视角合成,与具身智能中环境感知和模拟有关,但非直接相关。 展示了如何利用环境传感器和3d重建技术生成任意视角,对具身智能中场景理解和重放有参考价值,但主要用于手术场景。"},{"id":"arxiv:2505.20781:v2","topic":"robot-learning","tier":"browse","scope":"abstract","score":7,"hasFigure":false,"tags":["action-prediction","evaluation","physical-ai","robot-learning","world-modeling"],"searchText":"机器人学习与控制 离线策略评估中的生成式世界模型与长时序动作预测 离线策略评估 扩散模型 轨迹拼接 机器人学习 长时序预测 stitch-ope: trajectory stitching with guided diffusion for off-policy evaluation stitch-ope:基于引导扩散的轨迹拼接用于离线策略评估 hossein goli michael gimelfarb nathan samuel de lara haruki nishimura masha itkina florian shkurti off-policy evaluation (ope) estimates the performance of a target policy using offline data collected from a behavior policy, and is crucial in domains such as robotics or healthcare where direct interaction with the environment is costly or unsafe. existing ope methods are ineffective for high-dimensional, long-horizon problems, due to exponential blow-ups in variance from importance weighting or compounding errors from learned dynamics models. to address these challenges, we propose stitch-ope, a model-based generative framework that leverages denoising diffusion for long-horizon ope in high-dimensional state and action spaces. starting with a diffusion model pre-trained on the behavior data, stitch-ope generates synthetic trajectories from the target policy by guiding the denoising process using the score function of the target policy. stitch-ope proposes two technical innovations that make it advantageous for ope: (1) prevents over-regularization by subtracting the score of the behavior policy during guidance, and (2) generates long-horizon trajectories by stitching partial trajectories together end-to-end. we provide a theoretical guarantee that under mild assumptions, these modifications result in an exponential reduction in variance versus long-horizon trajectory diffusion. experiments on the d4rl and openai gym benchmarks show substantial improvement in mean squared error, correlation, and regret metrics compared to state-of-the-art ope methods. 离线强化学习与机器人策略评估;高维状态和动作空间、长时域任务(d4rl 和 openai gym 基准) 现有 ope 方法在高维、长时域问题上因重要性加权的方差指数爆炸或动力学模型的复合误差而失效,而机器人或医疗等场景直接交互成本高或不安全,需要更可靠的离线评估方法。 利用扩散模型生成目标策略下的合成轨迹,并通过对目标策略的评分函数引导去噪过程,同时裁剪行为策略的评分以避免过度正则化,并通过拼接部分轨迹实现长时域生成,从而在理论上实现方差指数级降低。 作者通过理论分析证明,在温和假设下,所提出的修改(评分引导中减去行为策略得分、轨迹拼接)相比长时域轨迹扩散实现了方差的指数级降低;实验评估验证了有效性。 预训练行为数据的扩散模型作为基础 使用目标策略的评分函数引导去噪过程生成目标策略的合成轨迹 在引导过程中减去行为策略的评分以防止过度正则化(创新点1) 将部分轨迹端到端拼接以生成长时间跨度轨迹(创新点2) 提供理论保证,证明这些修改在温和假设下相对于长时域轨迹扩散实现了方差指数级降低 在d4rl和openai gym基准上,与最先进的ope方法相比,在均方误差、相关性和后悔指标上显示显著改进(具体数值未在摘要中提供) 该方法使用扩散模型作为生成式世界模型来模拟轨迹动态,与具身智能中的世界模型和长时序动作预测相关;其轨迹拼接和引导技术可迁移到世界动作模型(wam)的动作生成和长时预测,同时也涉及离线策略评估,对机器人系统优化有参考价值。 针对高维长时域的 ope 提供了基于扩散模型的有效解决方案,其理论保证和实验验证展示了在真实机器人评估中的潜力,对研究长时序预测和生成式世界模型的研究者具有重要启发。"}]</script>
+  </section>
+
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>
