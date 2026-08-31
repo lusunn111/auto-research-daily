@@ -337,6 +337,71 @@
       "reading_scope": "abstract"
     }
   },
+  "0ac4dea953f8977b687d824f289eb77b9431128e4b4e57a20408be007bdf9892": {
+    "analysis": {
+      "analysis": "作者通过实验观察和设置对比，分析了模型在定位和分类上的表现，并指出序列长度约束、视觉编码器冻结等设计选择的影响。",
+      "challenges": [
+        "自回归解码器生成精确定位坐标时容易产生漂移和幻觉",
+        "稠密场景下生成序列过长导致错误累积",
+        "后事件 SAR 图像上冻结的视觉编码器无法提取判别性特征",
+        "模型在极密集斑块中陷入循环或预测单一损毁类别"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "作者将 BDA 表述为文本序列预测任务",
+          "location": "abstract",
+          "quote": "We cast BDA as predicting a variable-length set of bounding boxes, each specified by its coordinates and a damage label."
+        },
+        {
+          "claim": "初步实现基于 Gemma 模型",
+          "location": "abstract",
+          "quote": "Our preliminary implementation, based on the open Gemma model, achieves promising damage mapping results from only bi-temporal satellite images and a suitable text prompt."
+        }
+      ],
+      "experiments": [
+        "在两个基准数据集 xBD 和 Bright 上训练和评估，xBD 含 11,034 对光学图像，Bright 含 3,029 对光学/SAR 图像。",
+        "实验表明模型在光学图像上定位和分类性能有竞争力。",
+        "在后事件 SAR 图像上，冻结视觉编码器无法提取判别性特征，需要微调。",
+        "模型在非常密集的斑块中会陷入循环，或在异质图块中预测单一损毁类别。"
+      ],
+      "first_affiliation": "ETH Zurich",
+      "insight": "将 BDA 视为纯文本序列预测任务，通过微调通用视觉语言模型 Gemma，能够直接输出建筑位置和损毁类别，且在光学图像上展现出有竞争力的定位和分类性能。",
+      "limitations": [
+        "作者未明确陈述局限，但隐含了序列长度限制、坐标编码不高效、完全监督微调计算需求大等问题。"
+      ],
+      "method": [
+        "将 BDA 建模为预测可变长度边界框集合的序列预测任务，每个框由坐标和损毁标签指定。",
+        "基于开源 Gemma 模型微调，使用双时相图像对和文本提示，端到端生成建筑位置和损毁类别。",
+        "采用图像裁剪成 512×512 补丁，限制每补丁建筑数量，并设置视觉编码器 token 预算为 280。",
+        "训练配置：微调 Gemma4-E4B 25k 步，使用 Adafactor 优化器，冻结视觉编码器，批次大小 64，TPU v4 切片。"
+      ],
+      "motivation": "传统的建筑物损毁评估依赖专门网络或微调地理空间基础模型，而通用视觉语言模型在稠密定位任务上仍存在生成漂移和幻觉问题，尚未有 GeoVLM 能够仅通过自回归序列生成联合实现每栋建筑的定位和损毁分级。",
+      "primary_topic": "建筑物损毁评估的视觉语言模型序列预测方法",
+      "relation_to_research": "虽然应用于遥感领域，但其核心在于验证通用视觉语言模型通过序列预测实现空间定位的可行性，与具身智能中 VLA 模型的动作生成和空间推理相关，且涉及长时序预测（自回归）和推理效率（序列长度控制）等主题。",
+      "relevance_score": 6,
+      "setting": "遥感图像分析，具体为基于双时相卫星图像（光学/光学，光学/SAR）的建筑物损毁评估。",
+      "tags": [
+        "视觉语言模型",
+        "建筑物损毁评估",
+        "序列预测",
+        "卫星图像",
+        "自回归生成"
+      ],
+      "title_zh": "GeBDA：基于文本序列预测的建筑物损毁评估",
+      "uncertainty": "材料为全文节选，部分实验细节和结果不完整，且论文为 2026 年预印本，需谨慎对待其结论的普适性。",
+      "why_recommended": "展示了通用 VLM 在稠密空间预测任务上的潜力与挑战，对于研究视觉语言动作模型在真实世界交互中的空间锚定和高效生成具有参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:08.855455Z",
+      "input_hash": "06e22ad00673495ed090a42419f8ff66d0256c47cb4211f8130aee650c79e840",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
   "0babbbfdad3b77e120eaee90cc4418353b355785b7189a749c8903d07d83831e": {
     "analysis": {
       "analysis": "材料未说明",
@@ -2361,6 +2426,63 @@
       "reading_scope": "abstract"
     }
   },
+  "43f3f1d4867241ecc3270307c4df162fe97373d49d7fbdc939086837bd3e919a": {
+    "analysis": {
+      "analysis": "作者通过提出两种通用框架来分别控制总变差距离和χ²散度下的混合时间，利用接受概率仅在大概率区域控制的关键思想，并验证了多种度量下的条件。",
+      "challenges": [
+        "需要处理强自和谐性、ν̄-对称性和混合迹正则性等复杂技术条件",
+        "控制Metropolis-Hastings接受概率在大多数点上的行为",
+        "在截断PSD锥上实现改进的d^4混合时间"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "论文研究加权Dikin行走的混合时间，用于从多胞体上的指数分布采样，给出了O(d^2)混合界。",
+          "location": "abstract",
+          "quote": "We study the mixing time of weighted Dikin walks for sampling from exponential distributions on polytopes and truncated positive-semidefinite (PSD) cones."
+        }
+      ],
+      "experiments": [
+        "无实验；纯理论结果。摘要中给出了混合界的改进：从Õ(d^{9/4})提高到Õ(d²)，并给出PSD锥的Õ(n²)混合界"
+      ],
+      "first_affiliation": "ETH Zürich",
+      "insight": "通过控制拒绝概率在高概率区域而非每一点，可以在更弱的假设下获得更快的混合时间；引入新的四阶bootstrap条件可得到更强的χ²散度保证。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "提出总变差混合界的一般框架，利用Metropolis-Hastings接受概率的高概率区域控制",
+        "在强自和谐性、ν̄-对称性和混合迹正则性条件下证明O(d̄ν̄)混合界",
+        "应用到Lee-Sidford、Lewis-weight和John度量上得到Õ(d²)混合界",
+        "对于截断PSD锥，使用混合障碍得到Õ(n²)混合界，其中n=Θ(d²)",
+        "第二个框架使用新的四阶bootstrap条件，获得逐点接受控制，从而得到χ²散度下的Õ(d²)混合界，改进了之前的Õ(d^{9/4})界"
+      ],
+      "motivation": "提高Dikin行走采样算法的效率，解决其混合时间依赖表示中约束数量的问题，并证明d^2混合时间的猜想。",
+      "primary_topic": "马尔可夫链蒙特卡洛采样算法的混合时间分析",
+      "relation_to_research": "与具身智能和世界模型无关，但属于系统优化中的采样算法，可能对大规模优化中的概率推断有间接影响，但核心关注点与机器人学习或物理人工智能无关。",
+      "relevance_score": 2,
+      "setting": "理论计算机科学与优化，研究从多胞体和截断半正定锥上的指数分布采样的算法复杂度",
+      "tags": [
+        "Dikin行走",
+        "混合时间",
+        "凸体采样",
+        "PSD锥",
+        "马尔可夫链蒙特卡洛"
+      ],
+      "title_zh": "加权Dikin行走d^2混合的两个证明",
+      "uncertainty": "论文摘要信息有限，且标注为arXiv:2608.28566，年份为2026，可能为预印本，内容未验证；作者通讯信息未在摘要中提供，仅从标题和作者列表中推断。",
+      "why_recommended": "对于研究凸优化和采样算法理论的研究者有价值，提供了Dikin行走混合时间的严格分析，但与本课题相关性低。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:31.187174Z",
+      "input_hash": "bfe835f09047e76492a7cd9472c457285a24701b16f5852726a817a507e8ec25",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
   "47b29b697e672688d016163afcfc4e8032db73580ef324935e57b5570ad51a71": {
     "analysis": {
       "analysis": "材料未说明",
@@ -3733,6 +3855,87 @@
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
+    }
+  },
+  "6694da89344c04300b79d83a71a8c281d2f362b80c7e8dcb123dd10bd6abbbba": {
+    "analysis": {
+      "analysis": "作者通过分析传统数值方法的瓶颈和PINN在分数阶模型上的局限性，提出了基于图的统一损失函数和多种图适应学习策略；并通过数值实验验证了框架的准确性、计算效率和物理一致性。",
+      "challenges": [
+        "分数阶导数的非局部性使得经典链式法则不适用，自动微分无法直接使用",
+        "处理复杂图结构和顶点条件的一致性",
+        "提高精度和训练稳定性，特别是处理弱奇异解"
+      ],
+      "corresponding_authors": [
+        "Vaibhav Mehandiratta"
+      ],
+      "evidence": [
+        {
+          "claim": "框架通过每条边上的神经网络逼近解，并用统一图基损失函数强制执行方程和顶点条件",
+          "location": "abstract",
+          "quote": "the solution on each edge of the graph is approximated by a neural network, while a unified graph-based loss function enforces the governing equations together with initial, boundary, and vertex transmission conditions."
+        },
+        {
+          "claim": "框架处理两类非线性模型：多阶分数椭圆问题和时间分数演化方程",
+          "location": "abstract",
+          "quote": "The framework is developed for two representative classes of nonlinear models: multi-order fractional elliptic problems and time-fractional evolution equations on quantum graphs."
+        },
+        {
+          "claim": "集成了多种图适应学习策略以改进精度和训练稳定性",
+          "location": "abstract",
+          "quote": "QGPINNs integrates several graph-adapted learning strategies, including soft and hard constraint enforcement, dynamic loss balancing, Fourier feature embeddings, and a learnable singularity-capturing feature for weakly singular solutions"
+        },
+        {
+          "claim": "框架扩展至逆问题",
+          "location": "abstract",
+          "quote": "The framework also extends naturally to inverse problems, including the identification of the orders of fractional operators and physical parameters from noisy observational data."
+        },
+        {
+          "claim": "在真实网络上验证",
+          "location": "abstract",
+          "quote": "We validate the accuracy, computational efficiency, and physical consistency of the proposed framework through numerical experiments on benchmark graph structures and real-world networks, including the IEEE 14-bus system and an open-channel agricultural drainage network."
+        }
+      ],
+      "experiments": [
+        "在基准图结构和真实网络（IEEE 14节点系统、开放渠道农业排水网络）上验证准确性、计算效率和物理一致性",
+        "数值实验表明动态平衡策略优于固定损失权重，自适应策略无需问题特定校准",
+        "对比硬约束和软约束，证明硬约束的局限性"
+      ],
+      "first_affiliation": "Birla Institute of Technology and Science, Pilani, K K Birla Goa Campus, Zuarinagar, Sancoale, Goa 403726, India",
+      "insight": "通过将量子图每条边上的解用神经网络近似，并使用统一的基于图的损失函数来强制执行控制方程、初始条件、边界条件和顶点传输条件，耦合局部边上的近似为全局解，从而高效求解非局部微分方程。",
+      "limitations": [
+        "材料未明确说明局限，但暗示相对性能可能依赖于问题结构、边界和顶点条件",
+        "材料未提供具体误差数值"
+      ],
+      "method": [
+        "在量子图的每条边上用神经网络近似解，构造统一的图基损失函数，强制执行方程、初边值和顶点条件",
+        "使用分数阶导数的离散化近似（如Caputo导数）集成到残差损失中，利用矩阵-向量乘积高效计算",
+        "整合软硬约束执行、动态损失平衡、傅里叶特征嵌入和可学习的奇异特征捕捉策略",
+        "扩展到逆问题，识别分数阶算子的阶数和物理参数"
+      ],
+      "motivation": "传统数值方法在处理量子图上的分数阶微分方程时面临计算瓶颈和数值不稳定性，尤其对于复杂几何和大规模真实网络；自动微分无法直接用于分数阶导数，需要新的框架。",
+      "primary_topic": "量子图上的非局部微分方程的物理信息神经网络求解",
+      "relation_to_research": "本文涉及物理信息神经网络在复杂图结构上的应用，属于物理人工智能的数值方法范畴，但与具身智能、世界模型和动作生成无直接关联；其动态损失平衡、高效训练策略和逆问题处理可作为系统优化中的算法参考。",
+      "relevance_score": 6,
+      "setting": "数值求解量子图上的非局部微分方程（包括多阶分数阶椭圆问题和时间分数阶演化方程），通过图结构建模网络领域，并应用于真实网络（如IEEE 14节点系统和农业排水网络）。",
+      "tags": [
+        "Physics-Informed Neural Networks",
+        "Quantum Graphs",
+        "Fractional Differential Equations",
+        "Graph-based Loss",
+        "Dynamic Loss Balancing",
+        "Fourier Feature Embeddings",
+        "Inverse Problems"
+      ],
+      "title_zh": "QGPINNs：量子图上非局部微分方程的物理信息神经网络框架",
+      "uncertainty": "相关性评分基于摘要和节选，由于论文主题偏向数值求解而非具身智能，评分设为6；未提供具体实验数字，因此experiments中未包含具体数值；通讯作者已确认。",
+      "why_recommended": "本文展示了PINN在非传统域（量子图）上的应用，强调了损失函数设计和训练稳定性优化，对研究人员理解PINN的泛化能力、处理复杂约束和动态平衡策略具有借鉴价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:27.211644Z",
+      "input_hash": "38e9965d1eaca3b691e60ae1d326b3485739766551726503f15917f50bb6f376",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
     }
   },
   "6710e673498a9a298597875bff98cf61720885a505d19e8981950f74b67325c6": {
@@ -5907,6 +6110,76 @@
       "reading_scope": "abstract"
     }
   },
+  "97968033ebea3de2dfe510fc17ec5ce9078844e1a68a7e4ec668d0ae39ea943a": {
+    "analysis": {
+      "analysis": "材料未说明",
+      "challenges": [
+        "合成数据与真实数据分布间的偏差未知",
+        "需要同时控制合成样本数量和权重",
+        "必须对相关的任务总体实现覆盖保证"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "该论文提出合成增强推断框架，并引入尺寸-权重前沿。",
+          "location": "abstract",
+          "quote": "Central to our framework is a size–weight frontier that specifies, for each weight, the largest synthetic sample size for which all smaller sizes attain the target task-marginal coverage."
+        },
+        {
+          "claim": "本文的方法利用历史任务估计前沿并给出覆盖保证。",
+          "location": "abstract",
+          "quote": "We estimate this frontier from historical tasks, and establish a finite-sample coverage guarantee simultaneously for all size–weight configurations on or below the estimated frontier."
+        },
+        {
+          "claim": "实验使用LLM增强意见调查数据并达到目标覆盖。",
+          "location": "abstract",
+          "quote": "In experiments using large language model responses to augment opinion survey data, our procedure achieves target coverage and substantially narrows confidence intervals."
+        }
+      ],
+      "experiments": [
+        "实验使用GPT-4o增强意见调查数据，达到目标覆盖率并显著缩窄置信区间。",
+        "对真实样本大小 n ∈ {10, 30, 50} 和权重网格 {0.05r: r=0,...,20} 评估学习的前沿。",
+        "对于小权重（约0.2或更小），前沿受限于模拟预算 K=200；对于较大权重，前沿随λ趋近1衰减。",
+        "学习的前沿从未超过测试集上的oracle前沿。"
+      ],
+      "first_affiliation": "哥伦比亚大学",
+      "insight": "通过引入尺寸-权重前沿，该前沿为每个权重指定了最大合成样本大小，在此大小及以下所有配置都能达到目标任务边际覆盖，从而在利用合成数据增强推断的同时保证统计有效性。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "定义基于任务总体的合成增强统计推断框架，通过历史任务估计尺寸-权重前沿。",
+        "对于每种权重，前沿给出最大合成样本大小，使所有较小尺寸都能达到目标覆盖。",
+        "建立对所有位于或低于估计前沿的尺寸-权重配置的有限样本覆盖保证。",
+        "使用历史任务的参考置信集与合成增强集进行比较，以校准配置。",
+        "在实验中评估覆盖率和置信区间宽度，使用GPT-4o生成合成数据。"
+      ],
+      "motivation": "真实数据稀缺时，合成数据可用于增强推断，但将合成样本视为真实数据可能引入偏差并导致不可靠的推断。需要一种框架来确定合成样本的大小和权重，以保持有效的推断覆盖。",
+      "primary_topic": "统计推断中的合成数据增强",
+      "relation_to_research": "本研究与具身智能、世界模型、物理人工智能或系统优化无直接关系，但涉及数据增强和统计推断，可能对模型训练中的合成数据使用有启示，但与当前研究方向关联度低。",
+      "relevance_score": 1,
+      "setting": "统计推断，涉及合成数据增强，目标为估计任务特定参数并构建置信集，使用历史任务校准合成样本大小和权重",
+      "tags": [
+        "合成数据",
+        "数据增强",
+        "统计推断",
+        "置信区间",
+        "覆盖概率"
+      ],
+      "title_zh": "学习尺寸-权重前沿用于合成增强推断",
+      "uncertainty": "摘要和全文节选未提供方法细节的统计证明，且与当前研究主题的相关性低，因此判断存在不确定性。",
+      "why_recommended": "尽管主题不直接相关，但本文提供了关于合成数据增强方法的一般统计框架，可能对处理具身智能中数据稀缺问题具有参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:08.289380Z",
+      "input_hash": "58d09817e210484ac894cfc16eae84c3d70996903129b7cda5ff11267d92b6cf",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
   "97cc4b530a91b826c47e97f46e7bb60588ff19722d278ddd7bd918d7a271755c": {
     "analysis": {
       "analysis": "材料未说明",
@@ -7524,6 +7797,68 @@
       "reading_scope": "abstract"
     }
   },
+  "bfed77cffd6c71f77bf4b1fda047b0b274245cbb92c85b604ada38a0d4a8570b": {
+    "analysis": {
+      "analysis": "作者通过实验观察到常规自条件化在加深循环深度时性能饱和，并追踪到曝光偏差问题，即训练时使用一步条件状态与推理时递归生成状态的不匹配。进一步分析发现，模型可能收敛到错误固定点，因此引入Fixed-Point Forcing训练方法解决此问题。",
+      "challenges": [
+        "自回归模型顺序提交决策，无法修改早期错误",
+        "掩码扩散模型并行更新时条件独立，导致预测不一致",
+        "常规自条件化在深度循环时因曝光偏差而不可靠，可能收敛到虚假固定点"
+      ],
+      "corresponding_authors": [
+        "Alec Helbling"
+      ],
+      "evidence": [
+        {
+          "claim": "常规自条件化在循环深度增加时性能饱和并可能收敛到虚假固定点，Fixed-Point Forcing解决了此问题",
+          "location": "abstract",
+          "quote": "We address this mismatch with Fixed-Point Forcing (FPF), which trains FRMs on states produced by their own inference dynamics while preserving the standard flow-matching objective."
+        },
+        {
+          "claim": "FRMs在Sudoku-Extreme上达到99.5%峰值解决率，匹配EqR的98.7%时推理FLOPs减少44倍",
+          "location": "abstract",
+          "quote": "matching the next-best method's $98.7\\%$ peak solve rate with $44\\times$ fewer inference FLOPs."
+        }
+      ],
+      "experiments": [
+        "Sudoku-Extreme: 解决率达99.5%，超过掩码扩散和专门推理基线，以44倍少的推理FLOPs匹配EqR的98.7%峰值解决率",
+        "Zebra: 解决率达100.0%",
+        "Maze-Unique: 解决率达99.9%"
+      ],
+      "first_affiliation": "MIT-IBM Watson AI Lab",
+      "insight": "通过自条件化将离散流的一次性去噪过程转变为循环细化过程，利用固定点迭代使正确解成为吸引子，提高决策并行协调和修改能力。",
+      "limitations": [
+        "作者未明确说明限制，但提到扩展到更大模型和更少结构化任务是未来工作，可能暗示当前方法在更大型任务上的泛化性待验证"
+      ],
+      "method": [
+        "将离散流模型通过自条件化机制转化为循环推理模型，以每次预测作为下次输入的状态",
+        "引入Fixed-Point Forcing（FPF）训练方法，在模型自身推理动态产生的状态上进行训练，同时保持标准流匹配目标",
+        "推理时交替进行流状态推进和额外的循环更新，形成推理深度，持续细化候选解"
+      ],
+      "motivation": "现有架构（自回归和掩码扩散模型）在结构化推理中难以协调相互依赖的决策，无法有效修改早期决策，而离散流模型在结构化推理上的能力尚未得到充分开发。",
+      "primary_topic": "离散流模型用于结构化推理的循环细化机制",
+      "relation_to_research": "本文提出的FRMs通过循环细化实现了高效的结构化推理，与具身智能中的决策规划和视觉语言动作模型的动作生成有相通之处，其推理效率和并行细化机制对世界模型和系统优化具有参考价值。",
+      "relevance_score": 9,
+      "setting": "框架方法，在Sudoku-Extreme、Zebra、Maze-Unique等结构化推理基准上评估",
+      "tags": [
+        "离散流模型",
+        "结构化推理",
+        "自条件化",
+        "曝光偏差",
+        "循环推理"
+      ],
+      "title_zh": "流推理模型：将离散流转化为高效循环推理器",
+      "uncertainty": "部分外部特征（如作者单位）可能因资料有限而不完整，实验细节和局限性未在摘要中全面呈现，判断主要基于摘要和全文节选。",
+      "why_recommended": "提供了从离散流到高效循环推理器的新框架，解决了曝光偏差问题，展示了在推理效率和准确性上的显著优势，对当前关注高效推理和可扩展性的研究者具有启示。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:16.733441Z",
+      "input_hash": "781463aae8e920f4a3fa5fe7997ebc1f4379399ead161156158f589171027804",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
   "c4467833e1f791f3c30546b9f4d64c65aae18637f7e49b60d8221bad38873153": {
     "analysis": {
       "analysis": "作者通过分析文本记忆的局限性，提出将记忆向量化，并设计对比对齐与列表式协同训练方法，使模型能够有效利用向量记忆进行排序和评分。",
@@ -7656,6 +7991,85 @@
     "provenance": {
       "analyzed_at": "2026-08-30T02:52:28.674151Z",
       "input_hash": "92425f3425e7e30ecac255d52fc907e468d99bbf4ef9eddbce4f1fc3fb44ad7d",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
+  "c53a90f661d923805d29f2090abdba06f48146397cda4777584bd37f61ebb691": {
+    "analysis": {
+      "analysis": "作者提出用预测码长作为统一准则，构建有效性-无损性框架，定义事实-标记边界和标记-状态边界，并通过符号音乐实验分离不同分词操作的影响。",
+      "challenges": [
+        "分词接口需要领域特定指定",
+        "缺乏统一标准决定分词表示内容",
+        "固定关系可能增加预测负担",
+        "载体压缩不一定带来预测增益"
+      ],
+      "corresponding_authors": [
+        "Yi Wang"
+      ],
+      "evidence": [
+        {
+          "claim": "论文提出有效性与无损性框架，定义分词边界",
+          "location": "abstract",
+          "quote": "Using predictive codelength as a common criterion, we formulate the Effectiveness–Losslessness Framework to define where tokenization should begin and where it should end."
+        },
+        {
+          "claim": "固定关系可能增加预测负担",
+          "location": "abstract",
+          "quote": "Fixed circle-of-fifths pitch coordinates instead increase predictive code, suggesting that imposing a fixed pitch relation before context can burden prediction."
+        },
+        {
+          "claim": "载体压缩不保证预测增益",
+          "location": "abstract",
+          "quote": "Reversible BPE substantially shortens the carrier but increases predictive codelength in every seed, showing that carrier compaction alone does not guarantee predictive gain."
+        },
+        {
+          "claim": "分词质量取决于预测计算位置",
+          "location": "abstract",
+          "quote": "These results show that tokenization quality is determined neither by recoverability nor by sequence length, but by where predictive computation is placed."
+        }
+      ],
+      "experiments": [
+        "音乐时间显式化一致减少预测码长，并改善音高和时长预测",
+        "音调框架规范化与音高因子化带来进一步增益",
+        "固定五度圈音高坐标增加预测码长，表明上下文前施加固定关系会加重预测负担",
+        "可逆BPE显著缩短载体（从3.563到1.538每事实，减少56.8%），但每个随机种子都增加预测码长（G_carrier=-0.81061 bits/fact）",
+        "独立语料复制了时间坐标干预的方向性结果"
+      ],
+      "first_affiliation": "清华大学电子工程系",
+      "insight": "分词质量既不由可恢复性决定，也不由序列长度决定，而由预测计算放置的位置决定：静态表示暴露可复用规律，上下文状态解决依赖上下文的部分。",
+      "limitations": [
+        "所有效应都是相对于测试的源、学习器和资源预算的预测数据码长结果，机制归因限于匹配族",
+        "结果不意味着所有固定关系或BPE方案都有害",
+        "未建立感知质量、可解释隐藏状态变量或渐近缩放"
+      ],
+      "method": [
+        "提出预测有效性原则：仅当暴露观察确定的结构能减少预测码长时才进入分词接口",
+        "定义事实-标记边界：决定哪些观察确定的结构应通过坐标构建进入标记接口",
+        "定义标记-状态边界：依赖上下文的关系统一留在模型状态计算中，而非由分词器预先固定",
+        "区分三种匹配操作：坐标构建、载体编码（可逆重编码）、关系承诺（固定关系），并定义增益量",
+        "在符号音乐上进行多随机种子控制实验，并进行独立语料复制验证时间干预效果"
+      ],
+      "motivation": "GPT风格模型在语言上依赖固定词表分词，但对符号音乐等领域，分词设计缺乏统一准则，需要确定分词应表示什么以及应走到多远。",
+      "primary_topic": "序列建模中的分词边界与预测有效性理论",
+      "relation_to_research": "虽然研究主题是符号音乐分词，但其核心思想（预测计算放置的模型相对边界）与具身智能中的动作表征、世界模型中的状态抽象具有类比性，可迁移到VLA模型的动作分词、状态建模等系统优化问题。",
+      "relevance_score": 5,
+      "setting": "理论框架与符号音乐可控实验",
+      "tags": [
+        "tokenization",
+        "predictive codelength",
+        "symbolic music",
+        "effectiveness-losslessness",
+        "model-relative boundary"
+      ],
+      "title_zh": "分词应走多远？预测有效性与关系无损性",
+      "uncertainty": "该论文不直接涉及具身智能或视觉语言动作模型，而是针对符号音乐的分词理论，但核心原则具有通用性，因此相关性分数适中。",
+      "why_recommended": "提供了关于分词表示边界统一准则的理论视角，与具身智能领域中如何将视觉、语言、动作离散化为令牌的问题高度相关，可启发动作分词、世界模型中的状态抽象设计。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:18.805647Z",
+      "input_hash": "8d1dcddbcf08e1f8f435396b2b1beb3870073bb896b59fdebe7b9fcd5e192a54",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "full_text"
@@ -8236,6 +8650,73 @@
       "reading_scope": "full_text"
     }
   },
+  "d4c0cf933d49311cc404c6ef764fef4db7ff7845e4f6d01bd5af59c699b4078d": {
+    "analysis": {
+      "analysis": "作者对比了生成和检索范式的局限性，提出结合两者的互补方案。",
+      "challenges": [
+        "保留罕见手形和特定手语者动作",
+        "拼接不同来源动作片段产生的全局节奏和风格不一致"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "现有生成模型和检索方法各有局限性",
+          "location": "abstract",
+          "quote": "Generative models synthesize motion from a learned prior or from noise, without reference to an observed signing instance, making rare hand configurations and signer-specific articulation difficult to preserve. Retrieval-based methods reuse real, well-articulated motion segments, but concatenating segments from different signers and co-articulation contexts can introduce rhythm and style inconsistencies across the full sequence, not only at segment boundaries."
+        },
+        {
+          "claim": "SignRR通过检索和精炼实现结合",
+          "location": "abstract",
+          "quote": "We therefore propose retrieve-and-refine, a paradigm that starts from real retrieved motion and refines it into a globally coherent signing sequence rather than generating motion from scratch. Our framework, SignRR, initializes motion from a dictionary of real sign segments and refines the full sequence with a part-aware Residual VQ-VAE, where residual quantization preserves fine hand articulation and temporal length differences are handled in the latent space."
+        },
+        {
+          "claim": "SignRR达到最先进性能",
+          "location": "abstract",
+          "quote": "Experiments on PHOENIX14T and CSL-Daily show that SignRR achieves state-of-the-art back-translation performance while maintaining competitive pose quality."
+        }
+      ],
+      "experiments": [
+        "PHOENIX14T和CSL-Daily数据集上的实验",
+        "达到最先进的反向翻译性能，同时保持具有竞争力的姿态质量",
+        "消融研究验证了各组成部分的有效性"
+      ],
+      "first_affiliation": "中佛罗里达大学",
+      "insight": "检索提供真实动作细节，学习的精炼处理全局一致性，二者互补。",
+      "limitations": [
+        "词汇表外的手语未被支持，除非使用外部词汇资源或生成式后备方案",
+        "评估使用标准反向翻译协议，间接评估生成质量；未来需由流畅手语者进行直接评估"
+      ],
+      "method": [
+        "从术语-动作字典中检索真实动作片段并组装初始序列",
+        "使用部分感知的残差VQ-VAE对完整序列进行精炼",
+        "残差量化保留精细手部动作，时间长度差异在潜在空间中处理"
+      ],
+      "motivation": "生成模型难以保留罕见手形和特定于手语者的动作，检索方法在拼接真实动作片段时会产生节奏与风格不一致的问题。",
+      "primary_topic": "手语生成中的检索与精炼框架",
+      "relation_to_research": "该方法涉及可执行动作生成，与具身智能和物理人工智能中的动作生成相关，但主要面向手语生成，非典型具身智能任务，不过其检索与精炼的组合范式可迁移至其他动作生成场景。",
+      "relevance_score": 6,
+      "setting": "跨模态动作生成",
+      "tags": [
+        "手语生成",
+        "检索增强",
+        "残差VQ-VAE",
+        "动作生成",
+        "姿态生成"
+      ],
+      "title_zh": "SignRR：检索并精炼真实动作以生成手语",
+      "uncertainty": "材料未提供作者明确的通讯作者标记，故对应作者填证据未提供；相关性评分中等，因为手语生成虽属动作生成，但不同于具身智能中的典型任务，但方法与物理人工智能中的动作生成有一定关联。",
+      "why_recommended": "提出了检索与精炼相结合的新范式，在处理生成动作的细节保真和全局一致性方面具有借鉴意义，对动作生成相关研究有启发。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:15.632254Z",
+      "input_hash": "e365790f2279be52d08e4f69f6fa84287390b204aba69b01d74c287fd3cc59e9",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
   "d5946e584c581a802d60c1e7eebcaf5eee04b83da903ead62ac524991332a44d": {
     "analysis": {
       "analysis": "作者提出将AI架构（LSTM）与优化技术（MPC和调度优化）相结合，以处理动态和不确定的交通条件，实现实时队列预测和管理。",
@@ -8407,6 +8888,78 @@
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
+    }
+  },
+  "d8e9f4d11087653d679830333eb97ce2460a5ff1a24a8ee6debd0cf06ab04e9b": {
+    "analysis": {
+      "analysis": "作者通过几何建模而非拟合力矩臂来预测线缆行程，并在动态验证中分析残余误差，定位到拇指耦合的未建模部分。",
+      "challenges": [
+        "在仿真器中表示腱驱动传输的复杂性",
+        "多个关节由同一线缆驱动导致不能独立控制",
+        "确保仿真与真实硬件动态一致",
+        "实现零样本迁移无需微调或状态估计"
+      ],
+      "corresponding_authors": [
+        "Xu “Joe” Dong",
+        "Yiwei “Evan” Tao"
+      ],
+      "evidence": [
+        {
+          "claim": "腱驱动手比直接驱动手更难学习，因为欠驱动传动难以在仿真中表示。",
+          "location": "abstract",
+          "quote": "They are also harder to learn on than a direct-drive hand. The underactuated transmission that produces the saving is itself difficult to represent in a simulator, and the joints one cable drives are not independently commandable."
+        },
+        {
+          "claim": "Aero Hand Open是仿真就绪的，配置仿真模型、识别驱动映射和RL包。",
+          "location": "abstract",
+          "quote": "We present Aero Hand Open, a tendon-driven anthropomorphic hand that is released simulation-ready. Three things ship with it. A simulation model reproduces the cable transmission itself. An identified actuation map connects that model to the motor commands in both directions, including the three-way coupling of the thumb. A reinforcement learning package trains policies for the hand."
+        },
+        {
+          "claim": "策略可以完全在仿真中训练并无需微调部署。",
+          "location": "abstract",
+          "quote": "Together they let a policy be trained entirely in simulation and run on the hand with no fine-tuning and no state estimation."
+        }
+      ],
+      "experiments": [
+        "仿真中策略在15秒内将立方体旋转7.64 rad，平均速率0.51 rad/s",
+        "零样本部署到物理手，在约55秒内旋转一整圈并稳定维持",
+        "通道残余误差：四指线缆RMS 0.29-0.45 mm，拇指屈肌最大0.63 mm RMS",
+        "10%-90%上升时间仿真90ms比硬件120ms快，拇指通道快40-70ms vs 80-100ms"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过精确建模线缆传动本身并识别驱动力映射，可以消除对传统关节驱动仿真模型的依赖，使得策略完全在仿真中训练并能零样本部署，无需状态估计。",
+      "limitations": [
+        "拇指屈肌在扫描CMC屈曲时动态残余达到全量程的7.1%",
+        "仿真中执行器比物理舵机快10-40ms，存在动态差异"
+      ],
+      "method": [
+        "开发仿真模型，直接表示线缆传输而非关节执行器",
+        "识别驱动映射，连接仿真模型与电机命令，包括拇指的三向耦合",
+        "提供强化学习训练包，限制观测和动作空间为硬件实际提供的信号",
+        "开放机械设计、仿真模型、映射、训练环境和部署栈"
+      ],
+      "motivation": "腱驱动手虽然成本低且仿人，但其欠驱动传动难以在仿真中准确表示，且关节不能独立控制，导致难以在仿真中训练策略并迁移到真实硬件。",
+      "primary_topic": "腱驱动灵巧手的仿真建模与零样本强化学习部署",
+      "relation_to_research": "与具身智能和物理人工智能高度相关，提供仿真到现实迁移的完整流水线，支持灵巧操作学习。动作生成和模型压缩方面，通过识别映射和简化模型减少状态估计，提升推理效率。",
+      "relevance_score": 7,
+      "setting": "仿真与真实机器人",
+      "tags": [
+        "腱驱动手",
+        "仿真就绪",
+        "强化学习",
+        "零样本部署",
+        "系统识别"
+      ],
+      "title_zh": "Aero Hand Open：一种用于灵巧操作学习的仿真就绪腱驱动手",
+      "uncertainty": "摘要和全文节选未提供所有实验细节，如具体奖励函数、完整训练参数，且未提及与现有方法的定量比较。",
+      "why_recommended": "该工作解决仿真到现实迁移的难题，提供开源的仿真就绪手，对学习型机器人控制和世界模型研究具有重要参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-08-31T17:43:18.460510Z",
+      "input_hash": "6aecb9351594b707c3124bc2b5a80c1cdff747600b965fc4e639572b79de5ed6",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
     }
   },
   "db01dcfedb57c487014fd4fe444906224a24d536ae5b50c8a53ec0b6770c2a5b": {

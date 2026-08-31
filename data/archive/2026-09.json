@@ -1,0 +1,772 @@
+{
+  "papers": {
+    "arxiv:2606.29150:v2": {
+      "analysis": {
+        "analysis": "作者通过实验观察到常规自条件化在加深循环深度时性能饱和，并追踪到曝光偏差问题，即训练时使用一步条件状态与推理时递归生成状态的不匹配。进一步分析发现，模型可能收敛到错误固定点，因此引入Fixed-Point Forcing训练方法解决此问题。",
+        "challenges": [
+          "自回归模型顺序提交决策，无法修改早期错误",
+          "掩码扩散模型并行更新时条件独立，导致预测不一致",
+          "常规自条件化在深度循环时因曝光偏差而不可靠，可能收敛到虚假固定点"
+        ],
+        "corresponding_authors": [
+          "Alec Helbling"
+        ],
+        "evidence": [
+          {
+            "claim": "常规自条件化在循环深度增加时性能饱和并可能收敛到虚假固定点，Fixed-Point Forcing解决了此问题",
+            "location": "abstract",
+            "quote": "We address this mismatch with Fixed-Point Forcing (FPF), which trains FRMs on states produced by their own inference dynamics while preserving the standard flow-matching objective."
+          },
+          {
+            "claim": "FRMs在Sudoku-Extreme上达到99.5%峰值解决率，匹配EqR的98.7%时推理FLOPs减少44倍",
+            "location": "abstract",
+            "quote": "matching the next-best method's $98.7\\%$ peak solve rate with $44\\times$ fewer inference FLOPs."
+          }
+        ],
+        "experiments": [
+          "Sudoku-Extreme: 解决率达99.5%，超过掩码扩散和专门推理基线，以44倍少的推理FLOPs匹配EqR的98.7%峰值解决率",
+          "Zebra: 解决率达100.0%",
+          "Maze-Unique: 解决率达99.9%"
+        ],
+        "first_affiliation": "MIT-IBM Watson AI Lab",
+        "insight": "通过自条件化将离散流的一次性去噪过程转变为循环细化过程，利用固定点迭代使正确解成为吸引子，提高决策并行协调和修改能力。",
+        "limitations": [
+          "作者未明确说明限制，但提到扩展到更大模型和更少结构化任务是未来工作，可能暗示当前方法在更大型任务上的泛化性待验证"
+        ],
+        "method": [
+          "将离散流模型通过自条件化机制转化为循环推理模型，以每次预测作为下次输入的状态",
+          "引入Fixed-Point Forcing（FPF）训练方法，在模型自身推理动态产生的状态上进行训练，同时保持标准流匹配目标",
+          "推理时交替进行流状态推进和额外的循环更新，形成推理深度，持续细化候选解"
+        ],
+        "motivation": "现有架构（自回归和掩码扩散模型）在结构化推理中难以协调相互依赖的决策，无法有效修改早期决策，而离散流模型在结构化推理上的能力尚未得到充分开发。",
+        "primary_topic": "离散流模型用于结构化推理的循环细化机制",
+        "relation_to_research": "本文提出的FRMs通过循环细化实现了高效的结构化推理，与具身智能中的决策规划和视觉语言动作模型的动作生成有相通之处，其推理效率和并行细化机制对世界模型和系统优化具有参考价值。",
+        "relevance_score": 9,
+        "setting": "框架方法，在Sudoku-Extreme、Zebra、Maze-Unique等结构化推理基准上评估",
+        "tags": [
+          "离散流模型",
+          "结构化推理",
+          "自条件化",
+          "曝光偏差",
+          "循环推理"
+        ],
+        "title_zh": "流推理模型：将离散流转化为高效循环推理器",
+        "uncertainty": "部分外部特征（如作者单位）可能因资料有限而不完整，实验细节和局限性未在摘要中全面呈现，判断主要基于摘要和全文节选。",
+        "why_recommended": "提供了从离散流到高效循环推理器的新框架，解决了曝光偏差问题，展示了在推理效率和准确性上的显著优势，对当前关注高效推理和可扩展性的研究者具有启示。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-01T01:42:41.727110+08:00",
+        "figures": [
+          {
+            "caption": "Flow Reasoning Models turn stable recurrent dynamics into efficient reasoning. Left: a conceptual view of the recurrent solution landscape. Error states occupy unstable basins, while the correct solution forms a stable attractor that recurrent sampling converges toward. Right: solve rate versus inference FLOPs on Sudoku-Extreme. At the highlighted matched solve rate, FRM uses 44 × 44\\times fewer FLOPs than the comparison method. The landscape is an explanatory schematic rather than a literal three-dimensional embedding of model states.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2606.29150/v2/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2606.29150v2/figures/frm_crown_jewel.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2606.29150v2#S1.F1"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2606.29150v2",
+        "status": "available"
+      },
+      "final_score": 0.5859598084617672,
+      "provenance": {
+        "analyzed_at": "2026-08-31T17:43:16.733441Z",
+        "input_hash": "781463aae8e920f4a3fa5fe7997ebc1f4379399ead161156158f589171027804",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Structured reasoning requires making and revising interdependent decisions to reach a globally consistent solution. Existing architectures struggle with this: autoregressive models commit sequentially and cannot revise earlier decisions, while masked diffusion models often require careful decoding schemes to coordinate interdependent predictions. We introduce Flow Reasoning Models (FRMs), a novel framework for structured reasoning that adapts discrete flows with a simple recurrent refinement mechanism. By self-conditioning a flow model on its own past outputs, we turn one-shot denoising into iterative solution refinement. This lets FRMs make and revise decisions in parallel, efficiently coordinating interdependent choices across the solution. Yet conventional self-conditioning becomes unreliable at greater recurrent depth due to exposure bias between one-step training predictions and recursively generated inference states. We address this mismatch with Fixed-Point Forcing (FPF), which trains FRMs on states produced by their own inference dynamics while preserving the standard flow-matching objective. FRMs achieve solve rates of $99.5\\%$, $100.0\\%$, and $99.9\\%$ on Sudoku-Extreme, Zebra, and Maze-Unique, respectively. On Sudoku-Extreme, FRMs achieve higher peak accuracy than the evaluated masked-diffusion and specialized reasoning baselines while remaining highly compute-efficient, matching the next-best method's $98.7\\%$ peak solve rate with $44\\times$ fewer inference FLOPs.",
+          "authors": [
+            "Alec Helbling",
+            "Andrey Bryutkin",
+            "Mauro Martino",
+            "Duen Horng Chau",
+            "Nima Dehmamy",
+            "Hendrik Strobelt"
+          ],
+          "canonical_id": "2606.29150",
+          "categories": [
+            "cs.AI"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2606.29150",
+          "published_at": "2026-06-28T02:10:36Z",
+          "source": "arxiv",
+          "title": "Flow Reasoning Models: Turning Discrete Flows Into Efficient Recurrent Reasoners",
+          "updated_at": "2026-08-28T17:52:22Z",
+          "url": "https://arxiv.org/abs/2606.29150",
+          "version": 2
+        },
+        "rank": 6,
+        "score": {
+          "base_score": 0.32901783356684927,
+          "exploration": 0.008852222466792183,
+          "matched_terms": [
+            "flow matching"
+          ],
+          "negative_terms": [],
+          "personal": 0.46766360079085395,
+          "recency": 0.47316033672803465,
+          "topic": 0.20105130654709247
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28567:v1": {
+      "analysis": {
+        "analysis": "作者通过实验观察和设置对比，分析了模型在定位和分类上的表现，并指出序列长度约束、视觉编码器冻结等设计选择的影响。",
+        "challenges": [
+          "自回归解码器生成精确定位坐标时容易产生漂移和幻觉",
+          "稠密场景下生成序列过长导致错误累积",
+          "后事件 SAR 图像上冻结的视觉编码器无法提取判别性特征",
+          "模型在极密集斑块中陷入循环或预测单一损毁类别"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "作者将 BDA 表述为文本序列预测任务",
+            "location": "abstract",
+            "quote": "We cast BDA as predicting a variable-length set of bounding boxes, each specified by its coordinates and a damage label."
+          },
+          {
+            "claim": "初步实现基于 Gemma 模型",
+            "location": "abstract",
+            "quote": "Our preliminary implementation, based on the open Gemma model, achieves promising damage mapping results from only bi-temporal satellite images and a suitable text prompt."
+          }
+        ],
+        "experiments": [
+          "在两个基准数据集 xBD 和 Bright 上训练和评估，xBD 含 11,034 对光学图像，Bright 含 3,029 对光学/SAR 图像。",
+          "实验表明模型在光学图像上定位和分类性能有竞争力。",
+          "在后事件 SAR 图像上，冻结视觉编码器无法提取判别性特征，需要微调。",
+          "模型在非常密集的斑块中会陷入循环，或在异质图块中预测单一损毁类别。"
+        ],
+        "first_affiliation": "ETH Zurich",
+        "insight": "将 BDA 视为纯文本序列预测任务，通过微调通用视觉语言模型 Gemma，能够直接输出建筑位置和损毁类别，且在光学图像上展现出有竞争力的定位和分类性能。",
+        "limitations": [
+          "作者未明确陈述局限，但隐含了序列长度限制、坐标编码不高效、完全监督微调计算需求大等问题。"
+        ],
+        "method": [
+          "将 BDA 建模为预测可变长度边界框集合的序列预测任务，每个框由坐标和损毁标签指定。",
+          "基于开源 Gemma 模型微调，使用双时相图像对和文本提示，端到端生成建筑位置和损毁类别。",
+          "采用图像裁剪成 512×512 补丁，限制每补丁建筑数量，并设置视觉编码器 token 预算为 280。",
+          "训练配置：微调 Gemma4-E4B 25k 步，使用 Adafactor 优化器，冻结视觉编码器，批次大小 64，TPU v4 切片。"
+        ],
+        "motivation": "传统的建筑物损毁评估依赖专门网络或微调地理空间基础模型，而通用视觉语言模型在稠密定位任务上仍存在生成漂移和幻觉问题，尚未有 GeoVLM 能够仅通过自回归序列生成联合实现每栋建筑的定位和损毁分级。",
+        "primary_topic": "建筑物损毁评估的视觉语言模型序列预测方法",
+        "relation_to_research": "虽然应用于遥感领域，但其核心在于验证通用视觉语言模型通过序列预测实现空间定位的可行性，与具身智能中 VLA 模型的动作生成和空间推理相关，且涉及长时序预测（自回归）和推理效率（序列长度控制）等主题。",
+        "relevance_score": 6,
+        "setting": "遥感图像分析，具体为基于双时相卫星图像（光学/光学，光学/SAR）的建筑物损毁评估。",
+        "tags": [
+          "视觉语言模型",
+          "建筑物损毁评估",
+          "序列预测",
+          "卫星图像",
+          "自回归生成"
+        ],
+        "title_zh": "GeBDA：基于文本序列预测的建筑物损毁评估",
+        "uncertainty": "材料为全文节选，部分实验细节和结果不完整，且论文为 2026 年预印本，需谨慎对待其结论的普适性。",
+        "why_recommended": "展示了通用 VLM 在稠密空间预测任务上的潜力与挑战，对于研究视觉语言动作模型在真实世界交互中的空间锚定和高效生成具有参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-01T01:42:41.727110+08:00",
+        "figures": [
+          {
+            "caption": "Autoregressive sequence prediction formulation for BDA. Building polygons are transformed into bounding boxes, their coordinates are quantized and serialized into strings alongside the damage label, and finally tokenized to form a single target sequence S S . The model is fine-tuned end-to-end to predict that sequence from a task-specific prompt P P and the two images I p ​ r ​ e I_{pre} and I p ​ o ​ s ​ t I_{post} .",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28567/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28567v1/figures/Pipeline.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28567v1#S2.F1"
+          },
+          {
+            "caption": "Qualitative results on the test sets, stitched back to 1024 × 1024 1024\\times 1024 . The top two rows show examples from xBD and the bottom row from Bright . For consistency, the Bright damaged class is mapped to major-damage . GeBDA demonstrates robust building detection across both datasets, but damage classification remains more challenging, particularly on the SAR modality. Left: Pre-event images with ground-truth bounding boxes. Right: Post-event images overlaid with our model’s predictions.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": null,
+                "original_url": "https://arxiv.org/html/2608.28567v1/figures/Results_examples_with_gap.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28567v1#S4.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28567v1",
+        "status": "available"
+      },
+      "final_score": 0.4840362196620382,
+      "provenance": {
+        "analyzed_at": "2026-08-31T17:43:08.855455Z",
+        "input_hash": "06e22ad00673495ed090a42419f8ff66d0256c47cb4211f8130aee650c79e840",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Conventionally, Building Damage Assessment (BDA) is tackled either with dedicated network architectures or by fine-tuning geospatial image foundation models. In this work, we ask whether a general-purpose Vision-Language Model (VLM) can localize buildings and grade their damage through autoregressive sequence generation alone. We cast BDA as predicting a variable-length set of bounding boxes, each specified by its coordinates and a damage label. Our preliminary implementation, based on the open Gemma model, achieves promising damage mapping results from only bi-temporal satellite images and a suitable text prompt.",
+          "authors": [
+            "Olivier Dietrich",
+            "Krishna Sapkota",
+            "Konrad Schindler",
+            "Genady Beryozkin"
+          ],
+          "canonical_id": "2608.28567",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.28567",
+          "published_at": "2026-08-28T17:44:55Z",
+          "source": "arxiv",
+          "title": "GeBDA: Building Damage Assessment as Text-Based Sequence Prediction",
+          "updated_at": "2026-08-28T17:44:55Z",
+          "url": "https://arxiv.org/abs/2608.28567",
+          "version": 1
+        },
+        "rank": 3,
+        "score": {
+          "base_score": 0.38915676302188756,
+          "exploration": 0.9921924396432542,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.4036017505222516,
+          "recency": 0.47254874543637454,
+          "topic": 0.1744624479397471
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28568:v1": {
+      "analysis": {
+        "analysis": "作者对比了生成和检索范式的局限性，提出结合两者的互补方案。",
+        "challenges": [
+          "保留罕见手形和特定手语者动作",
+          "拼接不同来源动作片段产生的全局节奏和风格不一致"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有生成模型和检索方法各有局限性",
+            "location": "abstract",
+            "quote": "Generative models synthesize motion from a learned prior or from noise, without reference to an observed signing instance, making rare hand configurations and signer-specific articulation difficult to preserve. Retrieval-based methods reuse real, well-articulated motion segments, but concatenating segments from different signers and co-articulation contexts can introduce rhythm and style inconsistencies across the full sequence, not only at segment boundaries."
+          },
+          {
+            "claim": "SignRR通过检索和精炼实现结合",
+            "location": "abstract",
+            "quote": "We therefore propose retrieve-and-refine, a paradigm that starts from real retrieved motion and refines it into a globally coherent signing sequence rather than generating motion from scratch. Our framework, SignRR, initializes motion from a dictionary of real sign segments and refines the full sequence with a part-aware Residual VQ-VAE, where residual quantization preserves fine hand articulation and temporal length differences are handled in the latent space."
+          },
+          {
+            "claim": "SignRR达到最先进性能",
+            "location": "abstract",
+            "quote": "Experiments on PHOENIX14T and CSL-Daily show that SignRR achieves state-of-the-art back-translation performance while maintaining competitive pose quality."
+          }
+        ],
+        "experiments": [
+          "PHOENIX14T和CSL-Daily数据集上的实验",
+          "达到最先进的反向翻译性能，同时保持具有竞争力的姿态质量",
+          "消融研究验证了各组成部分的有效性"
+        ],
+        "first_affiliation": "中佛罗里达大学",
+        "insight": "检索提供真实动作细节，学习的精炼处理全局一致性，二者互补。",
+        "limitations": [
+          "词汇表外的手语未被支持，除非使用外部词汇资源或生成式后备方案",
+          "评估使用标准反向翻译协议，间接评估生成质量；未来需由流畅手语者进行直接评估"
+        ],
+        "method": [
+          "从术语-动作字典中检索真实动作片段并组装初始序列",
+          "使用部分感知的残差VQ-VAE对完整序列进行精炼",
+          "残差量化保留精细手部动作，时间长度差异在潜在空间中处理"
+        ],
+        "motivation": "生成模型难以保留罕见手形和特定于手语者的动作，检索方法在拼接真实动作片段时会产生节奏与风格不一致的问题。",
+        "primary_topic": "手语生成中的检索与精炼框架",
+        "relation_to_research": "该方法涉及可执行动作生成，与具身智能和物理人工智能中的动作生成相关，但主要面向手语生成，非典型具身智能任务，不过其检索与精炼的组合范式可迁移至其他动作生成场景。",
+        "relevance_score": 6,
+        "setting": "跨模态动作生成",
+        "tags": [
+          "手语生成",
+          "检索增强",
+          "残差VQ-VAE",
+          "动作生成",
+          "姿态生成"
+        ],
+        "title_zh": "SignRR：检索并精炼真实动作以生成手语",
+        "uncertainty": "材料未提供作者明确的通讯作者标记，故对应作者填证据未提供；相关性评分中等，因为手语生成虽属动作生成，但不同于具身智能中的典型任务，但方法与物理人工智能中的动作生成有一定关联。",
+        "why_recommended": "提出了检索与精炼相结合的新范式，在处理生成动作的细节保真和全局一致性方面具有借鉴意义，对动作生成相关研究有启发。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-01T01:42:41.727110+08:00",
+        "figures": [
+          {
+            "caption": "Overview of SignRR. Given an input gloss sequence, SignRR retrieves candidate real motion segments from a dictionary, assembles a coherent initial motion, and refines it with a part-aware Residual VQ-VAE into the final signing sequence.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28568/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28568v1/images/overview.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28568v1#S1.F1"
+          },
+          {
+            "caption": "Architecture of SignRR’s refinement model, a part-aware Residual VQ-VAE. The assembled motion is split into body, right-hand, and left-hand streams each encoded and discretized by its own residual VQ. In parallel, a gloss encoder estimates the target length; the per-part latents are aligned to this length and decoded by a single joint decoder into the refined signing sequence.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28568/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28568v1/images/arch.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28568v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28568v1",
+        "status": "available"
+      },
+      "final_score": 0.45410151452341185,
+      "provenance": {
+        "analyzed_at": "2026-08-31T17:43:15.632254Z",
+        "input_hash": "e365790f2279be52d08e4f69f6fa84287390b204aba69b01d74c287fd3cc59e9",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Sign language production (SLP) aims to generate continuous signing motion from spoken language, often through gloss-to-pose generation. Prior work mainly follows two paradigms. Generative models synthesize motion from a learned prior or from noise, without reference to an observed signing instance, making rare hand configurations and signer-specific articulation difficult to preserve. Retrieval-based methods reuse real, well-articulated motion segments, but concatenating segments from different signers and co-articulation contexts can introduce rhythm and style inconsistencies across the full sequence, not only at segment boundaries. These limitations suggest a complementary solution: use retrieval to provide realistic articulation, and use learned refinement to impose the global coherence that retrieval alone lacks. We therefore propose retrieve-and-refine, a paradigm that starts from real retrieved motion and refines it into a globally coherent signing sequence rather than generating motion from scratch. Our framework, SignRR, initializes motion from a dictionary of real sign segments and refines the full sequence with a part-aware Residual VQ-VAE, where residual quantization preserves fine hand articulation and temporal length differences are handled in the latent space. Experiments on PHOENIX14T and CSL-Daily show that SignRR achieves state-of-the-art back-translation performance while maintaining competitive pose quality.",
+          "authors": [
+            "Fidel Omar Tito Cruz",
+            "Angie Sanchez Marquina",
+            "Summy Farfan",
+            "Gissella Bejarano"
+          ],
+          "canonical_id": "2608.28568",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": "Accepted at the 37th British Machine Vision Conference (BMVC 2026)",
+          "pdf_url": "https://arxiv.org/pdf/2608.28568",
+          "published_at": "2026-08-28T17:45:14Z",
+          "source": "arxiv",
+          "title": "SignRR: Retrieve and Refine Real Motion for Sign Language Production",
+          "updated_at": "2026-08-28T17:45:14Z",
+          "url": "https://arxiv.org/abs/2608.28568",
+          "version": 1
+        },
+        "rank": 7,
+        "score": {
+          "base_score": 0.33473002640620325,
+          "exploration": 0.269071044969114,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5143066061208728,
+          "recency": 0.4725747253928867,
+          "topic": 0.08322136175888696
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28570:v1": {
+      "analysis": {
+        "analysis": "作者提出一种物理启发的表示，强调有效状态表示需同时具备准确捕获3D几何与外观以及紧凑性，以满足实时控制和模型基规划的需求。",
+        "challenges": [
+          "高维配置空间",
+          "材料特性变化导致的多样性行为",
+          "多阶段流程和深度输入的误差累积",
+          "模型基控制计算开销大"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "ChainSplat从多视角RGB视频中联合学习DLO的3D几何、外观、运动学和动力学",
+            "location": "abstract",
+            "quote": "ChainSplat, a physics-inspired framework that jointly learns the 3D geometry, appearance, kinematics, and dynamics of DLOs solely from multi-view RGB videos."
+          },
+          {
+            "claim": "ChainSplat使用旋量理论表示开链结构，实现紧凑状态表示",
+            "location": "abstract",
+            "quote": "ChainSplat represents a DLO as an open-chain structure of rigid links connected by revolute joints, yielding an analytic, screw-theoretic model with a compact state representation parameterized by joint configurations."
+          },
+          {
+            "claim": "ChainSplat达到最先进性能",
+            "location": "abstract",
+            "quote": "ChainSplat achieves state-of-the-art performance in dynamics predictions, 3D geometry reconstruction, and RGB rendering across dynamic interactions."
+          }
+        ],
+        "experiments": [
+          "在真实世界实验中，与PGND和PhysTwin基线进行比较，ChainSplat在动力学预测、3D几何重建和RGB渲染方面达到最先进性能；使用24条轨迹，每个轨迹独立优化模型；实验设置包括三种DLO和两个场景，采样频率0.25Hz和0.4Hz（原文有具体数字，但未给出具体数值结果）"
+        ],
+        "first_affiliation": "KTH皇家理工学院",
+        "insight": "通过将DLO表示为刚性连杆通过旋转关节连接的开链结构，利用旋量理论得到紧凑的状态表示，与高斯溅射结合，实现从多视角RGB视频中联合学习3D几何、外观、运动学和动力学。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "将DLO表示为刚体连杆开链结构，关节为旋转关节，采用旋量理论建模",
+          "与高斯溅射集成，联合恢复动力学、几何、外观，并能从任意状态渲染RGB",
+          "两阶段全微分优化：先联合恢复几何、外观和关节轨迹，再识别动力学参数"
+        ],
+        "motivation": "可变形线性物体（如电缆、绳索）的准确动力学和3D几何建模对于机器人操作至关重要，但现有方法依赖多阶段流程和深度输入，且状态表示高维导致控制计算昂贵。",
+        "primary_topic": "可变形线性物体的动力学与3D几何学习",
+        "relation_to_research": "直接相关：涉及可变形物体动力学学习、3D几何重建和模型基控制，与具身智能和世界模型中的可执行动作生成、推理效率、真实机器人评测密切相关。",
+        "relevance_score": 9,
+        "setting": "真实世界多视角RGB视频",
+        "tags": [
+          "可变形线性物体",
+          "旋量理论",
+          "高斯溅射",
+          "动力学学习",
+          "3D重建",
+          "模型基控制"
+        ],
+        "title_zh": "ChainSplat：一种物理启发的旋量理论模型，用于从多视角RGB视频学习可变形线性物体动力学",
+        "uncertainty": "缺少对实验数值结果的详细描述，仅提及性能指标，未提供具体数值；通讯作者未在材料中明确标明。",
+        "why_recommended": "提出了一个联合学习DLO几何、外观、运动学和动力学的紧凑模型，实现了实时状态与力估计和模型基轨迹优化，对机器人操作中的数字孪生构建和控制具有直接应用价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-01T01:42:41.727110+08:00",
+        "figures": [
+          {
+            "caption": "Illustration of screw motion and forward kinematics of an open-chain system. ( Screw motion ) Given a screw axis 𝑺 \\bm{S} and a joint displacement θ \\theta , the blue ellipsoid with pose 𝑻 \\bm{T} is transformed by the matrix exponential. ( Forward kinematics of open-chain ) The pose 𝑻 \\bm{T} of the blue ellipsoid transformed by the last screw motion is given by e [ 𝑺 3 ] ​ θ 3 ​ 𝑻 e^{[\\bm{S}_{3}]\\theta_{3}}\\bm{T} . Considering the preceding screw motion similarly introduces another matrix exponential on the left. Repeating this process along the open chain yields the PoE formula ( 5 ).",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28570/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28570v1/figures/screw_and_poe.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28570v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28570v1",
+        "status": "available"
+      },
+      "final_score": 0.6743048383169454,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:45:49.249712Z",
+        "input_hash": "bb685b70e8789e943c5fa60d0c51453a3fed40e254622de70c3f9718e40824e7",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Identifying the underlying dynamics and 3D geometry of deformable linear objects (DLOs), such as cables, ropes, and hoses, is essential for accurate robotic manipulation, but remains challenging due to their high-dimensional configuration spaces and diverse behaviors arising from varying material properties. Existing methods often rely on multi-stage pipelines and auxiliary depth inputs, which are prone to errors under dynamic interactions, while their high-dimensional state representations make model-based control computationally expensive. In this paper, we introduce ChainSplat, a physics-inspired framework that jointly learns the 3D geometry, appearance, kinematics, and dynamics of DLOs solely from multi-view RGB videos. ChainSplat represents a DLO as an open-chain structure of rigid links connected by revolute joints, yielding an analytic, screw-theoretic model with a compact state representation parameterized by joint configurations. By integrating this formulation with Gaussian splatting, ChainSplat jointly recovers DLO dynamics, kinematics-aware 3D geometry, and appearance, while enabling high-fidelity RGB rendering from arbitrary states. Through real-world experiments, we demonstrate that ChainSplat achieves state-of-the-art performance in dynamics predictions, 3D geometry reconstruction, and RGB rendering across dynamic interactions. ChainSplat further enables real-time state and force estimation, as well as accurate model-based trajectory optimization, highlighting its practical utility for real-world robotic manipulation of DLOs. Accompanying source code and video are available at: https://chainsplat.github.io.",
+          "authors": [
+            "Seungyeon Kim",
+            "No\\'emie Jaquier"
+          ],
+          "canonical_id": "2608.28570",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "18 pages, 12 figures",
+          "pdf_url": "https://arxiv.org/pdf/2608.28570",
+          "published_at": "2026-08-28T17:46:38Z",
+          "source": "arxiv",
+          "title": "ChainSplat: A Physics-Inspired Screw-Theoretic Model for Learning Deformable Linear Object Dynamics from Multi-View RGB Videos",
+          "updated_at": "2026-08-28T17:46:38Z",
+          "url": "https://arxiv.org/abs/2608.28570",
+          "version": 1
+        },
+        "rank": 1,
+        "score": {
+          "base_score": 0.48964516057626434,
+          "exploration": 0.8132973028847064,
+          "matched_terms": [
+            "robotic manipulation"
+          ],
+          "negative_terms": [],
+          "personal": 0.4942979239738768,
+          "recency": 0.4726896012653526,
+          "topic": 0.39603544106575395
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28578:v1": {
+      "analysis": {
+        "analysis": "作者通过几何建模而非拟合力矩臂来预测线缆行程，并在动态验证中分析残余误差，定位到拇指耦合的未建模部分。",
+        "challenges": [
+          "在仿真器中表示腱驱动传输的复杂性",
+          "多个关节由同一线缆驱动导致不能独立控制",
+          "确保仿真与真实硬件动态一致",
+          "实现零样本迁移无需微调或状态估计"
+        ],
+        "corresponding_authors": [
+          "Xu “Joe” Dong",
+          "Yiwei “Evan” Tao"
+        ],
+        "evidence": [
+          {
+            "claim": "腱驱动手比直接驱动手更难学习，因为欠驱动传动难以在仿真中表示。",
+            "location": "abstract",
+            "quote": "They are also harder to learn on than a direct-drive hand. The underactuated transmission that produces the saving is itself difficult to represent in a simulator, and the joints one cable drives are not independently commandable."
+          },
+          {
+            "claim": "Aero Hand Open是仿真就绪的，配置仿真模型、识别驱动映射和RL包。",
+            "location": "abstract",
+            "quote": "We present Aero Hand Open, a tendon-driven anthropomorphic hand that is released simulation-ready. Three things ship with it. A simulation model reproduces the cable transmission itself. An identified actuation map connects that model to the motor commands in both directions, including the three-way coupling of the thumb. A reinforcement learning package trains policies for the hand."
+          },
+          {
+            "claim": "策略可以完全在仿真中训练并无需微调部署。",
+            "location": "abstract",
+            "quote": "Together they let a policy be trained entirely in simulation and run on the hand with no fine-tuning and no state estimation."
+          }
+        ],
+        "experiments": [
+          "仿真中策略在15秒内将立方体旋转7.64 rad，平均速率0.51 rad/s",
+          "零样本部署到物理手，在约55秒内旋转一整圈并稳定维持",
+          "通道残余误差：四指线缆RMS 0.29-0.45 mm，拇指屈肌最大0.63 mm RMS",
+          "10%-90%上升时间仿真90ms比硬件120ms快，拇指通道快40-70ms vs 80-100ms"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过精确建模线缆传动本身并识别驱动力映射，可以消除对传统关节驱动仿真模型的依赖，使得策略完全在仿真中训练并能零样本部署，无需状态估计。",
+        "limitations": [
+          "拇指屈肌在扫描CMC屈曲时动态残余达到全量程的7.1%",
+          "仿真中执行器比物理舵机快10-40ms，存在动态差异"
+        ],
+        "method": [
+          "开发仿真模型，直接表示线缆传输而非关节执行器",
+          "识别驱动映射，连接仿真模型与电机命令，包括拇指的三向耦合",
+          "提供强化学习训练包，限制观测和动作空间为硬件实际提供的信号",
+          "开放机械设计、仿真模型、映射、训练环境和部署栈"
+        ],
+        "motivation": "腱驱动手虽然成本低且仿人，但其欠驱动传动难以在仿真中准确表示，且关节不能独立控制，导致难以在仿真中训练策略并迁移到真实硬件。",
+        "primary_topic": "腱驱动灵巧手的仿真建模与零样本强化学习部署",
+        "relation_to_research": "与具身智能和物理人工智能高度相关，提供仿真到现实迁移的完整流水线，支持灵巧操作学习。动作生成和模型压缩方面，通过识别映射和简化模型减少状态估计，提升推理效率。",
+        "relevance_score": 7,
+        "setting": "仿真与真实机器人",
+        "tags": [
+          "腱驱动手",
+          "仿真就绪",
+          "强化学习",
+          "零样本部署",
+          "系统识别"
+        ],
+        "title_zh": "Aero Hand Open：一种用于灵巧操作学习的仿真就绪腱驱动手",
+        "uncertainty": "摘要和全文节选未提供所有实验细节，如具体奖励函数、完整训练参数，且未提及与现有方法的定量比较。",
+        "why_recommended": "该工作解决仿真到现实迁移的难题，提供开源的仿真就绪手，对学习型机器人控制和世界模型研究具有重要参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-01T01:42:41.727110+08:00",
+        "figures": [],
+        "html_url": "https://arxiv.org/html/2608.28578v1",
+        "status": "not_found"
+      },
+      "final_score": 0.5436976575731657,
+      "provenance": {
+        "analyzed_at": "2026-08-31T17:43:18.460510Z",
+        "input_hash": "6aecb9351594b707c3124bc2b5a80c1cdff747600b965fc4e639572b79de5ed6",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Tendon-driven hands are anthropomorphic, and moving the actuators off the joints is what makes a hand of this capability affordable to build. Two effects produce that saving. Routing force through a cable removes the requirement that a motor fit inside the joint it drives, so smaller and cheaper motors suffice, and one motor can drive several joints through a single cable, so fewer motors are needed. They are also harder to learn on than a direct-drive hand. The underactuated transmission that produces the saving is itself difficult to represent in a simulator, and the joints one cable drives are not independently commandable. We present Aero Hand Open, a tendon-driven anthropomorphic hand that is released simulation-ready. Three things ship with it. A simulation model reproduces the cable transmission itself. An identified actuation map connects that model to the motor commands in both directions, including the three-way coupling of the thumb. A reinforcement learning package trains policies for the hand. Together they let a policy be trained entirely in simulation and run on the hand with no fine-tuning and no state estimation. We release the mechanical design, the simulation model, the identified mapping, the training environment and the deployment stack.",
+          "authors": [
+            "Nan Wang",
+            "Mohit Yadav",
+            "Jonathan Wulff",
+            "Aidan Rosenbaum",
+            "Kezhou Chen",
+            "Yuvan Sharma",
+            "Xu Dong",
+            "Yiwei Tao"
+          ],
+          "canonical_id": "2608.28578",
+          "categories": [
+            "cs.RO",
+            "cs.AI",
+            "cs.LG"
+          ],
+          "comment": "20 pages, 9 figures. Project page: https://tetheria.github.io/aero-hand-open/",
+          "pdf_url": "https://arxiv.org/pdf/2608.28578",
+          "published_at": "2026-08-28T17:53:48Z",
+          "source": "arxiv",
+          "title": "Aero Hand Open: A Simulation-Ready Tendon-Driven Hand for Dexterous Manipulation Learning",
+          "updated_at": "2026-08-28T17:53:48Z",
+          "url": "https://arxiv.org/abs/2608.28578",
+          "version": 1
+        },
+        "rank": 2,
+        "score": {
+          "base_score": 0.41581392286030117,
+          "exploration": 0.3714402724707106,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.6462980517525032,
+          "recency": 0.47327809382382086,
+          "topic": 0.11573703697777589
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28589:v1": {
+      "analysis": {
+        "analysis": "作者通过分析传统数值方法的瓶颈和PINN在分数阶模型上的局限性，提出了基于图的统一损失函数和多种图适应学习策略；并通过数值实验验证了框架的准确性、计算效率和物理一致性。",
+        "challenges": [
+          "分数阶导数的非局部性使得经典链式法则不适用，自动微分无法直接使用",
+          "处理复杂图结构和顶点条件的一致性",
+          "提高精度和训练稳定性，特别是处理弱奇异解"
+        ],
+        "corresponding_authors": [
+          "Vaibhav Mehandiratta"
+        ],
+        "evidence": [
+          {
+            "claim": "框架通过每条边上的神经网络逼近解，并用统一图基损失函数强制执行方程和顶点条件",
+            "location": "abstract",
+            "quote": "the solution on each edge of the graph is approximated by a neural network, while a unified graph-based loss function enforces the governing equations together with initial, boundary, and vertex transmission conditions."
+          },
+          {
+            "claim": "框架处理两类非线性模型：多阶分数椭圆问题和时间分数演化方程",
+            "location": "abstract",
+            "quote": "The framework is developed for two representative classes of nonlinear models: multi-order fractional elliptic problems and time-fractional evolution equations on quantum graphs."
+          },
+          {
+            "claim": "集成了多种图适应学习策略以改进精度和训练稳定性",
+            "location": "abstract",
+            "quote": "QGPINNs integrates several graph-adapted learning strategies, including soft and hard constraint enforcement, dynamic loss balancing, Fourier feature embeddings, and a learnable singularity-capturing feature for weakly singular solutions"
+          },
+          {
+            "claim": "框架扩展至逆问题",
+            "location": "abstract",
+            "quote": "The framework also extends naturally to inverse problems, including the identification of the orders of fractional operators and physical parameters from noisy observational data."
+          },
+          {
+            "claim": "在真实网络上验证",
+            "location": "abstract",
+            "quote": "We validate the accuracy, computational efficiency, and physical consistency of the proposed framework through numerical experiments on benchmark graph structures and real-world networks, including the IEEE 14-bus system and an open-channel agricultural drainage network."
+          }
+        ],
+        "experiments": [
+          "在基准图结构和真实网络（IEEE 14节点系统、开放渠道农业排水网络）上验证准确性、计算效率和物理一致性",
+          "数值实验表明动态平衡策略优于固定损失权重，自适应策略无需问题特定校准",
+          "对比硬约束和软约束，证明硬约束的局限性"
+        ],
+        "first_affiliation": "Birla Institute of Technology and Science, Pilani, K K Birla Goa Campus, Zuarinagar, Sancoale, Goa 403726, India",
+        "insight": "通过将量子图每条边上的解用神经网络近似，并使用统一的基于图的损失函数来强制执行控制方程、初始条件、边界条件和顶点传输条件，耦合局部边上的近似为全局解，从而高效求解非局部微分方程。",
+        "limitations": [
+          "材料未明确说明局限，但暗示相对性能可能依赖于问题结构、边界和顶点条件",
+          "材料未提供具体误差数值"
+        ],
+        "method": [
+          "在量子图的每条边上用神经网络近似解，构造统一的图基损失函数，强制执行方程、初边值和顶点条件",
+          "使用分数阶导数的离散化近似（如Caputo导数）集成到残差损失中，利用矩阵-向量乘积高效计算",
+          "整合软硬约束执行、动态损失平衡、傅里叶特征嵌入和可学习的奇异特征捕捉策略",
+          "扩展到逆问题，识别分数阶算子的阶数和物理参数"
+        ],
+        "motivation": "传统数值方法在处理量子图上的分数阶微分方程时面临计算瓶颈和数值不稳定性，尤其对于复杂几何和大规模真实网络；自动微分无法直接用于分数阶导数，需要新的框架。",
+        "primary_topic": "量子图上的非局部微分方程的物理信息神经网络求解",
+        "relation_to_research": "本文涉及物理信息神经网络在复杂图结构上的应用，属于物理人工智能的数值方法范畴，但与具身智能、世界模型和动作生成无直接关联；其动态损失平衡、高效训练策略和逆问题处理可作为系统优化中的算法参考。",
+        "relevance_score": 6,
+        "setting": "数值求解量子图上的非局部微分方程（包括多阶分数阶椭圆问题和时间分数阶演化方程），通过图结构建模网络领域，并应用于真实网络（如IEEE 14节点系统和农业排水网络）。",
+        "tags": [
+          "Physics-Informed Neural Networks",
+          "Quantum Graphs",
+          "Fractional Differential Equations",
+          "Graph-based Loss",
+          "Dynamic Loss Balancing",
+          "Fourier Feature Embeddings",
+          "Inverse Problems"
+        ],
+        "title_zh": "QGPINNs：量子图上非局部微分方程的物理信息神经网络框架",
+        "uncertainty": "相关性评分基于摘要和节选，由于论文主题偏向数值求解而非具身智能，评分设为6；未提供具体实验数字，因此experiments中未包含具体数值；通讯作者已确认。",
+        "why_recommended": "本文展示了PINN在非传统域（量子图）上的应用，强调了损失函数设计和训练稳定性优化，对研究人员理解PINN的泛化能力、处理复杂约束和动态平衡策略具有借鉴价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-01T01:42:41.727110+08:00",
+        "figures": [
+          {
+            "caption": "Quantum graph with the degree of each vertex labeled. Node colors indicate vertex degree.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28589/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28589v1/QGPINNS.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28589v1#S1.F1"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28589v1",
+        "status": "available"
+      },
+      "final_score": 0.4621814309459775,
+      "provenance": {
+        "analyzed_at": "2026-08-31T17:43:27.211644Z",
+        "input_hash": "38e9965d1eaca3b691e60ae1d326b3485739766551726503f15917f50bb6f376",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "We propose QGPINNs, a physics-informed neural network framework developed in PyTorch for the numerical solution of nonlocal differential equations on quantum graphs. The framework is designed as a general computational implementation in which the solution on each edge of the graph is approximated by a neural network, while a unified graph-based loss function enforces the governing equations together with initial, boundary, and vertex transmission conditions. In particular, the formulation incorporates standard continuity and Kirchhoff-Neumann vertex conditions and Dirichlet boundary conditions into the learning process to couple the local edge-wise neural approximations into a global solution on the graph. The framework is developed for two representative classes of nonlinear models: multi-order fractional elliptic problems and time-fractional evolution equations on quantum graphs. To improve accuracy and training stability, QGPINNs integrates several graph-adapted learning strategies, including soft and hard constraint enforcement, dynamic loss balancing, Fourier feature embeddings, and a learnable singularity-capturing feature for weakly singular solutions arising in the considered problems. The framework also extends naturally to inverse problems, including the identification of the orders of fractional operators and physical parameters from noisy observational data. We validate the accuracy, computational efficiency, and physical consistency of the proposed framework through numerical experiments on benchmark graph structures and real-world networks, including the IEEE 14-bus system and an open-channel agricultural drainage network.",
+          "authors": [
+            "Vaibhav Mehandiratta",
+            "Saket Ramchandra"
+          ],
+          "canonical_id": "2608.28589",
+          "categories": [
+            "cs.LG",
+            "cs.NA",
+            "math.NA"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.28589",
+          "published_at": "2026-08-28T17:59:47Z",
+          "source": "arxiv",
+          "title": "QGPINNs: A Physics-Informed Neural Network Framework for Nonlocal Differential Equations on Quantum Graphs",
+          "updated_at": "2026-08-28T17:59:47Z",
+          "url": "https://arxiv.org/abs/2608.28589",
+          "version": 1
+        },
+        "rank": 9,
+        "score": {
+          "base_score": 0.34942078353814093,
+          "exploration": 0.017304884344532017,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.6360981556118301,
+          "recency": 0.47376997783301156,
+          "topic": 0.040197506557322606
+        }
+      },
+      "tier": "deep_read"
+    }
+  },
+  "schema_version": 1,
+  "updated_at": "2026-09-01T01:42:41.727110+08:00"
+}
