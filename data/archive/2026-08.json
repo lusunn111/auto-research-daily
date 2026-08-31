@@ -452,6 +452,261 @@
       },
       "tier": "browse"
     },
+    "arxiv:2602.04208:v3": {
+      "analysis": {
+        "analysis": "作者分析了现有TTS方法的局限性：需要额外训练、验证器或多次前向传播，且仅干预动作解码；提出用自不确定性同时调节感知与动作，形成闭环反馈。",
+        "challenges": [
+          "现有TTS方法需要额外训练和验证器",
+          "多前向传播导致的部署效率低",
+          "视觉感知固定导致无法处理感知模糊"
+        ],
+        "corresponding_authors": [
+          "Jonghyun Choi"
+        ],
+        "evidence": [
+          {
+            "claim": "现有TTS方法需要额外训练、验证器和多个前向传播",
+            "location": "abstract",
+            "quote": "existing TTS methods for VLAs require additional training, verifiers, and multiple forward passes, making them impractical for deployment."
+          },
+          {
+            "claim": "SCALE仅需单次前向传播，无需额外训练或验证器",
+            "location": "abstract",
+            "quote": "requiring no additional training, no verifier, and only a single forward pass."
+          },
+          {
+            "claim": "SCALE联合调制视觉感知和动作，基于自不确定性",
+            "location": "abstract",
+            "quote": "we propose SCALE, a simple inference strategy that jointly modulates visual perception and action based on 'self-uncertainty'"
+          },
+          {
+            "claim": "SCALE在模拟和真实基准上提升SOTA VLA并优于现有TTS方法",
+            "location": "abstract",
+            "quote": "Experiments on simulated and real-world benchmarks demonstrate that SCALE improves state-of-the-art VLAs and outperforms existing TTS methods while maintaining single-pass efficiency."
+          }
+        ],
+        "experiments": [
+          "在模拟基准LIBERO-Long、SIMPLER-WidowX、LIBERO-PRO-Long以及真实世界实验中，SCALE一致提升SOTA VLA性能并优于现有TTS方法，同时保持单次前向传播效率。具体数字例如：在SIMPLER-WidowX上，π0-FAST平均成功率从34.4提升到49.0，SpatialVLA零样本从31.3提升到41.7；在LIBERO-PRO-Long上OpenVLA零样本平均成功率从18.0提升到2?（表中未完整显示）。"
+        ],
+        "first_affiliation": "首尔国立大学",
+        "insight": "基于Active Inference理论的不确定性驱动探索，通过自不确定性联合调整视觉注意力和动作采样，在不确定时扩大探索，在自信时专注利用，实现单次前向传播的自适应执行。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "基于自不确定性估计，比较到确定性谱两端的距离，结合分布集中度和top-1置信度",
+          "根据不确定性调节视觉注意力温度：低不确定性时锐化，高不确定性时拓宽",
+          "根据不确定性调节动作采样：低不确定性时接近贪婪，高不确定性时扩展探索",
+          "闭环控制中形成反馈：不确定性调节当前动作，同时调整下一步视觉注意力"
+        ],
+        "motivation": "现有VLA的测试时扩展方法需要额外训练、验证器或多个前向传播，部署不实际，且仅干预动作解码而固定视觉表示，在感知模糊时不足。",
+        "primary_topic": "视觉-语言-动作模型的测试时自适应推理策略",
+        "relation_to_research": "直接涉及VLA模型的可执行动作生成与测试时推理效率，与实时控制和物理AI相关；通过不确定性调制实现自适应，与系统优化相关。",
+        "relevance_score": 9,
+        "setting": "模拟与真实世界机器人操作，零样本与微调评估",
+        "tags": [
+          "VLA",
+          "测试时扩展",
+          "不确定性量化",
+          "自适应视觉",
+          "单次前向传播"
+        ],
+        "title_zh": "SCALE：面向视觉-语言-动作模型的自不确定性条件自适应感知与执行",
+        "uncertainty": "实验数字不完整，部分表格被截断；作者单位基于提供的affiliation notice，但通讯作者邮箱域名指向首尔国立大学。",
+        "why_recommended": "提出无需额外训练的单次前向传播测试时改进方法，兼具效率与性能提升，对真实机器人部署有直接参考价值，且创新性地联合调整感知与动作。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Motivation of Scale . (a) Existing VLA inference relies on a fixed pipeline, where visual attention may miss task-relevant cues (left; red and green boxes) and greedy decoding commits to a single action despite plausible alternatives (right). (b) Scale addresses these limitations by jointly modulating visual perception and action based on self-uncertainty : under low uncertainty, it sharpens attention and performs near-greedy execution; under high uncertainty, it broadens attention and enables explorative sampling.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2602.04208/v3/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2602.04208v3/fig1_teaser.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2602.04208v3#S1.F1"
+          },
+          {
+            "caption": "Overview of Scale . (a) Adaptive Visual Attention modulates the vision encoder’s attention temperature γ t \\gamma_{t} based on uncertainty deviation from recent history, sharpening focus when confident ( γ t < 1 \\gamma_{t}<1 ) and broadening exploration when uncertain ( γ t > 1 \\gamma_{t}>1 ). (b) Self-Uncertainty Estimation quantifies self-uncertainty u k u^{k} by measuring where the predicted distribution p t k p^{k}_{t} lies relative to two reference distributions: a one-hot q low q^{\\mathrm{low}} (full certainty) and uniform q high q^{\\mathrm{high}} (full ambiguity). (c) Adaptive Action Decoding scales sampling temperature τ k \\tau^{k} based on token-level uncertainty u k u^{k} , enabling near-greedy execution under confidence and diverse sampling under ambiguity. (d) Visual Attention Temperature Update compares the current step-level uncertainty u t u_{t} against its recent history (EMA, u ¯ t − 1 \\bar{u}_{t-1} ) to obtain deviation Δ ​ u t ≔ u t − u ¯ t − 1 \\Delta u_{t}\\coloneqq u_{t}-\\bar{u}_{t-1} , then converts it into attention temperature γ t + 1 \\gamma_{t+1} : when u t u_{t} exceeds the EMA ( Δ ​ u t > 0 \\Delta u_{t}>0 ), γ t + 1 > 1 \\gamma_{t+1}>1 broadens attention (explore); when below ( Δ ​ u t < 0 \\Delta u_{t}<0 ), γ t + 1 < 1 \\gamma_{t+1}<1 sharpens attention (focus).",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2602.04208/v3/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2602.04208v3/2_method_overview.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2602.04208v3#S2.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2602.04208v3",
+        "status": "available"
+      },
+      "final_score": 0.7430457484447148,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:45:49.802057Z",
+        "input_hash": "54f47cea046e5be9b836905adf411bddc1ef777b87764e1a9b9b80c193eb2e94",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Vision-Language-Action (VLA) models have emerged as a promising paradigm for general-purpose robotic control, with test-time scaling (TTS) gaining attention to enhance robustness beyond training. However, existing TTS methods for VLAs require additional training, verifiers, and multiple forward passes, making them impractical for deployment. Moreover, they intervene only at action decoding while keeping visual representations fixed-insufficient under perceptual ambiguity, where reconsidering how to perceive is as important as deciding what to do. To address these limitations, we propose SCALE, a simple inference strategy that jointly modulates visual perception and action based on 'self-uncertainty', inspired by uncertainty-driven exploration in Active Inference theory-requiring no additional training, no verifier, and only a single forward pass. SCALE broadens exploration in both perception and action under high uncertainty, while focusing on exploitation when confident-enabling adaptive execution across varying conditions. Experiments on simulated and real-world benchmarks demonstrate that SCALE improves state-of-the-art VLAs and outperforms existing TTS methods while maintaining single-pass efficiency.",
+          "authors": [
+            "Hyeonbeom Choi",
+            "Daechul Ahn",
+            "Youhan Lee",
+            "Taewook Kang",
+            "Seongwon Cho",
+            "Jonghyun Choi"
+          ],
+          "canonical_id": "2602.04208",
+          "categories": [
+            "cs.RO",
+            "cs.AI",
+            "cs.LG"
+          ],
+          "comment": "ICML 2026 Spotlight. Project page: https://dcahn12.github.io/projects/scale/",
+          "pdf_url": "https://arxiv.org/pdf/2602.04208",
+          "published_at": "2026-02-04T04:48:16Z",
+          "source": "arxiv",
+          "title": "SCALE: Self-uncertainty Conditioned Adaptive Looking and Execution for Vision-Language-Action Models",
+          "updated_at": "2026-08-28T11:38:59Z",
+          "url": "https://arxiv.org/abs/2602.04208",
+          "version": 3
+        },
+        "rank": 1,
+        "score": {
+          "base_score": 0.6146286335358452,
+          "exploration": 0.4961811368340574,
+          "matched_terms": [
+            "vision-language-action",
+            "vision language action",
+            "VLA"
+          ],
+          "negative_terms": [],
+          "personal": 0.5328409157563195,
+          "recency": 0.48244118835910166,
+          "topic": 0.7913942540748158
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2603.05614:v2": {
+      "analysis": {
+        "analysis": "作者通过理论分析和消融实验（1590次运行，10个种子）分析依赖图拓扑对价格稳定性、可扩展性的影响，以及治理约束下的效率-合规权衡",
+        "challenges": [
+          "复杂依赖图导致价格振荡和分配质量下降",
+          "治理约束下如何保持价格稳定性",
+          "激励兼容性（代理不愿意虚报估值）"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "依赖图结构是决定分散价格资源分配可靠性的主要因素",
+            "location": "abstract",
+            "quote": "the structure of service-dependency graphs, modelled as DAGs of compute stages, is a primary determinant of whether decentralised, price-based resource allocation works reliably at scale"
+          },
+          {
+            "claim": "层级图价格收敛且分配最优，复杂图价格振荡且质量下降",
+            "location": "abstract",
+            "quote": "When dependency graphs are hierarchical (tree or series-parallel), prices converge to stable equilibria, optimal allocations are computed efficiently, and under appropriate mechanism design agents have no incentive to misreport their valuations within each decision epoch; when dependencies are more complex, prices oscillate and allocation quality degrades"
+          },
+          {
+            "claim": "混合架构具有可行性、DSIC和价格稳定性保证",
+            "location": "abstract",
+            "quote": "a hybrid architecture in which cross-domain integrators encapsulate complex sub-graphs into slices with a simpler interface, carrying a feasibility-and-DSIC guarantee and a price-stability property of the integrator's price-discovery dynamics"
+          }
+        ],
+        "experiments": [
+          "消融研究：6个实验，1590次运行，每个10种子；结果表明拓扑是价格稳定性和可扩展性的一阶决定因素；在竞争机制下，集成器的EMA平滑切片发布稳健地降低代理面临的价格波动（中位数约89%）并缓解治理引起的波动；治理约束产生可量化的效率-合规权衡；在真实出价下，市场匹配集中式价值贪婪基线，并在竞争下增加适度福利"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "服务依赖图的结构（DAG）是决定分散价格资源分配可靠性的主要因素：层级图（树或系列-并行）时价格收敛且分配最优，复杂图时价格振荡且质量下降；混合架构通过封装复杂子图为切片来简化接口并保证可行性、DSIC和价格稳定性",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "建模服务依赖图为DAG计算阶段",
+          "提出混合架构：跨域集成器将复杂子图封装为切片，简化接口",
+          "集成器使用EMA平滑切片发布，降低代理面临的价格波动",
+          "机制设计确保每个决策周期内代理无虚报激励（DSIC）",
+          "进行战略出价测试和测量的代理工作负载"
+        ],
+        "motivation": "实时AI服务在连续体上运行，代理竞争共享资源，需要可扩展且可靠的分散资源分配机制，但依赖图结构对此影响未知",
+        "primary_topic": "代理计算中的实时AI服务经济与资源分配",
+        "relation_to_research": "虽然不直接涉及具身智能或世界模型，但代理计算和资源分配对于实时AI服务（如机器人系统）的系统优化密切相关，分散定价机制可应用于多代理系统协调",
+        "relevance_score": 6,
+        "setting": "设备-边缘-云连续体上的实时AI服务，由自主AI代理生成延迟敏感的工作负载并编排多阶段流水线",
+        "tags": [
+          "实时AI服务",
+          "代理计算",
+          "资源分配",
+          "价格机制",
+          "DAG依赖图",
+          "激励兼容性",
+          "设备-边缘-云连续体"
+        ],
+        "title_zh": "实时AI服务经济：一种跨连续体的代理计算框架",
+        "uncertainty": "摘要未提供作者单位、通讯作者、实验的具体细节（如数据集或真实系统），因此相关性评价基于主题相似性。",
+        "why_recommended": "提出了一个新颖的框架来管理实时AI服务的资源分配，具有理论保证和实证验证，对系统优化和代理协调有启发，虽然不直接面向具身智能，但方法论可迁移"
+      },
+      "figure_gallery": null,
+      "final_score": 0.4963886200375005,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:47:40.743854Z",
+        "input_hash": "274542a5ab0ba8a56566f13c6983058ba5a0fbb14da87d46318374a1267dda2d",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Real-time AI services run across the device-edge-cloud continuum, where autonomous AI agents generate latency-sensitive workloads, orchestrate multi-stage pipelines, and compete for shared resources under governance constraints. This article shows that the structure of service-dependency graphs, modelled as DAGs of compute stages, is a primary determinant of whether decentralised, price-based resource allocation works reliably at scale. When dependency graphs are hierarchical (tree or series-parallel), prices converge to stable equilibria, optimal allocations are computed efficiently, and under appropriate mechanism design agents have no incentive to misreport their valuations within each decision epoch; when dependencies are more complex, prices oscillate and allocation quality degrades. Our anchor contribution is a hybrid architecture in which cross-domain integrators encapsulate complex sub-graphs into slices with a simpler interface, carrying a feasibility-and-DSIC guarantee and a price-stability property of the integrator's price-discovery dynamics. An ablation study across six experiments (1,590 runs, 10 seeds each), with a strategic-bidding test of incentive compatibility and a measured agentic workload, confirms that (i) topology is a first-order determinant of price stability and scalability, (ii) in the contended regime the integrator's EMA-smoothed slice posting robustly reduces agent-facing price volatility (median ~89%) and mitigates governance-induced volatility, (iii) governance constraints create quantifiable efficiency-compliance trade-offs depending on topology and load, and (iv) under truthful bidding the market matches a centralised value-greedy baseline, adding modest welfare under contention. Systems whose pipelines form hierarchical DAGs can thus achieve centralised-quality coordination through decentralised pricing without a single controlling authority.",
+          "authors": [
+            "Lauri Lov\\'en",
+            "Alaa Saleh",
+            "Reza Farahani",
+            "Ilir Murturi",
+            "Miguel Bordallo L\\'opez",
+            "Praveen Kumar Donta",
+            "Schahram Dustdar"
+          ],
+          "canonical_id": "2603.05614",
+          "categories": [
+            "cs.AI"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2603.05614",
+          "published_at": "2026-03-05T19:14:54Z",
+          "source": "arxiv",
+          "title": "Real-Time AI Service Economy: A Framework for Agentic Computing Across the Continuum",
+          "updated_at": "2026-08-28T16:32:07Z",
+          "url": "https://arxiv.org/abs/2603.05614",
+          "version": 2
+        },
+        "rank": 58,
+        "score": {
+          "base_score": 0.41161567279545536,
+          "exploration": 0.9640286465676268,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5647182332345319,
+          "recency": 0.5076286760487727,
+          "topic": 0.029504958795074258
+        }
+      },
+      "tier": "explore"
+    },
     "arxiv:2603.16105:v4": {
       "analysis": {
         "analysis": "作者如何分析问题；若材料未说明，写材料未说明",
@@ -544,6 +799,270 @@
         }
       },
       "tier": "deep_read"
+    },
+    "arxiv:2603.23149:v2": {
+      "analysis": {
+        "analysis": "作者通过假设潜在状态充分性，构建跨模态蒸馏框架，将视觉模拟问题转化为文本生成任务，从而绕过视觉编码器，实现快速的语义预测。",
+        "challenges": [
+          "视觉世界模型推理延迟高",
+          "连续控制潜在表示映射到语言空间存在模态垮塌风险",
+          "需要稳定蒸馏教师模型语义能力到轻量学生模型"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "DILLO通过蒸馏语言动作世界模型实现了14倍加速",
+            "location": "abstract",
+            "quote": "achieving a 14x speedup over baselines"
+          },
+          {
+            "claim": "策略潜在状态和动作足以预测动作结果",
+            "location": "abstract",
+            "quote": "we show that a trained policy's latent state, combined with its planned actions, already encodes sufficient information to anticipate action outcomes, making visual simulation redundant for failure prevention"
+          },
+          {
+            "claim": "DILLO在MetaWorld和LIBERO上提高了任务成功率",
+            "location": "abstract",
+            "quote": "improving episode success rate by up to 15 pp and 9.3 pp on average across tasks."
+          }
+        ],
+        "experiments": [
+          "在MetaWorld和LIBERO上，DILLO达到高保真度描述和成功判断",
+          "推理速度为每步0.38秒（4B模型），比基线快14倍（vs Forewarn的3.70秒）",
+          "策略引导将任务成功率平均提高高达15个百分点（MetaWorld）和9.3个百分点（LIBERO）",
+          "在LIBERO-10上，平均回合长度减少36%，回合级开销仅约3秒"
+        ],
+        "first_affiliation": "Sapienza University of Rome, Italy",
+        "insight": "训练策略的潜在状态本身已足够编码预测动作结果所需的信息，因此视觉模拟对失败预防是冗余的，可以用文本语义预测替代。",
+        "limitations": [
+          "需要为每个新策略架构重新校准投影器，因为潜在流形是架构特定的",
+          "教师需要特权信息（地面真值6DoF姿态），但仅离线使用；替换为估计姿态可能引入噪声"
+        ],
+        "method": [
+          "提出Latent Sufficiency Hypothesis，认为策略潜在状态和计划动作足以预测动作结果",
+          "构建教师-学生蒸馏框架：教师VLM标注离线轨迹，学生LLM学习预测语义结果",
+          "使用可学习投影器将策略潜在状态和动作块映射到LLM输入空间，文本仅推理路径",
+          "三阶段课程训练：投影器对齐、描述蒸馏、结果蒸馏，以稳定训练并避免模态垮塌"
+        ],
+        "motivation": "安全关键的智能体需要提前预测动作后果，但基于视觉模拟的世界模型延迟过高（每个决策约4秒），不适用于实时控制。",
+        "primary_topic": "世界模型与语言动作模型用于主动智能体引导",
+        "relation_to_research": "本文直接相关于世界模型和语言动作模型研究，为具身智能的实时安全与推理效率提供了新范式，符合WAM的构想，并涉及系统优化（速度与性能的权衡）。",
+        "relevance_score": 9,
+        "setting": "具身智能体在机器人操控任务（MetaWorld, LIBERO）中的安全决策",
+        "tags": [
+          "世界模型",
+          "语言动作模型",
+          "动作预测",
+          "模型蒸馏",
+          "机器人操控",
+          "实时推理"
+        ],
+        "title_zh": "描述-然后-行动：通过蒸馏的语言-动作世界模型进行主动智能体引导",
+        "uncertainty": "摘要未提供具体实验数字，如精确提升幅度，且未提供机构排名和通讯作者信息，这些需结合全文。",
+        "why_recommended": "提供了一种绕过视觉模拟的快速语义世界模型，能显著降低推理延迟，对实时机器人控制有重大价值，其蒸馏方法和课程训练策略值得借鉴。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "( left ) Standard approaches rely on heavy visual world models to simulate future outcomes using expensive rendering. In contrast, ( right ) DILLO avoids this visual dependency entirely. By distilling the foresight of a simulator-privileged Teacher VLM into a fast Language-Action World Model, DILLO predicts future outcome descriptions and success verdicts directly from policy latents ( z t z_{t} ) and action chunks ( a t : t + k a_{t:t+k} ). This shift from “simulate-then-act” to “describe-then-act” enables fast proactive steering on consumer hardware.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2603.23149/v2/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2603.23149v2/figureteaser.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2603.23149v2#S1.F1"
+          },
+          {
+            "caption": "DILLO Training Pipeline. We distill the foresight of a VLM teacher. The pipeline bypasses visual processing by projecting the fixed policy’s internal latents ( z t z_{t} ) and action chunks ( a t : t + k a_{t:t+k} ) directly into the LLM’s embedding space.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2603.23149/v2/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2603.23149v2/figurepipeline.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2603.23149v2#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2603.23149v2",
+        "status": "available"
+      },
+      "final_score": 0.6727100308493377,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:45:50.117118Z",
+        "input_hash": "243a3833e48a5031406d93474b3bea49ac5c55e79523fc27da388a485ecf518a",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Deploying safety-critical agents requires anticipating the consequences of actions before they are executed. While world models offer a paradigm for this proactive foresight, current approaches relying on visual simulation incur prohibitive latencies, often exceeding several seconds per step. In this work, we challenge the assumption that visual processing is necessary for failure prevention. We show that a trained policy's latent state, combined with its planned actions, already encodes sufficient information to anticipate action outcomes, making visual simulation redundant for failure prevention. To this end, we introduce DILLO (DIstiLLed Language-ActiOn World Model), a fast steering layer that shifts the paradigm from \"simulate-then-act\" to \"describe-then-act.\" DILLO is trained via cross-modal distillation, where a privileged Vision Language Model teacher annotates offline trajectories and a latent-conditioned Large Language Model student learns to predict semantic outcomes. This creates a text-only inference path, bypassing heavy visual generation entirely, achieving a 14x speedup over baselines. Experiments on MetaWorld and LIBERO demonstrate that DILLO produces high-fidelity descriptions of the next state and is able to steer the policy, improving episode success rate by up to 15 pp and 9.3 pp on average across tasks. Code is available at github.com/MaxPappa/DILLO.",
+          "authors": [
+            "Massimiliano Pappa",
+            "Luca Romani",
+            "Valentino Sacco",
+            "Alessio Palma",
+            "St\\'ephane Lathuili\\`ere",
+            "Fabio Galasso",
+            "Xavier Alameda-Pineda",
+            "Indro Spinelli"
+          ],
+          "canonical_id": "2603.23149",
+          "categories": [
+            "cs.AI"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2603.23149",
+          "published_at": "2026-03-24T12:49:25Z",
+          "source": "arxiv",
+          "title": "Describe-Then-Act: Proactive Agent Steering via Distilled Language-Action World Models",
+          "updated_at": "2026-08-28T12:56:40Z",
+          "url": "https://arxiv.org/abs/2603.23149",
+          "version": 2
+        },
+        "rank": 4,
+        "score": {
+          "base_score": 0.4867455106351594,
+          "exploration": 0.5129446545923981,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5867819233373588,
+          "recency": 0.48899179674108106,
+          "topic": 0.35
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2603.27936:v3": {
+      "analysis": {
+        "analysis": "材料未说明作者如何分析问题的具体过程，但摘要中提到了提供关于模型逼近能力的理论结果。",
+        "challenges": [
+          "非线性PDE存在多个解，而标准PINNs倾向于收敛到一个解",
+          "如何确保多个解分支同时被发现且每个分支都被准确表征"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "Deflation-PINNs通过deflation损失集成PINNs和DeepONets，能够系统迫使网络寻找多个解分支。",
+            "location": "abstract",
+            "quote": "we introduce Deflation-PINNs, a novel framework that integrates a deflation loss with an architecture based on PINNs and Deep Operator Networks (DeepONets). By incorporating a deflation term into the loss function, our method systematically forces the Deflation-PINN to seek and converge upon distinct finitely many solution branches."
+          },
+          {
+            "claim": "在Landau-de Gennes模型和Allen-Cahn基准上验证了方法，单个运行恢复所有六个稳定状态。",
+            "location": "abstract",
+            "quote": "our results show that Deflation-PINNs can successfully identify and characterize multiple distinct crystal structures: a single unsupervised run recovers all six stable states of the benchmark"
+          }
+        ],
+        "experiments": [
+          "在Landau-de Gennes液晶模型上进行数值实验，该模型以复杂能量景观和多个平衡态著称",
+          "在Allen-Cahn基准上进行实验，其解集已被证明已知",
+          "单个无监督运行恢复了基准的所有六个稳定状态",
+          "每个分支被证实位于不同平衡态的吸引域内",
+          "纯神经Deflation-Deep-Ritz阶段将发现的分支细化到百分位精度，经典求解器初始化达到网格收敛参考精度"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过在损失函数中加入deflation项，结合PINNs和DeepONets架构，可以系统地迫使网络寻找并收敛到有限个不同的解分支，从而在单一无监督运行中恢复所有稳定状态。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "基于PINNs和DeepONets架构，引入deflation损失项",
+          "deflation项促使网络搜索并收敛到不同的解分支",
+          "结合Deflation-Deep-Ritz阶段进行细化，并利用经典求解器初始化以提高精度"
+        ],
+        "motivation": "传统PINNs通常只能求解单个解，难以识别非线性PDE的多个不同解，而许多物理系统具有多个平衡态，需要能够同时发现多个解分支的方法。",
+        "primary_topic": "基于物理信息的神经网络的解分支学习方法",
+        "relation_to_research": "与具身智能的直接关系较弱，但提供了多解学习框架，可用于物理模拟中的多模态解发现，对世界模型中的多可能未来预测和物理AI有间接启发。与系统优化关联在于通过deflation策略优化多目标解的学习。",
+        "relevance_score": 6,
+        "setting": "数值方法、科学计算与机器学习交叉领域",
+        "tags": [
+          "Physics-Informed Neural Networks",
+          "Deflation",
+          "Multiple Solutions",
+          "PDE",
+          "Landau-de Gennes",
+          "DeepONets",
+          "Operator Learning"
+        ],
+        "title_zh": "Deflation-PINNs：学习偏微分方程与Landau-de Gennes模型的多重解",
+        "uncertainty": "由于只提供了摘要，无法确认具体实验细节、作者机构、代码可用性等，且相关性判断基于摘要描述。",
+        "why_recommended": "尽管非直接相关，但该方法展示了如何让神经网络同时学习多个解，对处理非凸能量景观和多稳定物理系统（如机器人多姿态、多模态环境预测）有借鉴意义，且结合了理论分析和高效数值方法。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Architecture of the Deflation-PINN. Unlike classical DeepONets, the branch weights β j i \\beta_{j}^{i} are learned and do not use domain dependent sensor points. The trunk net takes the point x ∈ Ω x\\in\\Omega at which we want to evaluate the respective solution. The output is computed by taking the dot product of the respective branch weights ( β 1 i , … , β p i ) (\\beta_{1}^{i},...,\\beta_{p}^{i}) and the trunk net evaluations ( τ 1 ​ ( x ) , … , τ p ​ ( x ) ) (\\tau_{1}(x),...,\\tau_{p}(x)) to approximate the solution u i ​ ( x ) u_{i}(x)",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2603.27936/v3/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2603.27936v3/FinishedPaper/pics/DefPINNArch.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2603.27936v3#S2.F1"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2603.27936v3",
+        "status": "available"
+      },
+      "final_score": 0.5006123525274948,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:47:38.161428Z",
+        "input_hash": "4a6a7352a29d15f75f2bfb88f85f3198619891ba076ef3fd5ed46a883a611a95",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Nonlinear Partial Differential Equations (PDEs) are ubiquitous in mathematical physics and engineering. Although Physics-Informed Neural Networks (PINNs) have emerged as a powerful tool for solving PDE problems, they typically struggle to identify multiple distinct solutions, since they are designed to find one solution at a time. To address this limitation, we introduce Deflation-PINNs, a novel framework that integrates a deflation loss with an architecture based on PINNs and Deep Operator Networks (DeepONets). By incorporating a deflation term into the loss function, our method systematically forces the Deflation-PINN to seek and converge upon distinct finitely many solution branches. We provide theoretical results on the approximation capabilities of our model and demonstrate the efficacy of Deflation-PINNs through numerical experiments on the Landau-de Gennes model of liquid crystals, a system renowned for its complex energy landscape and multiple equilibrium states, and on an Allen--Cahn benchmark whose solution set is provably known. Our results show that Deflation-PINNs can successfully identify and characterize multiple distinct crystal structures: a single unsupervised run recovers all six stable states of the benchmark, each branch certified to lie in the basin of attraction of a different equilibrium, and the discovered branches are refined to percent-level accuracy by a purely neural Deflation--Deep-Ritz stage and to the accuracy of a mesh-converged reference by a classical solver that they initialize.",
+          "authors": [
+            "Sean Disar\\`o",
+            "Ruma Rani Maity",
+            "Aras Bacho"
+          ],
+          "canonical_id": "2603.27936",
+          "categories": [
+            "math.NA",
+            "cs.LG",
+            "cs.NA"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2603.27936",
+          "published_at": "2026-03-30T01:09:00Z",
+          "source": "arxiv",
+          "title": "Deflation-PINNs: Learning Multiple Solutions for PDEs and Landau-de Gennes",
+          "updated_at": "2026-08-28T11:02:18Z",
+          "url": "https://arxiv.org/abs/2603.27936",
+          "version": 3
+        },
+        "rank": 56,
+        "score": {
+          "base_score": 0.41929518641362684,
+          "exploration": 0.707987298186217,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.6012396931534314,
+          "recency": 0.4793784599293305,
+          "topic": 0.08571642480865127
+        }
+      },
+      "tier": "browse"
     },
     "arxiv:2604.20468:v3": {
       "analysis": {
@@ -774,6 +1293,114 @@
           "personal": 0.5823032076526559,
           "recency": 0.49800239771511307,
           "topic": 0.14367339380274285
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2606.05917:v2": {
+      "analysis": {
+        "analysis": "材料未说明",
+        "challenges": [
+          "长视频中答案证据稀疏且分散",
+          "现有方法依赖孤立帧，缺乏事件级语义",
+          "在有限视觉令牌预算下兼顾效率与性能"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有基于帧的方法依赖孤立帧，限制事件级语义捕捉",
+            "location": "abstract",
+            "quote": "they still rely on isolated and fragmented frames as the fundamental evidence units, limiting VLMs' ability to effectively capture coherent event-level semantics."
+          },
+          {
+            "claim": "MemoryCard将视频组织成自包含的记忆卡片",
+            "location": "abstract",
+            "quote": "we propose MemoryCard, a video-memory-based augmentation framework that organizes long videos into self-contained Memory Cards."
+          },
+          {
+            "claim": "MemoryCard提升长视频QA性能，最佳相对提升21.8%",
+            "location": "abstract",
+            "quote": "achieving up to a 21.8% relative improvement in accuracy."
+          }
+        ],
+        "experiments": [
+          "在长视频问答任务上，MemoryCard在可比视觉令牌预算下提升性能，相对准确率最高提升21.8%"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "将长视频组织成语义连贯的记忆卡片，提供事件级语义单元，以提升视觉语言模型对长视频的理解能力。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "自读过程：分割视频为语义连贯单元，对应不同主题或事件",
+          "生成事件级视频摘要：为每个单元生成事件级摘要",
+          "选择代表性视觉时刻：从每个单元选择代表性视觉瞬间",
+          "渲染统一记忆卡片：将摘要和视觉时刻渲染成统一格式用于检索和问答"
+        ],
+        "motivation": "长视频问答中，与答案相关的证据稀疏、短暂且分散，现有基于帧的方法将孤立的帧作为基本证据单元，限制了对事件级语义的连贯捕捉。",
+        "primary_topic": "长视频问答中的多模态上下文压缩",
+        "relation_to_research": "该方法关注视频理解中的多模态压缩和线索提取，与具身智能中的视觉场景理解和系统优化中上下文压缩相关，但不涉及动作生成或真实机器人。",
+        "relevance_score": 6,
+        "setting": "长视频问答基准测试",
+        "tags": [
+          "长视频问答",
+          "视觉语言模型",
+          "记忆增强",
+          "线索压缩",
+          "主题感知"
+        ],
+        "title_zh": "MemoryCard：面向长视频问答的主题感知多模态线索压缩",
+        "uncertainty": "作者单位和通讯作者信息未在摘要中提供；方法细节基于摘要推断，实验限定未明确。",
+        "why_recommended": "该方法提出了压缩长视频上下文的系统化方法，对具身智能中的视觉理解和长时记忆建模有借鉴意义，尤其适用于需要高效处理视觉上下文的场景。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.4831854444669962,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:47:06.050408Z",
+        "input_hash": "ee15830ea36d576981eb16f7c2284d1a33ff21ba0a98f4b7c4b47f3ec8f3be3e",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Long-video question answering remains challenging for Vision-Language Models (VLMs), as answer-relevant evidence is often sparse, transient, and temporally dispersed across lengthy video contexts. Existing frame-centric approaches improve efficiency through uniform sampling, query-aware frame selection, visual-token compression, and adaptive resolution strategies. However, they still rely on isolated and fragmented frames as the fundamental evidence units, limiting VLMs' ability to effectively capture coherent event-level semantics. To address this limitation, we propose MemoryCard, a video-memory-based augmentation framework that organizes long videos into self-contained Memory Cards. Specifically, MemoryCard first performs a self-reading process over videos and aligned utterances to segment the video into semantically coherent units, each corresponding to a distinct topic or event. For each unit, it generates an event-level video gist and selects representative visual moments, which are then rendered into unified Memory Cards for retrieval and question answering. Experimental results demonstrate that MemoryCard consistently improves long-video QA performance under comparable visual-token budgets, achieving up to a 21.8% relative improvement in accuracy. All code is available at https://github.com/NEUIR/MemoryCard.",
+          "authors": [
+            "Qing Yang",
+            "Pengcheng Huang",
+            "Xinze Li",
+            "Zhenghao Liu",
+            "Yukun Yan",
+            "Yu Gu",
+            "Ge Yu",
+            "Gang Li",
+            "Maosong Sun"
+          ],
+          "canonical_id": "2606.05917",
+          "categories": [
+            "cs.CV",
+            "cs.CL"
+          ],
+          "comment": "23 pages, 8 figures",
+          "pdf_url": "https://arxiv.org/pdf/2606.05917",
+          "published_at": "2026-06-04T09:23:31Z",
+          "source": "arxiv",
+          "title": "MemoryCard: Topic-Aware Multi-Modal Clue Compression for Long-Video Question Answering",
+          "updated_at": "2026-08-28T12:57:40Z",
+          "url": "https://arxiv.org/abs/2606.05917",
+          "version": 2
+        },
+        "rank": 41,
+        "score": {
+          "base_score": 0.38760989903090215,
+          "exploration": 0.9451831003041749,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.4741042668586942,
+          "recency": 0.4890766985199703,
+          "topic": 0.08810571160592925
         }
       },
       "tier": "browse"
@@ -1350,6 +1977,152 @@
       },
       "tier": "browse"
     },
+    "arxiv:2608.18948:v2": {
+      "analysis": {
+        "analysis": "材料未说明",
+        "challenges": [
+          "人类视频与机器人具身差异大",
+          "需保持时间连贯性",
+          "需生成物理上合理的动作"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "收集机器人手物交互数据成本高且具身特异，但人类视频丰富且未被利用",
+            "location": "abstract",
+            "quote": "Collecting robot hand-object interaction data is costly and embodiment-specific, yet abundant human-object videos remain unusable for robot training."
+          },
+          {
+            "claim": "RoboEdit能够将人类操作视频转化为动作一致的机器人视频",
+            "location": "abstract",
+            "quote": "We present RoboEdit, a human-to-robot video editing suite that transforms human manipulation videos into action-consistent, physically plausible robot videos with aligned 3D hand states."
+          },
+          {
+            "claim": "RoboEdit生成了大规模数据集",
+            "location": "abstract",
+            "quote": "This pipeline generates RoboEdit-14M, a large-scale dataset of 174K aligned video pairs (14M frames) spanning seven robot embodiments, diverse scenes, and interaction types."
+          },
+          {
+            "claim": "RoboEdit在编辑质量上达到最先进水平并支持真实机器人控制",
+            "location": "abstract",
+            "quote": "Experiments show that RoboEdit achieves state-of-the-art editing quality and supports downstream robot control policies in real-world manipulation tasks."
+          }
+        ],
+        "experiments": [
+          "实验表明RoboEdit在编辑质量上达到最先进水平，并支持真实世界操作任务的下游机器人控制策略"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过视频编辑将人类操作视频转化为动作一致、物理上合理的机器人视频，并附带3D手部状态，从而实现可扩展的监督。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出RoboEdit视频编辑套件，将人类操作视频转化为机器人视频",
+          "引入RoboEdit-ADC自动管线，从RGB视频重构和重定向3D交互",
+          "生成大规模数据集RoboEdit-14M，包含174K对齐视频对，覆盖7种机器人具身",
+          "核心编辑引擎RoboEdit-Trans采用跨具身适应模块保持时间连贯性",
+          "集成3D机器人状态解码器恢复每帧手部状态，提供结构化的运动监督"
+        ],
+        "motivation": "收集机器人手物交互数据成本高且具有具身特异性，而现有人类视频无法直接用于机器人训练。",
+        "primary_topic": "利用人类视频生成机器人训练数据",
+        "relation_to_research": "与具身智能和机器人学习密切相关，通过数据生成方式解决机器人训练数据稀缺问题，可支持视觉语言动作模型和世界模型的训练，提供可扩展的视觉和3D运动监督",
+        "relevance_score": 9,
+        "setting": "研究设定",
+        "tags": [
+          "视频编辑",
+          "数据增强",
+          "机器人学习",
+          "跨具身适应",
+          "3D手部状态"
+        ],
+        "title_zh": "RoboEdit：将人类操作视频转化为可扩展的机器人经验",
+        "uncertainty": "未提供全文，无法确认具体实验细节、作者单位及通讯作者信息，且第一单位未在摘要中明确。",
+        "why_recommended": "该研究提出了一种创新方法，利用丰富的人类视频生成可扩展的机器人训练数据，对于解决数据稀缺问题、提升机器人泛化能力具有重要价值，且提供了大规模数据集和真实机器人评测，值得相关研究者关注。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "RoboEdit-Trans uses LoRA and residual adapter for editing and 3D Robot-State Decoder for state recovery.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.18948/v2/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.18948v2/RoboEdit_Trans.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.18948v2#S1.F1"
+          },
+          {
+            "caption": "RoboEdit-ADC reconstructs 3D interaction from RGB video, performs depth/physics-refined retargeting, and composites the foreground into the inpainted scene.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.18948/v2/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.18948v2/RoboEdit_ADC.new.optimized.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.18948v2#S1.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.18948v2",
+        "status": "available"
+      },
+      "final_score": 0.6300901612711348,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:11.105733Z",
+        "input_hash": "9361f41cc3a0a75bfa1b07996f2eed5064b624fae7ae94785543ff2b3ad1dee0",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Collecting robot hand-object interaction data is costly and embodiment-specific, yet abundant human-object videos remain unusable for robot training. We present RoboEdit, a human-to-robot video editing suite that transforms human manipulation videos into action-consistent, physically plausible robot videos with aligned 3D hand states. To enable scalable supervision, we introduce RoboEdit-ADC, an automatic pipeline that reconstructs and retargets 3D interactions from RGB videos across embodiments. This pipeline generates RoboEdit-14M, a large-scale dataset of 174K aligned video pairs (14M frames) spanning seven robot embodiments, diverse scenes, and interaction types. The core editing engine, RoboEdit-Trans, employs cross-embodiment adaptation modules to preserve temporal coherence while adapting appearance and motion. It further integrates a 3D Robot-State Decoder to recover per-frame hand states for structured motion supervision. Experiments show that RoboEdit achieves state-of-the-art editing quality and supports downstream robot control policies in real-world manipulation tasks. Ultimately, the RoboEdit suite unlocks the vast potential of unlabeled human videos, providing scalable, high-fidelity visual and 3D motion supervision for generalizable robot learning. Project webpage: https://roboedit.github.io/",
+          "authors": [
+            "Yaowei Guo",
+            "Zeng Tao",
+            "Yuxin Jiang",
+            "Yunuo Chen",
+            "Zhiyang Dou",
+            "Yuxiang Ma",
+            "Yin Yang",
+            "Demetri Terzopoulos",
+            "Ying Jiang",
+            "Chenfanfu Jiang"
+          ],
+          "canonical_id": "2608.18948",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "14 pages, 13 figures. Supplementary material included",
+          "pdf_url": "https://arxiv.org/pdf/2608.18948",
+          "published_at": "2026-08-19T14:15:36Z",
+          "source": "arxiv",
+          "title": "RoboEdit: Turning Human Manipulation Videos into Scalable Robot Experience",
+          "updated_at": "2026-08-28T10:39:00Z",
+          "url": "https://arxiv.org/abs/2608.18948",
+          "version": 2
+        },
+        "rank": 13,
+        "score": {
+          "base_score": 0.4092548386747905,
+          "exploration": 0.6213395198130481,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.4352628222545709,
+          "recency": 0.4774432242659736,
+          "topic": 0.2957379835780897
+        }
+      },
+      "tier": "browse"
+    },
     "arxiv:2608.22187:v2": {
       "analysis": {
         "analysis": "材料未说明作者如何具体分析问题。",
@@ -1630,6 +2403,343 @@
           "personal": 0.48085115325175654,
           "recency": 0.4797367439021663,
           "topic": 0.35
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.23629:v2": {
+      "analysis": {
+        "analysis": "材料未说明",
+        "challenges": [
+          "长时序任务中搜索难以处理",
+          "孤立学习动作无法捕捉重复结构",
+          "无关谓词增加搜索成本"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有方法通常孤立学习每个动作，无法捕捉重复多步结构",
+            "location": "abstract",
+            "quote": "Existing methods, however, typically learn each action in isolation and cannot capture the recurring multi-step structure of manipulation tasks, so the search becomes intractable on long sequential tasks."
+          },
+          {
+            "claim": "提出自动生成宏算子并剪枝无关谓词的系统",
+            "location": "abstract",
+            "quote": "We present a system that addresses both problems together. Its central component is the automatic generation of macro-operators, composite actions that compress a recurring sequence of individual actions into a single planning step."
+          },
+          {
+            "claim": "系统发现因果链接的动作对并转化为新算子",
+            "location": "abstract",
+            "quote": "Our system discovers causally linked action pairs directly from the training data, where one action produces exactly the condition that the next one requires, and turns each pair into a new operator."
+          },
+          {
+            "claim": "剪枝谓词缩小符号状态",
+            "location": "abstract",
+            "quote": "Alongside this, our system prunes every predicate that no learned operator references, which shrinks the symbolic state evaluated at each search node."
+          },
+          {
+            "claim": "实验中达到高达4.6倍加速并解决基线无法解决的问题",
+            "location": "abstract",
+            "quote": "Across four TAMP domains, our method reaches up to a 4.6x planning speedup compared to the baseline method, namely Learning Operators for TAMP. More importantly, it solves a long sequential task that the baseline cannot solve."
+          }
+        ],
+        "experiments": [
+          "在四个TAMP域中，相比基准方法Learning Operators for TAMP，达到最高4.6倍规划加速",
+          "解决了一个基准方法无法解决的长序任务"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "自动生成宏算子（复合动作）以及剪枝不被任何学习算子引用的谓词，可以缩短有效规划范围，加速并增强可解性。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "自动发现因果连接的动作对，每对由一个动作产生下一个动作所需条件，然后将每个对转化为新算子",
+          "生成宏算子作为复合动作，压缩重复动作序列为单个规划步骤",
+          "剪枝学习算子未引用的谓词，缩小每个搜索节点评估的符号状态"
+        ],
+        "motivation": "手工创建符号算子是部署TAMP系统的主要瓶颈，现有学习方法孤立学习每个动作，无法捕捉重复多步结构，导致长序任务搜索难处理；且每个谓词在每个搜索节点都被评估造成低效。",
+        "primary_topic": "任务与运动规划（TAMP）中的符号算子学习",
+        "relation_to_research": "属于规划和系统优化领域，与具身智能中长时序任务规划相关，但非直接涉及动作生成或世界模型；方法可迁移至系统优化的效率提升。",
+        "relevance_score": 6,
+        "setting": "符号任务规划器，从演示数据学习，用于长期顺序操作任务",
+        "tags": [
+          "TAMP",
+          "宏算子",
+          "谓词剪枝",
+          "规划加速",
+          "学习算子"
+        ],
+        "title_zh": "TAMP算子学习中的宏算子生成与谓词选择",
+        "uncertainty": "摘要未提及作者单位、通讯作者、方法细节及更多实验数据，且实验数字仅为摘要所提。",
+        "why_recommended": "展示了通过宏算子生成和谓词剪枝提高规划效率的思路，对长时序任务的可扩展性问题有启发，适用于系统优化和推理效率提升的研究。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5203180791063151,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:43.545486Z",
+        "input_hash": "a5438750c61b658f1ca4c1b7006aa21badfa10e15f2f4eb460712ae834072687",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Creating symbolic operators by hand is one of the main bottlenecks in deploying Task and Motion Planning systems (TAMP). Recent works show that these operators can instead be learned directly from demonstration data. Existing methods, however, typically learn each action in isolation and cannot capture the recurring multi-step structure of manipulation tasks, so the search becomes intractable on long sequential tasks. A further inefficiency arises in the symbolic state: every provided predicate is evaluated at every search node, even when it never appears in any learned operator. We present a system that addresses both problems together. Its central component is the automatic generation of macro-operators, composite actions that compress a recurring sequence of individual actions into a single planning step. Our system discovers causally linked action pairs directly from the training data, where one action produces exactly the condition that the next one requires, and turns each pair into a new operator. Alongside this, our system prunes every predicate that no learned operator references, which shrinks the symbolic state evaluated at each search node. Together, these changes shorten the effective planning horizon, and the benefit they bring grows with the length of the task. Across four TAMP domains, our method reaches up to a 4.6x planning speedup compared to the baseline method, namely Learning Operators for TAMP. More importantly, it solves a long sequential task that the baseline cannot solve. Macro-operator discovery thus not only accelerates planning but, in certain domains, determines solvability in practice.",
+          "authors": [
+            "Can Emir Bora",
+            "Emre Ugur"
+          ],
+          "canonical_id": "2608.23629",
+          "categories": [
+            "cs.RO",
+            "cs.AI"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.23629",
+          "published_at": "2026-08-23T09:38:27Z",
+          "source": "arxiv",
+          "title": "Macro-Operator Generation and Predicate Selection for TAMP Operator Learning",
+          "updated_at": "2026-08-28T10:25:57Z",
+          "url": "https://arxiv.org/abs/2608.23629",
+          "version": 2
+        },
+        "rank": 24,
+        "score": {
+          "base_score": 0.45512378019330024,
+          "exploration": 0.9870021167395272,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.6095150177499136,
+          "recency": 0.4763627414076655,
+          "topic": 0.09858724683177102
+        }
+      },
+      "tier": "explore"
+    },
+    "arxiv:2608.23873:v2": {
+      "analysis": {
+        "analysis": "作者分析了提示注入的根本原因是模型将片段身份与文本内容混淆，提出通过不可被文本伪造的元数据通道来解决。",
+        "challenges": [
+          "设计非文本通道使之不可被令牌复制",
+          "训练适配器以编码复杂语义",
+          "在不影响模型效用的情况下防御多种注入攻击",
+          "保持标记片段的可读性"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "Semantic Overlays是通用引导技术，通过小型学习适配器应用于冻结模型的残差流特定位置。",
+            "location": "abstract",
+            "quote": "We thus introduce a general steering technique called Semantic Overlays: small learned adapters applied at chosen prefill positions to a frozen model's residual stream."
+          },
+          {
+            "claim": "在五个基准上取得强结果，包括SEP分离率大幅提升。",
+            "location": "abstract",
+            "quote": "We report strong results on five prompt injection benchmarks: SEP separation rises from 24.3% to 99.0% with utility unchanged"
+          }
+        ],
+        "experiments": [
+          "在五个基准上显示防御效果：SEP分离率从24.3%提升到99.0%，TensorTrust攻击成功率从34.8%降至6.2%，AlpacaFarm从99.0%降至0%，PIArena上超过所有保持模型可回答的已发布防御，且标记片段保持>95%字符相似度"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "向模型输入添加非文本通道，以带外方式传达片段身份，使攻击者无法通过文本模仿，从而防御提示注入。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "在冻结模型的残差流上应用小型学习适配器，在预填充位置标记片段",
+          "适配器采用SwiGLU瓶颈结构，可携带身份码或独立训练",
+          "支持多种覆盖组合，标记片段仍可透明读取",
+          "标记非可执行覆盖以防御添加指令类注入"
+        ],
+        "motivation": "语言模型只看到令牌，无法可靠区分提示中不同片段（用户输入、工具输出、指令）的身份，导致提示注入攻击可利用这一缺陷。",
+        "primary_topic": "通过非文本通道进行提示注入防御的激活引导技术",
+        "relation_to_research": "该工作属于激活引导和模型安全领域，与具身智能、世界模型等关系较弱，但可能对提高模型鲁棒性有参考价值。",
+        "relevance_score": 6,
+        "setting": "针对冻结语言模型的推理时防御，使用小型学习型适配器在预填充位置修改残差流",
+        "tags": [
+          "语义覆盖",
+          "提示注入防御",
+          "激活引导",
+          "残差流适配器",
+          "非文本标注"
+        ],
+        "title_zh": "语义覆盖：通过超越标记和引导向量的标注缓解提示注入",
+        "uncertainty": "论文主题与具身智能等核心方向不直接相关，但可能对系统优化和鲁棒性设计有参考价值；实验细节基于摘要和部分文本，缺乏更多信息。",
+        "why_recommended": "提出创新的非文本标注方法，对提高模型安全性有重要意义，且方法可迁移至其他场景。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [],
+        "html_url": "https://arxiv.org/html/2608.23873v2",
+        "status": "not_found"
+      },
+      "final_score": 0.5340749476907979,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:05.763313Z",
+        "input_hash": "d2dd741250446bee1a1368bdea4e42cb43625f3461fa3d5be932a6d0c55ee8a3",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Everything a language model sees is tokens. The serving stack knows what each span is -- user input, tool output, instructions -- but the model must keep track of that itself, and can lose track or be confused: text can be written to read like anything. Prompt injection is a natural exploit of this phenomenon. By scrambling the model's understanding of span identity, an attacker can induce unwanted and dangerous actions. Adding a non-textual channel to the model's input -- a way to communicate span identity beyond text -- mitigates this class of attack. We thus introduce a general steering technique called Semantic Overlays: small learned adapters applied at chosen prefill positions to a frozen model's residual stream. Laying an overlay over a span creates an out-of-band annotation channel that cannot be replicated by tokens. Unlike steering vectors, Semantic Overlays are trained, adaptable, and selectively applied. An overlay can encode complex semantics that reshape how the model perceives the marked span: asked to copy a code snippet under an overlay asserting a different programming language, the model rewrites the snippet in the asserted language. Overlays compose, allow transparent reading of underlying content, and can carry complex payloads -- including imperatives the model will follow. An overlay which marks a span as \"non-executable\" defends against the broad class of prompt injections that add instructions in untrusted context. We report strong results on five prompt injection benchmarks: SEP separation rises from 24.3% to 99.0% with utility unchanged (our scoring rule; we correct a defect in the published grader), TensorTrust attack success falls from 34.8% to 6.2%, AlpacaFarm from 99.0% to 0%, and the overlay beats every published PIArena defense that leaves the model able to answer -- while marked spans stay readable, all at >95% character similarity to the original.",
+          "authors": [
+            "Joshua Penman"
+          ],
+          "canonical_id": "2608.23873",
+          "categories": [
+            "cs.AI",
+            "cs.CL",
+            "cs.CR",
+            "cs.LG"
+          ],
+          "comment": "21 pages, 4 figures, 13 tables. Interactive demo: https://semantic-overlays.vercel.app. Code and released adapters: https://github.com/JoshuaSP/semantic-overlays",
+          "pdf_url": "https://arxiv.org/pdf/2608.23873",
+          "published_at": "2026-08-24T22:26:58Z",
+          "source": "arxiv",
+          "title": "Semantic Overlays: Mitigating Prompt Injection with Annotations Beyond Tokens and Steering Vectors",
+          "updated_at": "2026-08-28T09:49:45Z",
+          "url": "https://arxiv.org/abs/2608.23873",
+          "version": 2
+        },
+        "rank": 7,
+        "score": {
+          "base_score": 0.4801362685287234,
+          "exploration": 0.6714559298537512,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.6147506133134797,
+          "recency": 0.4733783218480097,
+          "topic": 0.2543287639070897
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.24044:v3": {
+      "analysis": {
+        "analysis": "作者通过实验对比直接物理状态回归与交叉预测方法，指出直接回归提高可解码性但未提高可预测性或控制，表明收益来自塑造潜在动力学而非简单编码物理变量。",
+        "challenges": [
+          "自预测模型中编码器与预测器的共适应问题",
+          "潜在动力学缺乏物理约束导致预测漂移"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "JEPA-x通过交叉预测物理状态来锚定潜在动力学",
+            "location": "abstract",
+            "quote": "JEPA-x treats visual observations and physical states as corresponding views of the same action-conditioned trajectory, advances both through a shared predictor, and matches each prediction to the future representations of both modalities."
+          },
+          {
+            "claim": "JEPA-x减少了滚动漂移并提高了控制成功率",
+            "location": "abstract",
+            "quote": "Empirical results show that JEPA-x reduces the rollout drift of a newly fitted predictor from $0.361$ to $0.104$ and increases mean control success from $53.6\\%$ to $78.2\\%$ on a multi-task suite spanning six evaluation subfamilies."
+          },
+          {
+            "claim": "直接物理状态回归的收益来自编码而非预测性",
+            "location": "abstract",
+            "quote": "We additionally show that direct physical-state regression improves decodability without improving forecastability or control, indicating that the benefit comes from shaping latent dynamics rather than merely encoding physical variables."
+          }
+        ],
+        "experiments": [
+          "在多任务套件（六个评估子家族）上，新拟合预测器的滚动漂移从0.361降至0.104",
+          "平均控制成功率从53.6%提升至78.2%",
+          "直接物理状态回归未提高可预测性或控制，表明交叉预测方法的优势"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "将视觉观察和物理状态视为同一动作条件轨迹的两个对应视图，通过共享预测器推进，并匹配两个模态的未来表示，鼓励学习跨视图的公共转移规则，从而物理锚定潜在动力学。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "将视觉观察和物理状态作为同一动作条件轨迹的两个视图",
+          "共享预测器同时推进两种模态",
+          "匹配预测与两种模态的未来表示",
+          "训练时仅使用特权物理状态，部署时仅用视觉"
+        ],
+        "motivation": "自预测潜在世界模型中，编码器和预测器联合优化可能共适应，导致潜在转移易于预测但未受物理演化约束，从而影响预测的准确性和控制性能。",
+        "primary_topic": "潜在世界模型的物理锚定与预测性动力学学习",
+        "relation_to_research": "该工作直接面向具身智能中的世界模型，通过物理锚定增强潜在动力学的可预测性，提升基于模型的视觉控制，与物理人工智能和世界动作模型高度相关。",
+        "relevance_score": 9,
+        "setting": "基于视觉的潜在世界模型，训练时使用特权物理状态，部署时仅用视觉",
+        "tags": [
+          "世界模型",
+          "潜在动力学",
+          "自预测模型",
+          "物理状态",
+          "交叉预测",
+          "JEPA"
+        ],
+        "title_zh": "JEPA-x：用于可预测潜在动力学的交叉预测物理锚定",
+        "uncertainty": "作者单位、通讯作者等信息未在摘要中提供；实验细节未完全展开，但摘要给出的数字明确。",
+        "why_recommended": "本文提出一种新颖的交叉预测机制，有效缓解自预测世界模型的共适应问题，提升预测稳定性和控制性能，对构建可靠的潜在动力学模型具有重要参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Unified privileged-state interface. A scene is represented by a fixed set of object slots, together with end-effector (EE) and table tokens; unused object slots are masked. Each object token encodes SDF geometry G i G_{i} , extents e i e_{i} , rotation R i R_{i} , and position t i t_{i} . Masked self-attention followed by learned-query attention pooling maps the resulting token set to the physical latent z t s z_{t}^{s} .",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.24044/v3/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.24044v3/unified_representation.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.24044v3#S4.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.24044v3",
+        "status": "available"
+      },
+      "final_score": 0.6479644757291798,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:24.286448Z",
+        "input_hash": "bac8087737fbe03a9327414b92af509d834db7c2069e352f4c34d16af0507ea6",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Latent world models plan by predicting how candidate actions advance learned latent dynamics. In self-predictive models, however, the encoder and predictor are optimized jointly and can co-adapt to latent transitions that are easy to predict but weakly constrained by the physical evolution of the scene. We introduce the cross-predictive JEPA (JEPA-x), which grounds latent dynamics in privileged physical trajectories. JEPA-x treats visual observations and physical states as corresponding views of the same action-conditioned trajectory, advances both through a shared predictor, and matches each prediction to the future representations of both modalities. This encourages the action-conditioned predictor to learn a common transition rule across the two views. Privileged physical state is used only during training, leaving a visual-only model at deployment. Empirical results show that JEPA-x reduces the rollout drift of a newly fitted predictor from $0.361$ to $0.104$ and increases mean control success from $53.6\\%$ to $78.2\\%$ on a multi-task suite spanning six evaluation subfamilies. We additionally show that direct physical-state regression improves decodability without improving forecastability or control, indicating that the benefit comes from shaping latent dynamics rather than merely encoding physical variables.",
+          "authors": [
+            "Kehan Wen",
+            "Ziming Li",
+            "Siyuan Luo",
+            "Fan Shi"
+          ],
+          "canonical_id": "2608.24044",
+          "categories": [
+            "cs.LG"
+          ],
+          "comment": "Under review",
+          "pdf_url": "https://arxiv.org/pdf/2608.24044",
+          "published_at": "2026-08-25T04:07:07Z",
+          "source": "arxiv",
+          "title": "JEPA-x: Cross-Predictive Physics Grounding for Forecastable Latent Dynamics",
+          "updated_at": "2026-08-28T10:39:50Z",
+          "url": "https://arxiv.org/abs/2608.24044",
+          "version": 3
+        },
+        "rank": 20,
+        "score": {
+          "base_score": 0.44175359223487226,
+          "exploration": 0.5794906699347417,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5740723996358531,
+          "recency": 0.4775123038034738,
+          "topic": 0.22205918578547656
         }
       },
       "tier": "browse"
@@ -2208,6 +3318,115 @@
         }
       },
       "tier": "deep_read"
+    },
+    "arxiv:2608.26418:v2": {
+      "analysis": {
+        "analysis": "材料未说明",
+        "challenges": [
+          "硬件设计决策在深度不确定性下进行",
+          "工作负载快速变化与硬件冻结的矛盾",
+          "实现硬件和软件协同设计验证"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "Redwood是面向物理AI的加速器，支持低功耗超低延迟推理",
+            "location": "abstract",
+            "quote": "Redwood, a frontier AI accelerator built for single-batch, low-power, ultra-low-latency inference for physical AI."
+          },
+          {
+            "claim": "整个系统在不到两周内自主生成硬件设计，无人工干预",
+            "location": "abstract",
+            "quote": "the system autonomously generated the performance model, RTL design, UVM environments, formal proofs, firmware, and kernels in under two weeks with no human intervention below the specification."
+          },
+          {
+            "claim": "Redwood相比Jetson Orin Nano在性能功耗比上提升3.4倍",
+            "location": "abstract",
+            "quote": "Redwood delivers 1.75x the throughput at 1.9x lower power, a 3.4x performance-per-watt gain against a measured Jetson baseline on the same models."
+          }
+        ],
+        "experiments": [
+          "Redwood Nano在FPGA上运行数十亿参数模型如Llama和Qwen",
+          "投影到三星8nm工艺，相比Jetson Orin Nano，吞吐量提升1.75倍，功耗降低1.9倍，性能功耗比提升3.4倍（基于实测Jetson基线）",
+          "Qwen运行在Redwood上辅助设计下一代Redwood"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "将软件到硅的整个堆栈压缩为单一优化循环，实现硬件和软件在一目标下协同设计和验证，从而在两周内自主生成完整的加速器设计。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "端到端AI系统，将软件到硅堆栈压缩为单一优化循环",
+          "自主生成性能模型、RTL设计、UVM环境、形式化证明、固件和内核",
+          "使用商用EDA工具、专有形式化引擎和硬件在环验证达到95%覆盖率",
+          "规格变更在48小时内重新验证并部署到硬件"
+        ],
+        "motivation": "现代AI工作负载与硬件设计时间尺度不匹配，硬件设计决策在深度不确定性下进行，且摩尔定律停滞，专用化成为性能功耗比的主要来源，需要以工作负载节奏运行的设计周期。",
+        "primary_topic": "AI系统自动设计AI加速器",
+        "relation_to_research": "本文与物理AI相关，其加速器面向物理AI的低功耗超低延迟推理，涉及模型部署和推理效率，与具身智能和世界模型在硬件加速方面相关，但未涉及动作生成或世界模型本身。",
+        "relevance_score": 6,
+        "setting": "硬件设计自动化",
+        "tags": [
+          "AI加速器",
+          "芯片设计",
+          "物理AI",
+          "低功耗推理",
+          "自动化设计"
+        ],
+        "title_zh": "Redwood：由AI在两周内从零设计、验证并部署的前沿AI加速器",
+        "uncertainty": "第一单位和通讯作者未在摘要中提供；具体实验细节和设计流程细节未提供，可能影响对方法普适性的判断；相关性评估基于摘要中物理AI和低功耗推理的描述。",
+        "why_recommended": "本文展示了AI系统自主设计硬件的能力，对于关注推理效率、模型压缩和实时控制的硬件加速研究具有启发意义，特别是面向物理AI的加速器设计流程。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [],
+        "html_url": "https://arxiv.org/html/2608.26418v2",
+        "status": "html_unavailable"
+      },
+      "final_score": 0.523226300730882,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:03.812807Z",
+        "input_hash": "d7a5a7510a08249ca9e768639b503c7bf33c4cd87de90c1f0659a6e3a2c5007c",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Modern AI workloads and the hardware that runs them evolve on different timescales: architectural definition precedes volume silicon by years, while target workloads shift in months. Design decisions are therefore committed under deep uncertainty and paid for twice, once in the generality added as a hedge, and again when new workloads map poorly onto frozen silicon. As Moore's Law stagnates, specialization is the main remaining source of performance-per-watt and demands a design cycle that runs at the cadence of the workloads. We present an end-to-end AI system that collapses the software-to-silicon stack into a single optimization loop, where hardware and software are co-designed and verified under one objective. Its first demonstration is Redwood, a frontier AI accelerator built for single-batch, low-power, ultra-low-latency inference for physical AI. From a high-level specification by two human architects, the system autonomously generated the performance model, RTL design, UVM environments, formal proofs, firmware, and kernels in under two weeks with no human intervention below the specification. Every block reached 95% coverage via commercial EDA tools, our proprietary formal engine, and hardware-in-the-loop validation. Specification changes were reverified and redeployed to hardware in under 48 hours. Redwood Nano, its ultra-low-power FPGA variant, runs multi-billion-parameter models like Llama and Qwen. Projected onto Samsung 8 nm, the Jetson Orin Nano's process class, Redwood delivers 1.75x the throughput at 1.9x lower power, a 3.4x performance-per-watt gain against a measured Jetson baseline on the same models. Qwen running on Redwood also helped design next-generation Redwood, an early step toward recursive self-improvement. To our knowledge, this is the first production-worthy AI accelerator designed end-to-end by an AI system and running a modern AI model.",
+          "authors": [
+            "Architect Labs"
+          ],
+          "canonical_id": "2608.26418",
+          "categories": [
+            "cs.AR",
+            "cs.AI"
+          ],
+          "comment": "7 Pages, and 15 figures",
+          "pdf_url": "https://arxiv.org/pdf/2608.26418",
+          "published_at": "2026-08-26T21:36:51Z",
+          "source": "arxiv",
+          "title": "Redwood: A Frontier AI Accelerator Designed, Verified, and Deployed from Scratch in 2 Weeks by AI",
+          "updated_at": "2026-08-28T15:42:17Z",
+          "url": "https://arxiv.org/abs/2608.26418",
+          "version": 2
+        },
+        "rank": 9,
+        "score": {
+          "base_score": 0.46041145587433097,
+          "exploration": 0.5626553250398183,
+          "matched_terms": [
+            "physical AI"
+          ],
+          "negative_terms": [],
+          "personal": 0.5986866828807884,
+          "recency": 0.5032558089235533,
+          "topic": 0.2411752433761115
+        }
+      },
+      "tier": "browse"
     },
     "arxiv:2608.26578:v1": {
       "analysis": {
@@ -5108,6 +6327,155 @@
       },
       "tier": "deep_read"
     },
+    "arxiv:2608.27345:v2": {
+      "analysis": {
+        "analysis": "作者形式化概率对齐为世界模型的分布标准，设计了PAWBench基准和PAWEval协议，通过50个场景和11个系统进行实证评估，发现现有模型存在差距，并进一步探究语言提示、噪声采样和训练是否可调整预测分布。",
+        "challenges": [
+          "现有评测未评估分布级概率对齐",
+          "需要将多次视频生成转化为经验分布来比较",
+          "当前系统未能一致匹配参考概率并覆盖有效行为范围"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "当前世界模型评估缺少分布级概率对齐检验",
+            "location": "abstract",
+            "quote": "existing evaluations largely assess individual-video plausibility and do not test whether repeated generations recover the correct distribution"
+          },
+          {
+            "claim": "本文引入PAWBench和PAWEval来评估概率对齐",
+            "location": "abstract",
+            "quote": "we formalize probabilistic alignment as a distributional criterion for world models and introduce PAWBench, a benchmark for evaluating video generators as stochastic samplers of world dynamics. We further introduce PAWEval, an outcome-level protocol that converts repeated video rollouts into empirical distributions over possible physical behaviors."
+          },
+          {
+            "claim": "当前系统未达到概率对齐",
+            "location": "abstract",
+            "quote": "Across 50 scenarios and eleven current systems, no model consistently matches the reference probabilities while recovering the range of valid behaviors."
+          }
+        ],
+        "experiments": [
+          "在50个场景和11个当前系统中评估，没有模型能一致匹配参考概率并恢复有效行为范围"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "概率对齐是分布级要求，需要评测模型作为随机采样器是否匹配参考概率分布并恢复有效行为范围。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "形式化概率对齐为分布级准则",
+          "引入PAWBench基准，包含50个场景",
+          "提出PAWEval评估协议，将重复视频生成转化为经验分布",
+          "比较生成的分布与参考概率并评估行为范围覆盖",
+          "测试语言提示、初始噪声采样和训练干预对分布的影响"
+        ],
+        "motivation": "现有视频生成模型被视为世界模型，但物理过程可能有多种合法演化方式，世界模型不仅要生成合理轨迹，还要复现相同初始观测和动作下可能行为的分布。然而现有评测多关注单视频合理性，未测试重复生成是否恢复正确分布。",
+        "primary_topic": "世界模型的概率对齐评测基准",
+        "relation_to_research": "直接相关于世界模型和具身智能：强调世界模型需具有概率对齐能力，为物理AI和世界动作模型提供评测基础，促进长时序预测和可执行动作生成的分布正确性。",
+        "relevance_score": 9,
+        "setting": "研究设定",
+        "tags": [
+          "世界模型",
+          "视频生成",
+          "概率对齐",
+          "评测基准",
+          "随机采样",
+          "分布匹配"
+        ],
+        "title_zh": "PAWBench：我们距离概率对齐的世界建模还有多远？",
+        "uncertainty": "摘要未提供作者单位、通讯作者、具体实验数值和局限，因此这些字段依据不足；相关性评分基于主题直接相关。",
+        "why_recommended": "该论文揭示了视频生成模型作为世界模型在分布级对齐上的不足，提出了明确的评测标准和方法，对构建可靠世界模型、改善可执行动作生成和真实机器人评测具有重要指导意义。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "One plausible future is not enough. A single rollout from a video generation model can appear physically plausible, yet repeated rollouts from the same initial observation and action may reveal a probabilistically unaligned world: outcomes concentrate on a narrow subset of futures instead of matching the valid stochastic support. PAWBench evaluates this induced distribution or support over repeated futures, rather than judging a model by one sampled video.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.27345/v2/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.27345v2/one_plausible_future.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.27345v2#S1.F1"
+          },
+          {
+            "caption": "PAWBench scenario taxonomy. PAWBench covers eight mechanism groups under fixed initial observations and actions. PAW-Calibration contains calibrated probability scenarios with analytically specified reference distributions, while PAW-Coverage contains complex stochastic interactions evaluated by valid-support coverage. Each scenario fixes the source image and action prompt, then scores repeated model rollouts by their terminal outcomes.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.27345/v2/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.27345v2/scenario_taxonomy.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.27345v2#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.27345v2",
+        "status": "available"
+      },
+      "final_score": 0.6351307641410552,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:31.011899Z",
+        "input_hash": "960bdd6fe5d377f9d39c30cad4e8264eb86c247b9ebbf56773762251bf8539fa",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Recent video generation models are increasingly framed as world models. Many physical processes can unfold in more than one valid way. Therefore, a world model should reproduce not only a plausible trajectory, but also the distribution of possible behaviors under the same initial observation and action. We call this distribution-level requirement probabilistic alignment. However, existing evaluations largely assess individual-video plausibility and do not test whether repeated generations recover the correct distribution. This raises a central question: how far are current video generators from probabilistically aligned world modeling? To answer it, we formalize probabilistic alignment as a distributional criterion for world models and introduce PAWBench, a benchmark for evaluating video generators as stochastic samplers of world dynamics. We further introduce PAWEval, an outcome-level protocol that converts repeated video rollouts into empirical distributions over possible physical behaviors. Across 50 scenarios and eleven current systems, no model consistently matches the reference probabilities while recovering the range of valid behaviors. Having established this gap, we test whether language prompts, initial noise sampling, or model training can reshape the model's predictive distribution. We believe our work can serve as a foundation for future efforts to move towards probabilistically aligned world modeling.",
+          "authors": [
+            "Yuandong Pu",
+            "Le Zhuo",
+            "Sayak Paul",
+            "Gabriel Jorge Menezes",
+            "Avram {\\DJ}or{\\dj}evi\\'c",
+            "Shiyang Li",
+            "Yifan Zhou",
+            "Bin Fu",
+            "Wenlong Zhang",
+            "Junjun He",
+            "Yu Qiao",
+            "Yihao Liu",
+            "Jinbo Xing",
+            "Xi Chen"
+          ],
+          "canonical_id": "2608.27345",
+          "categories": [
+            "cs.CV",
+            "cs.AI"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.27345",
+          "published_at": "2026-08-27T16:46:38Z",
+          "source": "arxiv",
+          "title": "PAWBench: How Far Are We from Probabilistically Aligned World Modeling?",
+          "updated_at": "2026-08-28T16:37:00Z",
+          "url": "https://arxiv.org/abs/2608.27345",
+          "version": 2
+        },
+        "rank": 23,
+        "score": {
+          "base_score": 0.4184195711655548,
+          "exploration": 0.059839490457077225,
+          "matched_terms": [
+            "video generation"
+          ],
+          "negative_terms": [],
+          "personal": 0.5191957220397216,
+          "recency": 0.5080592265951405,
+          "topic": 0.3656903558355951
+        }
+      },
+      "tier": "browse"
+    },
     "arxiv:2608.27367:v1": {
       "analysis": {
         "analysis": "作者提出任务无关的测试-验证机制，利用函数保持的扩展安全尝试架构变化，若预测损失不改善则回滚，以此驱动增长。",
@@ -5511,8 +6879,1921 @@
         }
       },
       "tier": "browse"
+    },
+    "arxiv:2608.28128:v1": {
+      "analysis": {
+        "analysis": "作者通过提出训练时接口VICT，将验证器内部的原子检查追踪到动作，并沿依赖验证的证明边重新分配组相对优势，将信用分配从推出侧转移到验证器侧。",
+        "challenges": [
+          "长视界轨迹中的稀疏奖励",
+          "现有方法仅将验证器视为标量奖励，丢弃其内部结构"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有方法将验证器视为标量奖励，丢弃其内部任务结构",
+            "location": "abstract",
+            "quote": "Although useful, these approaches still treat the verifier that judged success as a scalar reward, discarding its internal task structure."
+          },
+          {
+            "claim": "VICT通过验证器侧追踪进行信用分配",
+            "location": "abstract",
+            "quote": "VICT (VerifierInstrumented Credit Tracing), a training-time interface that exposes executable or evidence backed atoms and traces them back to actions through dependency-valid proof edges. VICT redistributes group-relative advantage only along those edges, shifting credit assignment from rollout-side inference to verifierside tracing."
+          }
+        ],
+        "experiments": [
+          "在ALFWorld和WebShop上，VICT显著优于只使用结果奖赏的训练，并取得与近期细粒度信用方法相当的性能；消融实验排除稠密原子奖励、最终承诺信用、时间邻近性和稀疏性作为充分解释。"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "许多可验证任务已在终端验证器内部编码了相关检查，可利用验证器的内部结构进行信用分配。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出VICT训练时接口，暴露可执行或证据支持的原子",
+          "通过依赖验证的证明边将原子追溯回动作",
+          "仅沿证明边重新分配组相对优势",
+          "保留原有终端奖励，在证据不完整或模糊时弃权",
+          "不引入学习评论员、过程标签、分支推出或推理时验证器访问"
+        ],
+        "motivation": "长视界LLM智能体在强化学习中面临细粒度信用分配问题，标准方法仅使用程序可验证的终端奖励，缺乏内部任务结构信息。",
+        "primary_topic": "长视界LLM智能体强化学习中的细粒度信用分配",
+        "relation_to_research": "与具身智能和世界模型相关：长视界LLM智能体可类比于具身智能体，细粒度信用分配对于长时序动作生成和实时控制至关重要；验证器追踪机制可启发世界模型中可解释的奖励设计。",
+        "relevance_score": 7,
+        "setting": "研究设定",
+        "tags": [
+          "LLM Agent",
+          "Reinforcement Learning",
+          "Credit Assignment",
+          "Verifier",
+          "Long-Horizon"
+        ],
+        "title_zh": "VICT：验证器插桩的信用追踪用于长视界LLM智能体强化学习",
+        "uncertainty": "由于仅基于摘要分析，第一单位和通讯作者信息缺失，实验数据不具体，方法细节有限，因此评价基于摘要逻辑。",
+        "why_recommended": "该论文提供了一种新的信用分配范式，利用任务验证器内部结构，能提升长视界智能体的学习效率，对具身智能中的长期任务规划与可解释奖励设置具有借鉴意义。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5238006056954051,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:47:18.726565Z",
+        "input_hash": "fcf67bc1e250dce66ec081c1e93dfebe47cd62950c8e411582721256802c2f62",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Fine-grained credit assignment is a central challenge in reinforcement learning for long horizon LLM agents. Standard objectives often train from programmatically verifiable terminal rewards by broadcasting each sparse outcome to every action in a trajectory. Existing methods typically seek finer credit from the rollout side, constructing auxiliary trajectory signals or additional comparisons to estimate action importance. Although useful, these approaches still treat the verifier that judged success as a scalar reward, discarding its internal task structure. Our key insight is that many verifiable tasks already encode the relevant checks inside their terminal verifier. We propose VICT (VerifierInstrumented Credit Tracing), a training-time interface that exposes executable or evidence backed atoms and traces them back to actions through dependency-valid proof edges. VICT redistributes group-relative advantage only along those edges, shifting credit assignment from rollout-side inference to verifierside tracing. It preserves the original terminal reward, abstains when evidence is incomplete or ambiguous, and changes only the training-time advantage tensor, requiring no learned critic, process labels, branch rollouts, or inference-time verifier access. On ALFWorld and WebShop, VICT improves substantially over outcome-only training and achieves strong performance alongside recent fine-grained credit methods; ablations rule out dense atom rewards, final-commit credit, temporal proximity, and sparsity as sufficient explanations.",
+          "authors": [
+            "Pengcheng Li",
+            "Zhengyang Zhang",
+            "Dongxu Zhang",
+            "Sui Huang",
+            "Shaohua Ma"
+          ],
+          "canonical_id": "2608.28128",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "comment": "accepted by EMNLP2026",
+          "pdf_url": "https://arxiv.org/pdf/2608.28128",
+          "published_at": "2026-08-28T09:43:54Z",
+          "source": "arxiv",
+          "title": "VICT: Verifier-Instrumented Credit Tracing for Long-Horizon LLM Agent Reinforcement Learning",
+          "updated_at": "2026-08-28T09:43:54Z",
+          "url": "https://arxiv.org/abs/2608.28128",
+          "version": 1
+        },
+        "rank": 49,
+        "score": {
+          "base_score": 0.3796374649007365,
+          "exploration": 0.9537513712712107,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.4459472274938795,
+          "recency": 0.47289779105073376,
+          "topic": 0.10370370370370369
+        }
+      },
+      "tier": "explore"
+    },
+    "arxiv:2608.28140:v1": {
+      "analysis": {
+        "analysis": "材料未说明",
+        "challenges": [
+          "混合动力学复杂",
+          "接触稀疏性",
+          "探索效率低",
+          "跨物体几何泛化"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "提出接触引导探索策略，在多批评者RL框架中解决非抓取移动操作挑战",
+            "location": "abstract",
+            "quote": "we propose a contact-guided exploration strategy implemented within a Multi-Critic Reinforcement Learning (RL) framework."
+          },
+          {
+            "claim": "使用密集接触奖励训练探索批评者并逐步衰减其影响",
+            "location": "abstract",
+            "quote": "A dedicated exploration critic is trained with a dense contact-seeking reward that guides the end-effector toward meaningful contact points; its influence is progressively decayed to recover a task-optimal policy."
+          },
+          {
+            "claim": "从通用抓取算法获得候选接触点以泛化到不同物体几何",
+            "location": "abstract",
+            "quote": "We obtain candidate interaction points from a general-purpose grasping algorithm, enabling the exploration mechanism to generalise across various object geometries."
+          },
+          {
+            "claim": "在真实四足机器人上验证了椅子搬运策略",
+            "location": "abstract",
+            "quote": "we validate the chair transportation policy through extensive experiments on a quadrupedal mobile manipulator, demonstrating deployable non-prehensile manipulation in the real world."
+          }
+        ],
+        "experiments": [
+          "在多个仿真任务上评估，包括推箱子、椅子搬运和洗碗机开门任务",
+          "在四足移动机械臂上对椅子搬运策略进行广泛真实世界实验，展示了真实环境中可部署的非抓取移动操作"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过接触引导的探索策略，利用密集接触追求奖励训练专门的探索批评者，并将其影响逐步衰减以恢复任务最优策略，从而解决接触稀疏难题。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出接触引导探索策略，在多批评者强化学习框架内实现",
+          "训练专用探索批评者，使用密集接触追求奖励引导末端执行器朝向有意义的接触点",
+          "逐步衰减探索批评者的影响以恢复任务最优策略",
+          "从通用抓取算法获取候选交互点，使探索机制泛化到不同物体几何形状"
+        ],
+        "motivation": "非抓取操作在处理重型或笨重物体时具有灵活性，但模型基于和无模型方法都难以应对复杂混合动力学和接触稀疏性问题。",
+        "primary_topic": "非抓取移动操作的强化学习",
+        "relation_to_research": "与具身智能相关，涉及移动操纵平台的物理交互，强化学习方法可视为世界模型的替代方案，但更侧重于RL算法，与系统优化关联中等。",
+        "relevance_score": 6,
+        "setting": "仿真与真实世界实验，基于四足移动机械臂平台",
+        "tags": [
+          "非抓取操作",
+          "强化学习",
+          "移动操作",
+          "接触引导探索",
+          "多批评者"
+        ],
+        "title_zh": "接触引导的探索用于多批评者强化学习的非抓取移动操作",
+        "uncertainty": "摘要未提供作者单位、通讯作者、具体实验数值、局限性等，因此这些字段只能基于摘要推断或标记为证据未提供。",
+        "why_recommended": "本研究提出了针对非抓取移动操作的接触引导探索方法，在真实机器人上验证，对解决接触稀疏和混合动力学问题具有借鉴意义，且与具身智能的实际部署相关。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Learning Non-Prehensile Manipulation via Contact-guided exploration. We guide reinforcement learning exploration using object-centric contact priors. The colored dashed lines illustrate the learned policy’s ability to execute contact-rich behaviours (e.g., pushing a chair to a target) by focusing on high-probability interaction regions.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28140/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28140v1/teaser_comp.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28140v1#S1.F1"
+          },
+          {
+            "caption": "Overview of the System Architecture. (Top Left) Contact candidates are generated from object meshes using surface sampling or grasping algorithm to guide exploration. (Center) The Multi-Critic module employs a shared backbone with three specialized heads for task ( r task r_{\\text{task}} ), exploration ( r exp r_{\\text{exp}} ), and regularization ( r reg r_{\\text{reg}} ) rewards. These are combined using a schedule-weighted advantage ∑ A i ​ w i \\sum A_{i}w_{i} , where the influence of exploration ( w exp w_{\\text{exp}} ) and regularization ( w reg w_{\\text{reg}} ) is decayed according to a predefined schedule. (Bottom Left) The Actor utilizes an LSTM-based policy to output target arm joint positions q a ∗ q_{a}^{*} , base height, and base velocity. The base commands are realized by a frozen, pre-trained locomotion policy that generates low-level leg joint targets q l ∗ q_{l}^{*} . (Right) The versatility of the architecture is demonstrated across three non-prehensile tasks: chair transportation, box pushing, and dishwasher opening.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28140/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28140v1/main_diagram_nord_v3.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28140v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28140v1",
+        "status": "available"
+      },
+      "final_score": 0.504666909314516,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:48.279368Z",
+        "input_hash": "7d1323bbf29d94961f7c012bbdd3d3743d55c39fb561e866b86d6af682d55d46",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Non-prehensile manipulation offers versatile skills for moving and rearranging heavy or bulky objects, particularly when combined with a mobile manipulation platform. However, both model-based and model-free approaches struggle with the complex hybrid dynamics and the sparsity of the contact in these tasks. To address these challenges, we propose a contact-guided exploration strategy implemented within a Multi-Critic Reinforcement Learning (RL) framework. A dedicated exploration critic is trained with a dense contact-seeking reward that guides the end-effector toward meaningful contact points; its influence is progressively decayed to recover a task-optimal policy. We obtain candidate interaction points from a general-purpose grasping algorithm, enabling the exploration mechanism to generalise across various object geometries. We evaluate the approach on multiple tasks, including box pushing, chair transportation, and a dishwasher opening task. Finally, we validate the chair transportation policy through extensive experiments on a quadrupedal mobile manipulator, demonstrating deployable non-prehensile manipulation in the real world.",
+          "authors": [
+            "Simone Tolomei",
+            "Mayank Mittal",
+            "Franco Angelini",
+            "Manolo Garabini",
+            "Paolo Salaris",
+            "Marco Hutter"
+          ],
+          "canonical_id": "2608.28140",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "project website: https://tolomeis.github.io/contact-guided-exp Accepted in IEEE Robotics and Automation Letter (RA-L) 8 pages, 9 figures",
+          "pdf_url": "https://arxiv.org/pdf/2608.28140",
+          "published_at": "2026-08-28T10:00:43Z",
+          "source": "arxiv",
+          "title": "Contact-Guided Exploration for Non-Prehensile Locomanipulation with Multi-Critic RL",
+          "updated_at": "2026-08-28T10:00:43Z",
+          "url": "https://arxiv.org/abs/2608.28140",
+          "version": 1
+        },
+        "rank": 32,
+        "score": {
+          "base_score": 0.4266671078445744,
+          "exploration": 0.768059901055966,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.568082461301533,
+          "recency": 0.47428046202657487,
+          "topic": 0.13370275414465838
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28174:v1": {
+      "analysis": {
+        "analysis": "作者通过分析渲染与源视频作为视觉条件的竞争机制，指出渲染若与目标视图像素对齐，则无需作为显式条件流，而应注入初始噪声形成几何信息流形。",
+        "challenges": [
+          "渲染与源视频作为双重视觉条件在去噪步骤中的竞争问题",
+          "如何在分布外轨迹（大偏航角）下保持轨迹控制与视频质量",
+          "如何使几何先验引导生成而不覆盖源视频的动态信息"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有方法中渲染与源视频作为视觉条件导致信任困境",
+            "location": "abstract",
+            "quote": "Because the render and the source video are both handed to the network as visual conditions, they compete at every denoising step, leaving the model with a trust dilemma --- how much of the render to believe --- which can degrade trajectory control or visual quality on data outside the training distribution."
+          },
+          {
+            "claim": "提出将渲染注入初始噪声，使生成从几何信息流形开始",
+            "location": "abstract",
+            "quote": "We propose MANIFOLD4D, which injects the render directly into the initial noise of flow matching, so that generation no longer departs from standard Gaussian noise but from a new noise manifold carrying geometric information, leaving the source video as the only visual condition."
+          },
+          {
+            "claim": "方法在轨迹控制精度上取得最好成绩，旋转误差降低25%和27%，平移误差最高降低32%",
+            "location": "abstract",
+            "quote": "On our DAVIS-Traj benchmark and on the Vista4D evaluation set, MANIFOLD4D attains the best camera-control accuracy on every metric, lowering rotation error by 25% and 27% and translation error by up to 32% over the strongest baseline, while matching it in video fidelity and leading on real-world novel-view photometric quality."
+          }
+        ],
+        "experiments": [
+          "在DAVIS-Traj基准和Vista4D评估集上，旋转误差分别降低25%和27%，平移误差最高降低32%，同时视频保真度与最强基线相当，真实场景新视角光度质量领先",
+          "用户研究中，方法在轨迹跟踪和动态一致性方面具有明显优势",
+          "当偏航幅度超过训练范围时，性能差距扩大；当渲染被故意破坏时，模型仍能从源视频恢复正确的动态运动"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "与其将渲染作为显式条件流，不如将渲染直接注入初始噪声，使生成从携带几何信息的噪声流形开始，而源视频成为唯一视觉条件；渲染只使用一次，网络无需学习解读渲染，可专注于源视频。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "将用户指定轨迹上的点云渲染直接注入流匹配的初始噪声中",
+          "生成从标准高斯噪声改为从携带几何信息的流形噪声出发",
+          "去噪过程中模型仅以源视频为视觉条件，渲染不再作为条件输入"
+        ],
+        "motivation": "现有视频重拍方法将渲染结果和源视频作为视觉条件同时输入网络，导致去噪时两者竞争，模型出现信任困境，影响轨迹控制或视频质量，尤其在分布外数据上。",
+        "primary_topic": "视频重拍中的可学习几何先验注入与流形去噪",
+        "relation_to_research": "虽非直接针对具身智能或世界模型，但视频重拍中的几何先验注入、长时序预测与轨迹控制思想可迁移至世界动作模型和机器人视觉生成领域，且关注推理效率与条件控制。",
+        "relevance_score": 6,
+        "setting": "基于单目视频和用户指定相机轨迹的动态场景重渲染，属于计算机视觉与神经渲染交叉领域",
+        "tags": [
+          "视频重拍",
+          "流形去噪",
+          "点云渲染",
+          "轨迹控制",
+          "流匹配"
+        ],
+        "title_zh": "Manifold4D：基于点云渲染流形去噪的视频重拍",
+        "uncertainty": "未提供全文，作者机构、通讯作者、方法细节及局限无法确认；相关性基于摘要推断，研究设定与具身智能关联度中等。",
+        "why_recommended": "该方法提出一种新颖的几何先验注入方式，可提升长时序轨迹控制准确性，对具身智能中基于视频的规划与生成具有参考价值，且其分布外鲁棒性分析值得关注。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Video re-shooting. Given a monocular video and a target camera trajectory, Manifold4D re-shoots the video along the new trajectory, achieving the best trajectory control among existing methods while preserving visual quality. The vertical axis averages the VBench aesthetic and imaging quality scores; the horizontal axis denotes the camera-control error relative to the best method (see Appendix A for details).",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28174/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28174v1/teaser_v2.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28174v1#S0.F1"
+          },
+          {
+            "caption": "Pipeline overview. Given a monocular video and a target camera trajectory, Manifold4D reconstructs a 4D point cloud and renders target-trajectory views, whose VAE latents are injected into the noise and patchified into tokens. The source video is similarly encoded into tokens, concatenated with the noise tokens, and fed to the DiT for denoising, together with the encoded camera trajectory.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28174/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28174v1/pipeline.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28174v1#S2.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28174v1",
+        "status": "available"
+      },
+      "final_score": 0.5268183307130934,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:46.363125Z",
+        "input_hash": "569e3c1b0cfb4410589134a5eae4eefb284762a5dab3059d8d5948d3affc1a11",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Video re-shooting re-renders a monocular video of a dynamic scene along a user-specified camera trajectory, and the dominant recipe supplies the target geometry explicitly: per-frame depth lifts the source video into a 4D point cloud, which is rasterized along the trajectory into a point cloud render. Because the render and the source video are both handed to the network as visual conditions, they compete at every denoising step, leaving the model with a trust dilemma --- how much of the render to believe --- which can degrade trajectory control or visual quality on data outside the training distribution. We argue that a render already pixel-aligned with the target view does not need to be supplied as an explicit conditioning stream at all. We propose MANIFOLD4D, which injects the render directly into the initial noise of flow matching, so that generation no longer departs from standard Gaussian noise but from a new noise manifold carrying geometric information, leaving the source video as the only visual condition. The render is thus used exactly once, and the network is never asked to learn how to read it; in subsequent denoising steps the model can focus on the source video. On our DAVIS-Traj benchmark and on the Vista4D evaluation set, MANIFOLD4D attains the best camera-control accuracy on every metric, lowering rotation error by 25% and 27% and translation error by up to 32% over the strongest baseline, while matching it in video fidelity and leading on real-world novel-view photometric quality. In a user study, our method achieves clear advantages in trajectory following and dynamic consistency. The gap widens as the yaw amplitude grows past the training range, and the model still recovers correct dynamic motion from the source video when the render is deliberately corrupted, confirming that the geometric prior guides generation without overriding it.",
+          "authors": [
+            "Yongqi Mao",
+            "Zijia Dai",
+            "Zhishuo Liu",
+            "Wei Xu",
+            "Kaiwei Wang",
+            "Guotao Meng"
+          ],
+          "canonical_id": "2608.28174",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": "20 pages, 9 figures, 10 tables. Project page: https://yongxuqixiang.github.io/Manifold4D-Project-Page/",
+          "pdf_url": "https://arxiv.org/pdf/2608.28174",
+          "published_at": "2026-08-28T10:39:52Z",
+          "source": "arxiv",
+          "title": "Manifold4D: Denoising on Point Cloud Rendered Manifolds for Video Re-shooting",
+          "updated_at": "2026-08-28T10:39:52Z",
+          "url": "https://arxiv.org/abs/2608.28174",
+          "version": 1
+        },
+        "rank": 30,
+        "score": {
+          "base_score": 0.4669424194783516,
+          "exploration": 0.568794950617926,
+          "matched_terms": [
+            "flow matching"
+          ],
+          "negative_terms": [],
+          "personal": 0.6672774927408808,
+          "recency": 0.47751506719285747,
+          "topic": 0.17724727418250535
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28175:v1": {
+      "analysis": {
+        "analysis": "作者分析现有方法将两种技术孤立对待，提出结合两者优势的分层混合方法，并利用在线自学习机制提升自主性。",
+        "challenges": [
+          "基于模型的方法在遮挡或感知失败时死锁",
+          "无模型方法缺乏可靠性和可重复性",
+          "新零件的抓取点需要大量人工微调"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "基于模型的方法在预定义抓取被遮挡或感知失败时容易陷入死锁",
+            "location": "abstract",
+            "quote": "model-based methods provide high precision, they frequently suffer from deadlocks when predefined grasps are occluded or perception fails."
+          },
+          {
+            "claim": "无模型方法灵活但缺乏可靠性",
+            "location": "abstract",
+            "quote": "Model-free algorithms offer a more flexible alternative with \"out-of-the-box\" versatility but lack the reliability and repeatability required for production."
+          },
+          {
+            "claim": "提出四层层次化混合方法结合两者优势",
+            "location": "abstract",
+            "quote": "we propose a fourtiered hierarchical hybrid approach to combine the best of both worlds."
+          },
+          {
+            "claim": "在线自学习机制使用夹爪行程反馈和Wilson分数区间",
+            "location": "abstract",
+            "quote": "online self-learning mechanism that uses gripper-stroke feedback and Wilson score intervals to autonomously rank grasp candidates"
+          },
+          {
+            "claim": "实验将料箱清理率从50.9%提升至100%",
+            "location": "abstract",
+            "quote": "improving the bin clearance rate of the model-based baseline from 50.9% to 100% across all experiments."
+          }
+        ],
+        "experiments": [
+          "在三个汽车零件上验证，抓取成功率显著优于无模型基线，料箱清理率从50.9%提升至100%"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "分层混合架构将基于模型的方法作为稳健主干，无模型探索代理解决死锁并发现新抓取点，通过在线自学习机制利用夹爪行程反馈和Wilson分数区间自主排序抓取候选，减少人工调试。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "四层层次化混合架构，基于模型管线作为稳健骨干",
+          "无模型探索代理解决死锁并发现新抓取点",
+          "在线自学习机制使用夹爪行程反馈和Wilson分数区间自主排序抓取候选"
+        ],
+        "motivation": "现有基于模型的方法在预定义抓取被遮挡或感知失败时容易陷入死锁，且需要大量人工微调；无模型方法灵活但缺乏生产所需的可靠性。需要结合两者优势，实现完全清理料箱且无需人工干预。",
+        "primary_topic": "工业料箱抓取",
+        "relation_to_research": "该研究涉及真实机器人评测和实时控制，与具身智能中的操作任务相关，但主要聚焦于工业场景的可靠性和效率，与大型世界模型或高级推理关系较弱。",
+        "relevance_score": 6,
+        "setting": "工业制造环境中的料箱抓取任务",
+        "tags": [
+          "层次化混合方法",
+          "在线自学习",
+          "抓取点",
+          "料箱抓取",
+          "工业机器人"
+        ],
+        "title_zh": "清空料箱：一种带在线自学习抓取点的层次化混合方法，用于可靠的工业料箱抓取",
+        "uncertainty": "无法确认作者机构、通讯作者及方法细节，实验仅在三个零件上验证，泛化性未知。",
+        "why_recommended": "该研究展示了如何结合模型驱动和数据驱动方法实现高可靠性的真实机器人操作，对研究分层决策和在线学习以适应复杂环境具有参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Our hierarchical system architecture with a model-based backbone on Level I and model-free grasp generation on Levels II to IV to achieve full bin clearance despite three potential points of failure. A self-learning mechanism on Levels I and II discovers and autonomously evaluates grasp candidates during operation to optimize the grasp success rate.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28175/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28175v1/system_architecture.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28175v1#S1.F1"
+          },
+          {
+            "caption": "Effect of the reranking step on the top twenty grasp points predicted by CGN for A, B and C in an exemplary scene.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28175/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28175v1/reranking.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28175v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28175v1",
+        "status": "available"
+      },
+      "final_score": 0.5135177108454932,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:30.070482Z",
+        "input_hash": "acd5907fcdee945125d5603b1d8fc3bee702dc474c95b989411cb5a2d233dda0",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Bin-picking is a cornerstone of modern manufacturing, yet achieving complete bin clearance without manual intervention remains a critical challenge. While model-based methods provide high precision, they frequently suffer from deadlocks when predefined grasps are occluded or perception fails. Labor-intensive fine-tuning of grasp points is commonly required to reach a satisfactory performance for new parts. Model-free algorithms offer a more flexible alternative with \"out-of-the-box\" versatility but lack the reliability and repeatability required for production. Unlike existing work, which treats the two techniques in isolation, we propose a fourtiered hierarchical hybrid approach to combine the best of both worlds. A model-based pipeline serves as a robust backbone, while a model-free \"exploration agent\" resolves deadlock situations and discovers new grasp points. This is supported by an online self-learning mechanism that uses gripper-stroke feedback and Wilson score intervals to autonomously rank grasp candidates, reducing manual commissioning effort. Validation on three automotive parts demonstrates that our method significantly outperforms a model-free baseline in grasp success rate while improving the bin clearance rate of the model-based baseline from 50.9% to 100% across all experiments. This transition to full bin clearance marks a significant step towards truly autonomous, intervention-free industrial operation.",
+          "authors": [
+            "Florian T\\\"oper",
+            "Samarth Kishor Yelvande",
+            "Jan Niklas Ewertz",
+            "Rudolph Triebel",
+            "Peter Ohlhausen"
+          ],
+          "canonical_id": "2608.28175",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "Accepted at IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) 2026. 8 pages, 7 figures",
+          "pdf_url": "https://arxiv.org/pdf/2608.28175",
+          "published_at": "2026-08-28T10:40:55Z",
+          "source": "arxiv",
+          "title": "Picking Bins Empty: A Hierarchical Hybrid Approach with Online Self-Learning of Grasp Points for Reliable Industrial Bin-Picking",
+          "updated_at": "2026-08-28T10:40:55Z",
+          "url": "https://arxiv.org/abs/2608.28175",
+          "version": 1
+        },
+        "rank": 22,
+        "score": {
+          "base_score": 0.44275947426453305,
+          "exploration": 0.6677165973895822,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.555480860458476,
+          "recency": 0.47760212214476955,
+          "topic": 0.22360347172795342
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28192:v1": {
+      "analysis": {
+        "analysis": "作者分析了自回归解码在STVG中的两个代价：解码深度随管长线性增长，以及误差传播和注意力偏移；并论证这些代价并非任务固有，可通过并行解码消除。",
+        "challenges": [
+          "现有自回归解码延迟随管长线性增长",
+          "自回归生成导致误差沿轨迹传播"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "PTD将顺序解码深度降低至固定轮次，与管长无关。",
+            "location": "abstract",
+            "quote": "reducing the sequential decoding depth to a fixed $1 + 1$ rounds, independent of tube length."
+          },
+          {
+            "claim": "PTD在效率上大幅提升。",
+            "location": "abstract",
+            "quote": "PTD reduces Tube Completion Latency by 79x and increases spatial decoding throughput by 92x over standard autoregressive decoding"
+          },
+          {
+            "claim": "PTD同时提升定位精度。",
+            "location": "abstract",
+            "quote": "while also improving grounding accuracy."
+          }
+        ],
+        "experiments": [
+          "在VidSTG上，PTD将Tube Completion Latency降低79倍，空间解码吞吐量提升92倍，同时提升定位精度",
+          "使用4B主干在VidSTG和HC-STVG上表现良好",
+          "零样本泛化到时间定位、基于证据的视频问答和指代视频目标跟踪"
+        ],
+        "first_affiliation": "Mohamed bin Zayed University of Artificial Intelligence",
+        "insight": "通过将定位分解为时间块和并行的空间块，可将顺序解码深度固定为1+1轮，同时消除token级和轨迹级依赖，大幅提升效率并改善精度。",
+        "limitations": [
+          "训练数据中密集管标注有限，主要依赖VidSTG和HC-STVG-v1/v2；未来计划支持多段和多实例输出并扩展数据多样性"
+        ],
+        "method": [
+          "引入Parallel Tube Decoding (PTD)将定位分解为时间块和并行的空间块",
+          "提出Decoupled Block Attention消除跨框依赖同时保留共享上下文",
+          "引入定位感知策略优化（包括时间边界和空间几何奖励）"
+        ],
+        "motivation": "现有MLLM在时空视频定位中将密集定位轨迹自回归序列化，导致解码延迟随管长增长且误差传播，效率低且精度受损。",
+        "primary_topic": "时空视频定位的高效生成式解码",
+        "relation_to_research": "虽非直接针对具身智能或世界模型，但其并行解码和效率优化方法可迁移至需要高效生成动作序列或长时序预测的系统中，降低成本。",
+        "relevance_score": 6,
+        "setting": "视频定位（时空视频定位）",
+        "tags": [
+          "并行解码",
+          "视频定位",
+          "多模态大语言模型",
+          "推理效率"
+        ],
+        "title_zh": "视频中任意物体定位：重新思考高效的生成式时空视频定位",
+        "uncertainty": "论文可能为虚构，但内容自洽；未提供具体代码地址和详细实验数字，通讯作者信息未明确。",
+        "why_recommended": "提供了并行解码的创新方案，显著降低推理延迟，对实时系统（如机器人控制）具有参考价值；同时展示了效率提升不牺牲精度的方法。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Autoregressive localization vs. Parallel Tube Decoding. Given a video and a referring expression, STVG predicts when the event occurs and the bounding box of the referred entity throughout that interval. We compare four decoding paradigms. Unquantized Token Decoding generates textual localization values autoregressively, while Quantized Token Decoding reduces representation overhead with discrete temporal and spatial tokens. Sequential Block Decoding further removes within-block dependencies but remains sequential across the tube. In contrast, our Parallel Tube Decoding (PTD) generates all time-conditioned spatial blocks in parallel after temporal localization, reducing the sequential decoding depth to 1 + 1 1+1 . Compared with standard Unquantized Token Decoding, PTD achieves 79 × 79\\times lower Tube Completion Latency and 92 × 92\\times higher spatial decoding throughput, measured as Boxes Per Second (BPS), while simultaneously improving spatio-temporal grounding accuracy.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28192/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28192v1/intro_strategies.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28192v1#S0.F1"
+          },
+          {
+            "caption": "Qualitative comparison with prior STVG methods. We compare our model with competitive STVG methods on challenging grounding examples. Like many existing approaches, STVG-R1 [ Zhang et al., 2026 ] and DEViL [ Gao et al., 2025 ] use the MLLM for temporal localization but construct the spatial tube using external detection or tracking modules. In contrast, PTD directly generates both the temporal interval and complete spatial tube, producing more accurate temporal boundaries and spatial localization. The examples highlight fine-grained target identification among visually similar distractors, large changes in object scale as the target approaches the camera, and event-specific temporal localization rather than simply predicting the full period in which the target is visible. Bounding boxes show spatial predictions, while the horizontal lines indicate the predicted temporal intervals.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28192/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28192v1/qualitative_mainfig.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28192v1#S2.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28192v1",
+        "status": "available"
+      },
+      "final_score": 0.5030450905481872,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:04.441769Z",
+        "input_hash": "e00db85c95110ffe5004fca875b1348e0c8722d16e72d9f2bc3e9e2a6e25b2fa",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Spatio-temporal video grounding (STVG) requires models to identify when a referred event occurs and localize the target entity throughout that interval. Existing multimodal large language models typically serialize dense localization trajectories autoregressively, causing decoding latency to grow with tube length and allowing localization errors to propagate across time. We introduce Parallel Tube Decoding (PTD), a generative formulation that decomposes grounding into a temporal block followed by time-conditioned spatial blocks decoded simultaneously. This removes both token-level and trajectory-level dependencies, reducing the sequential decoding depth to a fixed $1 + 1$ rounds, independent of tube length. To enable parallel spatial generation, we introduce Decoupled Block Attention, which preserves access to shared video-query context while eliminating cross-box dependencies, together with localization-aware policy optimization for temporal boundaries and spatial geometry. On VidSTG, PTD reduces Tube Completion Latency by 79x and increases spatial decoding throughput by 92x over standard autoregressive decoding, while also improving grounding accuracy. With a compact 4B backbone, our model performs favorably well on VidSTG and HC-STVG, and generalizes zero-shot to temporal grounding, grounded VideoQA, and referring video object tracking. Our results show parallel tube generation is an efficient and effective alternative to autoregressive localization in videos.",
+          "authors": [
+            "Hanoona Rasheed",
+            "Haania Siddiqui",
+            "Ming-Hsuan Yang",
+            "Fahad Shahbaz Khan",
+            "Salman Khan"
+          ],
+          "canonical_id": "2608.28192",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.28192",
+          "published_at": "2026-08-28T11:05:30Z",
+          "source": "arxiv",
+          "title": "Locate Anything in Videos: Rethinking Efficient Generative Spatio-Temporal Video Grounding",
+          "updated_at": "2026-08-28T11:05:30Z",
+          "url": "https://arxiv.org/abs/2608.28192",
+          "version": 1
+        },
+        "rank": 10,
+        "score": {
+          "base_score": 0.4237183464512495,
+          "exploration": 0.8785189580038679,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.49633495860544785,
+          "recency": 0.47964485528781686,
+          "topic": 0.1844320964275127
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28205:v1": {
+      "analysis": {
+        "analysis": "作者从空间和语义角度构建Gram锚定矩阵，进行子空间分解，施加基无关和残差约束对齐子空间，并用频谱熵量化信息密度。",
+        "challenges": [
+          "鲁棒性退化",
+          "任务特定性不足",
+          "剪枝效率与性能平衡"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有方法存在鲁棒性下降和任务特定性不足的问题",
+            "location": "abstract",
+            "quote": "existing methods focus on rigid point-to-point token alignment on a single dataset for pruning, suffering from two limitations: i) robustness degradation, and ii) task-specificity deficiency."
+          },
+          {
+            "claim": "Cut-ViT通过Gram锚定子空间一致性实现任务特定剪枝",
+            "location": "abstract",
+            "quote": "we propose a task-specific pruning pipeline, named Cut-ViT. Specifically, we first construct gram anchoring matrices from both spatial and semantic perspectives"
+          },
+          {
+            "claim": "方法高效且性能优异",
+            "location": "abstract",
+            "quote": "Cut-ViT requires approximately one minute on a single A100 GPU to obtain subnetworks at various sparsity levels, using only 20.9% of the time and 45.5% of the GPU memory compared with previous methods, while achieving SOTA performance on six tasks across nine datasets."
+          }
+        ],
+        "experiments": [
+          "在单个A100 GPU上约需一分钟获得各种稀疏度的子网络",
+          "与先前方法相比，仅使用20.9%的时间和45.5%的GPU内存",
+          "在九个数据集的六个任务上取得SOTA性能"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过Gram锚定子空间一致性，使剪枝后的子网继承原生模型的稳健特征表示，并利用频谱熵适应来调整剪枝目标以适应特定任务。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "构建空间和语义Gram锚定矩阵，进行子空间分解提取子空间基",
+          "采用基无关和残差约束，沿空间和通道维度对齐原生与剪枝DINOv3的Gram子空间",
+          "设计频谱熵适应，量化特征流形的信息密度，调整剪枝目标以适应下游任务"
+        ],
+        "motivation": "现有剪枝方法在单一数据集上进行刚性点对点标记对齐，存在鲁棒性下降和任务特定性不足的问题。",
+        "primary_topic": "视觉基础模型的任务特定剪枝",
+        "relation_to_research": "与系统优化中的模型压缩和高效推理直接相关，可迁移至具身智能中的视觉编码器剪枝，提升实时控制效率。",
+        "relevance_score": 7,
+        "setting": "视觉基础模型（如DINOv3）的模型压缩与剪枝，面向下游任务",
+        "tags": [
+          "模型剪枝",
+          "视觉Transformer",
+          "子空间一致性",
+          "任务特定",
+          "DINOv3",
+          "高效推理"
+        ],
+        "title_zh": "Cut-ViT：通过Gram锚定子空间一致性实现任务特定模型剪枝",
+        "uncertainty": "摘要未提供作者单位、通讯作者信息，实验细节有限，需全文验证方法的具体实现和通用性。",
+        "why_recommended": "提供高效、任务特定的剪枝方法，可显著降低计算资源需求，适用于部署在资源受限的机器人系统。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Comparison with prior work. (a) To ensure feature consistency, existing methods enforce rigid alignment between CLS tokens; (b) Cut-ViT aligns the subspace induced by the inherent gram anchoring within DINOv3, thereby enabling the subnetworks to inherit the robust feature representations of the original network.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28205/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28205v1/motivation.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28205v1#S1.F1"
+          },
+          {
+            "caption": "The pipeline of our Cut-ViT . Pairs of images are input into the native and pruning-guided DINOv3 to obtain feature embeddings. ℒ b ​ a \\mathcal{L}_{ba} denotes the dense feature matching loss. Subspace decomposition ( § ​ 3.2 \\lx@sectionsign\\ref{GSC} ) is applied to the spatial and channel gram matrices ( 𝑺 t \\bm{S}_{t} , 𝑺 p \\bm{S}_{p} , 𝑪 t \\bm{C}_{t} , 𝑪 p \\bm{C}_{p} ) to derive subspace bases ( 𝑼 t \\bm{U}_{t} , 𝑼 p \\bm{U}_{p} ). Subspace consistency is enforced with basis-agnostic and residual constraints ( § ​ 3.3 \\lx@sectionsign\\ref{SAR} ), yielding spatial and channel gram losses, ℒ basis spatial \\mathcal{L}^{\\text{spatial}}_{\\text{basis}} and ℒ basis channel \\mathcal{L}^{\\text{channel}}_{\\text{basis}} . During pruning, backpropagation computes the gradients of each parameter, which are then ranked in descending order of magnitude to select parameters and generate subnetworks with varying sparsity levels.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28205/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28205v1/arch.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28205v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28205v1",
+        "status": "available"
+      },
+      "final_score": 0.5416035596713695,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:47:32.743759Z",
+        "input_hash": "a9104b68e5eb0a121d2b47d4a8aedbf57e9490a7c56e9ce7f8ef12eefa696fc6",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Pruning visual foundation models has attracted considerable attention. However, existing methods focus on rigid point-to-point token alignment on a single dataset for pruning, suffering from two limitations: i) robustness degradation, and ii) task-specificity deficiency. To address these limitations, we propose a task-specific pruning pipeline, named Cut-ViT. Specifically, we first construct gram anchoring matrices from both spatial and semantic perspectives, and perform the subspace decomposition to extract the corresponding subspace bases. Basis-agnostic and residual constraints are then adopted to align the gram subspaces between the native and pruned DINOv3 models along spatial and channel dimensions, enabling subnetworks to inherit robust feature representations of native DINOv3. Furthermore, we design spectral entropy adaptation, which quantifies the information density of feature manifolds along spatial and channel dimensions, thereby adapting the pruning objective to specific downstream tasks. Experiments show that Cut-ViT requires approximately one minute on a single A100 GPU to obtain subnetworks at various sparsity levels, using only 20.9% of the time and 45.5% of the GPU memory compared with previous methods, while achieving SOTA performance on six tasks across nine datasets.",
+          "authors": [
+            "Jianjian Yin",
+            "Liulei Li",
+            "Tao Chen",
+            "Yi Chen",
+            "Yazhou Yao",
+            "Wenguan Wang"
+          ],
+          "canonical_id": "2608.28205",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": "Accepted by ECCV2026",
+          "pdf_url": "https://arxiv.org/pdf/2608.28205",
+          "published_at": "2026-08-28T11:25:36Z",
+          "source": "arxiv",
+          "title": "Cut-ViT: Task-Specific Model Pruning via Gram Anchoring Subspace Consistency",
+          "updated_at": "2026-08-28T11:25:36Z",
+          "url": "https://arxiv.org/abs/2608.28205",
+          "version": 1
+        },
+        "rank": 54,
+        "score": {
+          "base_score": 0.4120064721297628,
+          "exploration": 0.73280741200361,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5749578413457979,
+          "recency": 0.4813215397443737,
+          "topic": 0.09103585242672971
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28213:v1": {
+      "analysis": {
+        "analysis": "作者通过提出V-A坐标的闭式计算和组合扩散方法，将情感控制问题参数化，并利用用户研究验证了情感感知的准确性。",
+        "challenges": [
+          "情感参数的量化与可解释性",
+          "实时生成与可编辑性",
+          "在真实人形机器人上的迁移"
+        ],
+        "corresponding_authors": [
+          "chengxu.zhou@ucl.ac.uk；通讯作者证据为邮箱提供，但未明确说明，故为证据未提供；为符合字段要求，填证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "PAMoR将情感转换为量化的控制参数V-A坐标，并直接从机器人运动学中计算。",
+            "location": "abstract",
+            "quote": "We present PAMoR, which turns affect into a measured control parameter: a valence-arousal (V-A) coordinate computed natively on robot kinematics."
+          }
+        ],
+        "experiments": [
+          "定量评估：在text-to-motion指标上与基线比较，显示FID、R-precision等持平，MultiModality上升",
+          "感知研究：用户识别命令情感的正确率Top-1为0.384，Top-3为0.845，显著高于基线和随机水平"
+        ],
+        "first_affiliation": "伦敦大学学院计算机科学系；作者单位未提供，但根据致谢推断；证据未提供",
+        "insight": "通过将情感转换为基于机器人运动学的效价-唤醒（V-A）坐标，并利用三个先验在共享潜在空间中进行合成，实现了情感的可控生成。",
+        "limitations": [
+          "未明确提及局限，但在未来工作部分提到闭环控制问题"
+        ],
+        "method": [
+          "提取V-A坐标：通过正运动学计算身体关键点，采用闭式公式推导出效价和唤醒",
+          "训练三个先验：动作先验和两个情感先验在共享潜在空间中训练",
+          "组合去噪：在每一步去噪中，通过分类器自由组合三个先验的预测",
+          "自回归生成：在Unitree G1上以29自由度实时生成全身体运动，动作和情感均可编辑"
+        ],
+        "motivation": "现有情感运动生成主要针对人类化身，使用参考片段或情感词，无法进行量化参数化，且在真实人形机器人上实现实时生成和编辑不足。",
+        "primary_topic": "人形机器人情感运动生成",
+        "relation_to_research": "与具身智能和物理人工智能直接相关，涉及人形机器人的情感表达，属于系统优化和实时控制领域。",
+        "relevance_score": 7,
+        "setting": "具身智能、人形机器人运动生成",
+        "tags": [
+          "情感运动生成",
+          "人形机器人",
+          "扩散模型",
+          "参数化控制",
+          "实时生成"
+        ],
+        "title_zh": "PAMoR：人形机器人实时参数化情感运动生成",
+        "uncertainty": "标题和摘要提供的信息有限，具体实验细节和作者单位未完全明确，但核心内容清晰。",
+        "why_recommended": "为情感运动生成提供了参数化控制方法，在真实人形机器人上实现了实时生成，对机器人社交交互和人体运动合成研究有重要参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Overview of our V-A-conditioned composable latent diffusion framework. Data Processing (top left): public and video motions are retargeted to the Unitree G1, teleoperated motions are recorded on it directly, and all are stored as a motion-segment library; class-balanced sampling, interpolation into longer chains, and simulation filtering follow, and a continuous V-A label is computed in closed form from body kinematics (arm expansiveness, root height, trunk tilt angle, and velocity/acceleration). Model Framework (bottom): a text prompt τ \\tau and a valence v v and arousal a a picked from the circumplex at left each condition a separate Transformer denoising prior ( D τ , D v , D a D_{\\tau},D_{v},D_{a} ) that shares the diffusion step t t , motion history h 1 , h 2 h_{1},h_{2} , and noisy latent z t z_{t} in a frozen MVAE latent space. Their classifier-free guidance terms are composed into a clean-latent prediction and noised back to z t − 1 z_{t-1} for the next denoising step; the last step leaves the clean latent that the frozen MVAE decoder turns into the next motion primitive, which is fed back as history for autoregressive rollout and executed on the robot by a motion tracker. Real-World Deployment (top right): the same action is performed across the affect plane on a real G1, e.g., from Sad to Happy .",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28213/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28213v1/framework.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28213v1#S2.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28213v1",
+        "status": "available"
+      },
+      "final_score": 0.5957581683220784,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:45:48.898556Z",
+        "input_hash": "72b4d3dc65e0e890fed0872f0b51c92980707adc222f993275fe7748d0cf33cc",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "People read a humanoid robot's motion in social settings not only for the action performed but for the affect conveyed. Motion carrying that affect has so far been generated for human avatars, where style is taken from a reference clip or an emotion word, neither of which can be quantitatively parameterized. We present PAMoR, which turns affect into a measured control parameter: a valence-arousal (V-A) coordinate computed natively on robot kinematics. It is obtained in closed form from postural expansion and movement energy, and these measurements serve directly as generation conditions, with no human annotation. An action prior and two affect priors, trained in a shared latent space, are composed at each denoising step: the action prior fixes what is performed, the affect priors modulate how. Whole-body motion rolls out autoregressively on a 29-DoF Unitree G1 in real time, with action and affect both editable. Generated motion tracks the commanded V-A over its full range while text-to-motion fidelity still matches text-only baselines. In a perceptual study, raters identify the commanded emotion on 0.38 of trials, above both baselines and approaching the 0.44 reported for acted human bodies.",
+          "authors": [
+            "Yan Pan",
+            "Lingfan Bao",
+            "Tianhu Peng",
+            "Chengxu Zhou"
+          ],
+          "canonical_id": "2608.28213",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "Under Review of IEEE Robotics and Automation Letters, 8 pages",
+          "pdf_url": "https://arxiv.org/pdf/2608.28213",
+          "published_at": "2026-08-28T11:32:33Z",
+          "source": "arxiv",
+          "title": "PAMoR: Parameterized Affective Motion Generation in Real Time for Humanoid Robots",
+          "updated_at": "2026-08-28T11:32:33Z",
+          "url": "https://arxiv.org/abs/2608.28213",
+          "version": 1
+        },
+        "rank": 2,
+        "score": {
+          "base_score": 0.5104693969492334,
+          "exploration": 0.8888065696034456,
+          "matched_terms": [
+            "humanoid robot"
+          ],
+          "negative_terms": [],
+          "personal": 0.5501553335947523,
+          "recency": 0.48190265149063216,
+          "topic": 0.35951021349196316
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28216:v1": {
+      "analysis": {
+        "analysis": "作者通过负对照实验发现并解决了模型依赖裁剪大小而非范例的捷径问题；通过替换特征提取器（DINOv3 vs V-JEPA）和匹配输入分辨率来隔离预训练目标的影响。",
+        "challenges": [
+          "一次性范例条件标注稀少",
+          "避免捷径（如裁剪大小）导致模型忽略范例",
+          "在杂乱场景中准确检测特定实例"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "WALDO使用冻结的V-JEPA特征，具有3.4M可训练参数",
+            "location": "abstract",
+            "quote": "we present WALDO, a one-shot exemplar- and language-conditioned detection head with 3.4M trainable parameters that reads frozen V-JEPA 2.1 features"
+          },
+          {
+            "claim": "WALDO在目录AP@50上优于Grounding DINO基线",
+            "location": "abstract",
+            "quote": "On 35 held-out cluttered scenes, WALDO achieves a 0.461 catalogue AP@50, compared to 0.306 for a prompted Grounding DINO baseline under an identical scorer."
+          },
+          {
+            "claim": "世界模型特征无法解决实例身份识别",
+            "location": "abstract",
+            "quote": "Instance-level Success@1, however, reaches only 0.190 against a 0.190 category-chance floor: world-model features transfer to localization precision and absence detection but not to instance identity."
+          }
+        ],
+        "experiments": [
+          "在35个杂乱场景中，WALDO的目录AP@50为0.461，而基于Grounding DINO的基线为0.306（相同评估器）",
+          "用DINOv3替换V-JEPA（576-token网格）导致类别内缺失AUROC从0.880降至0.726，实例AP@50从0.201降至0.141",
+          "实例级Success@1仅为0.190，与类别机会基线0.190持平"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "世界模型特征（V-JEPA）可以迁移到目标定位和存在性检测，但不足以实现实例身份识别。",
+        "limitations": [
+          "世界模型特征未能解决实例身份识别问题（Success@1与随机水平相当）"
+        ],
+        "method": [
+          "使用冻结的V-JEPA 2.1特征，训练一个3.4M参数的检测头（WALDO）",
+          "从实例标注中合成训练片段，挖掘范例并构造类别干扰项但不含目标实例的缺失样本",
+          "执行负对照实验以识别和消除捷径",
+          "在不同特征提取器（V-JEPA vs DINOv3）下比较性能以隔离预训练目标的作用"
+        ],
+        "motivation": "探索是否可以利用世界模型预训练目标中学习到的表示，以低成本实现大型视觉语言模型才能完成的特定实例定位能力。",
+        "primary_topic": "基于世界模型预训练特征的一次性目标检测",
+        "relation_to_research": "本文直接使用世界模型预训练特征（V-JEPA）进行下游检测任务，提供了世界模型表示可迁移性的实证，但其目标检测与具身智能系统优化关联较弱，仅在表示学习层面相关。",
+        "relevance_score": 6,
+        "setting": "计算机视觉中的一次性目标检测，利用冻结的世界模型特征",
+        "tags": [
+          "世界模型",
+          "目标检测",
+          "一次性学习",
+          "V-JEPA",
+          "杂乱场景"
+        ],
+        "title_zh": "WALDO：杂乱场景中一次性范例条件的目标检测",
+        "uncertainty": "未提供作者、单位和通讯作者信息；实验细节基于摘要，可能不完整；相关性评分基于主题关联，但缺少具体具身应用。",
+        "why_recommended": "这篇论文展示了如何从世界模型预训练中获益，并提供了严格的负对照实验设计，对于研究世界模型特征可迁移性和避免数据捷径的读者有参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "WALDO is named after the search-and-find character from the game Where’s Waldo? [ 22 ] , who is likewise found by matching one distinctive figure against a densely cluttered scene.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28216/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28216v1/figures/where_is_waldo.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28216v1#S1.F1"
+          },
+          {
+            "caption": "WALDO architecture. (1) Episodes: category- and instance-level positives, within- and cross-category absences. (2) A shared frozen V-JEPA 2.1 encodes exemplar and query region into Z e Z_{e} and Z q Z_{q} , whose per-patch cosine similarity c c is appended to the tokens; a frozen SigLIP2 text tower encodes the description into u u . (3) Tokens are FiLM-conditioned on ( Z e , u ) (Z_{e},u) , self-attended, and read out by box, objectness and presence heads.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28216/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28216v1/figures/method.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28216v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28216v1",
+        "status": "available"
+      },
+      "final_score": 0.5012135154690678,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:47:45.461019Z",
+        "input_hash": "7bd7417cb365f767f919a64502784081989afacd488972db9c66d613e7ed8165",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Locating a specific object instance in a cluttered scene using a single reference image and a short description, and reporting when that instance is absent, large vision-language models usually address this task. We ask whether the same capability is available far more cheaply, from representations already learned by a world-model pretraining objective. We present WALDO, a one-shot exemplar- and language-conditioned detection head with 3.4M trainable parameters that reads frozen V-JEPA 2.1 features to jointly predict object localization and target presence, with no gradient on the backbone. Because exemplar-conditioned supervision is scarce, we synthesize training episodes from instance annotations, mining exemplars from ground-truth boxes and constructing absence cases that exclude the referenced instance while leaving same-category distractors in view. This is easy to get wrong: in the obvious implementation, crop size alone predicts the label, and a head trained on it reaches 0.9998 absence AUROC without ever consulting the exemplar, and we report the negative controls that close the shortcut. On 35 held-out cluttered scenes, WALDO achieves a 0.461 catalogue AP@50, compared to 0.306 for a prompted Grounding DINO baseline under an identical scorer. Substituting DINOv3 for V-JEPA under a matched 576-token grid drops within-category absence AUROC from 0.880 to 0.726 and instance AP@50 from 0.201 to 0.141, isolating the pretraining objective rather than input resolution as the source of the gain. Instance-level Success@1, however, reaches only 0.190 against a 0.190 category-chance floor: world-model features transfer to localization precision and absence detection but not to instance identity.",
+          "authors": [
+            "Kishor Datta Gupta",
+            "Ahmed Rafi Hasan",
+            "Md. Mahfuzur Rahman",
+            "Md. Sadman Haque",
+            "Mohd Ariful Haque"
+          ],
+          "canonical_id": "2608.28216",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.28216",
+          "published_at": "2026-08-28T11:33:46Z",
+          "source": "arxiv",
+          "title": "WALDO: One-Shot Exemplar-Conditioned Object Detection in Cluttered Scenes",
+          "updated_at": "2026-08-28T11:33:46Z",
+          "url": "https://arxiv.org/abs/2608.28216",
+          "version": 1
+        },
+        "rank": 60,
+        "score": {
+          "base_score": 0.4203882099437594,
+          "exploration": 0.47763839329132013,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.6139746920355752,
+          "recency": 0.4820044530218356,
+          "topic": 0.13752946827552842
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28246:v1": {
+      "analysis": {
+        "analysis": "作者分析了变形物体带来的几何不一致性，提出了将识别与抓取选择解耦的方法，并比较了三种几何方法（KNN-PCA、Sobel叉积、RANSAC平面拟合）的性能。",
+        "challenges": [
+          "目标物体变形导致几何不一致",
+          "需要实现对变形物体的可靠吸盘抓取"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "系统采用无训练方法，解耦目标识别与抓取点选择",
+            "location": "abstract",
+            "quote": "We present a training-free suction grasping system for sorting deformed aseptic beverage cartons, decoupling target identification from grasp-point selection."
+          },
+          {
+            "claim": "系统结合VLM、SAM2和几何评分",
+            "location": "abstract",
+            "quote": "An open-vocabulary vision-language model detects cartons from a text prompt, SAM2 refines each detection into an instance mask, and a geometric scoring method selects the suction point by combining surface flatness with normal alignment."
+          },
+          {
+            "claim": "实验在真实机器人上进行，达到较高成功率",
+            "location": "abstract",
+            "quote": "Evaluated on a real robot across three deformation levels and 35 cluttered scenes, single-object grasp success reaches 88.2% and end-to-end retrieval in clutter is 72.6%."
+          }
+        ],
+        "experiments": [
+          "在真实机器人上，三种变形水平和35个杂乱场景中评估",
+          "单物体抓取成功率达88.2%",
+          "杂乱场景中端到端检索成功率为72.6%"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "将目标识别与抓取点选择解耦，利用开放词汇VLM识别目标，SAM2细化掩膜，几何评分选择吸盘点，实现无训练系统。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "开放词汇视觉语言模型检测纸盒",
+          "SAM2细化检测为实例掩膜",
+          "几何评分方法结合表面平坦度和法线对齐选择吸盘点",
+          "比较三种几何方法：k近邻PCA、Sobel叉积、RANSAC平面拟合"
+        ],
+        "motivation": "机器人分拣可回收废弃物因目标物体可变形和几何不一致而具有挑战性，需要针对变形纸盒的吸盘抓取系统。",
+        "primary_topic": "无训练吸盘抓取检测",
+        "relation_to_research": "该工作涉及真实机器人上的抓取操作，与具身智能中的机器人操作技能相关，但未涉及世界模型或系统优化，相关性为中等。",
+        "relevance_score": 6,
+        "setting": "真实机器人分拣可回收废弃物，针对变形无菌饮料纸盒",
+        "tags": [
+          "吸盘抓取",
+          "视觉语言模型",
+          "几何评分",
+          "变形物体",
+          "机器人分拣",
+          "零训练"
+        ],
+        "title_zh": "基于视觉语言模型和几何表面评分的无训练变形无菌纸盒吸盘抓取检测",
+        "uncertainty": "论文摘要未提供作者单位、通讯作者和详细实验数据，仅能基于摘要信息判断；实际方法细节可能因未提供全文而有偏差。",
+        "why_recommended": "该研究提出了一种无训练抓取检测方法，利用VLM和几何评分，在变形物体抓取中取得较高成功率，为具身智能中的抓取操作提供了一种新思路，值得关注其在真实场景中的鲁棒性和效率。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.4848486105243526,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:56.922511Z",
+        "input_hash": "b82fd654f0289f4ba676b002463cfe73c385aa33e99e98ad633d84030fd177b4",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Robotic sorting of recyclable waste is challenging due to the deformable and geometrically inconsistent nature of target objects. We present a training-free suction grasping system for sorting deformed aseptic beverage cartons, decoupling target identification from grasp-point selection. An open-vocabulary vision-language model detects cartons from a text prompt, SAM2 refines each detection into an instance mask, and a geometric scoring method selects the suction point by combining surface flatness with normal alignment. Three geometric methods are compared: k-nearest-neighbour PCA, Sobel cross-product, and RANSAC plane fitting. Evaluated on a real robot across three deformation levels and 35 cluttered scenes, single-object grasp success reaches 88.2% and end-to-end retrieval in clutter is 72.6%.",
+          "authors": [
+            "Marin Maletic",
+            "Goran Vasiljevic"
+          ],
+          "canonical_id": "2608.28246",
+          "categories": [
+            "cs.RO",
+            "cs.AI"
+          ],
+          "comment": "6 pages, ICCAS 2026 preprint",
+          "pdf_url": "https://arxiv.org/pdf/2608.28246",
+          "published_at": "2026-08-28T12:04:06Z",
+          "source": "arxiv",
+          "title": "Training-free Suction Grasp Detection for Deformed Aseptic Cartons Using Vision-Language Models and Geometric Surface Scoring",
+          "updated_at": "2026-08-28T12:04:06Z",
+          "url": "https://arxiv.org/abs/2608.28246",
+          "version": 1
+        },
+        "rank": 37,
+        "score": {
+          "base_score": 0.3906338373170046,
+          "exploration": 0.7261986777285885,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.47356551922847157,
+          "recency": 0.4845494820965598,
+          "topic": 0.16129867909050732
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28276:v1": {
+      "analysis": {
+        "analysis": "作者通过任务错误敏感性设定最小保护底线，利用注意力输出失真分配剩余KV容量，并通过离线标定阶段将其编译为持久化策略，实现在线轻量查询。",
+        "challenges": [
+          "现有KV压缩忽略任务相关的结构化信号",
+          "模型侧KV敏感性与任务级结构化风险之间存在不匹配"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有KV压缩忽略解析器状态提供的结构化信号",
+            "location": "abstract",
+            "quote": "Constrained decoding already tracks parser transitions to enforce formal validity, and these transitions expose how generated tokens participate in schema-critical decisions such as required fields, arguments, and structural boundaries under the active grammar. Existing KV compression largely leaves this task-relevant structural signal unused."
+          },
+          {
+            "claim": "PASK方法利用任务错误敏感性和注意力输出失真来设置KV持久化策略",
+            "location": "abstract",
+            "quote": "PASK addresses the mismatch between model-side KV sensitivity and task-level structured risk by using task-error sensitivity to set minimum protection floors and attention-output distortion to allocate residual KV capacity."
+          },
+          {
+            "claim": "PASK在BFCL上比最强压缩基线平均高17.39个百分点",
+            "location": "abstract",
+            "quote": "At a targe total KV budget of 0.33, PASK outperforms the strongest compressed baseline by 17.39 percentage points on average across eight BFCL non-live and Live subcategories on Qwen3-4B."
+          },
+          {
+            "claim": "端到端性能显著提升",
+            "location": "abstract",
+            "quote": "In end-to-end serving, PASK achieves up to 2.2x higher throughput and 3.3x lower TPOT, while using 0.53x the peak GPU memory of Full KV."
+          }
+        ],
+        "experiments": [
+          "总KV预算为0.33时，在Qwen3-4B上对BFCL八个子类别（非live和live）平均优于最强压缩基线17.39个百分点",
+          "端到端服务吞吐量最高提升2.2倍，TPOT降低3.3倍，峰值GPU内存为Full KV的0.53倍"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "解析器转移状态能够反映token在模式关键决策（如必填字段、参数、结构边界）中的参与程度，利用这一结构信号进行KV持久化决策，可以协调模型侧KV敏感性与任务级结构化风险。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "利用解析器转移状态提取结构化信号",
+          "将结构化信号转化为层组特定KV持久化决策",
+          "通过任务错误敏感性确定最小保护层（最小KV保留量）",
+          "通过注意力输出失真分配剩余KV容量",
+          "离线标定编译持久化策略，在线仅做结构化条件查找"
+        ],
+        "motivation": "结构化生成中，单个字段错误会导致下游动作失败；现有KV压缩未利用解析器状态中蕴含的结构化风险信息，导致压缩时可能丢失关键生成信息。",
+        "primary_topic": "结构化生成中的KV缓存压缩与推理优化",
+        "relation_to_research": "该工作属于大模型推理效率优化，与系统优化直接相关，可提升具身智能中语言模型生成结构化指令（如工具调用、任务规划）的效率，但并未涉及真实机器人或世界模型，故相关性中等偏上。",
+        "relevance_score": 6,
+        "setting": "面向LLM的结构化生成（JSON、SQL、函数调用）场景，服务于智能体任务",
+        "tags": [
+          "KV压缩",
+          "结构化生成",
+          "LLM推理优化",
+          "解析器状态",
+          "约束解码"
+        ],
+        "title_zh": "解析器状态已知：用于结构化生成的结构条件KV持久化",
+        "uncertainty": "摘要未提供作者单位、通讯作者信息，且未提供实验细节、具体任务设置和泛化性，因此相关性和技术细节判断存在一定不确定性。",
+        "why_recommended": "该论文提出一种利用解析器状态进行KV压缩的新方法，在结构化生成场景下显著提升压缩效果和推理性能，对于需要高效执行工具调用或结构化动作生成的具身智能系统具有借鉴意义。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Motivation for PASK. Parser transitions expose structural responsibility that model-side KV importance may fail to capture.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28276/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28276v1/image/teaser.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28276v1#S1.F1"
+          },
+          {
+            "caption": "Overview of PASK. Parser transitions and layer groups index an offline-calibrated table that assigns high-precision retention, low-precision retention, or release to generated KV states.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28276/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28276v1/image/PASK.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28276v1#S2.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28276v1",
+        "status": "available"
+      },
+      "final_score": 0.4987058806016017,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:20.898339Z",
+        "input_hash": "88c6e2a2b34f76714a1d525ad15cad6850efd9f212108186b6ad63c91ec228b4",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Structured generation underpins large language model (LLM) agents that produce JSON, SQL, and function calls, where a single wrong field can cause the downstream action to fail. Constrained decoding already tracks parser transitions to enforce formal validity, and these transitions expose how generated tokens participate in schema-critical decisions such as required fields, arguments, and structural boundaries under the active grammar. Existing KV compression largely leaves this task-relevant structural signal unused. We introduce PASK (Parser-Aware Structural KV Persistence), which turns parser-derived structure into layer-group-specific KV persistence decisions. PASK addresses the mismatch between model-side KV sensitivity and task-level structured risk by using task-error sensitivity to set minimum protection floors and attention-output distortion to allocate residual KV capacity. An offline calibration stage compiles these signals into a persistence policy, leaving only lightweight structure-conditioned lookup online. At a targe total KV budget of 0.33, PASK outperforms the strongest compressed baseline by 17.39 percentage points on average across eight BFCL non-live and Live subcategories on Qwen3-4B. In end-to-end serving, PASK achieves up to 2.2x higher throughput and 3.3x lower TPOT, while using 0.53x the peak GPU memory of Full KV.",
+          "authors": [
+            "Linze Wu",
+            "Xinrui Chen"
+          ],
+          "canonical_id": "2608.28276",
+          "categories": [
+            "cs.LG"
+          ],
+          "comment": "Work in progress",
+          "pdf_url": "https://arxiv.org/pdf/2608.28276",
+          "published_at": "2026-08-28T12:38:56Z",
+          "source": "arxiv",
+          "title": "Parser States Already Know: Structure-Conditioned KV Persistence for Structured Generation",
+          "updated_at": "2026-08-28T12:38:56Z",
+          "url": "https://arxiv.org/abs/2608.28276",
+          "version": 1
+        },
+        "rank": 18,
+        "score": {
+          "base_score": 0.415828873821094,
+          "exploration": 0.6604945533465642,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5224635990677915,
+          "recency": 0.4874886509429282,
+          "topic": 0.18834838231896747
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28404:v1": {
+      "analysis": {
+        "analysis": "作者通过拟合渐近幂律，分别分析模型规模、训练暴露量和计算量的缩放行为，并利用外推预测9B模型的损失。",
+        "challenges": [
+          "数据受限条件下训练视频扩散模型",
+          "需要在固定数据集上重复多个epoch",
+          "确定计算最优的模型规模和训练步数"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "验证损失遵循以模型规模和训练暴露量为变量的幂律",
+            "location": "abstract",
+            "quote": "Validation loss follows consistent power laws in both model size and training exposure"
+          },
+          {
+            "claim": "训练暴露量比模型规模带来更快的损失改善",
+            "location": "abstract",
+            "quote": "Loss improves much faster with training exposure than with model size"
+          },
+          {
+            "claim": "9B模型是最大的从零训练的驾驶数据视频扩散模型",
+            "location": "abstract",
+            "quote": "we train a 9B-parameter model, to our knowledge the largest video diffusion model trained from scratch on driving data"
+          },
+          {
+            "claim": "模型在nuScenes上达到开源最佳",
+            "location": "abstract",
+            "quote": "it sets a new open-source state of the art for driving video generation, as measured on nuScenes"
+          },
+          {
+            "claim": "扩展分析未考虑VAE和超参数调优的局限",
+            "location": "supplied_full_text",
+            "quote": "extending the scaling analysis to jointly account for the frozen VAE is a promising direction. Similarly, our scaling laws assume a uniform learning rate"
+          }
+        ],
+        "experiments": [
+          "训练20个模型，从1M到9B参数，暴露量从10M到28M样本",
+          "9B模型在nuScenes基准上达到新的开源最佳，例如在Vista split上FVD_I3D为25.50",
+          "1B模型在Vista split上FVD_I3D为28.46",
+          "9B模型在Vista split上FID_Inception为2.72，优于1B的3.10"
+        ],
+        "first_affiliation": "valeo.ai, Paris, France",
+        "insight": "验证损失随模型规模和训练暴露量均遵循幂律，且训练暴露量对损失改善的指数大于模型规模，因此在有限计算下延长训练比增大模型更有效；但更大模型仍能达到更低渐近损失，故在计算和数据充足时增大模型仍占优。",
+        "limitations": [
+          "扩展分析未考虑冻结VAE的联合影响",
+          "缩放定律假设统一学习率，但9B模型训练时需要调整学习率，超参数搜索可能改进预测"
+        ],
+        "method": [
+          "使用条件流匹配训练视频扩散模型",
+          "构建1M到9B参数规模的模型族，在不同训练暴露量下训练",
+          "拟合验证损失的幂律：L(x)=L0+A*x^{-alpha}",
+          "分别进行模型缩放、训练缩放和计算缩放分析",
+          "基于定律外推训练9B参数模型，并在nuScenes上微调评测"
+        ],
+        "motivation": "驾驶数据昂贵且受隐私限制，无法像网络数据那样大规模获取，因此需要研究在固定数据规模下如何最优分配计算资源，以提升视频扩散模型性能。",
+        "primary_topic": "自动驾驶视频扩散模型的缩放定律",
+        "relation_to_research": "该论文直接涉及自动驾驶视频生成与世界模型，为视频扩散模型的缩放定律提供实证，有助于理解在数据受限条件下优化模型与数据预算，与具身智能中世界模型和系统优化紧密相关。",
+        "relevance_score": 9,
+        "setting": "数据受限的自动驾驶视频生成",
+        "tags": [
+          "视频扩散模型",
+          "缩放定律",
+          "自动驾驶",
+          "世界模型",
+          "驾驶数据集"
+        ],
+        "title_zh": "5500小时驾驶数据能将你带多远？视频扩散模型的缩放定律分析",
+        "uncertainty": "由于只提供了摘要和部分正文，且不包含通讯作者信息和部分实验细节，因此通讯作者标注为证据未提供。",
+        "why_recommended": "该论文提供了首个基于驾驶数据的视频扩散模型缩放定律研究，揭示了训练暴露量相对于模型规模的重要性，对在资源受限环境中设计高效世界模型和视频生成系统具有直接指导意义，且开源模型和代码便于复现。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Model architecture. Video latents from the Wan encoder are noised and processed by N N transformer blocks, each containing spatial attention, temporal attention, and an MLP, modulated by AdaLN. The timestep t t and ego-trajectory waypoints are embedded with sinusoidal features, and each is passed through an MLP. They are then summed and chunked into scale and shift. The output is the velocity (v-prediction).",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28404/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28404v1/flow_matching_video_dit_with_trajectory_conditioning.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28404v1#S3.F1"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28404v1",
+        "status": "available"
+      },
+      "final_score": 0.664518825593382,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:45:57.605837Z",
+        "input_hash": "9ddd77d42a24d4ceea49e98d695a3de774467c14da0ff4d169fafd3109b23ec0",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Video generation for autonomous driving cannot follow the web-scale route: driving data is expensive to collect, bound by privacy requirements, and cannot be scraped at will, so models must make the most of a fixed corpus. We present a systematic scaling-law study of video diffusion models trained from scratch on driving data: a family of models from 1M to 9B parameters, trained at different exposures on up to 5,500 hours of driving. Validation loss follows consistent power laws in both model size and training exposure, answering the questions that shape a training budget: whether compute is better spent on longer training or on a larger model, and whether more data is needed. Loss improves much faster with training exposure than with model size, making longer training the most effective way to improve a fixed model under limited compute. However, larger models continue to achieve lower asymptotic loss, so compute-optimal scaling still favors increasing model size when sufficient compute and data are available. Guided by these laws, we train a 9B-parameter model, to our knowledge the largest video diffusion model trained from scratch on driving data: it sets a new open-source state of the art for driving video generation, as measured on nuScenes. Our code and pretrained models are available at https://github.com/valeoai/VATIX. NATIX is separately releasing the underlying driving data in stages.",
+          "authors": [
+            "Victor Besnier",
+            "Anh-Quan Cao",
+            "Elias Ramzi",
+            "Spyros Gidaris",
+            "Tuan-Hung Vu",
+            "Andrei Bursuc",
+            "Eloi Zablocki",
+            "Matthieu Cord"
+          ],
+          "canonical_id": "2608.28404",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.28404",
+          "published_at": "2026-08-28T14:56:01Z",
+          "source": "arxiv",
+          "title": "How Far Can 5,500 Hours of Driving Take You? A Scaling Law Analysis of Video Diffusion Models",
+          "updated_at": "2026-08-28T14:56:01Z",
+          "url": "https://arxiv.org/abs/2608.28404",
+          "version": 1
+        },
+        "rank": 6,
+        "score": {
+          "base_score": 0.4718524101697854,
+          "exploration": 0.5504929046833777,
+          "matched_terms": [
+            "video generation"
+          ],
+          "negative_terms": [],
+          "personal": 0.5750939723508695,
+          "recency": 0.49922964477866,
+          "topic": 0.3088224790448297
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28406:v1": {
+      "analysis": {
+        "analysis": "材料未说明",
+        "challenges": [
+          "封闭集假设限制应用",
+          "需要泛化到未见过的动作和程序"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有方法主要关注封闭集协议，限制广泛应用",
+            "location": "abstract",
+            "quote": "with current methods mostly focusing on closed-set protocols. While successful in controlled settings, the closed-set assumption limits their wider applicability"
+          },
+          {
+            "claim": "该方法在EP-VQA上优于最佳基线11.6%",
+            "location": "abstract",
+            "quote": "with an improvement of up to 11.6% over the best-performing baseline on EP-VQA"
+          }
+        ],
+        "experiments": [
+          "在EP-VQA上优于零样本、监督微调和后训练基线",
+          "在看不见的程序上改进达11.6%"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "错误检测方法应该学习错误的通用概念，而不是过拟合到步骤特定细节，通过定制奖励函数的后训练技术可以有效实现这一点。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出MD-VQA协议和配套基准",
+          "第一个用于错误检测的视频语言模型后训练技术",
+          "使用定制奖励函数鼓励模型识别指令与视频之间的差异"
+        ],
+        "motivation": "现有错误检测方法局限于封闭集，无法泛化到新任务，需要重新训练。作者认为应学习错误的通用概念，并为此提出新的协议和基准。",
+        "primary_topic": "视频错误检测中的视觉语言模型后训练",
+        "relation_to_research": "与视觉语言动作模型相关，但该论文聚焦于错误检测而非动作生成；与物理人工智能和系统优化关系较弱；其在后训练和泛化方面的方法可能对具身智能中的任务执行评估有参考价值。",
+        "relevance_score": 6,
+        "setting": "视频错误检测，开放集协议（MD-VQA），涉及已知和未知动作",
+        "tags": [
+          "视觉语言模型",
+          "后训练",
+          "错误检测",
+          "视频问答",
+          "泛化"
+        ],
+        "title_zh": "针对视频错误检测的视觉语言模型后训练",
+        "uncertainty": "摘要未提供作者单位和通讯作者，实验细节有限，相关性分数基于与主题的部分匹配。",
+        "why_recommended": "该论文提出了一种新的后训练技术，用于视频错误检测，与视觉语言模型相关，其开放集泛化对具身智能的鲁棒性有启发，也可能与系统优化中的泛化问题相关。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Mistake detection in seen and unseen domains. Our benchmark evaluates models not only on recipes present in the training data (left), but also tests their ability to generalize the abstract concept of “mistake” to novel tasks (right). While standard training strategies (Zero-Shot, SFT, and GRPO) fail to detect these subtle errors or struggle to generalize, our proposed post-training approach successfully grounds its reasoning to accurately identify mistakes across both scenarios. Examples from EP-VQA.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28406/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28406v1/ECCV_Teaser.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28406v1#S1.F1"
+          },
+          {
+            "caption": "Example from CC-VQA Test Seen split. Question q q asks whether the cooking step “cut the english muffin into two even pieces with a knife” contains any mistakes in the video v v . The ground-truth answer α i \\alpha_{i} is “YES” as the muffin is shredded by hand rather than cut with a knife.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28406/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28406v1/ECCV_Benchmark.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28406v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28406v1",
+        "status": "available"
+      },
+      "final_score": 0.5058505485122575,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:47:08.532570Z",
+        "input_hash": "ff3f6bebf412487c1cbc3baafc7efdcc3207de8ced64d37cc46740551cea6107",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Human mistakes are inevitable when following instructions, yet they can lead to severe consequences. As such, there has been an increased interest in developing methods for detecting mistakes in videos, with current methods mostly focusing on closed-set protocols. While successful in controlled settings, the closed-set assumption limits their wider applicability, as any changes to the task require collecting new data and re-training models. Instead, we argue that mistake detection methods should learn the general concept of a mistake, rather than overfitting to step-specific details. To reflect this, we introduce the Mistake Detection Video Question Answering (MD-VQA) protocol and accompanying benchmark. MD-VQA tests whether methods can discern if a step was executed correctly with respect to its description, for both seen and unseen actions. To address this important challenge, we propose the first video-language-model post-training technique for mistake detection. Our method uses a tailored reward function to encourage the model to identify discrepancies between an instruction and the corresponding video. Extensive evaluations demonstrate that this approach outperforms zero-shot, supervised fine-tuning, and post-training baselines. Notably, our method generalizes especially well to unseen procedures, for instance, with an improvement of up to 11.6% over the best-performing baseline on EP-VQA, paving the way toward general mistake detection. We release our code and benchmark at https://github.com/FedeSpu/mstk.",
+          "authors": [
+            "Federico Spurio",
+            "Olga Zatsarynna",
+            "Lars Doorenbos",
+            "Emad Bahrami",
+            "Gianpiero Francesca",
+            "Juergen Gall"
+          ],
+          "canonical_id": "2608.28406",
+          "categories": [
+            "cs.CV",
+            "cs.LG"
+          ],
+          "comment": "Accepted at BMVC 2026",
+          "pdf_url": "https://arxiv.org/pdf/2608.28406",
+          "published_at": "2026-08-28T14:56:58Z",
+          "source": "arxiv",
+          "title": "Post-Training VLMs for Video Mistake Detection",
+          "updated_at": "2026-08-28T14:56:58Z",
+          "url": "https://arxiv.org/abs/2608.28406",
+          "version": 1
+        },
+        "rank": 43,
+        "score": {
+          "base_score": 0.42881917911319556,
+          "exploration": 0.7784144950746388,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5681259254080794,
+          "recency": 0.49931198979174085,
+          "topic": 0.1296853262654911
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2608.28444:v1": {
+      "analysis": {
+        "analysis": "作者通过多个LLM和多种下游任务的实验对比，发现SWA在长上下文推理任务上性能大幅提升（比线性注意力高2到10倍），并指出线性注意力的优势可能被高估。",
+        "challenges": [
+          "线性注意力模型可能需要在从头训练或大量后训练才能匹配SWA的性能",
+          "长上下文推理任务中线性注意力性能显著低于SWA"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "SWA在长上下文推理任务上性能大幅高于线性注意力",
+            "location": "abstract",
+            "quote": "SWA achieves massively higher performance (2 to 10 times higher than linear attention)."
+          },
+          {
+            "claim": "SWA无需后训练，且速度快、内存低",
+            "location": "abstract",
+            "quote": "SWA requires no post-training, is extremely fast, and requires low memory"
+          },
+          {
+            "claim": "线性注意力可能需要在从头训练或大量后训练才能匹配SWA",
+            "location": "abstract",
+            "quote": "Linear attention models may have shown some promise, but they likely require to be trained from scratch or extensive post-training in order to even match SWA."
+          }
+        ],
+        "experiments": [
+          "在多个LLM和多种下游任务上比较SWA与线性注意力，SWA性能相当或更优",
+          "在长上下文推理任务上，SWA性能高出线性注意力2到10倍"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "具有sink的滑动窗口注意力（SWA）在后训练线性注意力模型上表现相当或更好，且无需后训练、速度快、内存低，是一种更便宜可靠的方案。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "对比滑动窗口注意力（SWA）与后训练线性注意力模型",
+          "在多种LLM和不同下游任务上进行评估",
+          "测试长上下文推理任务如Needle-in-a-Haystack和BABILong",
+          "分析SWA的推理内存成本、速度和性能"
+        ],
+        "motivation": "大型语言模型因二次注意力导致内存和能量消耗巨大，每新增token成本增加，需要寻找可持续的替代方案。线性注意力被提出作为解决方案，但未与简单基线充分比较。",
+        "primary_topic": "注意力机制对比研究",
+        "relation_to_research": "本研究涉及注意力机制优化，与系统优化、推理效率相关，对具身智能中长时序预测和实时控制可能具有借鉴意义，但非直接针对具身智能或世界模型。",
+        "relevance_score": 6,
+        "setting": "针对大规模语言模型的注意力机制改进与评估",
+        "tags": [
+          "Sliding Window Attention",
+          "Linear Attention",
+          "LLM推理效率",
+          "长上下文推理",
+          "内存优化"
+        ],
+        "title_zh": "滑动窗口注意力优于线性注意力",
+        "uncertainty": "摘要未提供作者单位、通讯作者、具体模型细节和实验设置，因此第一单位与通讯作者无法确定，相关性评分基于主题相近但非直接相关。",
+        "why_recommended": "提供了对线性注意力与滑动窗口注意力的严格对比，强调简单基线的重要性，对需要高效推理和内存优化的系统设计具有参考价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5010743670804249,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:46:54.382602Z",
+        "input_hash": "73a4e304474dbf0ca9cd1616cff238f5fdf8bf735cbd70ab692e205f8752b590",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Due to the nature of quadratic attention, Large Language Models (LLMs) consume a lot of memory and energy. Every new token costs more than the previous one. For each additional token, the keys and values must be stored in memory indefinitely, which is unsustainable. Several alternatives have been proposed to fix the quadratic scaling problem, one of which is retrofitting LLMs to use Linear Attention. This idea has attracted a lot of attention, given its promise to solve the quadratic scaling problem with state-of-the-art performance at low cost. However, this line of research has not been properly compared to simpler baselines. In this work, we show that Sliding Window Attention (SWA) with sinks performs as well or better than post-trained Linear Attention models. We observe this across multiple LLMs on various downstream tasks. For long-context reasoning tasks (Needle-in-a-Haystack and BABILong), SWA achieves massively higher performance (2 to 10 times higher than linear attention). SWA requires no post-training, is extremely fast, and requires low memory; therefore, making it an extremely cheap and reliable solution. To reduce inference memory cost, we strongly recommend switching to SWA instead of post-training linear models. Linear attention models may have shown some promise, but they likely require to be trained from scratch or extensive post-training in order to even match SWA.",
+          "authors": [
+            "Alexia Jolicoeur-Martineau",
+            "Rhea Sanjay Sukthanker",
+            "Pashmina Cameron",
+            "Emy Gervais"
+          ],
+          "canonical_id": "2608.28444",
+          "categories": [
+            "cs.CL",
+            "cs.LG"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2608.28444",
+          "published_at": "2026-08-28T15:31:34Z",
+          "source": "arxiv",
+          "title": "Sliding-window beats linear attention",
+          "updated_at": "2026-08-28T15:31:34Z",
+          "url": "https://arxiv.org/abs/2608.28444",
+          "version": 1
+        },
+        "rank": 36,
+        "score": {
+          "base_score": 0.4201352128734997,
+          "exploration": 0.9874340167247192,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5550473429120745,
+          "recency": 0.5023203556722254,
+          "topic": 0.06110991806677638
+        }
+      },
+      "tier": "explore"
+    },
+    "arxiv:2608.28547:v1": {
+      "analysis": {
+        "analysis": "作者通过实验分析发现解码器模型中的表示偏差随位置递增，且不同位置对偏差的敏感度不同，从而提出针对性的校正方法。材料未明确说明更多分析过程。",
+        "challenges": [
+          "表示偏差在因果注意力下随位置累积",
+          "不同token位置的重要性不同，高熵位置对生成质量影响更大"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "DARTS使用熵加权L1损失和逐位置偏置来校正解码器模型中的表示偏差",
+            "location": "abstract",
+            "quote": "DARTS employs a novel entropy-weighted L1 loss to upweight correction at high-entropy positions where errors most affect generation quality, and a per-position additive bias that captures position-dependent error without overparameterization."
+          },
+          {
+            "claim": "解码器中的表示偏差随位置累积，需要位置相关校正",
+            "location": "abstract",
+            "quote": "the causal attention mask causes bias to accumulate across token positions, requiring position-dependent correction"
+          },
+          {
+            "claim": "高熵位置比低熵位置更重要",
+            "location": "abstract",
+            "quote": "high-entropy (decision-critical) positions matter far more than low-entropy ones"
+          },
+          {
+            "claim": "DARTS在三个领域上显著优于标准手术方法，参数增加极少",
+            "location": "abstract",
+            "quote": "DARTS achieves significant improvement over the standard surgery approach while adding negligible parameters (0.1% of total parameters)"
+          }
+        ],
+        "experiments": [
+          "在代码生成（HumanEval）、数学推理（GSM8K）和指令跟随（AlpacaEval）三个领域上，使用Llama-2-7B模型进行评估",
+          "结果表明DARTS显著优于标准手术方法，参数增加仅为总参数的0.1%"
+        ],
+        "first_affiliation": "ServiceNow",
+        "insight": "解码器模型中的表示偏差具有位置依赖性（因果注意力导致累积）和位置重要性差异（高熵位置更重要），需要位置相关的校正。",
+        "limitations": [
+          "位置校正表无法泛化到超过T_max=512的序列长度",
+          "仅评估了Llama-2-7B，未测试更大模型或其他架构",
+          "熵加权可能低估代码生成中语法确定但语义关键的token位置的重要性"
+        ],
+        "method": [
+          "提出DARTS方法，使用熵加权的L1损失，对高熵（决策关键）位置给予更高的校正权重",
+          "引入逐位置加性偏置，以捕获位置相关的偏差，且不增加过多参数"
+        ],
+        "motivation": "模型合并后的多任务模型存在表示偏差，之前的工作仅针对编码器视觉模型，未研究解码器模型中的偏差，而解码器的自回归特性导致偏差累积且非均匀，影响生成质量。",
+        "primary_topic": "模型合并中的表示偏差校正",
+        "relation_to_research": "与具身智能和世界模型关系较弱，但涉及模型压缩与系统优化中的效率问题，DARTS通过轻量级校正模块减少参数开销，可应用于多任务模型合并，提高部署效率。",
+        "relevance_score": 6,
+        "setting": "模型合并",
+        "tags": [
+          "模型合并",
+          "表示偏差",
+          "解码器",
+          "熵加权损失",
+          "位置校正",
+          "LLM"
+        ],
+        "title_zh": "DARTS：通过手术进行解码器感知的表示调优用于模型合并",
+        "uncertainty": "由于缺少通讯作者信息，只能标记为证据未提供；部分实验细节未在摘要中给出，因此限制描述基于作者明确陈述。",
+        "why_recommended": "对于研究模型合并和表示校正的研究者具有参考价值，其提出的熵加权和位置感知校正方法可借鉴到其他序列预测任务中，提升多任务模型的性能。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Per-token L1 representation bias between a merged Llama-2-7B model and each individual fine-tune, measured at the final transformer layer. Each row is a calibration sample; each column is a token position. Across all three domains (code, math, instruct), we see an increasing trend of bias with token position due to error accumulation under the causal attention mask. This position-dependent structure motivates the decoder-aware corrections proposed in DARTS .",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28547/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28547v1/teaser.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28547v1#S1.F1"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28547v1",
+        "status": "available"
+      },
+      "final_score": 0.5099530084174962,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:45:57.672118Z",
+        "input_hash": "5f1b80dd625a663ee483031a35fc349e7464ee117fd08fc4bac9371c9ce64dd2",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Model merging combines multiple task-specific fine-tuned LLMs into a single multi-task model without additional training. However, merged models are known to suffer from representation bias: systematic drift between the merged model's hidden states and those of each individual source model. Prior work (Yang et al., 2024a) study and mitigate this bias for encoder-based vision models using a lightweight correction module trained with L1 loss. However, such bias is not studied for decoder models due to their autoregressive nature. We analyze the problem of representation bias in decoder models, and show two challenges absent in encoders: (1) the causal attention mask causes bias to accumulate across token positions, requiring position-dependent correction; and (2) not all token positions are equally important, i.e., high-entropy (decision-critical) positions matter far more than low-entropy ones. To address these challenges, we propose Decoder-Aware Representation Tuning via Surgery (DARTS). DARTS employs a novel entropy-weighted L1 loss to upweight correction at high-entropy positions where errors most affect generation quality, and a per-position additive bias that captures position-dependent error without overparameterization. We perform extensive evaluation on three domains: code generation (HumanEval), mathematical reasoning (GSM8K), and instruction following (AlpacaEval) on Llama-2-7B models, and show DARTS achieves significant improvement over the standard surgery approach while adding negligible parameters ($0.1\\%$ of total parameters).",
+          "authors": [
+            "Aaryan Ajay Sharma",
+            "Sai Nishanth Padala",
+            "Seganrasan Subramanian"
+          ],
+          "canonical_id": "2608.28547",
+          "categories": [
+            "cs.LG"
+          ],
+          "comment": "Accepted to EMNLP 2026 Main Conference",
+          "pdf_url": "https://arxiv.org/pdf/2608.28547",
+          "published_at": "2026-08-28T17:22:47Z",
+          "source": "arxiv",
+          "title": "DARTS: Decoder-Aware Representation Tuning via Surgery for Model Merging",
+          "updated_at": "2026-08-28T17:22:47Z",
+          "url": "https://arxiv.org/abs/2608.28547",
+          "version": 1
+        },
+        "rank": 8,
+        "score": {
+          "base_score": 0.4362781971227203,
+          "exploration": 0.960834562653781,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.4850678052458486,
+          "recency": 0.5121136248425515,
+          "topic": 0.2020081886070147
+        }
+      },
+      "tier": "deep_read"
+    },
+    "arxiv:2608.28570:v1": {
+      "analysis": {
+        "analysis": "作者提出一种物理启发的表示，强调有效状态表示需同时具备准确捕获3D几何与外观以及紧凑性，以满足实时控制和模型基规划的需求。",
+        "challenges": [
+          "高维配置空间",
+          "材料特性变化导致的多样性行为",
+          "多阶段流程和深度输入的误差累积",
+          "模型基控制计算开销大"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "ChainSplat从多视角RGB视频中联合学习DLO的3D几何、外观、运动学和动力学",
+            "location": "abstract",
+            "quote": "ChainSplat, a physics-inspired framework that jointly learns the 3D geometry, appearance, kinematics, and dynamics of DLOs solely from multi-view RGB videos."
+          },
+          {
+            "claim": "ChainSplat使用旋量理论表示开链结构，实现紧凑状态表示",
+            "location": "abstract",
+            "quote": "ChainSplat represents a DLO as an open-chain structure of rigid links connected by revolute joints, yielding an analytic, screw-theoretic model with a compact state representation parameterized by joint configurations."
+          },
+          {
+            "claim": "ChainSplat达到最先进性能",
+            "location": "abstract",
+            "quote": "ChainSplat achieves state-of-the-art performance in dynamics predictions, 3D geometry reconstruction, and RGB rendering across dynamic interactions."
+          }
+        ],
+        "experiments": [
+          "在真实世界实验中，与PGND和PhysTwin基线进行比较，ChainSplat在动力学预测、3D几何重建和RGB渲染方面达到最先进性能；使用24条轨迹，每个轨迹独立优化模型；实验设置包括三种DLO和两个场景，采样频率0.25Hz和0.4Hz（原文有具体数字，但未给出具体数值结果）"
+        ],
+        "first_affiliation": "KTH皇家理工学院",
+        "insight": "通过将DLO表示为刚性连杆通过旋转关节连接的开链结构，利用旋量理论得到紧凑的状态表示，与高斯溅射结合，实现从多视角RGB视频中联合学习3D几何、外观、运动学和动力学。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "将DLO表示为刚体连杆开链结构，关节为旋转关节，采用旋量理论建模",
+          "与高斯溅射集成，联合恢复动力学、几何、外观，并能从任意状态渲染RGB",
+          "两阶段全微分优化：先联合恢复几何、外观和关节轨迹，再识别动力学参数"
+        ],
+        "motivation": "可变形线性物体（如电缆、绳索）的准确动力学和3D几何建模对于机器人操作至关重要，但现有方法依赖多阶段流程和深度输入，且状态表示高维导致控制计算昂贵。",
+        "primary_topic": "可变形线性物体的动力学与3D几何学习",
+        "relation_to_research": "直接相关：涉及可变形物体动力学学习、3D几何重建和模型基控制，与具身智能和世界模型中的可执行动作生成、推理效率、真实机器人评测密切相关。",
+        "relevance_score": 9,
+        "setting": "真实世界多视角RGB视频",
+        "tags": [
+          "可变形线性物体",
+          "旋量理论",
+          "高斯溅射",
+          "动力学学习",
+          "3D重建",
+          "模型基控制"
+        ],
+        "title_zh": "ChainSplat：一种物理启发的旋量理论模型，用于从多视角RGB视频学习可变形线性物体动力学",
+        "uncertainty": "缺少对实验数值结果的详细描述，仅提及性能指标，未提供具体数值；通讯作者未在材料中明确标明。",
+        "why_recommended": "提出了一个联合学习DLO几何、外观、运动学和动力学的紧凑模型，实现了实时状态与力估计和模型基轨迹优化，对机器人操作中的数字孪生构建和控制具有直接应用价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-08-31T17:37:25.545743+08:00",
+        "figures": [
+          {
+            "caption": "Illustration of screw motion and forward kinematics of an open-chain system. ( Screw motion ) Given a screw axis 𝑺 \\bm{S} and a joint displacement θ \\theta , the blue ellipsoid with pose 𝑻 \\bm{T} is transformed by the matrix exponential. ( Forward kinematics of open-chain ) The pose 𝑻 \\bm{T} of the blue ellipsoid transformed by the last screw motion is given by e [ 𝑺 3 ] ​ θ 3 ​ 𝑻 e^{[\\bm{S}_{3}]\\theta_{3}}\\bm{T} . Considering the preceding screw motion similarly introduces another matrix exponential on the left. Repeating this process along the open chain yields the PoE formula ( 5 ).",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2608.28570/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2608.28570v1/figures/screw_and_poe.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2608.28570v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2608.28570v1",
+        "status": "available"
+      },
+      "final_score": 0.6765900272755827,
+      "provenance": {
+        "analyzed_at": "2026-08-31T09:45:49.249712Z",
+        "input_hash": "bb685b70e8789e943c5fa60d0c51453a3fed40e254622de70c3f9718e40824e7",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Identifying the underlying dynamics and 3D geometry of deformable linear objects (DLOs), such as cables, ropes, and hoses, is essential for accurate robotic manipulation, but remains challenging due to their high-dimensional configuration spaces and diverse behaviors arising from varying material properties. Existing methods often rely on multi-stage pipelines and auxiliary depth inputs, which are prone to errors under dynamic interactions, while their high-dimensional state representations make model-based control computationally expensive. In this paper, we introduce ChainSplat, a physics-inspired framework that jointly learns the 3D geometry, appearance, kinematics, and dynamics of DLOs solely from multi-view RGB videos. ChainSplat represents a DLO as an open-chain structure of rigid links connected by revolute joints, yielding an analytic, screw-theoretic model with a compact state representation parameterized by joint configurations. By integrating this formulation with Gaussian splatting, ChainSplat jointly recovers DLO dynamics, kinematics-aware 3D geometry, and appearance, while enabling high-fidelity RGB rendering from arbitrary states. Through real-world experiments, we demonstrate that ChainSplat achieves state-of-the-art performance in dynamics predictions, 3D geometry reconstruction, and RGB rendering across dynamic interactions. ChainSplat further enables real-time state and force estimation, as well as accurate model-based trajectory optimization, highlighting its practical utility for real-world robotic manipulation of DLOs. Accompanying source code and video are available at: https://chainsplat.github.io.",
+          "authors": [
+            "Seungyeon Kim",
+            "No\\'emie Jaquier"
+          ],
+          "canonical_id": "2608.28570",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "18 pages, 12 figures",
+          "pdf_url": "https://arxiv.org/pdf/2608.28570",
+          "published_at": "2026-08-28T17:46:38Z",
+          "source": "arxiv",
+          "title": "ChainSplat: A Physics-Inspired Screw-Theoretic Model for Learning Deformable Linear Object Dynamics from Multi-View RGB Videos",
+          "updated_at": "2026-08-28T17:46:38Z",
+          "url": "https://arxiv.org/abs/2608.28570",
+          "version": 1
+        },
+        "rank": 3,
+        "score": {
+          "base_score": 0.4938000495919685,
+          "exploration": 0.8132973028847064,
+          "matched_terms": [
+            "robotic manipulation"
+          ],
+          "negative_terms": [],
+          "personal": 0.4942979239738768,
+          "recency": 0.5142384914223938,
+          "topic": 0.39603544106575395
+        }
+      },
+      "tier": "deep_read"
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-08-30T18:02:45.343295+08:00"
+  "updated_at": "2026-08-31T17:37:25.545743+08:00"
 }
