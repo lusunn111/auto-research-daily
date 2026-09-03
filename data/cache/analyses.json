@@ -193,6 +193,74 @@
       "reading_scope": "abstract"
     }
   },
+  "01987670352d52c7023de842f1a9156d8bfa75aaff8e5578fbbedd2f532b5afc": {
+    "analysis": {
+      "analysis": "作者通过实验分析了BEV-Forcing在不同训练本体数量下的效果，发现其在本体数量少时提升显著，但随着本体增多收益减小，从而揭示了数据扩展对新技术收益的影响。",
+      "challenges": [
+        "跨不同相机配置的零样本迁移性能差",
+        "增加训练数据多样性不总能提升已知本体上的性能",
+        "如何在有限推理成本下提高空间感知能力"
+      ],
+      "corresponding_authors": [
+        "Caio Azevedo"
+      ],
+      "evidence": [
+        {
+          "claim": "BEV-Forcing在相机配置较少时提高性能",
+          "location": "abstract",
+          "quote": "we show that an auxiliary task such as BEV-Forcing can improve both in-distribution and out-of-distribution performance when training on a small number of camera rigs"
+        },
+        {
+          "claim": "增加训练本体数量会减少辅助任务收益",
+          "location": "abstract",
+          "quote": "As the number of training embodiments increases, however, the benefits of the auxiliary task are reduced"
+        }
+      ],
+      "experiments": [
+        "在多个数据集上训练，零样本评估于Physical AI验证集和KIT LongTail Dataset",
+        "比较有无BEV-Forcing在不同训练本体数量下的性能（未给出具体数值）",
+        "与直接训练在Physical AI上的模型对比（见图3）",
+        "使用平均和最终位移误差作为指标"
+      ],
+      "first_affiliation": "École des Mines de Paris, France",
+      "insight": "通过BEV-Forcing辅助目标将鸟瞰图的物体位置信息注入VLA主干，能在相机配置数量较少时提高分布内和分布外性能；但随着训练本体数量增加，辅助任务的收益会减少，表明数据扩展可能使新技术收益减弱。",
+      "limitations": [
+        "仅关注图像嵌入的表征学习，未充分探索推理痕迹、动作表示和架构选择",
+        "未使用更高质量或信息更丰富的BEV教师占用图（如包含可行驶区域）",
+        "由于计算限制，Physical AI仅使用6000个片段子集",
+        "作者未明确列出其他局限"
+      ],
+      "method": [
+        "使用Qwen 3.5 2B作为VLM骨干，采用LoRA微调防止灾难性遗忘",
+        "动作表示为文本形式：1Hz轨迹路点（2D坐标）",
+        "提出BEV-Forcing辅助目标：添加BEV头，从预训练BEV模型（SimpleBEV）提取教师占用图，监督最后一层图像隐藏状态，将地面物体位置信息注入骨干",
+        "在多数据集（WOD-E2E、NAVSIM、nuScenes、Physical AI等）上进行训练，包括规划样本和VQA样本"
+      ],
+      "motivation": "在自动驾驶中，VLA通常在单一数据集上训练，且很少评估对未见数据集和相机配置的零样本迁移；此外，简单增加训练数据并不一定提高已知本体上的性能。因此需要研究多数据集训练和辅助目标来提升跨本体迁移能力。",
+      "primary_topic": "跨本体零样本迁移的驾驶视觉语言动作模型",
+      "relation_to_research": "研究驾驶VLA的跨本体零样本迁移，涉及视觉语言动作模型（VLA）的多数据集训练、空间表征学习与通用化，与具身智能和世界模型相关（BEV表示可视为场景空间布局的世界模型），并关注多本体泛化，对实体智能系统优化有参考价值",
+      "relevance_score": 8,
+      "setting": "自动驾驶场景下的多数据集训练与零样本跨本体（不同相机配置）评估",
+      "tags": [
+        "VLA",
+        "自动驾驶",
+        "零样本迁移",
+        "BEV-Forcing",
+        "多数据集训练",
+        "表征学习"
+      ],
+      "title_zh": "面向驾驶VLA的跨本体零样本迁移研究",
+      "uncertainty": "摘要和全文仅提供方法描述，未给出具体实验数值，因此无法验证定量结果；另外，第一作者通讯作者身份基于邮箱推测，存在不确定性。",
+      "why_recommended": "该文针对跨本体零样本迁移这一关键挑战，提出BEV-Forcing方法并系统分析数据扩展与辅助目标间的权衡，所揭示的规律对当前VLA研究和实体AI系统优化具有指导意义"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:20.097330Z",
+      "input_hash": "4f37d588ba67964c1ccebaa0a947135b07a256a49c9c53dfd75fbc21d76a988d",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
   "0316864cc3e2c0b2693455f71deb314112bb229a4d8fa5d4ae98960c553ae7a8": {
     "analysis": {
       "analysis": "作者通过负对照实验发现并解决了模型依赖裁剪大小而非范例的捷径问题；通过替换特征提取器（DINOv3 vs V-JEPA）和匹配输入分辨率来隔离预训练目标的影响。",
@@ -398,6 +466,79 @@
     "provenance": {
       "analyzed_at": "2026-09-02T08:59:43.402229Z",
       "input_hash": "962a8f3676fb6f6bc899968357ef8e997dc96e6ddacab8e70418d97408180634",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "04200ef263aab0aba382d10fdf30fb1e99ecceaf590504fce586e790f076d786": {
+    "analysis": {
+      "analysis": "作者通过实验评估跨模型 KV 共享在家族内和跨家族场景中的效果，并测量准确性、困惑度、延迟和开销，比较转换后 KV 状态与原生模型推理的差异，从而验证 KV 状态的可迁移性。",
+      "challenges": [
+        "不同模型间的架构、注意力配置、分词器差异导致 KV 状态不兼容",
+        "跨模型 KV 状态转换需要保持目标模型性能（如准确性和困惑度）",
+        "在异构设置中（如 Llama3.1-70B 到 Qwen2.5-7B）实现高效低延迟的 KV 传递"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "现有 KV 缓存复用机制通常假设生产者和消费者是同一模型",
+          "location": "abstract",
+          "quote": "Existing KV-cache reuse mechanisms substantially reduce redundant computation within a single model, but generally assume that the producer and consumer of a cache are identical."
+        },
+        {
+          "claim": "跨模型 KV 共享能够转移 KV 状态到不同配置的目标模型",
+          "location": "abstract",
+          "quote": "We study \\emph{cross-model KV sharing}, which translates the KV state produced by a source model into a representation that can be consumed by a different target model, including models that differ in scale, architecture, attention configuration, tokenizer, and model family."
+        },
+        {
+          "claim": "实验表明 KV 状态可作为可迁移的表示并带来效率提升",
+          "location": "abstract",
+          "quote": "For the cross-family Qwen2.5-1.5B $\\rightarrow$ Gemma-2-2B setting, KV handoff reduces target-side prefill cost by up to 67.05\\% at 4K context length while maintaining decoding perplexity close to native-model baselines."
+        },
+        {
+          "claim": "KV 状态可作为可迁移的计算表示而非严格模型本地缓存",
+          "location": "abstract",
+          "quote": "These results provide initial evidence that KV states can serve as transferable computational representations rather than strictly model-local caches, and motivate \\emph{context mobility} as a systems abstraction for reducing redundant prefill across heterogeneous LLM and multi-agent inference workflows."
+        }
+      ],
+      "experiments": [
+        "Qwen2.5-7B → Qwen2.5-1.5B：转换后 KV 状态将 LongBench2 准确率从 27.59% 提升至 34.48%，优于原生 1.5B 基线 6.89 个百分点，同时降低传递成本",
+        "Qwen2.5-1.5B → Gemma-2-2B：在 4K 上下文长度下，KV 传递将目标侧 prefill 成本降低高达 67.05%，并保持解码困惑度接近原生模型基线",
+        "Llama3.1-70B → Qwen2.5-7B：跨家族传递实现 44.0% 准确率（原生 Qwen2.5-7B 为 45.7%），同时将测量延迟从 899ms 降低至 138ms"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "KV 状态可以作为可迁移的计算表示而非严格模型本地缓存，从而引入'上下文移动性'这一系统抽象，以减少异构 LLM 和多智能体推理工作流中的冗余 prefill 计算。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "提出一种通用上下文复用层，用于将源模型产生的 KV 状态转换并传递给目标模型",
+        "支持不同模型规模、架构、注意力配置、分词器设置下的跨模型 KV 共享",
+        "在家族内和跨家族场景中评估转换后的 KV 状态性能",
+        "用于减少异构 LLM 和多智能体推理中的冗余 prefill"
+      ],
+      "motivation": "现代 LLM 服务系统常处理重复或共享上下文，但每个模型即使在其他模型已处理相同输入时仍执行自己的 prefill 计算；现有 KV 缓存复用机制仅适用于单模型内的 producer 和 consumer 相同，缺乏跨模型（不同规模、架构、注意力配置、分词器、模型家族）的 KV 缓存共享。",
+      "primary_topic": "跨模型 KV 缓存共享与上下文复用",
+      "relation_to_research": "该系统工作聚焦于大语言模型推理中的 KV 缓存复用与上下文移动性，直接相关于系统优化（减少冗余计算），但与具身智能、世界模型或物理人工智能的直接关联较弱；可视为高效推理中间表示的一种探索。",
+      "relevance_score": 5,
+      "setting": "大语言模型推理系统中的 KV 缓存复用，针对不同模型间的 KV 状态转换与共享",
+      "tags": [
+        "KV缓存",
+        "跨模型共享",
+        "LLM推理",
+        "上下文复用",
+        "系统优化"
+      ],
+      "title_zh": "一种用于跨模型 KV 共享的通用上下文复用层",
+      "uncertainty": "由于仅基于摘要，缺少作者机构、通讯作者、具体方法细节和局限陈述；相关性分数基于当前研究主题（强调真实机器人评测等）判断，KV 共享与具身智能的直接关系弱，但系统优化方向有间接关联。",
+      "why_recommended": "该研究为跨模型 KV 共享提出新颖思路，可用于异构模型和多智能体系统间的上下文复用，有助于理解如何将计算表示在不同模型间迁移以提升推理效率，对系统优化和模型服务的研究者有参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:19.501518Z",
+      "input_hash": "7fa570823ca5c5378f4f90239a52fcbe7e0f23b96f718dfe0e4189fe26b55e1c",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -832,6 +973,145 @@
       "reading_scope": "abstract"
     }
   },
+  "0e76fb430da75907021339e8376c349f6d66c0cf4889f4630c0a7dfa0554de7a": {
+    "analysis": {
+      "analysis": "作者开发了端到端推理精度的易处理分析模型，并基于该模型设计信道自适应AI算法。",
+      "challenges": [
+        "缺乏描述端到端推理性能的理论框架",
+        "端到端精度需同时考虑信道失真和模型架构复杂度",
+        "在延迟与精度约束下最大化推理吞吐量"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "该工作解决IC²设计中缺乏端到端推理性能可处理理论框架的挑战。",
+          "location": "abstract",
+          "quote": "the design of IC$^2$ technologies is hindered by the lack of a tractable theoretical framework for characterizing \\emph{end-to-end} (E2E) inference performance."
+        },
+        {
+          "claim": "提出的精度模型使用混合von Mises分布来表征特征在角域的分布。",
+          "location": "abstract",
+          "quote": "The proposed accuracy model characterizes high-dimensional feature distributions in the angular domain using a Mixture of von Mises (MvM) distribution."
+        },
+        {
+          "claim": "算法旨在通过联合调整发送端压缩和接收端模型复杂度来最大化吞吐量。",
+          "location": "abstract",
+          "quote": "The proposed algorithm jointly adapts transmit-side feature compression and receive-side model complexity according to channel conditions to maximize overall efficiency and inference throughput."
+        },
+        {
+          "claim": "实验结果证明了相对固定复杂度方案的优越性。",
+          "location": "abstract",
+          "quote": "Experimental results demonstrate its superior performance as compared with fixed-complexity counterparts."
+        }
+      ],
+      "experiments": [
+        "实验结果表明所提算法相较于固定复杂度对应方案具有优越性能。未提供具体数值。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "使用混合von Mises分布刻画高维特征在角域分布，得到推理精度关于量化比特宽度和模型遍历深度的闭式表达式，从而建模信道失真与计算复杂度。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "开发端到端推理精度的分析模型，使用混合von Mises（MvM）分布刻画角域中高维特征分布",
+        "推导推理精度作为量化比特宽度和模型遍历深度函数的闭式表达",
+        "在延迟和精度约束下制定并解决EPR最大化问题",
+        "提出信道自适应AI算法，联合调整发送端特征压缩和接收端模型复杂度以匹配信道条件"
+      ],
+      "motivation": "6G网络中集成通信和计算（IC²）是实现高效边缘推理的新范式，但缺乏描述端到端推理性能的易处理理论框架，该性能受信道失真和AI模型架构与计算复杂度影响。",
+      "primary_topic": "边缘AI推理的集成通信与计算优化",
+      "relation_to_research": "虽未直接涉及具身智能或世界模型，但边缘AI的推理效率优化与模型复杂度自适应对于具身智能系统在受限硬件和无线环境下实施有启示，也与系统优化相关。",
+      "relevance_score": 6,
+      "setting": "边缘推理系统，移动设备传输数据特征，服务器部署带早退的骨干模型",
+      "tags": [
+        "IC2",
+        "边缘推理",
+        "信道自适应",
+        "计算复杂度",
+        "吞吐量最大化",
+        "混合von Mises分布"
+      ],
+      "title_zh": "信道自适应的边缘人工智能：通过将计算复杂度适配信道状态来最大化推理吞吐量",
+      "uncertainty": "作者机构、通讯作者及实验数值均未在摘要中提供，只能基于摘要文本推断主题和相关性。",
+      "why_recommended": "该论文提出了一种在信道和延迟约束下平衡计算复杂度和传输的自适应推理方法，可作为边缘侧AI推理效率调优的参考。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:53.969346Z",
+      "input_hash": "c6d36fe7e54927401bfdb42ea53b84a9d4afad21e372440a5bf20e79e8386fb7",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "0f6b9e1e45159cd1fd6cc8643b7067223b029f0a771e20e98ceba5a45fc90396": {
+    "analysis": {
+      "analysis": "作者分析问题基于现有混合方法的显式桥接缺陷，提出隐式特征注入和联合训练方案；材料未给出更详细分析。",
+      "challenges": [
+        "稀疏输入下几何重建与生成先验的平衡",
+        "避免显式3D表示带来的信息损失",
+        "实现重建和生成模块的联合训练"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "现有混合方法通过渲染图像或显式3D表示桥接重建和生成，导致生成继承其误差。",
+          "location": "abstract",
+          "quote": "Generation is thus conditioned on a lossy and imperfect projection of the scene, inheriting its errors, and reconstruction receives no signal from generation to correct them."
+        },
+        {
+          "claim": "RoGe通过射线查询隐式特征直接条件化视频扩散模型，去除显式桥接，并联合训练。",
+          "location": "abstract",
+          "quote": "These features are injected into a video diffusion model as conditioning, without any 3D intermediate. Both modules are trained jointly, so the generation objective directly shapes its own geometric conditioning."
+        },
+        {
+          "claim": "RoGe在DL3DV上优于多种基线。",
+          "location": "abstract",
+          "quote": "RoGe outperforms reconstruction-based, generation-based, and hybrid baselines on image-level metrics and video-level temporal consistency."
+        }
+      ],
+      "experiments": [
+        "在DL3DV数据集上，RoGe在图像级指标和视频级时间一致性上优于重建基、生成基和混合基线",
+        "消融实验表明射线查询隐式特征优于原始重建token和渲染RGB作为条件，联合训练带来进一步提升"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过射线查询隐式场景表示获得每视角几何特征，直接作为视频扩散模型的条件，替代显式3D中间表示，实现重建与生成的联合训练，使生成目标直接塑造几何条件。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "用前馈重建模型从稀疏视角构建隐式场景表示",
+        "用目标相机射线查询该表示以获得视角几何特征",
+        "将几何特征注入视频扩散模型作为条件",
+        "重建模型与视频扩散模型联合训练"
+      ],
+      "motivation": "现有混合重建与生成的方法通过渲染图像或显式3D表示（如点图或3D高斯）桥接两个模块，导致生成受有损投影影响，重建无法从生成中获取纠正信号。RoGe旨在移除显式桥接，实现端到端统一。",
+      "primary_topic": "稀疏输入的新视角合成与视频生成",
+      "relation_to_research": "该论文涉及新视角合成和视频生成，与具身智能和世界模型相关度较低，但视频扩散模型和长时序生成技术可能与世界模型中的视频预测有间接关联，且隐式重建与生成统一框架可能为物理人工智能中的场景理解提供参考。",
+      "relevance_score": 3,
+      "setting": "给定稀疏视角图像和相机轨迹，合成沿着轨迹的时间一致视频",
+      "tags": [
+        "新视角合成",
+        "视频扩散模型",
+        "隐式重建",
+        "端到端训练",
+        "稀疏输入"
+      ],
+      "title_zh": "RoGe：基于端到端隐式重建与生成的新视角合成",
+      "uncertainty": "论文仅提供摘要，作者单位、通讯作者等信息未提供。相关性评分基于摘要内容，新视角合成与目标主题的关联较弱。",
+      "why_recommended": "尽管主题与新视角合成相关，但其端到端联合训练和隐式特征注入方法对处理稀疏感知和多模态生成有借鉴意义，适合研究视觉语言动作模型或世界模型中场景表征与生成的读者。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:52.131716Z",
+      "input_hash": "77507912f0e31688bef7070e218a3a835f6099b684c587c0e4df7ce3370b86f0",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "12a57b77618a42d33862285caad49b1cfdfff6672611fa05e6af7dc3fb5f6582": {
     "analysis": {
       "analysis": "作者通过贝叶斯优化配置超参数以优化交易性能，并比较多种模型，使用统计检验评估超额收益，并分析噪声影响及数据作用。",
@@ -1034,6 +1314,71 @@
       "reading_scope": "abstract"
     }
   },
+  "139d9856c5742c581f6c5a829c504ba9385343ead5b637a6a8b4fda4f8a98a03": {
+    "analysis": {
+      "analysis": "作者指出通过人类重识别与跟踪来改善人机协作，同时通过几何和语义理解提升机器人整体感知能力；但具体分析方法材料未说明。",
+      "challenges": [
+        "机器人缺乏全面上下文感知",
+        "识别空间环境内的物体和行为者",
+        "在人类中心环境中进行有目标的协作并忽略其他个体"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "机器人缺乏全面上下文感知是主要障碍",
+          "location": "abstract",
+          "quote": "A significant obstacle to achieving this is the lack of comprehensive contextual awareness"
+        },
+        {
+          "claim": "人类重识别与跟踪提高人机协作",
+          "location": "abstract",
+          "quote": "The first direction involves human re-identification and tracking to improve Human-Robot Collaboration."
+        },
+        {
+          "claim": "几何和语义信息提升环境理解",
+          "location": "abstract",
+          "quote": "Geometric information is vital for motion planning and collision avoidance, while semantic knowledge provides the robot with a richer understanding for more advanced interaction."
+        }
+      ],
+      "experiments": [
+        "实验中未提供具体数字或结果"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "提升机器人对环境的语义理解可以增强其上下文感知，从而促进更平滑自然的人-机-环境交互；通过人类重识别和几何/语义环境理解两个互补方向推进机器人感知能力。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "开发人类重识别与跟踪方法，使移动机器人识别特定人员，实现目标协作",
+        "增强机器人对环境的几何和语义理解能力",
+        "以改进机器人语义理解为核心，提升其对周围环境的认知"
+      ],
+      "motivation": "移动机器人因缺乏全面上下文感知，难以进行自适应行为和与人类进行有意义的交互，在动态人类中心环境中安全自主运行成为关键研究领域。",
+      "primary_topic": "机器人上下文感知、人机协作与环境理解",
+      "relation_to_research": "相关于具身智能：机器人需要感知和理解环境以执行动作和交互；强调语义理解与环境感知，与VLA模型和世界模型的感知预测有交集，但未涉及动作生成与系统优化。",
+      "relevance_score": 6,
+      "setting": "移动自主机器人从工业环境向人类中心环境的过渡",
+      "tags": [
+        "人机协作",
+        "人重识别",
+        "环境理解",
+        "语义感知",
+        "移动机器人"
+      ],
+      "title_zh": "机器人上下文感知用于人机协作与环境理解",
+      "uncertainty": "由于仅基于摘要，缺少具体方法细节和实证结果，且作者未提供机构信息，导致相关性判断和标签可能存在不确定性。",
+      "why_recommended": "研究人机协作中的上下文感知，为真实机器人环境理解提供方法，有助于具身智能感知模块设计，但未涉及世界模型和推理效率。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:26.189009Z",
+      "input_hash": "251ec0b41427c1130f970274d0ef988337f17d3d8cff66c5b0efa3ca61ad7e2a",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "169b39241ca75d7458e1ab261390698b795071cf8c55121cf594999a8a026f09": {
     "analysis": {
       "analysis": "作者分析了模仿学习策略在理想条件下性能强但在小误差和分布偏移下脆弱的问题，以及现有修复方法的计算开销，从而提出在线残差策略自适应框架。",
@@ -1100,6 +1445,74 @@
     "provenance": {
       "analyzed_at": "2026-09-02T08:59:56.995719Z",
       "input_hash": "1bff39822b682568a1381183c8f50e136b9a8bcee88005be05e058cf057d80b2",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "16ac3dc5b0f4ceb570853733d9e376a1d201c8fda4f6e7baf0ddfe9841add3e7": {
+    "analysis": {
+      "analysis": "作者指出数据层面目标级指令不足以为执行细节提供监督，从而限制了可操控策略学习；通过构建细粒度数据集和混合训练实验，定量验证了细粒度监督在性能与操控性上的优势。",
+      "challenges": [
+        "现有机器人数据集缺乏与轨迹对齐的细粒度语言标注",
+        "细粒度标注的人工成本高，需自动化工具",
+        "平衡细粒度与目标级指令的训练比例以优化性能"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "细粒度监督显著提升目标级成功率",
+          "location": "abstract",
+          "quote": "FG-only improves over Raw-only by +1.4 to +8.1 success-rate points across settings."
+        },
+        {
+          "claim": "最佳混合比例在真实机器人上取得显著提升",
+          "location": "abstract",
+          "quote": "The best mixed setting reaches 86.8%/82.5% in RoboTwin simulation and 62.7/100 in real-world dual-arm manipulation (vs. 49.9 Raw-only)."
+        },
+        {
+          "claim": "细粒度监督提升可操控性，尤其在姿态、颜色和接近方向",
+          "location": "abstract",
+          "quote": "the largest real-world gains appear on pose (+23), color (+18), and approach direction (+18)--factors where goal-level instructions provide no guidance."
+        }
+      ],
+      "experiments": [
+        "细粒度监督相对纯原始指令在成功率上提升+1.4到+8.1个百分点",
+        "最佳混合设置（FG:Raw=1:2至1:1）在RoboTwin仿真达到86.8%/82.5%，真实双臂操作62.7/100（对比Raw-only 49.9）",
+        "细粒度监督在姿态、颜色、接近方向维度上带来显著提升，分别达+23、+18、+18"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "在目标级指令基础上补充细粒度执行说明（如何执行）可提升策略的稳定性和操控性，且两种粒度指令呈倒U型互补关系，最佳混合比例可显著提升成功率。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "数据构建工具：统一10个开源数据集，生成人类验证的细粒度轨迹数据FineVLA-Data",
+        "构建评估基准：包含500个视频、11,631个原子事实和1,030个VQA问题",
+        "开发机器人专用VLM标注器用于细粒度自动标注",
+        "采用混合比例（FG:Raw=1:2到1:1）训练可操控VLA策略"
+      ],
+      "motivation": "现有VLA策略通常只能完成目标级任务，缺乏对执行细节（如主动臂、接近方向、接触区域）的遵循能力，导致策略不可操控且视频理解受限。",
+      "primary_topic": "细粒度指令对齐的视觉-语言-动作模型训练及其对可操控策略的影响",
+      "relation_to_research": "直接相关于VLA模型的可操控动作生成，通过细粒度指令对齐提升真实机器人操作的精确性和用户可控性，同时涉及数据集构建和系统训练策略。",
+      "relevance_score": 9,
+      "setting": "基于开源机器人数据集构建细粒度指令-轨迹数据，训练VLA策略并在仿真和真实双臂操作任务中评估",
+      "tags": [
+        "视觉-语言-动作模型",
+        "细粒度指令",
+        "数据集构建",
+        "真实机器人评测",
+        "可操控策略"
+      ],
+      "title_zh": "FineVLA：面向可操控视觉-语言-动作策略的细粒度指令对齐",
+      "uncertainty": "第一单位和通讯作者未在摘要中提供；实验数字来自摘要，但可能受摘要表述简化影响；数据集规模等细节需参考正文。",
+      "why_recommended": "提出开源细粒度数据框架和基准，系统验证了细节指令的价值，为可操控VLA策略设计提供直接参考，并展示真实机器人上的提升。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:28.378634Z",
+      "input_hash": "ce5a70ff36b871e2ae61f4b3bf399f2cdf77351077e8f7a989d58fed66845924",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -1856,6 +2269,137 @@
       "reading_scope": "full_text"
     }
   },
+  "1e6d21e4a7d5de366cc7e46b3ccca8393c13de581cfa77b5844353ca484fc13d": {
+    "analysis": {
+      "analysis": "作者通过对照实验（移除世界模型的匹配控制）验证世界模型的价值，并用离线消融实验证明文档内容而非形式是有效的。",
+      "challenges": [
+        "隐式信念难以利用",
+        "持续修订信念文档",
+        "上下文窗口溢出影响性能"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "BCO通过将信念写成持久文档并修订，提升了优化性能",
+          "location": "abstract",
+          "quote": "We introduce Belief-Calibrated Optimization (BCO), a method that writes that belief down as a persistent in-context document and continually revises that document as new candidates are evaluated."
+        },
+        {
+          "claim": "世界模型文档中内容而非形式是关键信息载体",
+          "location": "abstract",
+          "quote": "The comparison indicates that the document carries reusable information in its content, not only in its form."
+        }
+      ],
+      "experiments": [
+        "在五个基准上（记忆问答、工具使用问答、代码行动应用代理、终端代理）BCO达到比对照组更高的训练通过率；该差距在未见过的验证集上保持；在目标模型交换后，BCO脚手架在多数测试任务上领先，但当上下文窗口溢出时性能下降；离线消融显示，使用累积文档的预测器比无文档或伪造内容的预测器更准确。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过将信念显式写成持久文档并持续更新，形成一个世界模型，能够显著提升优化性能，且该文档携带可复用的信息内容。",
+      "limitations": [
+        "上下文窗口溢出可能导致BCO脚手架任务未完成；作者未明确其他局限，材料未说明"
+      ],
+      "method": [
+        "将编码智能体作为优化器，读取当前分数和轨迹，迭代编辑源代码",
+        "引入持久化的上下文文档，明确表达对环境响应的信念（世界模型）",
+        "随着新候选评估持续修订该文档",
+        "在标准优化循环外仅添加世界模型模块"
+      ],
+      "motivation": "在LLM智能体中，对环境的信念（即什么出错、如何修改）通常是隐式的，没有被记录和利用，导致后续迭代无法有效利用先前学到的信息。",
+      "primary_topic": "智能体优化的世界模型",
+      "relation_to_research": "本文提出显式世界模型用于智能体优化，与具身智能中的世界模型概念紧密相关，但主要关注LLM智能体的优化过程，而非物理环境；其方法可迁移至具身智能中的动作生成与优化，提供了如何表示和利用世界模型的思路。",
+      "relevance_score": 8,
+      "setting": "基于LLM的智能体优化框架，其中编码智能体作为优化器，迭代修改源代码以提升性能；世界模型以持久文档形式显式维护。",
+      "tags": [
+        "LLM Agent",
+        "优化",
+        "世界模型",
+        "信念校准",
+        "分布式优化"
+      ],
+      "title_zh": "信念校准优化：用于智能体优化的显式世界模型",
+      "uncertainty": "未提供作者机构、通讯作者等元数据；实验细节有限，无法判断具体数值；相关性与具身智能的直接关联较弱，但世界模型方法具有较强迁移性。",
+      "why_recommended": "本文揭示了显式世界模型在优化循环中的价值，对设计更可解释、可更新的世界模型具有启发意义，且优化方法可应用于具身智能中的策略优化。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:20.324065Z",
+      "input_hash": "60fca2facba4f46479d6cba5d5994e773f671e986b2b4080f60583c31a7ce9a3",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "20dee1fcde3f680fd08079355ef657cf237607b2b221ac16dce5b12fd4ce0bde": {
+    "analysis": {
+      "analysis": "作者分析认为VLA提供强局部视觉运动技能，但受限于分布内训练；LLM编码智能体提供语义推理，但解析原语在复杂交互中不足。因此设计混合框架，分工优化。",
+      "challenges": [
+        "部署扰动下的语义重定向",
+        "目标重绑定",
+        "空间布局变化",
+        "局部接触不稳定"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "端到端VLA模型在分布内训练，部署时易失败",
+          "location": "abstract",
+          "quote": "End-to-end Vision-Language-Action (VLA) models provide strong local visuomotor skills, but they are trained on in-distribution task trajectories and often fail under deployment perturbations such as semantic retargeting, goal re-binding, spatial-layout shifts, and unstable local contacts."
+        },
+        {
+          "claim": "Harness VLA将冻结VLA与解析原语组合",
+          "location": "abstract",
+          "quote": "We present Harness VLA, a memory-augmented agentic framework that exposes a frozen VLA as a retryable contact-rich primitive and composes it with a small fixed library of analytic primitives for grounding, staging, transport, navigation, and release."
+        },
+        {
+          "claim": "实验提升显著",
+          "location": "abstract",
+          "quote": "Across perturbed tabletop, household kitchen, and clean-to-randomized bimanual manipulation, Harness VLA improves over the strongest relevant baselines by 38.6 and 25.4 percentage points on LIBERO-Pro and RoboCasa365, respectively, and reaches 58.4% on RoboTwin C2R."
+        }
+      ],
+      "experiments": [
+        "在LIBERO-Pro上相比强基线提升38.6个百分点",
+        "在RoboCasa365上提升25.4个百分点",
+        "在RoboTwin C2R上达到58.4%成功率"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过将冻结的VLA暴露为可重试的接触丰富原语，并利用小型固定解析原语库进行组合，学习这些原语的操作范围，而不扩展技能库，可以扩展VLA的分布外能力。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "构建记忆增强的智能体框架，由规划器、记忆模块和解析原语库组成",
+        "将冻结的VLA作为可重试的接触密集原语，用于局部操作",
+        "使用小型固定解析原语库处理接地、分段、搬运、导航和释放等非接触阶段",
+        "从执行轨迹、全局成功规则和失败模型学习固定原语的操作范围",
+        "在遇到接触失败时，VLA原语可被重试或重新调度"
+      ],
+      "motivation": "端到端VLA模型在分布内训练，部署时面对语义重定向、目标重绑定、空间布局变化和局部接触不稳定等扰动容易失败；纯解析原语难以处理不规则抓取、受限放置和铰接物体交互。",
+      "primary_topic": "视觉语言动作模型的可靠操作与泛化",
+      "relation_to_research": "直接涉及具身智能中的VLA模型，提升其在接触丰富操作中的可靠性和泛化性，与视觉语言动作模型、真实机器人评测和系统优化相关。",
+      "relevance_score": 9,
+      "setting": "具身智能，桌面、厨房场景的双臂操作，包含扰动情况",
+      "tags": [
+        "视觉语言动作模型",
+        "记忆增强智能体",
+        "操作原语",
+        "零样本泛化",
+        "机器人操作"
+      ],
+      "title_zh": "驾驭VLA：通过记忆引导智能体将冻结的VLA转向可靠的操作原语",
+      "uncertainty": "输入材料仅包含摘要，没有提供全文细节，无法确认第一作者单位、通讯作者、方法具体实现和局限性。相关性评估基于摘要内容，研究主题高度贴合。",
+      "why_recommended": "本文提出一种无需微调即可扩展VLA能力的方法，通过记忆引导和原语组合，有效应对部署扰动，对于研究VLA的可靠性和系统集成具有参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:26.953391Z",
+      "input_hash": "dface706666ae5636dd092ef2ff91192d2d9e931fae4e1afa720554dc45b222c",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "2326691ecec1adc2814d8c33ddfb1997c2831181509ef8a8655986e6bb0c4d51": {
     "analysis": {
       "analysis": "作者通过提出训练时接口VICT，将验证器内部的原子检查追踪到动作，并沿依赖验证的证明边重新分配组相对优势，将信用分配从推出侧转移到验证器侧。",
@@ -1912,6 +2456,83 @@
     "provenance": {
       "analyzed_at": "2026-08-31T09:47:18.726565Z",
       "input_hash": "fcf67bc1e250dce66ec081c1e93dfebe47cd62950c8e411582721256802c2f62",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "25913ddc5aa21999ec8162b7068fa6cd1c8e8f59891ca280f1c6a4b8bef2a0cf": {
+    "analysis": {
+      "analysis": "作者通过层内探针分析表明，重建的物理变量相关信息在策略头中保持线性可解码，直到动作输出前一层；并提供理论分析将可恢复性与历史策略和特权信息策略之间的回报差距联系起来。",
+      "challenges": [
+        "部分可观测性要求策略在信息不完整时做出决策",
+        "现有方法要么显式估计缺失变量，要么使用复杂结构处理历史，导致部署负担重",
+        "需要在不增加推理计算的情况下提升运动性能"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "SWAQ在性能上超过最强非外感受基线DWAQ",
+          "location": "abstract",
+          "quote": "Under aligned training settings, SWAQ achieves a 15.0\\% higher peak mean terrain level than DWAQ, the strongest non-exteroceptive baseline"
+        },
+        {
+          "claim": "SWAQ减少了推理计算量",
+          "location": "abstract",
+          "quote": "while using 44.4\\% fewer inference MACs per control step"
+        },
+        {
+          "claim": "循环历史表示被塑造以保留任务相关信息",
+          "location": "abstract",
+          "quote": "propose SleepWalking for Robot Locomotion (SWAQ), a one-stage end-to-end framework that uses next-step privileged physical reconstruction to shape what a recurrent history representation retains during policy learning"
+        },
+        {
+          "claim": "部署的actor仅使用直接历史到动作路径",
+          "location": "abstract",
+          "quote": "the deployed actor uses only a direct history-to-action pathway"
+        },
+        {
+          "claim": "层内探针显示重建变量信息在策略头中保持线性可解码",
+          "location": "abstract",
+          "quote": "Layerwise probes further show that information associated with the reconstructed physical variables remains linearly decodable through the policy head up to the layer preceding the action output"
+        }
+      ],
+      "experiments": [
+        "实验未提供具体数字，但摘要提及与最强非外感受基线DWAQ相比，SWAQ在峰值平均地形水平上提高15.0%，同时每次控制步的推理MAC降低44.4%"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过下一步特权物理重建来塑造循环历史表示，使部署的actor仅使用直接历史到动作的路径，即可在推理时无需外部感知模块，同时达到更高性能并显著降低计算量。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "提出SWAQ，一个单阶段端到端框架，利用下一步特权物理重建来塑造循环历史表示",
+        "部署的actor采用直接历史到动作路径，无需外部感知或显式状态估计",
+        "通过对齐的训练设置与基线比较，评估峰值地形程度和推理计算量",
+        "使用层内探针分析信息保留情况，并提供理论分析支持"
+      ],
+      "motivation": "部分可观测的足式机器人运动任务中，现有方法通常通过显式估计物理变量或处理扩展观测历史来应对。作者认为部分可观测性的本质是信息保留问题，关键在于策略内部状态是否保留任务相关信息，而非信息如何进入网络。",
+      "primary_topic": "足式机器人端到端盲行走策略学习",
+      "relation_to_research": "该研究与具身智能（足式机器人）、系统优化（模型压缩、推理效率）密切相关；虽不涉及世界模型，但通过内部表示构造和语义目标塑造学习过程，与机器人学习表示优化的思路一致。",
+      "relevance_score": 7,
+      "setting": "研究设定",
+      "tags": [
+        "足式机器人",
+        "盲行走",
+        "端到端策略",
+        "表示学习",
+        "部分可观测",
+        "模型压缩"
+      ],
+      "title_zh": "SleepWalking：足式机器人端到端盲行走的特权表示塑造",
+      "uncertainty": "摘要未提供具体实验环境、机器人类型、训练细节和基线配置，导致无法判断其通用性；且缺少通讯作者信息，需依赖全文确认。",
+      "why_recommended": "该论文展示了如何通过特权信息重建辅助目标提升部分可观测条件下的策略性能，同时显著降低推理计算，且无需架构分解，对面向真实部署的低成本运动控制有直接参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:11.109567Z",
+      "input_hash": "8712b87467997a75d38e4e052cdfa9a9658d32fd296f6656c264566bfe1a6436",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -2483,6 +3104,90 @@
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
+    }
+  },
+  "2c49c9281bca15759a68bed56ab7d318475fb99058ead81d79be658445d9a857": {
+    "analysis": {
+      "analysis": "作者引入行为等价核（BEK），基于潜在世界模型的回滚结果比较轨迹片段，并采用MDL和回报保持门控筛选抽象。",
+      "challenges": [
+        "定义连续动作轨迹的行为等价性",
+        "现有LLM判断未校准到机器人动力学",
+        "长时程任务中共享动作轨迹少"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "现有VLA模型是单块的，缺乏可重用抽象",
+          "location": "abstract",
+          "quote": "Most vision-language-action (VLA) models -- OpenVLA, $\\pi_0$, RT-2, RDT-1B -- are monolithic: they emit raw motor commands or short action chunks without organizing behavior into reusable abstractions, so they degrade on long-horizon tasks and resist interpretation."
+        },
+        {
+          "claim": "行为等价核（BEK）基于潜在世界模型的回滚",
+          "location": "abstract",
+          "quote": "Its sleep phase clusters motor-program fragments under a Behavioral-Equivalence Kernel (BEK) computed from rollouts of a learned latent world model $M_\\phi$"
+        },
+        {
+          "claim": "增大世界模型容量实际上损害性能",
+          "location": "abstract",
+          "quote": "First, enlarging the world model from 188M to 430M parameters worsened performance on 4 of 4 suites, so capacity alone does not help."
+        },
+        {
+          "claim": "训练目标比容量更重要",
+          "location": "abstract",
+          "quote": "Second, the training objective matters far more: adding an auxiliary supervised contrastive (InfoNCE) loss during world-model warmup substantially improves sleep-phase clustering"
+        },
+        {
+          "claim": "性能优于最强基线",
+          "location": "abstract",
+          "quote": "beating the strongest published baseline on all 4 suites by a mean $\\Delta = +0.184$."
+        }
+      ],
+      "experiments": [
+        "在LIBERO 4个套件上，增大世界模型从188M到430M参数导致NMI在4/4套件上下降",
+        "添加SupCon InfoNCE损失后，NMI在n=3种子下：object 0.462±0.021，spatial 0.867±0.025，goal 0.915±0.013，LIBERO-10 0.754±0.010",
+        "BEK+InfoNCE优于最强基线（平均Δ=+0.184）",
+        "跨provider分析（n=12）的95% bootstrap置信区间为[0.683, 0.729]，均值0.705",
+        "睡眠阶段产生真实LIBERO任务语言库：解码器使用3个已接纳抽象中的2个，重写所有256个采样演示"
+      ],
+      "first_affiliation": "Apple",
+      "insight": "世界模型的训练目标（而非容量）是决定技能聚类质量的关键杠杆；使用InfoNCE辅助目标可显著提升睡眠阶段聚类效果。",
+      "limitations": [
+        "交叉provider分析中，仅libero_goal清除0.70阈值；libero_object和libero_spatial未清除（分别低0.031和0.005）",
+        "无标签InfoNCE在libero_10上失败，需窗口条件采样；种子方差更高",
+        "分离头（separable_VPk）仍落后legacy_cosine 0.062 NMI；未预注册的负结果"
+      ],
+      "method": [
+        "睡眠阶段：使用行为等价核（BEK）聚类运动程序片段",
+        "BEK基于潜在世界模型M_phi的回滚分布与预期回报的散度",
+        "唤醒阶段：在Hindley-Milner词汇上生成类型化lambda项",
+        "通过图书馆条件化整流流动作解码器（LCAD）生成动作",
+        "遵循MDL和回报保持门控接纳抽象"
+      ],
+      "motivation": "现有VLA模型是单块的，缺乏可重用的抽象，导致长时程任务表现差且不可解释；现有技能发现方法未考虑基于动态的行为等价性。",
+      "primary_topic": "机器人技能发现与库学习",
+      "relation_to_research": "论文直接涉及视觉语言动作模型、世界模型和技能库学习，提出使用潜在世界模型定义行为等价性，并采用类型化程序抽象构建可重用库。其关于世界模型目标形状的发现与系统优化和模型压缩相关：容量提升并非充分条件，目标设计更为关键。",
+      "relevance_score": 8,
+      "setting": "LIBERO基准套件（真实数据）",
+      "tags": [
+        "视觉语言动作模型",
+        "技能发现",
+        "世界模型",
+        "行为等价性",
+        "类型化程序学习",
+        "无监督学习"
+      ],
+      "title_zh": "REFACTOR-VLA：无监督的带类型运动程序库学习",
+      "uncertainty": "结果基于LIBERO模拟基准，未在真实机器人上验证；部分方法细节（如BEK定义）在摘要和片段中不完整。",
+      "why_recommended": "为VLA技能发现提供了新颖的动力学感知等价性定义和两阶段库学习方法，实证表明训练目标比模型容量更重要，对设计高效、可解释的VLA系统有直接启发。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:13.888614Z",
+      "input_hash": "a82f2a123e1dba59e198b7bce757a1398b4cc5ed5e99a041f7dc233d6baa1fd3",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
     }
   },
   "2c953918856ed5f642b2b07ccbb688bfd49829a7f943da6f487eeec753991479": {
@@ -3935,6 +4640,70 @@
       "reading_scope": "abstract"
     }
   },
+  "48d2c60ebeac13cc2f7ca1d81b89945d55376a46456cdc0fe7400022ca20effd": {
+    "analysis": {
+      "analysis": "作者通过提出PMI向量来减少无条件分布的影响，并利用加性结构预测下游任务分数。",
+      "challenges": [
+        "不能直接观察复合提示操作对应的对数似然向量",
+        "需减少无条件分布的影响以更好地反映训练数据相关差异"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "平方欧氏距离近似KL散度",
+          "location": "abstract",
+          "quote": "squared Euclidean distances between models are approximately proportional to the KL divergence between the corresponding conditional distributions."
+        },
+        {
+          "claim": "映射能捕捉全局结构和提示修改效应",
+          "location": "abstract",
+          "quote": "the maps capture meaningful global structure, including relationships to model attributes and task performance. The representation also captures systematic shifts induced by prompt modifications and their approximate additive compositionality"
+        }
+      ],
+      "experiments": [
+        "在大量公开语言模型上进行实验，表明映射能捕捉有意义的全局结构，包括与模型属性和任务性能的关系",
+        "实验显示表示能捕捉提示修改引起的系统性变化及其近似的加性组合性",
+        "使用向量预测下游任务分数并近似复合提示操作的效果",
+        "在某些情况下，基于PMI的模型映射能更好地反映训练数据相关差异"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "语言模型之间的平方欧氏距离近似与其条件分布的KL散度成正比，该表示能捕捉模型的全局结构、系统提示变化及加性组合性。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "使用对数似然向量表示语言模型在提示-响应对上的条件分布",
+        "构建模型映射，使平方欧氏距离近似KL散度",
+        "利用向量的加性结构近似复合提示操作的效果",
+        "引入PMI向量以降低无条件分布的影响"
+      ],
+      "motivation": "提出一种通过提示-响应对的对数似然向量来表示语言模型，并构建模型映射以比较其条件分布的方法。",
+      "primary_topic": "语言模型行为分析与分布映射",
+      "relation_to_research": "该研究与具身智能、世界模型等关系很弱，主要涉及语言模型行为分析，与系统优化无直接关联。其方法可类比为模型可解释性和行为预测工具，但无法直接迁移到具身智能或机器人学习。",
+      "relevance_score": 3,
+      "setting": "该研究针对语言模型的条件分布，而非具身智能或机器人学习场景。",
+      "tags": [
+        "语言模型",
+        "模型映射",
+        "KL散度",
+        "对数似然向量",
+        "PMI向量",
+        "提示工程"
+      ],
+      "title_zh": "基于对数似然向量的语言模型提示-响应分布映射",
+      "uncertainty": "无法确认作者机构、通讯作者和局限性，因为仅基于摘要。相关性评分较低，因为主题与具身智能和物理人工智能不直接相关。",
+      "why_recommended": "对于研究语言模型内部表示和提示敏感性的研究者可能有一定兴趣，但对于具身智能研究者，除非涉及语言模型作为交互组件的行为分析，否则参考价值有限。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:04.385010Z",
+      "input_hash": "1f9b55ec2fb1dbea7a5ecb75028a2f1e58198b71c9470698c5dd3db63698d698",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "499934412cb72c55aa3a073c8fc3fc5441dee8ab0ebe146b26d42781b06a0860": {
     "analysis": {
       "analysis": "作者分析了现有TTS方法的局限性：需要额外训练、验证器或多次前向传播，且仅干预动作解码；提出用自不确定性同时调节感知与动作，形成闭环反馈。",
@@ -4006,6 +4775,69 @@
       "reading_scope": "full_text"
     }
   },
+  "49ba8d991315beaece4220f326af7105b94e381f9b3fed46469c2ef57bd1977d": {
+    "analysis": {
+      "analysis": "作者分析了世界模型预测质量与 rollout 成功率之间的相关性，以提供对WAM性能和改进方向的见解。",
+      "challenges": [
+        "将3D信息融入现有RGB-based的扩散世界动作模型",
+        "保持预训练视觉/物理先验不丢失",
+        "在进行世界预测的同时提高行动生成质量"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "SA-WAM通过将深度信号嵌入预训练VAE输入域，利用几何信息增强世界动作模型。",
+          "location": "abstract",
+          "quote": "We use a nonlinear encoding that maps the unbounded depth signal into the bounded input domain expected by the frozen VAE tokenizer. This allows us to reuse the tokenizer without 3D-specific fine-tuning, incorporating geometric information without sacrificing the pretrained priors."
+        },
+        {
+          "claim": "在RoboCasa和LIBERO-Plus基准上达到最先进结果，并在真实机器人评估中超过强基线。",
+          "location": "abstract",
+          "quote": "SA-WAM achieves state-of-the-art results on the RoboCasa and LIBERO-Plus benchmarks, while simultaneously improving future-state predictions. Furthermore, SA-WAM outperforms strong baselines in real-world evaluation using a UR5 robotic arm, with strong gains in randomized environments."
+        }
+      ],
+      "experiments": [
+        "在RoboCasa和LIBERO-Plus基准上达到最先进结果，并用效果提升未来状态预测",
+        "真实世界评估使用UR5机械臂，性能优于强基线，在随机环境中提升明显",
+        "具体数字未在摘要中提供"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过非线性编码将无界深度信号映射到冻结VAE的输入域，可复用预训练分词器，无需微调即可融合3D信息，提升世界模型预测和行动生成。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "使用预训练视频扩散模型作为基础，联合预测动作、RGB和深度",
+        "设计非线性编码，将无界深度映射到冻结VAE的输入域",
+        "在单一扩散骨干中实现RGB、深度和动作预测，实现3D感知世界建模"
+      ],
+      "motivation": "现有的世界动作模型仅使用RGB观测，缺乏3D信息，限制了空间理解和物理先验的利用；作者希望在不丢失预训练先验的前提下引入几何信息。",
+      "primary_topic": "世界动作模型（WAM）结合3D空间感知",
+      "relation_to_research": "直接相关：SA-WAM属于世界动作模型（WAM），旨在联合预测未来观测和动作，利用3D信息增强空间感知；在物理模拟和真实机器人上评估，体现真实世界泛化能力。",
+      "relevance_score": 10,
+      "setting": "机器人策略学习，利用预训练视频扩散模型，在仿真基准和真实机器人上评估",
+      "tags": [
+        "World Action Model",
+        "3D-aware",
+        "Latent Diffusion",
+        "Robot Policy Learning",
+        "RGB-D Prediction",
+        "Action Prediction"
+      ],
+      "title_zh": "通过几何潜在扩散实现空间感知的世界动作模型",
+      "uncertainty": "摘要未提供作者单位和通讯作者信息，实验具体数字缺失，第一单位未知；未知方法细节和实验规模。",
+      "why_recommended": "论文提出了融合3D几何信息到世界动作模型的具体方法，解决了RGB-only局限，提升了行动预测和世界模型质量，对具身智能和实时控制有直接价值，且分析了预测质量与rollout成功率的关系，为系统优化提供方向。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:33.147560Z",
+      "input_hash": "89994d376ccf3a8285c18b079381c14767a5771dd60cb6e438f79c7d180ebd2b",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "49edf8d24f3d709515d723cfc421b97c2324dc558aab92234e5c11665c5ffcbb": {
     "analysis": {
       "analysis": "作者通过对比有无神经影像提及的提示、分析校准改善的时间点、进行专家案例研究和单模型干预，系统分析了表面指标提升的来源，指出真实多模态整合的证据不足。",
@@ -4072,6 +4904,70 @@
     "provenance": {
       "analyzed_at": "2026-08-31T09:46:16.689236Z",
       "input_hash": "e9f55e1aebd58b5fee56f49863eb81ce4e4a0cce9b6548d18a733e2f63500d53",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "4aefa54c7270a7103982b5f65d9d26e222d48898b295f17618ad84eb45d03380": {
+    "analysis": {
+      "analysis": "作者分析现有世界模型训练目标与下游排序器的错配，并提出预测状态匹配目标以对齐。",
+      "challenges": [
+        "现有世界模型的训练目标与下游排序器不一致",
+        "需要区分不同候选动作导致的细微状态差异"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "现有世界模型训练目标与下游排序器不匹配",
+          "location": "abstract",
+          "quote": "this objective is misaligned with the downstream ranker, which relies on predicted states being discriminative across candidates to accurately score them."
+        },
+        {
+          "claim": "提出预测状态匹配目标",
+          "location": "abstract",
+          "quote": "we introduce predicted-state matching, a training objective where the predicted representation must distinguish the true resulting state from those reached by alternative actions."
+        }
+      ],
+      "experiments": [
+        "实验显示该方法在保留的预测状态匹配基准上优于监督式下一状态预测的世界模型",
+        "方法在WebPRMBench上优于仅动作PRM和监督式下一状态世界模型的PRM",
+        "在WebArena-Lite上，使用该世界模型进行测试时动作选择提升了端到端任务成功率"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "提出预测状态匹配的训练目标，使预测表示能区分真实结果状态与替代动作所达状态，从而提升对候选动作的判别能力。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "提出预测状态匹配训练目标，要求预测表示区分真实结果与替代动作的状态",
+        "使用基于WebArena Go-Browse轨迹的分支数据集，每个决策点包含多个替代动作及其结果状态",
+        "在保留的基准上评估预测状态匹配性能",
+        "在WebPRMBench上评估PRM风格的动作排序",
+        "在WebArena-Lite上评估端到端任务成功率"
+      ],
+      "motivation": "现有世界模型通过监督式下一状态预测生成固定表示（如HTML或AXTree），但这些目标与下游排序器不匹配，因为排序器依赖于预测状态在候选动作间的区分性来进行准确评分。",
+      "primary_topic": "判别式世界模型用于网络智能体的动作选择",
+      "relation_to_research": "与具身智能和世界模型相关，因为世界模型用于预测状态和动作选择，但主要针对网络代理而非物理环境。方法学上可迁移到具身智能中的动作生成与规划。",
+      "relevance_score": 6,
+      "setting": "网络智能体（Web agents）的测试时动作选择",
+      "tags": [
+        "世界模型",
+        "动作选择",
+        "过程奖励模型",
+        "预测状态匹配",
+        "WebArena",
+        "WebPRMBench"
+      ],
+      "title_zh": "针对网络代理的判别式世界模型",
+      "uncertainty": "第一单位、通讯作者和具体实验数字未提供；摘要中未明确提及物理环境，主要针对Web代理，因此相关性给6。",
+      "why_recommended": "本文提出判别式世界模型训练目标，提升动作选择性能，对研究世界模型在动作规划和排序中的应用有价值，方法论可迁移到具身智能。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:40.380879Z",
+      "input_hash": "162501354885936c941529ee2fc30899322be7bde74bd93218266e895b498c7b",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -4865,6 +5761,76 @@
     "provenance": {
       "analyzed_at": "2026-08-31T09:46:48.476837Z",
       "input_hash": "3b5a1f065a073c07722ec9a5dfbb55b9789ef9b17c0e20d396f372a81930cb6c",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "5b340f65f41e41c9f7048bee14125b1c7ad6231a295b3cbca43114ace7fe6185": {
+    "analysis": {
+      "analysis": "材料未说明",
+      "challenges": [
+        "密集演变的视觉输入可能掩盖语义意图",
+        "稀疏语言指导难以覆盖长时程操作细节",
+        "在保持低延迟控制的同时注入意图而不增加可训练参数"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "现有VLA模型在处理密集视觉输入和稀疏语言指导时存在困难",
+          "location": "abstract",
+          "quote": "current vision-language action (VLA) models and other action policies struggle to realize this high-level intelligent behavior under dense, evolving visual inputs and sparse language guidance."
+        },
+        {
+          "claim": "HINT框架在模式转换时调用语义推理，并通过视觉跟踪维持意图",
+          "location": "abstract",
+          "quote": "HINT invokes semantic reasoning only at pattern transitions to resolve the current subtask and target, then maintains this commitment through multi-view grounding and visual tracking."
+        },
+        {
+          "claim": "HINT使用两种视觉接口通信意图而不增加可训练参数",
+          "location": "abstract",
+          "quote": "We explore two visual interfaces-image-space semantic highlighting and attention-prior injection-to communicate the tracked intent to the action policy without introducing additional trainable parameters into the foundation action model."
+        },
+        {
+          "claim": "HINT在长时程任务和分布外变体中提升成功率",
+          "location": "abstract",
+          "quote": "Experiments across three long-horizon tasks and out-of-distribution variants show that HINT substantially improves intent understanding, task progress, and end-to-end success across two foundation policies while preserving low-latency control."
+        }
+      ],
+      "experiments": [
+        "跨三个长时程任务及其分布外变体实验，显示HINT显著提升意图理解、任务进展和端到端成功率（基于两个基础策略），同时保持低延迟控制；未提供具体数值"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "语义意图在操作模式转换时稀疏变化，而连续控制主要依赖物体-手关系的演变，因此应仅在模式转换时调用语义推理，其余时间维持意图承诺。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "提出代理框架HINT，基于人类操作原理仅在模式转换时进行语义推理以解决当前子任务和目标",
+        "通过多视角地面实况和视觉跟踪维持意图承诺",
+        "探索两种视觉接口：图像空间语义高亮和注意力先验注入，以向动作策略通信意图而不增加可训练参数"
+      ],
+      "motivation": "现有VLA模型在密集视觉输入和稀疏语言指导下难以实现高层级智能行为，视觉相关性可能主导语义意图，导致动作遵循视觉捷径而非人类目标。",
+      "primary_topic": "长时程机器人操作中的意图理解与视觉语言动作模型",
+      "relation_to_research": "直接针对视觉语言动作模型的长时程操作，涉及可执行动作生成、意图推理和真实机器人评测，与具身智能和世界模型密切相关，但未提及世界模型或系统优化。",
+      "relevance_score": 9,
+      "setting": "真实机器人长时程操作任务",
+      "tags": [
+        "视觉语言动作模型",
+        "长时程操作",
+        "意图推理",
+        "视觉跟踪",
+        "AI代理"
+      ],
+      "title_zh": "HINT：面向长时程机器人操作的人类意图注入",
+      "uncertainty": "第一单位、通讯作者和具体实验数值未在摘要中提供，因此标为证据未提供；相关性分数假设论文聚焦VLA操作，高度契合研究画像。",
+      "why_recommended": "针对VLA模型在长时程操作中的语义意图漂移问题，提出轻量级代理框架，在不增加参数的前提下提升意图理解和成功率，对具身智能研究和真实机器人应用有重要参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:31.897227Z",
+      "input_hash": "ff5bbf7a3131fcbdfdcb02c1acf45eea46e22e0b52f93cbe4c7e8a1e87398f25",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -6884,6 +7850,83 @@
       "reading_scope": "full_text"
     }
   },
+  "7e6bf20f97d10a849c4ca10973ebaa6b5d80edae53a20785ed68c64467183b4a": {
+    "analysis": {
+      "analysis": "作者通过对比稀疏残差模型与密集MLP在预测精度、参数效率、变化检测F1、跨对象数量迁移、数据效率、自回归误差和规划成功率等方面的表现，分析显式建模变化的优势。",
+      "challenges": [
+        "密集世界模型预测静态场景占主导，浪费参数且注入误差",
+        "整体模型在自回归展开中误差累积导致漂移",
+        "预测模型直接用于规划器时失败，需要针对访问状态进行特征化训练"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "稀疏残差模型比密集MLP在预测精度上高数倍且参数更少",
+          "location": "abstract",
+          "quote": "the sparse/residual model predicts next-state poses 2.5 to 4.6 times more accurately than a dense multilayer perceptron at 8.6 to 11.1 times fewer parameters"
+        },
+        {
+          "claim": "稀疏模型能跨对象数量迁移且保持高性能",
+          "location": "abstract",
+          "quote": "transfers across object counts with zero retraining (99.4 percent F1 retention)"
+        },
+        {
+          "claim": "预测模型在规划器中直接使用失败，但特征化训练后稀疏模型开始工作",
+          "location": "abstract",
+          "quote": "once featurized and trained for the states a planner visits, the sparse model begins to plan (0.23 plus or minus 0.06 success over three seeds) while the dense monolith stays at zero at every seed."
+        },
+        {
+          "claim": "显式建模变化是一种简单有效的偏差",
+          "location": "abstract",
+          "quote": "Modeling what changes, rather than re-predicting the whole world, is a simple, effective bias for object-centric physical AI"
+        }
+      ],
+      "experiments": [
+        "在MuJoCo桌面推物体任务中，对象数量从3到8，稀疏残差模型的下一状态位姿预测精度比密集MLP高2.5至4.6倍，参数数量减少8.6至11.1倍",
+        "变化检测F1达到0.80至0.87，而密集基线退化",
+        "跨对象数量零微调迁移，F1保持99.4%",
+        "使用四分之一数据达到约90%的全数据准确率",
+        "在自回归展开中误差累积更小，接近无运动基线，而密集模型漂移",
+        "在采样规划器内，仅预测模型失败（真实模拟器用相同规划器成功），但特征化后针对规划器访问状态训练的稀疏模型开始规划（成功率0.23±0.06，三个种子），密集模型成功率始终为零"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "显式建模变化（只更新被门控标记的对象）比重新预测整个世界更简单有效，可显著提高预测精度和参数效率，并减少自回归误差累积。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "每对象变化门控：识别哪些对象属性需要更新",
+        "残差增量头：仅对门控标记的对象进行小幅度扰动预测",
+        "在预测基础上进行特征化并针对规划器访问的状态进行训练，以实现规划"
+      ],
+      "motivation": "传统整体世界模型每步预测整个下一状态，浪费容量并注入误差；作者认为显式建模变化（每对象变化门加残差增量头）是一种更有效、更可解释的物理预测与控制偏差。",
+      "primary_topic": "稀疏残差世界模型用于对象中心操作",
+      "relation_to_research": "直接相关：本文提出稀疏残差世界模型，强调显式建模场景变化，减少计算冗余并提升预测效率，属于世界模型和物理AI在机器人操作任务中的核心进展；同时涉及模型压缩（参数效率）和对象中心推理，与具身智能系统优化紧密相连。",
+      "relevance_score": 9,
+      "setting": "仿真环境（MuJoCo桌面推物体任务），对象数量从3到8个，使用采样规划器进行控制评价",
+      "tags": [
+        "世界模型",
+        "残差预测",
+        "稀疏门控",
+        "对象中心",
+        "操作任务",
+        "模型压缩",
+        "物理人工智能"
+      ],
+      "title_zh": "建模变化：用于对象中心操作任务的稀疏残差世界模型",
+      "uncertainty": "未提供机构、通讯作者、代码链接等元数据；实验结果基于摘要，具体实验细节和基线设置未完全披露。",
+      "why_recommended": "提供一种简单有效的世界模型设计原则（建模变化而非整个场景），大幅提升预测精度和参数效率，减少误差累积，并在规划场景中优于密集模型，对当前研究者在设计高效、可扩展的具身智能世界模型时具有启发价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:46.364428Z",
+      "input_hash": "9b1de715daeff8efad106fb63e0d528b2b46caab135e740a8da61691af61e138",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "7e9c3422f3040100de01f044828d688846bf0ff16666828878530135da6e0ff7": {
     "analysis": {
       "analysis": "作者通过分析SF20K-Test基准，揭示数据泄露有限，强调长时推理需求，并展示现有VLM的性能局限。",
@@ -8033,6 +9076,75 @@
       "reading_scope": "abstract"
     }
   },
+  "92422c39d9cc810fc4716eeaab2d4c074a7ca97ba143da1c113cbb9e8a43011d": {
+    "analysis": {
+      "analysis": "作者通过对比世界模型增强策略与基线在仿真中的成功率和行走质量，并在物理机器人上部署验证，分析预测性循环特征的作用。",
+      "challenges": [
+        "立足点稀疏、不连续或几何受限",
+        "单个失误后果严重",
+        "无显式立足点标签"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "世界模型生成的预测性循环特征无需显式立足点标签即可指导策略",
+          "location": "abstract",
+          "quote": "Conditioned on proprioception and a single onboard depth image, the world model produces a predictive recurrent feature that guides the policy, without explicit foothold labels."
+        },
+        {
+          "claim": "在仿真中WM-LOCO在间隙和踏脚石上完全成功，而基线失败",
+          "location": "abstract",
+          "quote": "In simulation, WM-LOCO succeeds on gaps and stepping stones where a matched baseline fails completely, and matches the baseline's success rate on stairs while improving stride efficiency and reducing pelvis acceleration."
+        },
+        {
+          "claim": "物理人形机器人部署达到93.3%平均成功率",
+          "location": "abstract",
+          "quote": "it traverses all three terrain classes with an average success rate of 93.3%."
+        }
+      ],
+      "experiments": [
+        "仿真：在间隙和踏脚石上WM-LOCO成功，基线完全失败；在楼梯上匹配基线成功率，同时提高步幅效率并降低骨盆加速度",
+        "物理Unitree G1：平均成功率93.3%"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "学习近期未来观测和奖励的预测性摘要可以为策略提供预期信息，而无需显式立足点标签。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "联合训练循环世界模型和PPO策略",
+        "条件为本体感觉和单张深度图像",
+        "世界模型生成预测性循环特征引导策略",
+        "无需显式立足点标签",
+        "在仿真和真实机器人上部署"
+      ],
+      "motivation": "立足点受限地形（如踏脚石、间隙）中，单个失误导致恢复空间小，依赖当前可见地形的策略容易失败，需要预测性信息。",
+      "primary_topic": "世界模型增强的视觉运动控制用于人形机器人行走",
+      "relation_to_research": "直接涉及世界模型增强的视觉运动控制，用于人形机器人，与具身智能、世界模型、动作生成和真实机器人评测紧密相关",
+      "relevance_score": 9,
+      "setting": "立足点受限地形（踏脚石、间隙、窄楼梯）上的人形机器人行走，包括仿真和物理Unitree G1实验",
+      "tags": [
+        "世界模型",
+        "视觉运动控制",
+        "人形机器人",
+        "PPO",
+        "深度图像",
+        "模拟到真实迁移"
+      ],
+      "title_zh": "世界模型增强的视觉运动控制用于立足点受限地形上的人形机器人",
+      "uncertainty": "作者单位和通讯作者未提供；实验细节未完整呈现，但摘要明确说明仿真和物理实验结果",
+      "why_recommended": "该论文展示了世界模型在挑战性地形上为视觉运动策略提供预测性信息，并成功迁移到真实机器人，对研究世界模型在具身智能中的应用和实时控制具有直接参考价值"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:45.791082Z",
+      "input_hash": "72d346f7c7303ebc37e5fcde9961bd8b22af6e673642f61b3b09d533c22591e0",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "952314956812fbf8bc7c76bb895f5bf352f82ba5c0d74e504a1232d79428be6f": {
     "analysis": {
       "analysis": "作者观察了动作专家中动作到观察交叉注意力的动态变化，发现随着预测视界延长，注意力变得分散且熵达到平台，并将其与预测误差关联，从而提出利用这种内部信号进行动态截断。",
@@ -8366,6 +9478,84 @@
       "reading_scope": "abstract"
     }
   },
+  "96af9e81b9a72c0ac721e43c66afaad97133717869c4c42ed43ad23563f1dd5b": {
+    "analysis": {
+      "analysis": "作者分析世界动作模型产生的多样化未来可以视为可证伪的假设，通过自验证机制筛选一致且可靠的假设，利用生成信号进行排序，并将执行后的误差作为反馈训练在线预测器，来改进未来选择。",
+      "challenges": [
+        "视觉未来生成的随机性导致动作结果不稳定",
+        "如何利用内部生成信号对多种未来假设进行排序",
+        "在有限监督下提升任务成功率，尤其是在长时序预测任务上"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "世界动作模型生成的未来会强烈影响动作结果，WCD通过排序机制改进选择",
+          "location": "abstract",
+          "quote": "empirical observations indicate that the results can strongly depend on which future is selected"
+        },
+        {
+          "claim": "WCD利用内部生成信号对多种候选进行排序",
+          "location": "abstract",
+          "quote": "ranks them using internal generative signals: flow-based video surprisal for visual plausibility and action path effort for action-generation stability"
+        },
+        {
+          "claim": "WCD在RoboTwin 2.0上提升了Hard成功率",
+          "location": "abstract",
+          "quote": "WCD improves Hard success under limited randomized-scene supervision from $55.80\\%$ to $60.90\\%$"
+        },
+        {
+          "claim": "WCD在真实Franka视觉偏移测试中显示定性鲁棒性",
+          "location": "abstract",
+          "quote": "shows qualitative robustness on real Franka visual-shift tests"
+        },
+        {
+          "claim": "测试时扩展更依赖选择可靠未来而非采样更多",
+          "location": "abstract",
+          "quote": "test-time scaling for WAMs depends less on sampling more futures than on selecting reliable ones"
+        }
+      ],
+      "experiments": [
+        "在RoboTwin 2.0上，Hard成功率在有限随机场景监督下从55.80%提升到60.90%",
+        "Horizon-3任务获得+16.43的提升",
+        "真实Franka视觉偏移测试显示定性鲁棒性"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "世界动作模型的测试时扩展效果更依赖于选择可靠的未来，而非单纯增加采样数量。",
+      "limitations": [
+        "作者未明确陈述局限，但摘要提及定性鲁棒性，暗示缺乏定量结果"
+      ],
+      "method": [
+        "WCD框架：将WAM的多个采样未来视为假说，通过自验证排序",
+        "利用流基视频惊异度评估视觉合理性，利用动作路径努力评估动作生成稳定性",
+        "执行后，用实际观测审计选择的想象，计算想象-现实差异，训练轻量在线预测器，用于后续候选选择",
+        "不更新骨干模型，实现延迟自验证转化为执行前可靠性估计"
+      ],
+      "motivation": "世界动作模型通过随机生成视觉未来并解码动作来控制机器人，但生成的未来会强烈影响最终动作，缺乏可靠的未来选择机制。",
+      "primary_topic": "世界动作模型的测试时规划与自验证解码",
+      "relation_to_research": "直接相关：本文研究世界动作模型（WAM）的测试时规划，属于物理人工智能和世界模型范畴，关注可执行动作生成和真实机器人评测，同时涉及推理效率（通过选择可靠未来而非增加采样）。",
+      "relevance_score": 10,
+      "setting": "机器人控制中的视觉未来生成与动作解码，在RoboTwin 2.0模拟和真实Franka机器人上进行评测",
+      "tags": [
+        "世界动作模型",
+        "测试时规划",
+        "自验证",
+        "动作生成",
+        "机器人控制"
+      ],
+      "title_zh": "世界一致解码：世界动作模型的自验证测试时规划",
+      "uncertainty": "未提供全文，因此无法验证具体方法细节和更广泛的实验。作者机构和通讯作者未在摘要中给出。",
+      "why_recommended": "本文提出了一种新颖的测试时自验证机制，通过内部生成信号和在线预测器提升WAM的可靠性和任务成功率，展示了测试时扩展的新方向，对于研究世界模型与机器人控制结合的学者具有重要参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:07.642505Z",
+      "input_hash": "37f16ff8b8bd312cf2e015372a08d7a102e8e4d17aa6f7c58017d491d48eb1f2",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "9712ab893bbebd71e9d8d41267b3f20b413f6373deb06c9dc2a9b1e7c3ebe12f": {
     "analysis": {
       "analysis": "作者将问题分解为条件流匹配，通过多个训练阶段解决数据稀缺问题，并利用Heun求解器减少推理步数。",
@@ -8645,6 +9835,79 @@
       "reading_scope": "abstract"
     }
   },
+  "990b9786bd5753aea695df15e808522517fdc560b5e48f1c701596eb59896d3b": {
+    "analysis": {
+      "analysis": "材料未说明作者如何分析问题，但摘要提及通过最小加加速度系统辨识来最小化机器人动力学差异，并通过不确定性感知策略减轻物体建模误差，且敏感性分析揭示对动态摩擦的高敏感性，表明作者进行了系统性的误差分解和影响评估。",
+      "challenges": [
+        "非抓取接触的复杂动力学建模",
+        "对动态摩擦的高敏感性",
+        "仿真到现实的动力学差异"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "现有非抓取投掷方法依赖简化的接触模型和低维参数化，限制了性能。",
+          "location": "abstract",
+          "quote": "Existing approaches rely on model-based optimization with simplified contact models (e.g., dynamic grasping) and low-dimensional trajectory parameterizations, which limit solution quality and reachable workspace."
+        },
+        {
+          "claim": "提出的强化学习方法利用滑动和滚动接触，直接优化关节空间轨迹。",
+          "location": "abstract",
+          "quote": "We propose a reinforcement learning approach that additionally leverages sliding and rolling contact modes and directly optimizes joint-space trajectories without analytical contact models or custom parameterizations."
+        },
+        {
+          "claim": "仿真中达到99%成功率并泛化到未见物体。",
+          "location": "abstract",
+          "quote": "In simulation, the policy achieves 99% success across thousands of configurations and generalizes to unseen objects."
+        },
+        {
+          "claim": "真实部署零样本成功率高，可达97%。",
+          "location": "abstract",
+          "quote": "Deployed zero-shot on a UR5e operating near its physical limits (5 m/s end-effector velocity), our method throws diverse objects including heavy (790 g) and large (20x20x28 cm) items to targets up to 350 cm distance or 180 cm elevation, achieving a 97% real-world success rate."
+        }
+      ],
+      "experiments": [
+        "仿真中，策略在数千种配置中达到99%成功率，并泛化到未见物体。",
+        "敏感性分析显示对质量不确定性具有鲁棒性，但对动态摩擦高度敏感。",
+        "在UR5e上零样本部署，接近物理极限（末端速度5m/s），可投掷重达790g、大小20x20x28cm的物体，目标距离最远350cm或高度180cm，真实世界成功率为97%。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "利用滑动和滚动接触模式，直接优化关节空间轨迹，避免解析接触模型和自定义参数化，可显著提高投掷性能和鲁棒性。",
+      "limitations": [
+        "材料未说明明显的局限性，但隐含对动态摩擦高敏感性。"
+      ],
+      "method": [
+        "将投掷任务建模为马尔可夫决策过程，其状态演化基于目标、物体模型和初始配置。",
+        "在低控制频率下离线规划关节加加速度轨迹，并通过上采样生成平滑的高频速度命令。",
+        "使用最小加加速度系统辨识来缩小仿真到现实的机器人动力学差距。",
+        "训练不确定性感知的策略以处理物体建模误差，尤其是动态摩擦的不确定性。"
+      ],
+      "motivation": "非抓取式投掷可处理大、重、易变形物体并扩展工作空间，但现有方法使用简化的接触模型和低维轨迹参数化，限制了解决方案的质量和可达工作空间。",
+      "primary_topic": "非抓取式机器人投掷的强化学习方法",
+      "relation_to_research": "属于具身智能和机器人操作范畴，涉及生成可执行动作（投掷轨迹）和真实机器人评测，与物理人工智能和系统优化相关（动力学建模和策略优化）。",
+      "relevance_score": 8,
+      "setting": "机器人操作，非抓取式投掷任务，在仿真中训练并零样本部署到真实UR5e机器人上",
+      "tags": [
+        "机器人投掷",
+        "强化学习",
+        "非抓取操作",
+        "仿真到现实迁移",
+        "关节空间规划"
+      ],
+      "title_zh": "非抓取式投掷：强化学习视角",
+      "uncertainty": "缺乏实验细节和对应作者信息，判断基于摘要，且相关性分数较高但非直接涉及视觉语言动作模型或世界模型。",
+      "why_recommended": "该方法展示了强化学习在复杂接触操作中的潜力，其优化关节空间轨迹和最小加加速度辨识的策略可迁移到其他非抓取操作或动态任务，且提供了全面的真实实验验证。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:55.944557Z",
+      "input_hash": "a01afd28106eeb4ad8a175d1624b4a375ef92760a8559e0da03debb5b9ab151e",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "9a29c2931a613bb2d7772850a1c1646f8871fc9e5808b7f4ef2d983a9f58427d": {
     "analysis": {
       "analysis": "作者通过提出一个概念验证框架，使机器人的非线性动力学在设计过程中可预测，使用新的理论工具识别非线性正常模态，并通过仿真和硬件验证其存在。",
@@ -8712,6 +9975,75 @@
     "provenance": {
       "analyzed_at": "2026-09-02T08:59:57.890132Z",
       "input_hash": "0bbf7610537229125b07399051a77dfe1bf99848797cc29083d098130123f28a",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "9aa9f35939ddec32720e54c3fcf92d3c851b0ddc7aabb06428f90220f87e69d2": {
+    "analysis": {
+      "analysis": "摘要中通过提出接口级指标PMR和RAG@10来分析行为模式，揭示了智能体在监控和承诺执行上的规律性不足，未提供更深层分析，材料未说明。",
+      "challenges": [
+        "长时序任务中维持规划连续性",
+        "部分可观测环境下主动监控关键状态",
+        "执行自身规划承诺的可靠性"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "论文提出CivBench基准，用于评估长时序、工具介导环境中的语言模型智能体",
+          "location": "abstract",
+          "quote": "We present CivBench, an open-source benchmark for evaluating language model agents in long-horizon, tool-mediated environments through the Model Context Protocol (MCP)."
+        },
+        {
+          "claim": "引入指标PMR和RAG@10来量化监控和承诺执行行为",
+          "location": "abstract",
+          "quote": "we introduce two interface-level metrics that the environment makes measurable: Proactive Monitoring Rate (PMR), capturing whether agents actively query latent strategic state, and RAG@10, capturing whether commitments stated in structured planning reflections are executed within ten subsequent turns."
+        },
+        {
+          "claim": "智能体在监控和承诺执行上显示出系统性不足",
+          "location": "abstract",
+          "quote": "Agents under-monitor strategically relevant state that is available but requires explicit querying: despite playbook guidance to query victory progress every 20 turns, agents do so only every 30 to 75 turns, and in 7 of 20 detectable defeats they failed to query within the 20 turn warning window before game end."
+        }
+      ],
+      "experiments": [
+        "试点运行涵盖四个模型家族，23次可接受运行",
+        "尽管指导每20个回合查询胜利进度，智能体每30-75回合才查询一次",
+        "在20次可检测失败中，有7次在游戏结束前20回合警告窗口内未查询",
+        "RAG@10指标范围在48.2%至65.8%之间"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "在充分工具访问和明确指令下，智能体仍出现对战略性状态监控不足和短期承诺执行不一致的系统性偏差，这些偏差被解释为指令遵循下的偏离而非能力缺失。",
+      "limitations": [
+        "样本是试点，非模型排名，聚合结果不能可靠区分模型",
+        "材料未明确陈述其他局限"
+      ],
+      "method": [
+        "提出CivBench开源基准，集成MCP协议，提供76个MCP工具和叙述层转换视觉游戏状态",
+        "引入两个接口级指标：主动监控率（PMR）和RAG@10，量化智能体主动查询状态和短期承诺执行",
+        "采用共享playbook协议，在四个模型家族上进行了23次可接受运行作为试点样本"
+      ],
+      "motivation": "现有基准缺乏对长时序、工具介导环境中智能体持续规划、状态监控和执行能力的系统评估，需要新的基准和指标来刻画行为模式。",
+      "primary_topic": "长时序工具介导环境中的语言模型智能体评估",
+      "relation_to_research": "该基准直接聚焦长时序工具介导智能体，其监控和承诺执行指标与具身智能中的长期规划、状态跟踪和执行一致性相关，可迁移到真实机器人系统和世界模型评估。",
+      "relevance_score": 7,
+      "setting": "在文明VI游戏环境中通过MCP协议评估语言模型智能体，每个回合超过300轮，产生数千次工具调用，部分可观测状态",
+      "tags": [
+        "长时序基准",
+        "工具使用",
+        "模型上下文协议",
+        "语言模型智能体",
+        "规划监控"
+      ],
+      "title_zh": "CivBench：文明VI中工具介导智能体的长时序基准测试",
+      "uncertainty": "第一单位、通讯作者和更详细的技术分析未提供，因为摘要未包含这些信息；相关性分数基于方法与当前主题的迁移性，但非直接同类研究。",
+      "why_recommended": "提供了在部分可观察长时序环境中评估智能体的新方法和指标，并开源环境及日志，有助于研究者在复杂工具使用场景下诊断和提升规划与执行能力。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:06.641380Z",
+      "input_hash": "08f9ac11282b0159fda74c9814bb17823fc27014accb942b4ea02d8afa102f7f",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -9116,6 +10448,143 @@
       "reading_scope": "abstract"
     }
   },
+  "a4452cac67d14fc76938c8d6063491be7f7c4582e8430e1c399201adf5da47b0": {
+    "analysis": {
+      "analysis": "作者通过比较MT2IE分数与已有指标（CLIPScore、VIEScore、VQAScore）与人类判断的相关性、从少量提示恢复官方排名的能力以及跨种子的稳定性来验证其有效性。",
+      "challenges": [
+        "静态基准过时",
+        "评估提示的效率",
+        "跨不同基准的排名一致性",
+        "评估对模型的适应性"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "MT2IE的图像-文本一致性得分与人类判断的相关性更高。",
+          "location": "abstract",
+          "quote": "We show that MT2IE's image-text consistency scores have higher correlation with human judgment than metrics previously introduced in the literature."
+        },
+        {
+          "claim": "MT2IE从20个提示恢复官方排名，提示数量远少于原始基准。",
+          "location": "abstract",
+          "quote": "MT2IE generates prompts that are efficient at probing T2I model performance: closely recovering the official T2I model rankings of three structurally distinct benchmarks from just 20 generated evaluation prompts, 28-105x fewer than the benchmarks' own prompt sets."
+        },
+        {
+          "claim": "MT2IE可适应被测试模型，保持模型得分在信息丰富范围。",
+          "location": "abstract",
+          "quote": "MT2IE can also adapt evaluation to the model being tested: rewriting each prompt based on the model's own measured performance to produce a bespoke per-model benchmark that still recovers the official rankings and keeps the evaluated model in an informative scoring range."
+        }
+      ],
+      "experiments": [
+        "实验表明MT2IE的图像-文本一致性得分与人类判断的相关性高于现有指标。",
+        "从仅20个生成提示中恢复3个结构不同基准的官方模型排名，提示数量比基准自带的少28-105倍。",
+        "与CLIPScore、VIEScore和VQAScore相比，MT2IE在相同提示数下排名更忠实且跨多颗种子更一致。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "单一多模态大语言模型作为评估代理，通过迭代生成提示和评分，可获得与人类判断高度一致的图像-文本一致性评分，并通过少量提示恢复官方模型排名。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "MT2IE框架使用一个MLLM作为评估代理，迭代生成评估提示并评分生成图像。",
+        "利用图像-文本一致性得分评估模型。",
+        "根据被测模型的性能动态改写提示，生成定制化基准。"
+      ],
+      "motivation": "随着文本到图像模型的持续改进，依赖静态数据集的自动评估基准逐渐过时，需要新的动态评估方法。",
+      "primary_topic": "多模态大语言模型用于文本到图像模型的自动评估",
+      "relation_to_research": "该研究属于多模态语言模型评估，与具身智能、世界模型和系统优化无直接关系，但涉及模型评估方法和动态基准设计，可能对多模态评估有间接启示。",
+      "relevance_score": 2,
+      "setting": "研究设定为文本到图像生成模型的自动化评估，提出迭代生成评估提示并评分的评估框架。",
+      "tags": [
+        "多模态大语言模型",
+        "文本到图像生成",
+        "自动评估",
+        "动态基准",
+        "模型排名"
+      ],
+      "title_zh": "多模态语言模型作为文本到图像模型评估器",
+      "uncertainty": "由于仅基于摘要，缺乏详细信息，如实验具体数值、实现细节等，相关性判断可能不够精确。",
+      "why_recommended": "虽然主题非直接相关，但其动态评估框架设计思想可能启发具身智能中模型评估的类似方法，有助于更持久和高效的评估，值得一读。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:13.660597Z",
+      "input_hash": "9dd301c55439418822416ff1de7844290ba4b637b89e32a5e4d834ddf3895a6d",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "a4abaac824093a0413f015357b00d90316565ced98b9f82accdb2f0bcaf16ec8": {
+    "analysis": {
+      "analysis": "材料未说明",
+      "challenges": [
+        "动作空间大",
+        "环境查询开销高",
+        "现有方法不适用于视觉强化学习的连续控制任务"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "SEBA 是一个样本效率友好型的黑盒攻击框架",
+          "location": "abstract",
+          "quote": "We propose SEBA, a sample-efficient framework for black-box adversarial attacks on visual RL agents."
+        },
+        {
+          "claim": "该方法融合了阴影 Q 模型、GAN 和世界模型",
+          "location": "abstract",
+          "quote": "SEBA integrates a shadow Q model that estimates cumulative rewards under adversarial conditions, a generative adversarial network that produces visually imperceptible perturbations, and a world model that simulates environment dynamics to reduce real-world queries."
+        },
+        {
+          "claim": "在基准测试中保持了视觉保真度并大幅减少环境交互",
+          "location": "abstract",
+          "quote": "Experiments on MuJoCo and Atari benchmarks show that SEBA significantly reduces cumulative rewards, preserves visual fidelity, and greatly decreases environment interactions compared to prior black-box and white-box methods."
+        }
+      ],
+      "experiments": [
+        "在 MuJoCo 和 Atari 基准上的实验表明，SEBA 显著降低了累积奖励（未提供具体数值）",
+        "保持视觉保真度（未提供具体度量或数值）",
+        "与先前的黑盒和白盒方法相比在环境交互次数上大大减少（未提供具体减少比例）"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过集成阴影 Q 模型、生成对抗网络和世界模型，并在与生成器的两阶段迭代训练中交替学习阴影模型，可以在减少真实环境查询的同时实现强攻击性能，全局框架是 SEBA。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "提出名为 SEBA 的样本高效框架，包含阴影 Q 模型，用于估计在对抗条件下的累积奖励",
+        "集成生成对抗网络，用于产生视觉上不可察觉的扰动",
+        "引入世界模型模拟环境动力学，以减少真实环境查询次数",
+        "采用两阶段迭代训练，交替学习阴影模型和优化生成器"
+      ],
+      "motivation": "视觉强化学习虽在视觉控制和机器人技术上取得了显著进展，但对抗性扰动的脆弱性未被充分探索，现有黑盒攻击方法局限于向量或离散动作强化学习，且由于动作空间过大和过多的环境查询而难以有效应对图像输入的连续控制任务。",
+      "primary_topic": "面向视觉强化学习代理的对抗性攻击",
+      "relation_to_research": "与具身智能、世界模型、物理人工智能有直接关系。论文引入世界模型模拟环境动态以进行高效攻击，涉及模型压缩和系统效率优化（样本效率和查询次数减少），同时可用于鲁棒性分析以支持可执行动作生成的可靠性。",
+      "relevance_score": 7,
+      "setting": "视觉强化学习代理（图像输入、连续控制），在 MuJoCo 和 Atari 基准上进行黑盒攻击",
+      "tags": [
+        "视觉强化学习",
+        "黑盒攻击",
+        "对抗性攻击",
+        "世界模型",
+        "生成对抗网络",
+        "样本效率"
+      ],
+      "title_zh": "SEBA：面向视觉强化学习的样本高效黑盒攻击",
+      "uncertainty": "由于仅有摘要，缺少作者单位、通讯作者、具体实验数值以及超参数和详细攻击设置等信息，相关评分基于方法可迁移性推断，而非直接涉及长时序预测或真实机器人控制。",
+      "why_recommended": "该文提出联合使用生成对抗网络和世界模型来进行扰动攻击与模拟，关注强化学习代理的控制稳健性，在系统优化（减少环境查询）和视觉 RL 攻击方面有独特见解，对于理解视觉策略面临的对抗漏洞及提升世界模型的鲁棒性和效率具有参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:52.857220Z",
+      "input_hash": "70b4d7e35b25c8898dde3f8abb9fbc3f9b31d6cf0d34e2abf7293e563d1f9f78",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "a4aff2a0058c0bb766d463ddc2d48470c641aa1c3ba2b6a36ff852be75327010": {
     "analysis": {
       "analysis": "作者通过三个层面的实验来分析：相关性（几何对齐程度）、构造（单一Procrustes旋转映射）和因果性（旋转残差改变预测结果），系统性验证跨语言对齐的涌现性。",
@@ -9179,6 +10648,76 @@
     "provenance": {
       "analyzed_at": "2026-08-30T02:53:32.967666Z",
       "input_hash": "21b7e5faf462c334d248b1dee7d61d124143877af499bacfcd122c39c2c4b61b",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "a671ed5236cc59fa34a2fc129f936b0b8057a9de552114908a4ad97bb80e946a": {
+    "analysis": {
+      "analysis": "作者分析了现有流式视频理解方法在开销优化上的局限，指出模型深度维度被忽略，并以KV缓存大小与预填充深度成比例增长为关键观察，从而提出浅层索引框架。",
+      "challenges": [
+        "处理连续视频流计算开销大",
+        "现有方法忽略模型深度维度",
+        "全深度预填充昂贵且KV缓存增长"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "流式视频理解对具身智能重要",
+          "location": "abstract",
+          "quote": "Streaming video understanding is a critical capability for real-world applications, including embodied intelligence, autonomous driving, industrial monitoring, surveillance and early warning, and wearable assistants."
+        },
+        {
+          "claim": "现有方法忽略模型深度维度",
+          "location": "abstract",
+          "quote": "However, most existing methods overlook the dimension of model depth."
+        },
+        {
+          "claim": "ShallowStream利用浅层层进行编码和索引构建",
+          "location": "abstract",
+          "quote": "we propose ShallowStream, a novel framework that leverages the shallow layers of an MLLM to simultaneously perform frame encoding and retrieval index building."
+        },
+        {
+          "claim": "延迟大幅降低",
+          "location": "abstract",
+          "quote": "ShallowStream achieves performance on par with the strongest existing streaming methods, while reducing per-frame prefill latency and 10-second end-to-end latency by up to 52.1x and 11.9x, respectively."
+        }
+      ],
+      "experiments": [
+        "与最强的现有流式方法性能相当；每帧预填充延迟最高降低52.1倍；10秒端到端延迟最高降低11.9倍。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "利用MLLM的浅层同时进行帧编码和检索索引构建，在查询时利用浅层注意力分数进行帧评分和多样性感知选择，避免全深度预填充，大幅降低延迟且保持性能。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "利用MLLM浅层同时进行帧编码和检索索引构建，保持始终在线的轻量级索引（基于浅层KV缓存）",
+        "查询时利用浅层注意力分数对上下文帧评分",
+        "采用多样性感知选择策略检索精确且全面的证据"
+      ],
+      "motivation": "流式视频理解在具身智能、自动驾驶等实际应用中至关重要，但多模态大语言模型处理连续视频流计算开销大，现有方法主要关注视觉令牌剪枝、合并、量化、按需帧检索等，忽略了模型深度维度，导致全深度预填充开销大且KV缓存随深度增长。",
+      "primary_topic": "流式视频理解的高效推理框架",
+      "relation_to_research": "该方法属于流式视频理解的高效推理创新，直接对齐具身智能中实时感知与长时序处理的推理效率需求；其浅层索引与关键帧检索策略可迁移至视觉语言动作模型和世界模型的实时动作生成与预测。",
+      "relevance_score": 7,
+      "setting": "算法研究",
+      "tags": [
+        "流式视频理解",
+        "多模态大语言模型",
+        "浅层索引",
+        "KV缓存",
+        "推理加速"
+      ],
+      "title_zh": "ShallowStream：流式视频理解的浅层索引与深层回答策略",
+      "uncertainty": "缺少全文，无法验证方法细节、实验设置和具体数据集；未提供作者单位与通讯信息；相关性评估基于摘要对具身智能的显式提及及计算效率优化潜在价值。",
+      "why_recommended": "本文提出的延迟优化方案对具身智能系统在资源受限、要求实时响应场景（如机器人控制）非常有价值，同时其关于KV缓存增长与模型深度关系的洞察为模型压缩与系统优化提供了新思路。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:39.595319Z",
+      "input_hash": "4f0a3c5af8e5129ee84cb60f5536c601332b773cbcee93f48894daadabdfb719",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -9913,6 +11452,150 @@
     "provenance": {
       "analyzed_at": "2026-08-30T10:04:56.208303Z",
       "input_hash": "979cfb951bb9f8cd5e17b3fd9bed002a23167dab4d2086d11acd92aef2a65bac",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "aee71a1f18a5cb48c7a6663ecfdf4526fd7d1ff63b16ce0ec9ee895c6c925a0c": {
+    "analysis": {
+      "analysis": "材料未说明",
+      "challenges": [
+        "保持动力学一致性",
+        "确保数值稳定性",
+        "分布式模型-智能体耦合的可行性"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "该研究将强化学习智能体与全球天气预报模型耦合进行在线学习",
+          "location": "abstract",
+          "quote": "we couple the Met Office (UKMO) Unified Model (UM) with distributed RL agents through rank-local tensors."
+        },
+        {
+          "claim": "实验显示误差显著降低",
+          "location": "abstract",
+          "quote": "the learnt policy reduces Z$_{500}$ MAE in four of six latitude bands, including reductions of 45.8% and 40.8% in the northern and southern tropics."
+        }
+      ],
+      "experiments": [
+        "训练完成且数值稳定",
+        "相对匹配的本地UM预报+6h，在六个纬度带中四个减少Z500 MAE，北热带和南热带分别减少45.8%和40.8%",
+        "MSLP误差在三个带减少，0-30°N最大减少27.3%"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过分布式模型-智能体耦合和等级局部张量，强化学习智能体可以在全局预报模型中稳定训练，并产生有效的倾向修正。",
+      "limitations": [
+        "单案例实验",
+        "材料未说明更多局限"
+      ],
+      "method": [
+        "将UKMO统一模型与分布式RL智能体通过rank-local张量耦合",
+        "DDPG actor在每大气柱的70个垂直层共享权重，并应用有界的位温倾向修正",
+        "在十个nudged训练预报中，向运行分析nudging以提供反事实目标",
+        "冻结策略在非nudged预报中评估推理"
+      ],
+      "motivation": "机器学习校正需要适应演化中的模型状态，同时保持动力学一致性和数值稳定性。",
+      "primary_topic": "强化学习用于数值天气预报模型校正",
+      "relation_to_research": "与具身智能和世界模型主题弱相关，但涉及在线学习和模型校正，可类比系统优化中的分布式耦合和自适应。",
+      "relevance_score": 5,
+      "setting": "数值天气预报中的在线强化学习，将DDPG智能体与全球天气预报模型耦合",
+      "tags": [
+        "强化学习",
+        "DDPG",
+        "分布式耦合",
+        "数值天气预报",
+        "模型校正"
+      ],
+      "title_zh": "气象局统一模型中通过分布式模型-智能体耦合的在线强化学习",
+      "uncertainty": "作者单位未在摘要中提供，故第一单位未知；通讯作者未标明，故仅写证据未提供；摘要无更多细节，故相关性评分较低。",
+      "why_recommended": "展示了分布式在线学习与部署的可行性，对系统优化和模型校正研究有参考价值；尽管领域不同，但其耦合方法可能启发类似设计。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:42.574034Z",
+      "input_hash": "22d11649bcee52770ede1a8748ca74cd9d3fdf7a89bdcbd1ffc12948b7008b0b",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "b2375438a392e7ad8724c3e03d4a6f7993eba660c3936295fb164fbea37382a2": {
+    "analysis": {
+      "analysis": "作者基于de Finetti定理构建程序，从股票收益数据生成事件，用线性规划计算最大荷兰赌利润作为不一致性度量，从而无需结果标签即可评估。",
+      "challenges": [
+        "无需真实结果标签评估概率一致性",
+        "处理事件间丰富逻辑关系",
+        "衡量不相关上下文对一致性的影响"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "用户隐含地信任语言模型的预测来自一致的世界模型",
+          "location": "abstract",
+          "quote": "Users of language models may implicitly trust that these forecasts fall out of a coherent world model."
+        },
+        {
+          "claim": "程序基于de Finetti定理构建",
+          "location": "abstract",
+          "quote": "In this paper, we evaluate the coherence of language model probabilistic forecasts through a procedure that builds on a theorem due to de Finetti."
+        },
+        {
+          "claim": "使用线性规划计算最大荷兰赌利润作为不一致性度量",
+          "location": "abstract",
+          "quote": "We then use linear programs to compute the largest Dutch-book profit - the profit an arbitrageur could guarantee by betting against model-generated probabilities - which we use as a measure of incoherence."
+        },
+        {
+          "claim": "发现语言模型预测存在显著不一致性",
+          "location": "abstract",
+          "quote": "We find substantial evidence of incoherence in language model forecasts."
+        },
+        {
+          "claim": "不相关上下文细节可增加不一致性一个数量级",
+          "location": "abstract",
+          "quote": "irrelevant contextual details can increase incoherence by an order of magnitude."
+        }
+      ],
+      "experiments": [
+        "实验使用股票收益数据生成事件，未提供具体数据集或数字",
+        "发现语言模型预测存在显著不一致性",
+        "更丰富的逻辑关系会增加不一致性",
+        "不相关上下文细节可使不一致性增加一个数量级"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过荷兰赌程序量化语言模型预测的不一致性，发现存在显著不一致，且逻辑关系越丰富、不相关上下文细节越多，不一致性越大。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "基于de Finetti定理设计一致性检验程序",
+        "从股票收益数据生成事件，向语言模型引出概率预测",
+        "使用线性规划计算最大荷兰赌利润作为不一致性度量",
+        "分析逻辑关系和上下文细节对不一致性的影响",
+        "讨论替代训练策略以改善概率一致性"
+      ],
+      "motivation": "人们越来越多地使用语言模型来支持生活决策，这些决策常涉及概率预测。用户隐含地信任这些预测来自一致的世界模型，因此需要评估语言模型概率预测的一致性。",
+      "primary_topic": "语言模型概率预测的一致性评估",
+      "relation_to_research": "该研究与具身智能、世界模型等主题弱相关，主要涉及语言模型概率一致性，但可能间接影响世界模型中的概率推理可靠性。",
+      "relevance_score": 2,
+      "setting": "理论分析与实证评估",
+      "tags": [
+        "语言模型",
+        "概率一致性",
+        "de Finetti定理",
+        "荷兰赌",
+        "线性规划"
+      ],
+      "title_zh": "语言模型的荷兰赌书",
+      "uncertainty": "未提供作者机构、通讯作者和具体实验数据细节，相关性判断基于摘要内容。",
+      "why_recommended": "该研究提出一种无需结果标签即可评估概率一致性的方法，对需要可靠概率预测的世界模型和决策系统有潜在参考价值，但非直接相关。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:59.483634Z",
+      "input_hash": "3415eb4e42eb4b02d6b3f0ec8c4f4d296f76a5a19ff0274edbd358994da6a71c",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -10769,6 +12452,136 @@
       "reading_scope": "abstract"
     }
   },
+  "c32034261b7cd9966510bdb7e3722676ca8ad9c5d08c182fddb2419d765f18d4": {
+    "analysis": {
+      "analysis": "作者通过设计动态top-k的Quantile Routing实现token自适应的专家分配，并控制平均计算预算；结合混合注意力架构和分阶段课程预训练，系统性地优化了模型能力、长上下文扩展性和推理延迟。",
+      "challenges": [
+        "如何在极低激活参数下保持模型整体能力",
+        "如何在长上下文场景下维持推理效率",
+        "如何平衡专家利用率和动态路由的算力开销"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "模型激活参数极少但性能接近更大模型",
+          "location": "abstract",
+          "quote": "Turing-20B-A2B achieves, at the base-model stage, overall general capability exceeding Qwen3-8B Base and approaching Qwen3.5-9B Base"
+        },
+        {
+          "claim": "模型针对长上下文和延迟敏感的物理AI应用设计",
+          "location": "abstract",
+          "quote": "designed for long-context and latency-sensitive physical AI applications"
+        }
+      ],
+      "experiments": [
+        "在基础模型阶段，整体通用能力超越Qwen3-8B Base，接近Qwen3.5-9B Base。",
+        "保持较强的长上下文性能，并具有良好的prefill延迟扩展性。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过动态top-k的Quantile Routing、混合注意力和分阶段课程预训练，可以在激活参数极少的情况下达到接近更大模型的通用能力，并保持高效的长上下文推理。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "采用20B参数MoE模型，每token激活约2B参数。",
+        "设计Quantile Routing，在动态top-k配置下实现token自适应专家分配，同时保持专家利用率的平衡与平均计算预算可控。",
+        "在部署阶段对prompt prefill应用容量限制的路由，实现更规律高效的专家执行，而预训练阶段保持无丢弃路由。",
+        "采用混合注意力架构，结合Lightning Attention与少量全注意力层，以提升长上下文建模效率。",
+        "通过渐进式三阶段课程预训练，并通过持续预训练将原生上下文长度扩展至128K，推理时进一步用YaRN扩展至512K。"
+      ],
+      "motivation": "物理AI应用需要具备长上下文和低延迟特性的基础模型，而现有模型在效率与性能之间难以平衡。",
+      "primary_topic": "面向物理AI应用的高效大语言模型架构与训练",
+      "relation_to_research": "论文面向物理人工智能，提出高效的模型架构与训练方法，直接相关于物理AI中基础模型的推理效率和长时序处理能力，为具身智能和世界动作模型提供高效基础模型基础。",
+      "relevance_score": 7,
+      "setting": "基础模型预训练与推理效率优化，面向物理AI等延迟敏感应用",
+      "tags": [
+        "Mixture-of-Experts",
+        "物理人工智能",
+        "长上下文建模",
+        "推理效率",
+        "混合注意力"
+      ],
+      "title_zh": "TuringLLM：面向物理人工智能的高效扩展基础模型",
+      "uncertainty": "由于仅基于摘要，无法获取实验细节、作者机构、通讯作者信息及具体对比方法；材料未提供明确的技术挑战与局限信息。",
+      "why_recommended": "本文展示了在极小激活参数下通过路由机制和混合注意力实现性能与效率的平衡，对物理AI应用中低延迟、长上下文的系统优化具有直接借鉴意义。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:38.049147Z",
+      "input_hash": "87aec336fcfaa8b88240fa8a8eff0bf037d0fa73b2dac8e7fa835d4f12bf231d",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "c3d065a8a3807453c79ba164c638d04d5ff6ca5aee47e203827e7d3aa96f9d28": {
+    "analysis": {
+      "analysis": "作者通过实验分析证明，在零样本设置下，DA机制能够在现成模型上显著减少解码期间的总关注token数，且精度下降随模型规模增大而缩小。",
+      "challenges": [
+        "每步解码需读取整个KV缓存，带来高计算开销",
+        "传统预选方法仍需O(N)每步计算",
+        "在长上下文任务中保持可接受的精度"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "DA机制显著减少解码期间的总关注token数",
+          "location": "abstract",
+          "quote": "DA on off-the-shelf models (Gemma-4-31B, Qwen-3.6-27B) significantly reduces total attended tokens during decoding (52.0%, 31.1%) with modest accuracy drops (1.27pp, 2.75pp)"
+        },
+        {
+          "claim": "传统方法每步需O(N)计算",
+          "location": "abstract",
+          "quote": "this extrinsic scoring still incurs O(N) per step"
+        },
+        {
+          "claim": "模型通过声明的协议控制注意力",
+          "location": "abstract",
+          "quote": "Declarative Attention (DA), a protocol that elicits the model to declare where it needs to attend within its chain-of-thought"
+        }
+      ],
+      "experiments": [
+        "在15个长上下文任务上进行零样本评估",
+        "使用现成模型Gemma-4-31B和Qwen-3.6-27B，DA显著减少了解码期间的总关注token数，分别减少52.0%和31.1%",
+        "精度下降较小，分别为1.27个百分点和2.75个百分点，且随模型规模增大而减小"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "模型在思维链中可以被引导声明其需要关注的上下文区域，通过分割生成为全局、聚焦和局部三种模式，从而在推理时跳过大部分KV缓存读取，以损失少量精度换取显著的效率提升。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "引入Declarative Attention (DA)协议，通过思维链中的声明（<global>, <focus>, <local>）让模型指定需要关注的上下文区域",
+        "推理引擎解析这些声明，类似工具调用，跳过大部分KV缓存读取",
+        "在生成过程中将注意力模式分为三种：全局（完整上下文）、聚焦（特定区域）和局部（仅最近输出）"
+      ],
+      "motivation": "语言模型在生成时需扫描整个KV缓存以找到关键token，导致高推理成本。传统方法通过轻量级代理分数预选相关token，但仍需要O(N)每步计算。作者提出疑问：模型是否本身就知道哪些部分是相关的？",
+      "primary_topic": "稀疏注意力与推理效率",
+      "relation_to_research": "该研究涉及推理效率优化，通过稀疏注意力降低长上下文推理成本，直接关联到系统优化和实时控制中的效率问题。虽然面向语言模型，但其中的注意力控制理念可迁移到视觉语言动作模型和世界模型中，以提高长时序预测和可执行动作生成的推理效率。",
+      "relevance_score": 7,
+      "setting": "大规模语言模型的推理，面向长上下文任务，采用零样本评估",
+      "tags": [
+        "注意力控制",
+        "推理效率",
+        "KV缓存",
+        "长上下文",
+        "语言模型"
+      ],
+      "title_zh": "语言模型可以控制自己的注意力",
+      "uncertainty": "本次判断基于摘要，未知该方法在具身智能或视觉语言动作模型上的直接应用效果。通讯作者和单位信息未提供。",
+      "why_recommended": "该研究提出了一种新的稀疏注意力方法，通过模型自我声明关注区域来减少KV缓存读取，显著提升推理效率，这对于具身智能中的实时控制和长时序预测系统具有重要价值。其零样本适应现成模型的特点使其易于集成，且精度损失可控，值得当前研究者关注。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:03.179251Z",
+      "input_hash": "a1cd6999a8dfab6df7ed6981b96b9f27bee7b1a2f2964e4a264319aa00e99e8a",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "c4467833e1f791f3c30546b9f4d64c65aae18637f7e49b60d8221bad38873153": {
     "analysis": {
       "analysis": "作者通过分析文本记忆的局限性，提出将记忆向量化，并设计对比对齐与列表式协同训练方法，使模型能够有效利用向量记忆进行排序和评分。",
@@ -11192,6 +13005,85 @@
     "provenance": {
       "analyzed_at": "2026-08-30T04:01:53.185477Z",
       "input_hash": "103aaa19ce98426ff1660687c714eda0386ff63abc7aa9716f5abb7d3850b0da",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "c6e2223e1d5ac1742ec3796dc2660a70c97f745e754b81e5bcf71275c2cc5b86": {
+    "analysis": {
+      "analysis": "作者从长轨迹带来的信用分配和探索问题出发，提出迭代提取高奖励轨迹中频繁使用的动作子序列并聚类为单一动作的方法，从而将分块动作加入动作空间，在合成和真实环境中验证其改进样本效率和可解释性。",
+      "challenges": [
+        "长轨迹下的信用分配困难",
+        "探索难度大",
+        "模式发现和泛化受限于长规划视野",
+        "高奖励状态需多步达到，难以发现多种模式"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "长轨迹导致信用分配和探索困难",
+          "location": "abstract",
+          "quote": "As trajectories sampled by policies used by reinforcement learning (RL) and generative flow networks (GFlowNets) grow longer, credit assignment and exploration become more challenging"
+        },
+        {
+          "claim": "传统方法在多高奖励状态发现上困难",
+          "location": "abstract",
+          "quote": "the challenge is particularly pronounced in entropy-seeking RL methods, such as generative flow networks, where the agent must learn to sample from a structured distribution and discover multiple high-reward states, each of which take many steps to reach."
+        },
+        {
+          "claim": "方法通过迭代提取动作子序列并加入动作空间",
+          "location": "abstract",
+          "quote": "Our approach involves iteratively extracting action subsequences commonly used across many high-reward trajectories and `chunking' them into a single action that is added to the action space."
+        },
+        {
+          "claim": "方法提高了样本效率",
+          "location": "abstract",
+          "quote": "our approach demonstrates improved sample efficiency performance in discovering diverse high-reward objects, especially on harder exploration problems."
+        },
+        {
+          "claim": "抽象动作具有可解释性",
+          "location": "abstract",
+          "quote": "We also observe that the abstracted high-order actions are interpretable, capturing the latent structure of the reward landscape of the action space."
+        }
+      ],
+      "experiments": [
+        "在合成和真实环境上评估，证明方法在发现多样高奖励对象上提升了样本效率，尤其在更难的探索问题上表现更好；未报告具体数值。",
+        "观察发现抽象的高级动作是可解释的，并捕获了动作空间奖励景观的潜在结构。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过将轨迹中常用且高奖励的动作子序列“分块”为高级动作，可以融入策略优化过程，从而缩短有效规划长度，提高样本效率，并捕捉奖励景观的潜在结构。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "迭代提取高奖励轨迹中常用的动作子序列",
+        "将子序列“分块”为单一高级动作并加入动作空间",
+        "在策略优化过程中整合动作抽象发现",
+        "通过摊销采样（如GFlowNets）实现分层规划"
+      ],
+      "motivation": "随着策略采样的轨迹变长，信用分配和探索变得更加困难，长规划视野阻碍了模式发现和泛化，尤其是在熵寻求的RL方法（如GFlowNets）中，需要学习从结构化分布中采样并发现多个高奖励状态，而每个状态都需要很多步骤才能达到。",
+      "primary_topic": "强化学习与生成流网络中的动作抽象与分层规划",
+      "relation_to_research": "该论文涉及分层抽象与动作表示学习，与具身智能中的动作生成和规划优化相关，但其重点是强化学习和生成流网络，可迁移到世界模型中的动作抽象与长时序预测，但对机器人控制直接应用有限。",
+      "relevance_score": 7,
+      "setting": "强化学习和生成流网络中的顺序决策与采样",
+      "tags": [
+        "动作抽象",
+        "摊销采样",
+        "强化学习",
+        "GFlowNets",
+        "分层规划",
+        "高奖励发现"
+      ],
+      "title_zh": "摊销采样中的动作抽象",
+      "uncertainty": "由于仅提供摘要，具体环境、实验结果数值、作者单位等细节未给出，只能基于摘要内容进行高层面判断；分类为cs.LG可能偏向机器学习，但方法包含RL，故相关性为7。",
+      "why_recommended": "针对长时序动作决策和样本效率问题提出了动作抽象方法，并验证了可解释性，对具身智能中长horizon任务规划以及世界模型中的动作抽象具有启发意义，同时提高采样效率的方法可迁移至系统优化。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:59.127232Z",
+      "input_hash": "63fc19a8b35936704f91cd8d3f0e18473f7c52eb74f97be9d010017ba530185f",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -11638,6 +13530,72 @@
       "reading_scope": "abstract"
     }
   },
+  "ceb112f1738e3fb1847e392e7463b516fff0fba0fa7cc2086584fb44d5e36657": {
+    "analysis": {
+      "analysis": "结合理论分析和受控实验研究，从动力学角度分析混合坍缩的机制，并推导理论阈值。",
+      "challenges": [
+        "Transformer架构对混合几何的扭曲及训练放大",
+        "非线性读出与反馈导致的动态不稳定",
+        "多分量混合保持的维度增长问题"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "Transformer架构扭曲混合几何并且训练放大效应",
+          "location": "abstract",
+          "quote": "First, transformer architectures already distort mixture geometry, and training substantially amplifies this effect."
+        },
+        {
+          "claim": "即使线性传输混合也可能因softmax读出和自回归反馈导致坍缩或收缩",
+          "location": "abstract",
+          "quote": "Moreover, the failure can occur even if the model transports mixtures perfectly linearly: the softmax readout and autoregressive feedback form a dynamical system that either amplifies small differences until one component of the mixture dominates or contracts different mixtures until they become indistinguishable."
+        },
+        {
+          "claim": "经验观测到收缩与放大的转变接近理论阈值，预训练模型生成轨迹多在放大侧",
+          "location": "abstract",
+          "quote": "the observed transition between contraction and amplification occurs near the theoretical threshold derived by our analysis, and pretrained-model rollouts lie predominantly on the amplifying side."
+        }
+      ],
+      "experiments": [
+        "经验观测到从收缩到放大的转变接近理论阈值",
+        "预训练模型生成轨迹主要位于放大一侧"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "混合表示失效由三个独立来源引起：架构扭曲、softmax读出与自回归反馈形成的动力系统导致放大或收缩、多分量混合的精确保持需要上下文相关校正。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "理论分析混合状态在Transformer中的传播",
+        "受控实证研究在不同模型上验证理论预测",
+        "推广到多分量混合情况"
+      ],
+      "motivation": "尽管持续状态推理方法旨在保留多种推理方向，但预训练语言模型往往无法保持这些混合表示，作者试图理解其失败原因。",
+      "primary_topic": "语言模型潜在状态推理中连续混合表示失效的机理分析",
+      "relation_to_research": "本论文主要研究语言模型的连续混合坍缩问题，与具身智能、世界模型或系统优化无直接关联，但属于连续表示和动力学分析，对潜在状态推理的稳定性有借鉴意义。",
+      "relevance_score": 2,
+      "setting": "理论分析与受控实证研究",
+      "tags": [
+        "语言模型",
+        "潜在状态推理",
+        "混合坍缩",
+        "动力学分析",
+        "理论分析"
+      ],
+      "title_zh": "语言模型中连续混合坍缩的动力学",
+      "uncertainty": "材料未提供实验数值、作者机构、具体模型范围等细节，且无全文，因此无法进一步判断其对具身智能的具体应用价值。",
+      "why_recommended": "对于研究持续状态推理或连续潜在表示的稳定性问题，本文提供理论洞察和实证分析，有助于理解模型在长时序推理中可能出现的表示退化。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:38.564550Z",
+      "input_hash": "86d69d883ca9be23f7166f8368600bb3b55612cd7d6344b620daf61c78417c87",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "cefaab2218cb23d5d8e0cf9b16b3e93f8269346ba9f39b96e8db6bdfeef4c83e": {
     "analysis": {
       "analysis": "材料未说明",
@@ -11711,6 +13669,151 @@
       "reading_scope": "abstract"
     }
   },
+  "d00f28154099bec4844e81fbf6f0fe541ef46d0e467a74fb04c7ecf6ddc2b50e": {
+    "analysis": {
+      "analysis": "材料未说明",
+      "challenges": [
+        "推理端点异构性高",
+        "启发式规则难维护",
+        "需在速度、成本、质量间权衡"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "路由器采用GLiClass架构，轻量且无需自回归生成",
+          "location": "abstract",
+          "quote": "We introduce \\router{}, a lightweight GLiClass-based router that assigns a suitability score to each inference-time model label without autoregressive generation."
+        },
+        {
+          "claim": "路由器在六个LiveBench子集上优于平均性能",
+          "location": "abstract",
+          "quote": "Across six LiveBench subsets, the router outperforms the mean candidate;"
+        },
+        {
+          "claim": "在1000任务子集上取得优势",
+          "location": "abstract",
+          "quote": "on the selected 1,000-task subset, it achieves an aggregate top-1 score of 0.707 versus 0.696 for the strongest fixed model"
+        }
+      ],
+      "experiments": [
+        "在六个LiveBench子集上，路由器优于平均候选模型",
+        "在选定的1000任务子集上，聚合top-1分数达0.707，对比最强固定模型的0.696，增益随基准不同而异"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "核心洞察：利用轻量级GLiClass路由器，通过编码新对话轮次和评估候选标签而不加入持久缓存，实现了流式零样本模型选择，无需自回归生成。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "基于GLiClass的轻量级路由器，为每个推理时模型标签分配适合度分数，无自回归生成",
+        "0.6B参数检查点结合Qwen3解码器与浅层双向评分器，解码器-KV执行路径跨会话保留纯文本键值缓存，仅编码新对话轮次，评估临时候选标签而不加入持久缓存",
+        "同一检查点能预测任务类型、难度、推理模式和预期输出长度，支持自定义零样本标签",
+        "构建任务本体：23个家族、115个任务类型、345个可路由子类型、1173个合成示例、30个领域，生成150,000个验证器评分任务和15,000个开放式任务",
+        "训练Qwen3解码器，明确分离学习到的请求预测与逐任务策略（如资格、成本、缓存重用、安全、主权）"
+      ],
+      "motivation": "研究动机：LLM推理端点质量、价格、延迟等差异大，人工启发式难以维护且难以持续平衡速度-成本-质量。",
+      "primary_topic": "零样本模型选择与推理优化",
+      "relation_to_research": "与系统优化相关，但主要针对模型选择而非具身智能/世界模型。",
+      "relevance_score": 4,
+      "setting": "研究设定：面向大规模语言模型推理时的模型选择问题，旨在按任务优化速度、成本和质量。",
+      "tags": [
+        "模型选择",
+        "路由器",
+        "LLM",
+        "零样本",
+        "推理优化",
+        "GLiClass",
+        "Qwen3",
+        "KV缓存"
+      ],
+      "title_zh": "SCX路由器：基于解码器KV分类器与真实世界任务本体的流式零样本模型选择",
+      "uncertainty": "摘要未给出第一单位和通讯作者信息；技术细节和方法分离情况可能受限；相关性分数基于摘要主题，由于研究画像侧重具身智能，本文仅弱相关。",
+      "why_recommended": "对研究推理优化和多模型调度有参考价值，轻量动态选择思路或可迁移至具身智能中多任务、多任务头选择或模型路由场景。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:18.942713Z",
+      "input_hash": "631812a709de94c3f0740e63bffe4dc2fd5465bc1497759a0bab40aab7162d1a",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "d1e75c10b86779db9bea540cebdbb21e330b2d34d8003538ea07b27bbd57e95c": {
+    "analysis": {
+      "analysis": "作者通过构建DroneCATS基准和可替换MLLM的架构，将模型作为自变量，系统比较前沿模型和开源模型在四项核心能力上的表现，从而揭示模型在行动协议上的缺陷",
+      "challenges": [
+        "控制模型在动态环境中的决策可靠性",
+        "小型模型在多机指挥中盲目复制单一坐标",
+        "模型在边缘计算成本下保持协议纪律和正确终止动作"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "多模态大语言模型在简单具身任务中远未解决",
+          "location": "abstract",
+          "quote": "Evaluating frontier and open models across four core capabilities---approaching a visible target, tracking a moving one, searching outside the initial view, and commanding a multi-drone fleet---reveals that even the simplest embodied settings are far from solved."
+        },
+        {
+          "claim": "模型失败主要在行动协议而非导航",
+          "location": "abstract",
+          "quote": "The findings expose a stark paradox: it is not the flying that fails. Small open models often navigate into the success radius more reliably than frontier models, yet lose the episode by declaring arrival prematurely or not at all."
+        },
+        {
+          "claim": "多机指挥中放大小型模型协议失败",
+          "location": "abstract",
+          "quote": "Multi-drone commanding amplifies this divide, with small models failing by blindly copying a single coordinate across distinct views."
+        },
+        {
+          "claim": "DroneCATS构建用于衡量边缘模型与前沿模型的差距",
+          "location": "abstract",
+          "quote": "The open problem is closing this gap at onboard compute costs---yielding a fast model that plans persistently and knows exactly when it is done---and DroneCATS is built to measure that distance."
+        }
+      ],
+      "experiments": [
+        "评估前沿和开放模型在四项能力上的表现",
+        "结果显示即使最简单的具身任务也未解决",
+        "发现小型模型在接近成功半径时更可靠，但常过早或过晚宣布到达",
+        "多机指挥中，小型模型盲目复制单一坐标导致失败"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "在无人机控制中，导航不是最大的失败点，而是模型能否持续遵循协议并正确发出终止动作；小型模型在导航上可能更可靠，但因过早或过晚宣布到达而失败",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "设计DroneCATS-Agent架构，MLLM作为可替换组件",
+        "构建DroneCATS基准，涵盖四种能力：接近可见目标、跟踪移动目标、搜索初始视野外目标、指挥多机编队",
+        "模型规模从70亿到20亿参数范围，但在边缘计算约束下评估",
+        "无需微调或函数调用框架，模型自主决定偏航、搜索、声明到达"
+      ],
+      "motivation": "现有方法逐渐缩小模型决策空间，研究者希望重新扩展模型在控制回路中的自主性，并系统评估不同规模模型在边缘设备上的表现",
+      "primary_topic": "多模态大语言模型作为视觉-语言-动作智能体在无人机控制中的评估",
+      "relation_to_research": "直接涉及视觉-语言-动作模型在无人机控制中的应用，与具身智能、物理人工智能和真实机器人评测密切相关，强调边缘部署的推理效率和模型行为纪律",
+      "relevance_score": 9,
+      "setting": "将多模态大语言模型直接嵌入无人机控制回路，动作空间仅通过提示声明，评估其执行接近、跟踪、搜索和多机指挥等任务的能力",
+      "tags": [
+        "多模态大语言模型",
+        "视觉-语言-动作模型",
+        "无人机控制",
+        "基准测试",
+        "具身智能"
+      ],
+      "title_zh": "评估多模态大语言模型作为通用视觉-语言-动作智能体用于无人机控制：指挥、接近、跟踪与搜索",
+      "uncertainty": "材料为摘要，未提供完整全文，无法确认实验具体数值、单位、作者机构等细节；通讯作者信息未在摘要中说明",
+      "why_recommended": "提供了一个新的基准和评估框架，揭示多模态LLM在具身控制中的关键瓶颈，对开发边缘可部署的视觉语言动作模型有指导意义"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:25.956264Z",
+      "input_hash": "32136529bf1555956b942fae4aa12355856516903db987d77b88353ca79520d8",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "d42ee4d91cdd2045955be6f697bfa7cb45770902ca64a6fcfca974065e26d91e": {
     "analysis": {
       "analysis": "作者如何分析问题；若材料未说明，写材料未说明",
@@ -11760,6 +13863,76 @@
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "full_text"
+    }
+  },
+  "d43fb173642e1c23f24c0b374556659c8d6be43b83cfea3ea0e34c6aa3cd6397": {
+    "analysis": {
+      "analysis": "作者通过区分严格零样本迁移和预训练暴露零样本迁移，设计受控基准，并分解分析四个因素（状态-动作表示、预训练具身多样性、辅助联合训练目标、目标具身暴露），量化各因素贡献",
+      "challenges": [
+        "缺乏统一的零样本迁移定义",
+        "需隔离具身变化与任务、场景或协议差异的受控评估",
+        "跨具身迁移性能受多种因素影响"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "严格零样本和预训练暴露的零样本迁移应区分",
+          "location": "abstract",
+          "quote": "we first distinguish strict zero-shot transfer, where the target embodiment is absent from all training data, from pretrain-exposed zero-shot transfer, where it appears only during pretraining."
+        },
+        {
+          "claim": "局部EEF表示、源具身多样性和辅助联合训练分别提升约15、18和7个百分点",
+          "location": "abstract",
+          "quote": "local end-effector (EEF) state-action representations, the source embodiment diversity, and auxiliary co-training improve cross-embodiment transfer by around 15, 18, and 7 percentage points, respectively."
+        },
+        {
+          "claim": "加入5%目标具身数据带来显著提升",
+          "location": "abstract",
+          "quote": "adding only 5% target-embodiment data during pretraining improves average target-embodiment progress by 13.4 percentage points"
+        }
+      ],
+      "experiments": [
+        "局部末端执行器（EEF）状态-动作表示提升约15个百分点",
+        "源具身多样性提升约18个百分点",
+        "辅助联合训练提升约7个百分点",
+        "预训练中仅添加5%目标具身数据使平均目标具身进度提升13.4个百分点"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "严格零样本和预训练暴露的零样本迁移是不同的，应分别报告；局部末端执行器状态-动作表示、源具身多样性和辅助联合训练可显著提升跨具身迁移性能",
+      "limitations": [
+        "研究范围限于固定桌面操作和双指夹爪设置",
+        "作者提出未来需研究移动基座控制、灵巧手和长时程任务等更广泛场景"
+      ],
+      "method": [
+        "提出区分严格零样本迁移（目标具身完全不在训练数据中）和预训练暴露零样本迁移（仅预训练中出现）的定义",
+        "构建涵盖仿真和真实世界14个保留目标具身的受控基准",
+        "系统分析状态-动作表示、预训练具身多样性、辅助联合训练目标及目标具身暴露四个因素",
+        "实验评估各因素对跨具身迁移性能的影响"
+      ],
+      "motivation": "机器人硬件不断发展且任务特定数据收集成本高昂，零样本泛化到未见具身对通用VLA模型至关重要，但该问题缺乏统一定义和受控评估设置",
+      "primary_topic": "零样本跨具身视觉语言动作模型迁移",
+      "relation_to_research": "该论文直接研究VLA模型的跨具身泛化，涉及可执行动作生成（VLA迁移）和真实机器人泛化，对世界模型和物理AI中的具身泛化具有重要参考价值，同时提出评估和优化策略，与系统优化相关",
+      "relevance_score": 9,
+      "setting": "仿真和真实世界的桌面操作任务，涉及14个未见过的目标具身，使用双指夹爪",
+      "tags": [
+        "VLA",
+        "跨具身泛化",
+        "零样本迁移",
+        "受控基准",
+        "桌面操作"
+      ],
+      "title_zh": "ZETA：桌面操作中零样本跨具身VLA迁移的受控研究",
+      "uncertainty": "作者机构仅凭作者列表无法确定，材料未提供单位，通讯作者未标注；具体方法细节和完整实验设置摘要未充分展示，影响部分解读确定性",
+      "why_recommended": "提供了严谨的受控分析和实用指导，揭示了跨具身迁移的关键因素，为设计通用VLA模型和评估基准提供依据，值得关注具身智能和VLA泛化研究的研究者阅读"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:35.064618Z",
+      "input_hash": "227ce335c0a3ed506ac3e391364749311c8b0d6c23d0593cf51ac5f0fbae4216",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
     }
   },
   "d4c0cf933d49311cc404c6ef764fef4db7ff7845e4f6d01bd5af59c699b4078d": {
@@ -13381,6 +15554,76 @@
       "reading_scope": "abstract"
     }
   },
+  "e76715e1d2b55bffd02492fd4c9bc4d425cfd520b87d48021ffad9c31e45f556": {
+    "analysis": {
+      "analysis": "作者将问题分解为三个层面：视频预训练提取世界知识、跨具身视频-动作对齐建立动作关联、目标具身后训练实现精确控制，并通过消融实验评估各部分贡献。",
+      "challenges": [
+        "如何将无动作的视频经验有效转化为机器人控制",
+        "如何统一异构机器人平台的动作表示",
+        "如何降低生成式WAM的推理延迟以满足实时闭环控制"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "视频数据可扩展世界动作模型显著提高泛化性能",
+          "location": "abstract",
+          "quote": "scaling from target-robot data alone to over 120,000 hours of embodied video improves success from 36.1% to 77.8%"
+        },
+        {
+          "claim": "采用异步慢-快架构实现实时控制",
+          "location": "abstract",
+          "quote": "ZimaBlue further adopts an asynchronous Slow-Fast dual-system architecture, where a high-capacity Slow world model provides generalizable spatiotemporal representations and a lightweight Fast branch enables 30 Hz action prediction on NVIDIA RTX 4090"
+        },
+        {
+          "claim": "视频数据比机器人轨迹更可扩展",
+          "location": "abstract",
+          "quote": "Egocentric videos offer a far more scalable source of embodied experience, capturing object interactions, contact dynamics, tool use, and long-horizon behaviors across diverse environments"
+        }
+      ],
+      "experiments": [
+        "真实机器人零样本评估：从目标机器人数据300小时（成功率36.1%）扩展到60,000小时视频（66.9%）再到120,000小时（77.8%）",
+        "在LIBERO-Plus上优于所有基于WAM的方法",
+        "RoboTwin 2.0模拟任务上取得竞争性结果",
+        "RoboCasa365基准上，除利用100,000小时真实机器人数据的VLA方法外，整体性能最强；在未见任务上优势明显"
+      ],
+      "first_affiliation": "Joy Future Academy",
+      "insight": "通过大规模因果具身视频预训练，可以学习物理和因果先验，显著提升下游机器人泛化能力；采用异步慢-快双系统架构可在保持泛化的同时实现实时控制。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "三阶段训练课程：因果具身视频预训练、视频-动作中间训练、特定具身后训练",
+        "统一动作表示：将异构机器人接口映射为100维语义状态-动作空间",
+        "异步慢-快双系统架构：高容量慢世界模型提供泛化表征，轻量快分支实现快速动作预测",
+        "扩散步骤蒸馏与CUDA图优化加速推理"
+      ],
+      "motivation": "机器人操作面临扩展挑战：动作标注的机器人数据昂贵且多样性有限，而第一视角视频提供了大量可扩展的具身体验，但缺乏动作标签，难以直接用于控制。",
+      "primary_topic": "世界动作模型（WAM）的可扩展视频预训练",
+      "relation_to_research": "直接属于具身智能与世界模型交叉领域，研究了视频预训练与动作生成；其慢-快架构和统一动作表示可为WAM系统优化提供借鉴，与物理AI及WAM高度相关。",
+      "relevance_score": 9,
+      "setting": "真实机器人操作与仿真基准",
+      "tags": [
+        "世界动作模型",
+        "视频预训练",
+        "具身智能",
+        "慢-快架构",
+        "零样本泛化",
+        "统一动作表示"
+      ],
+      "title_zh": "ZimaBlue：通过可扩展视频预训练演化泛化的世界动作模型",
+      "uncertainty": "本次判断基于摘要和部分全文，实验的具体细节如基准的具体分数和对比方法未完全提供；且第一单位仅从节选中推断，通讯作者未标明。",
+      "why_recommended": "论文提供了视频数据规模化用于机器人泛化的实证证据，并解决了生成模型实时控制问题；对于关注世界模型、VLA模型系统设计和具身智能的研究者具有重要参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:21.222404Z",
+      "input_hash": "40dae139a6db3866cb0a3d2ad08d76301a1860135bcf0608566ab99d5073b5f1",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
   "e7a8164798bf099eff0afbef37a7303dbc14ecc41299a0f9fe9e2452c9fa530a": {
     "analysis": {
       "analysis": "材料未说明",
@@ -13511,6 +15754,144 @@
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
+    }
+  },
+  "e9671d73f0dc2041e4c49020d135f7a4bddc35b130a21d257e4c318bfa833178": {
+    "analysis": {
+      "analysis": "材料未说明",
+      "challenges": [
+        "动作执行前难以预测后果",
+        "现有安全机制反应式而非预防式",
+        "需要构建统一模型整合预测和风险评估"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "SeerGuard通过预执行筛选和动作级风险评估来降低安全风险",
+          "location": "abstract",
+          "quote": "we introduce SeerGuard, a consequence-aware safety framework designed to mitigate these risks through pre-execution instruction-level screening and action-level risk assessment."
+        },
+        {
+          "claim": "SeerGuard通过多任务学习构建统一的安全增强世界模型（SAWM）",
+          "location": "abstract",
+          "quote": "we construct a unified safety-augmented world model (SAWM) via multi-task learning, integrating semantic next-state prediction with safety risk assessment."
+        },
+        {
+          "claim": "实验结果显示SeerGuard在安全效用和风险成本上有显著提升",
+          "location": "abstract",
+          "quote": "On Qwen3-VL-8B-Instruct, it increases the safety-utility score from $0.191$ to $0.596$ at $\\omega=0.8$ and reduces the risk-cost score from $0.347$ to $0.135$ at $\\alpha=0.8$."
+        }
+      ],
+      "experiments": [
+        "在Qwen3-VL-8B-Instruct上，安全效用分数从0.191提升到0.596（ω=0.8），风险成本分数从0.347降至0.135（α=0.8）",
+        "实验证明SeerGuard在多种移动GUI智能体上具有良好的泛化能力",
+        "分析验证了指令级筛选的有效性，以及动作风险评估和下一状态预测的能力"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "通过构建统一的安全增强世界模型（SAWM），实现执行前的指令级筛选和动作级风险评估，从而主动避免危险动作。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "构建安全增强世界模型（SAWM），整合语义下一状态预测与安全风险评估",
+        "采用多任务学习训练SAWM",
+        "设计动作级风险评估，分析当前GUI状态下智能体提议的动作并预期可能结果",
+        "实现预执行指令级筛选和动作级风险评估"
+      ],
+      "motivation": "移动GUI智能体在执行复杂任务时具有强大能力，但单次错误动作可能导致不可逆后果，而现有安全机制主要是反应式的，缺乏执行前风险评估能力。",
+      "primary_topic": "基于世界模型的安全框架用于移动GUI智能体",
+      "relation_to_research": "本研究直接涉及世界模型的应用（用于预测动作后果），并关注动作风险预测，与具身智能中的安全动作执行、世界模型预测能力和系统优化（提升安全效用）紧密相关。虽然面向移动GUI而非物理机器人，但方法论可迁移至机器人安全框架。",
+      "relevance_score": 8,
+      "setting": "移动图形用户界面（GUI）智能体自动化任务",
+      "tags": [
+        "移动GUI智能体",
+        "安全框架",
+        "世界模型",
+        "动作风险评估",
+        "预执行筛选"
+      ],
+      "title_zh": "SeerGuard：基于世界模型预测的移动GUI智能体安全框架",
+      "uncertainty": "所用模型SaWM的构建细节、实验环境、基线比较等信息未提供，可能影响对方法普适性的完整判断。且仅基于摘要，数字和实验范围有限。",
+      "why_recommended": "它为安全关键型智能体提供了一种预防性安全框架，通过世界模型预测动作后果，展示了如何将世界模型用于安全评估，这对于具身智能和机器人系统中的安全决策具有重要参考价值。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:48.471383Z",
+      "input_hash": "25f0c885833d2d5b7c62cbf9cdd9e9622f45e26ae9d964bba7b3dbfbf58afe05",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "ebbadde07a42b8251bcc6c4a33c5cb93c06ae671c77442d93b57b93f10723a37": {
+    "analysis": {
+      "analysis": "作者通过实验分析了NS-VLA在RL训练中扩展探索空间的同时保持稳定性，并通过符号规划在长时序和控制上的优势。",
+      "challenges": [
+        "结构盲的端到端骨干网络",
+        "泛化受预训练骨干限制",
+        "在线强化学习的单目标优化与分层策略不匹配"
+      ],
+      "corresponding_authors": [
+        "Haoran Luo"
+      ],
+      "evidence": [
+        {
+          "claim": "VLA模型面临结构盲的骨干、骨干限制的泛化和扁平的单目标优化问题。",
+          "location": "abstract",
+          "quote": "VLA models still face structure-blind backbones, backbone-bound generalization, and flat single-objective optimization."
+        },
+        {
+          "claim": "神经符号编码器解析指令为计划基元。",
+          "location": "abstract",
+          "quote": "It introduces a Neuro-Symbolic Encoder for plan-constrained primitive inference, a Neuro-Symbolic Solver that conditions a backbone-agnostic policy on the active primitive, and Hierarchical Joint Policy Optimization with reward-granularity matching."
+        },
+        {
+          "claim": "NS-VLA在基准上表现更好，零样本泛化更强。",
+          "location": "abstract",
+          "quote": "NS-VLA outperforms previous methods in both one-shot training and data-perturbed settings, while simultaneously exhibiting superior zero-shot generalizability and expanded exploration space."
+        }
+      ],
+      "experiments": [
+        "在LIBERO、LIBERO-Plus、LIBERO-90和CALVIN等基准上评估，NS-VLA在一次性训练和数据扰动设置中优于先前方法，同时表现出更好的零样本泛化能力和更大的探索空间。",
+        "零样本LIBERO-90上NS-VLA的平均成功率14.4，VLA-Adapter为10.2，SimpleVLA-RL为8.5。",
+        "计划阶段完成率NS-VLA为45.0，第二好为28.0，领先17点。",
+        "长时域CALVIN上NS-VLA达到5任务成功率91.2和平均完成链长度4.72，对比VLA-Adapter的80.0和4.50。",
+        "动作空间覆盖分析显示在线RL策略在多个模式上分布动作，而端到端基线坍缩到演示均值附近。",
+        "训练动态中，平均成功率先升后稳，KL散度保持在1.4e-2以下。"
+      ],
+      "first_affiliation": "北京邮电大学, 南洋理工大学",
+      "insight": "引入符号规划作为归纳偏置，用神经符号编码器和求解器暴露任务结构，并用分层联合策略优化匹配奖励粒度。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "神经符号编码器：解析指令为计划基元，并用单调指针跟踪执行，提供结构归纳偏置。",
+        "神经符号求解器：将活动基元渲染为基元条件输入给块状动作骨干，提供增强而非替换的接口。",
+        "分层联合策略优化：对高层因子使用稀疏里程碑奖励，对低层因子使用密集型步骤奖励，匹配奖励粒度与策略类型。"
+      ],
+      "motivation": "现有VLA模型面临结构盲的骨干网络、受骨干网络限制的泛化能力以及扁平的单目标优化问题。",
+      "primary_topic": "神经符号视觉-语言-动作模型",
+      "relation_to_research": "涉及视觉-语言-动作模型，其神经符号方法与世界模型相关，所用分层优化与系统优化相关，适用于机器人操作。",
+      "relevance_score": 10,
+      "setting": "机器人操作基准（LIBERO, LIBERO-Plus, LIBERO-90, CALVIN）",
+      "tags": [
+        "神经符号方法",
+        "VLA",
+        "策略优化",
+        "泛化",
+        "分层强化学习"
+      ],
+      "title_zh": "NS-VLA：迈向神经符号视觉-语言-动作模型",
+      "uncertainty": "代码可用，但提取的数值可能因图表而完整，部分附录信息不完整。",
+      "why_recommended": "提出结构感知的神经符号方法，解决VLA中泛化与效率问题，对开发可扩展的具身智能系统有启发。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:18.744273Z",
+      "input_hash": "30d0292e81abfea4cadf5b49c904a1311e5d2e5224aef4254dcae65fad2be892",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
     }
   },
   "ed3f0e4ef7856be50ebb9b675b20663a05f0550b56b11fe3a81bb97f1de931ba": {
@@ -13713,6 +16094,77 @@
     "provenance": {
       "analyzed_at": "2026-08-30T10:04:54.190389Z",
       "input_hash": "be416474811c57d736c8db02ddd713f62dde76ea7e02166458797fa558dea608",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "f11700463962b70ee292b8c91148362af44a763209268ef443b564cd968b37bb": {
+    "analysis": {
+      "analysis": "作者通过构建约束MDP基准并评估多个模型，揭示了动作空间规模对性能的影响以及质量-安全差距，但材料未说明具体分析过程。",
+      "challenges": [
+        "建模复杂的临床动作空间（六种基础动作）",
+        "施加拓扑工作流先验",
+        "将安全保护的弃权作为一阶结果",
+        "评估大规模模型时的性能下降",
+        "在约束下保证安全性"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "该基准是首个面向初级保健临床决策的约束MDP LLM代理基准",
+          "location": "abstract",
+          "quote": "we introduce GPAgentBench-2K, the first Constrained MDP (CMDP) LLM-agent benchmark for primary-care clinical decision-making"
+        },
+        {
+          "claim": "模型性能随动作空间规模扩大显著下降",
+          "location": "abstract",
+          "quote": "Evaluating 16 state-of-the-art LLMs reveals a significant performance degradation as the action space scales."
+        },
+        {
+          "claim": "存在临床质量-安全差距：前沿模型在高风险案例中超过一半违反安全约束",
+          "location": "abstract",
+          "quote": "even frontier models with the highest diagnosis accuracy violate safety constraints in over half of high-risk cases."
+        }
+      ],
+      "experiments": [
+        "评估16种最先进的LLM，发现性能随动作空间增大而下降",
+        "前沿模型在超过一半的高风险案例中违反安全约束",
+        "C-GRPO显示明确建模约束优于无约束RL，但仍远未达到临床可接受的安全水平"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "随着动作空间规模增大，LLM性能显著下降，且即使在诊断准确性最高的前沿模型中，高风险案例中也存在超过一半违反安全约束的情况，揭示临床质量与安全性之间的鸿沟。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "引入GPAgentBench-2K作为首个面向初级保健临床决策的约束MDP LLM代理基准",
+        "从专家验证的真实GP记录构建环境，模拟六种基础临床动作",
+        "在动作空间上施加拓扑工作流先验",
+        "将安全保护的弃权作为一等结果",
+        "使用约束组相对策略优化（C-GRPO）参考点对比有约束和无约束的RL方法"
+      ],
+      "motivation": "现有临床基准将工作流简化为静态预测或具有粗粒度动作集的非约束MDP，未能反映复杂的临床动作空间和安全性约束。",
+      "primary_topic": "临床决策中的约束马尔可夫决策过程下的LLM代理基准测试",
+      "relation_to_research": "该论文涉及代理决策中的动作生成和安全性约束，与具身智能中的规划和安全执行有一定概念相似性，但领域特定于临床，故相关性较弱。",
+      "relevance_score": 2,
+      "setting": "临床诊疗决策，主要护理场景，基于真实GP记录构建的约束MDP环境",
+      "tags": [
+        "LLM代理",
+        "约束MDP",
+        "临床决策",
+        "基准测试",
+        "安全性"
+      ],
+      "title_zh": "GPAgentBench-2K：在复杂临床动作空间中基准测试大型语言模型代理",
+      "uncertainty": "由于仅基于摘要，且研究领域不同，相关性判断存在不确定性。",
+      "why_recommended": "对于涉及约束、安全性和决策系统的优化有参考价值，尤其是在复杂动作空间和安全约束下的模型训练方法方面，但非直接相关领域。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:26.371139Z",
+      "input_hash": "3a4b478247541d91b2dfcb404d3eb3780bec39246d5382963a5b7b647f5cf991",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
@@ -14243,6 +16695,157 @@
       "reading_scope": "abstract"
     }
   },
+  "fa104bcff585e3265792b21609261b6b6de4bb970f91917db688782527ba7df1": {
+    "analysis": {
+      "analysis": "作者通过层间聚类和加权方法分析潜在空间，定量评估加权聚类优于基线，并提取聚类概念，显示中间层表示更精细，输出层趋于稳定。",
+      "challenges": [
+        "VLA模型内部表示不透明",
+        "早期去噪阶段潜在空间包含噪声，干扰聚类",
+        "提取人类可解释的概念并验证其语义质量困难"
+      ],
+      "corresponding_authors": [
+        "theodor.wulff@manchester.ac.uk",
+        "sergio.lanza@uni-hamburg.de",
+        "tamara.bila@fmph.uniba.sk"
+      ],
+      "evidence": [
+        {
+          "claim": "该论文提出LAVLA框架用于VLA模型的潜在聚类分析",
+          "location": "abstract",
+          "quote": "We propose LAVLA, a framework for latent cluster analysis of VLA models"
+        },
+        {
+          "claim": "加权聚类优于基线",
+          "location": "abstract",
+          "quote": "Quantitative evaluation shows that weighted clustering consistently outperforms the baseline."
+        },
+        {
+          "claim": "潜在集群渐进解开时空和运动学特征",
+          "location": "abstract",
+          "quote": "Our analysis shows that latent clusters progressively disentangle spatiotemporal and kinematic features"
+        },
+        {
+          "claim": "实验限于单一数据集和模型",
+          "location": "supplied_full_text",
+          "quote": "Our experiments are limited to a single dataset and model; results may not generalise to other datasets or architectures"
+        },
+        {
+          "claim": "概念生成和验证仍然困难",
+          "location": "supplied_full_text",
+          "quote": "Concept generation and its unsupervised semantic verification remain challenging without ground-truth annotations"
+        }
+      ],
+      "experiments": [
+        "在GR00T N1.5模型上，使用Open-X-Embodiment数据集子集进行实验；定量评估显示加权聚类优于基线。",
+        "实验表明潜在集群渐进解开时空和运动学特征，中间层表示更精细。",
+        "概念提取质量有限，概念间语义接近，但验证了概念构建的可行性。"
+      ],
+      "first_affiliation": "曼彻斯特大学；证据未提供",
+      "insight": "通过引入基于交叉注意力的嵌入加权方法，放大重要视觉-语言令牌的特征并抑制不相关信息，从而在潜在聚类中获得更清晰的表示，揭示潜在集群在扩散过程中逐步解开时空和运动学特征。",
+      "limitations": [
+        "实验限于单一数据集和模型，结果可能不泛化",
+        "概念生成及其无监督语义验证缺乏真值标注，难度大"
+      ],
+      "method": [
+        "提出LAVLA框架，分层聚类VLA嵌入，重点分析动作解码器",
+        "引入基于交叉注意力的嵌入加权方法，放大重要特征",
+        "使用凝聚层次聚类，收集VLM骨干最后一层和DiT动作解码器所有交叉注意力层的嵌入",
+        "利用外部VLM为每个聚类提取人类可解释概念"
+      ],
+      "motivation": "VLA模型在机器人领域应用广泛，但其内部表示机制尚不明确；理解这些机制对提升用户信任和识别推理失败至关重要。",
+      "primary_topic": "VLA模型潜在空间的可解释性分析",
+      "relation_to_research": "该论文直接研究VLA模型的内部工作机制，通过聚类分析提高可解释性，有助于理解视觉-语言-动作模型的动作生成原理，与具身智能和世界模型的研究主题紧密相关。",
+      "relevance_score": 8,
+      "setting": "研究设定",
+      "tags": [
+        "VLA",
+        "潜在聚类",
+        "可解释性",
+        "扩散Transformer",
+        "GR00T N1.5"
+      ],
+      "title_zh": "视觉-语言-动作模型的潜在聚类分析",
+      "uncertainty": "论文标识arxiv:2609.02634v1似乎年份异常，但依据输入材料；通讯作者信息基于提供的邮箱，但具体是否为通讯作者需确认；实验细节未全面提供，存在不确定性。",
+      "why_recommended": "当前研究者可从中学习如何分析VLA模型的潜在空间，理解扩散解码器的工作原理，并借鉴交叉注意力加权方法用于模型的可解释性分析；其层间研究为优化VLA模型和提升信任度提供思路。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:08:12.082299Z",
+      "input_hash": "f1d12290f3f44be3139b9c6cdf21e9a79b793822d7127b4294b73f5d6b4bd84d",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "full_text"
+    }
+  },
+  "faee2acd62c4bb014c273b90a92dc35262aef9f958ece5dcd2325ca54338c16a": {
+    "analysis": {
+      "analysis": "作者通过受控实验对比直接请求与先大后小请求的遵从率，并设置无关话题的大请求作为控制，以分离让步效果和拒绝对后续请求的影响。此外，通过改写请求类型（指令到解释）来探究拒绝的根源。",
+      "challenges": [
+        "不同模型家族对同一种提示技巧的反应存在显著差异",
+        "技巧无法迁移到公共基准的拒绝样本中",
+        "需要区分让渡本身的影响与被拒绝后反应的影响"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "Anthropic前沿模型上，“以退为进”有效，其他前沿模型上适得其反。",
+          "location": "abstract",
+          "quote": "On Anthropic's frontier models the technique works: Opus 5 answers the smaller request 65.8% of the time after refusing the larger one, against 29.3% when asked directly. On the frontier models of OpenAI and Google, and on Haiku 4.5, it backfires, lowering compliance by 15.5 to 23.0 points."
+        },
+        {
+          "claim": "让步本身在所有模型上都有影响，但被拒绝后的反应因模型家族而异。",
+          "location": "abstract",
+          "quote": "a refused large request on an unrelated topic does less than the related one on all nine models, so the concession itself matters everywhere, while the reaction to having just refused something differs by model family."
+        },
+        {
+          "claim": "请求类型从指令改为解释可以消除绝大多数拒绝。",
+          "location": "abstract",
+          "quote": "rewriting 265 refused requests for usable instructions into requests for explanations of the same topic removed the refusal in 263 cases."
+        }
+      ],
+      "experiments": [
+        "Anthropic前沿模型上，先拒绝大请求后，小请求的遵从率为65.8%，直接请求为29.3%",
+        "OpenAI、Google前沿模型及Haiku 4.5上，先大后小技巧降低遵从率15.5到23.0个百分点",
+        "无关话题的大请求控制显示，让步本身在所有九个模型上都有影响，但小于相关话题",
+        "将265个被拒绝的指令改写为解释请求，263个不再被拒绝"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "核心洞察是“以退为进”技巧的效果因模型而异：Anthropic的模型上有效，而OpenAI、Google及Haiku 4.5上适得其反；控制实验表明让步本身在所有模型上都有影响，但被拒绝后的反应因模型系列而异；当将请求从指令改写为解释时，拒绝几乎完全消失，说明请求内容决定退让是否有效。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "对九个商业模型（来自三个提供商）进行受控对比实验",
+        "每个模型先拒绝一个大请求，然后接收同主题的小请求，对比直接请求小请求的遵从率",
+        "设置无关话题的大请求作为控制，以隔离让步本身的影响",
+        "测试公共基准中的拒绝样本以检验技巧的迁移性",
+        "将265个被拒绝的指令请求改写为同主题的解释请求，观察拒绝率变化"
+      ],
+      "motivation": "研究动机是探究人类的影响技巧（如“以退为进”）是否能迁移到大型语言模型上，并理解模型之间的差异。",
+      "primary_topic": "大型语言模型中的社会工程学技巧效果研究",
+      "relation_to_research": "该研究与具身智能、世界模型等主题直接相关性较弱，但涉及与系统优化和推理效率相关的提示工程和模型行为优化，可能对设计人机交互或模型对齐有间接启发。",
+      "relevance_score": 2,
+      "setting": "研究设定为在商业大型语言模型（Anthropic、OpenAI、Google）上进行受控提示实验，测试人类心理技巧“以退为进”是否有效。",
+      "tags": [
+        "LLM",
+        "拒绝行为",
+        "提示工程",
+        "社会工程学",
+        "模型比较"
+      ],
+      "title_zh": "大型语言模型中的“以退为进”请求与拒绝行为",
+      "uncertainty": "本次判断的不确定性主要源于只有摘要，缺乏实验细节、模型版本及具体提示内容，因此对方法的普适性和相关性评估有限。",
+      "why_recommended": "该研究展示了大型语言模型在提示技巧下的行为差异，对于当前研究者在设计模型交互或理解模型鲁棒性时有参考价值，但非核心相关。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:27.134627Z",
+      "input_hash": "3db982ac3d7101ec856e7066fbb0e60b4975f110081dc1a61abef975b4267b14",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
   "feed401bde0fbddd2928e213758a8151fa2febe2b403cdfc236ba357f5e0946b": {
     "analysis": {
       "analysis": "材料未说明",
@@ -14427,6 +17030,78 @@
     "provenance": {
       "analyzed_at": "2026-08-30T10:04:44.852351Z",
       "input_hash": "5f44b8aee7488cf085c9e7632cc3cbeebc68781d9575c3abe292bffffa91e95c",
+      "model": "deepseek-v4-flash",
+      "prompt_version": "paper-analysis-v1",
+      "reading_scope": "abstract"
+    }
+  },
+  "ffa9081114347eddecbe967fef076f4c91e51d3716f033212c830ea72ecfc586": {
+    "analysis": {
+      "analysis": "材料未说明",
+      "challenges": [
+        "在表征空间有效规划",
+        "模型架构设计选择",
+        "训练目标影响",
+        "规划算法性能",
+        "泛化到新任务",
+        "真实机器人数据"
+      ],
+      "corresponding_authors": [
+        "证据未提供"
+      ],
+      "evidence": [
+        {
+          "claim": "论文将一类使用表征空间规划的世界模型称为JEPA-WMs并研究其技术选择",
+          "location": "abstract",
+          "quote": "characterize models from this family as JEPA-WMs and investigate the technical choices that make algorithms from this class work"
+        },
+        {
+          "claim": "实验覆盖仿真和真实机器人环境，并研究多个组件影响",
+          "location": "abstract",
+          "quote": "We conducted experiments using both simulated environments and real-world robotic data, and studied how the model architecture, the training objective, and the planning algorithm affect planning success."
+        },
+        {
+          "claim": "提出的模型在导航和操作任务上优于两个基线",
+          "location": "abstract",
+          "quote": "We combine our findings to propose a model that outperforms two established baselines, DINO-WM and V-JEPA-2-AC, in both navigation and manipulation tasks."
+        }
+      ],
+      "experiments": [
+        "实验使用仿真环境和真实机器人数据，评估导航和操作任务，提出的模型优于DINO-WM和V-JEPA-2-AC两个基线，但未提供具体数字。"
+      ],
+      "first_affiliation": "证据未提供",
+      "insight": "JEPA-WMs作为一类模型，其规划成功取决于模型架构、训练目标和规划算法的有机结合，通过综合研究可以找到优于现有基线的方法。",
+      "limitations": [
+        "材料未说明"
+      ],
+      "method": [
+        "将近期在表征空间规划的世界模型归类为JEPA-WMs，并系统研究关键组件",
+        "在仿真环境和真实机器人数据上进行实验",
+        "比较模型架构、训练目标和规划算法的影响",
+        "结合发现提出改进模型"
+      ],
+      "motivation": "开发能够解决广泛物理任务并泛化到新任务和环境的智能体，近期方法使用世界模型和规划算法，其中在表征空间规划有潜力，但需要系统研究其技术选择。",
+      "primary_topic": "联合嵌入预测世界模型（JEPA-WM）的组件分析与规划性能提升",
+      "relation_to_research": "紧密相关于世界模型和物理人工智能，聚焦于JEPA世界模型的规划与动作生成，涉及真实机器人任务的泛化，与具身智能和世界动作模型直接相关，也涉及模型设计和推理效率的层面。",
+      "relevance_score": 9,
+      "setting": "仿真环境和真实机器人数据",
+      "tags": [
+        "世界模型",
+        "规划",
+        "联合嵌入预测",
+        "物理任务",
+        "表征空间优化",
+        "导航",
+        "操作",
+        "真实机器人"
+      ],
+      "title_zh": "什么推动了联合嵌入预测世界模型中的物理规划成功？",
+      "uncertainty": "第一单位、通讯作者未在摘要中给出；实验具体数据未提供，仅能基于文字描述。",
+      "why_recommended": "本文系统分析了JEPA世界模型成功的关键组件，为具身智能中的规划算法设计提供了实证指导，有助于提升模型泛化和真实机器人控制性能。"
+    },
+    "provenance": {
+      "analyzed_at": "2026-09-03T09:09:38.623094Z",
+      "input_hash": "ead709d1d14ef4839fd2cb244b600b9143102f697faaaae22f473f45e1efa9f3",
       "model": "deepseek-v4-flash",
       "prompt_version": "paper-analysis-v1",
       "reading_scope": "abstract"
