@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-09-04 16:59</span>
+      <span>AUTO RESEARCH DAILY · 2026-09-05 16:30</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,7 +193,7 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>摘要级</span>
+      <span>全文级</span>
       <span>相关性 9/10</span>
       <span>v3</span>
     </div>
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>在目标级指令基础上补充细粒度执行说明（如何执行）可提升策略的稳定性和操控性，且两种粒度指令呈倒U型互补关系，最佳混合比例可显著提升成功率。</p>
+      <p>细粒度监督与目标级指令是互补的，最佳混合比例（FG:Raw=1:2至1:1）能提升任务成功率和可控性，细粒度语言应作为目标级指令的补充。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提出开源细粒度数据框架和基准，系统验证了细节指令的价值，为可操控VLA策略设计提供直接参考，并展示真实机器人上的提升。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>为VLA训练提供了细粒度监督的数据构建方法和实证分析，揭示了指令混合比例的关键作用，对希望提升机器人可控性和执行质量的研究者具有重要参考价值。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/data/" data-tag-filter="data">具身数据</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
@@ -223,9 +223,9 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>细粒度指令对齐的视觉-语言-动作模型训练及其对可操控策略的影响</p>
-        <p><strong>模型原始标签：</strong>视觉-语言-动作模型、细粒度指令、数据集构建、真实机器人评测、可操控策略</p>
-        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>模型细分主题：</strong>视觉-语言-动作模型中的细粒度指令对齐与可操控策略学习</p>
+        <p><strong>模型原始标签：</strong>VLA、指令跟随、可操控性、细粒度监督、数据集构建、真实机器人评测</p>
+        <p><strong>第一单位：</strong>XLANG Lab, The University of Hong Kong</p>
         <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-05</p>
         <p class="paper-links">
@@ -274,24 +274,24 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>基于开源机器人数据集构建细粒度指令-轨迹数据，训练VLA策略并在仿真和真实双臂操作任务中评估</dd>
-        <dt>Motivation（研究动机）</dt><dd>现有VLA策略通常只能完成目标级任务，缺乏对执行细节（如主动臂、接近方向、接触区域）的遵循能力，导致策略不可操控且视频理解受限。</dd>
-        <dt>Insight（核心洞察）</dt><dd>在目标级指令基础上补充细粒度执行说明（如何执行）可提升策略的稳定性和操控性，且两种粒度指令呈倒U型互补关系，最佳混合比例可显著提升成功率。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有机器人数据集缺乏与轨迹对齐的细粒度语言标注</li><li>细粒度标注的人工成本高，需自动化工具</li><li>平衡细粒度与目标级指令的训练比例以优化性能</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者指出数据层面目标级指令不足以为执行细节提供监督，从而限制了可操控策略学习；通过构建细粒度数据集和混合训练实验，定量验证了细粒度监督在性能与操控性上的优势。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>数据构建工具：统一10个开源数据集，生成人类验证的细粒度轨迹数据FineVLA-Data</li><li>构建评估基准：包含500个视频、11,631个原子事实和1,030个VQA问题</li><li>开发机器人专用VLM标注器用于细粒度自动标注</li><li>采用混合比例（FG:Raw=1:2到1:1）训练可操控VLA策略</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>细粒度监督相对纯原始指令在成功率上提升+1.4到+8.1个百分点</li><li>最佳混合设置（FG:Raw=1:2至1:1）在RoboTwin仿真达到86.8%/82.5%，真实双臂操作62.7/100（对比Raw-only 49.9）</li><li>细粒度监督在姿态、颜色、接近方向维度上带来显著提升，分别达+23、+18、+18</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接相关于VLA模型的可操控动作生成，通过细粒度指令对齐提升真实机器人操作的精确性和用户可控性，同时涉及数据集构建和系统训练策略。</dd>
+        <dt>Setting（研究设定）</dt><dd>视觉-语言-动作模型在真实和仿真机器人操控任务中的训练与评估</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有机器人数据集的轨迹通常仅与粗略的目标级语言配对，缺乏执行细节（如主动臂、接近方向、接触区域），限制了指令可控策略的学习。</dd>
+        <dt>Insight（核心洞察）</dt><dd>细粒度监督与目标级指令是互补的，最佳混合比例（FG:Raw=1:2至1:1）能提升任务成功率和可控性，细粒度语言应作为目标级指令的补充。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>异构数据和缺乏细粒度标注基础设施</li><li>缺少细粒度机器人视频理解基准和可扩展标注器</li><li>如何在不牺牲目标级任务成功率的前提下增强指令可控性</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过实验分析细粒度监督与原始指令的比例对策略性能的影响，发现呈现倒U型趋势，并探究其对可控性的提升。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>数据构建工具：统一10个开源数据集的97万条轨迹，构建FineVLA-Data数据集（47,159条细粒度轨迹）</li><li>基准构建：建立RoboFine-Bench基准（500视频，11,631原子事实，1,030 VQA问题）</li><li>RoboFine-VLM标注器：用于大规模细粒度标注</li><li>可操控VLA策略：使用细粒度与目标级指令的混合比例训练</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>仿真实验：FG-only比Raw-only成功率提升+1.4至+8.1个百分点</li><li>仿真实验：最佳混合FG:Raw=1:1在RoboTwin中达到86.8%/82.5%成功率</li><li>真实世界双机械臂操作：最佳混合设置得分62.7/100，而Raw-only为49.9</li><li>可控性评估：在姿态、颜色、接近方向等控制维度上取得最大提升（+23、+18、+18）</li><li>VQA基准：RoboFine-VLM在总体准确率上达到68.2%，优于其他VLM</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>RoboFine-VLM未完全消除人工验证</li><li>真实世界验证仅限于桌面双机械臂平台和少量任务</li><li>基准中除了动作步骤外的维度的幻觉难以定义，因此反幻觉指标仅覆盖动作步骤</li><li>OOD组合泛化仍未解决，策略仍无法将选定手臂绑定到未见目标容器</li><li>执行细粒度指令可能带来安全性问题，未来需要结合可行性和安全检查</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接涉及VLA模型的细粒度指令对齐，提升策略的可操控性和物理执行能力，与具身智能中动作生成和真实机器人评测高度相关。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>第一单位和通讯作者未在摘要中提供；实验数字来自摘要，但可能受摘要表述简化影响；数据集规模等细节需参考正文。</p>
-          <blockquote><strong>细粒度监督显著提升目标级成功率：</strong>FG-only improves over Raw-only by +1.4 to +8.1 success-rate points across settings.</blockquote>
-          <blockquote><strong>最佳混合比例在真实机器人上取得显著提升：</strong>The best mixed setting reaches 86.8%/82.5% in RoboTwin simulation and 62.7/100 in real-world dual-arm manipulation (vs. 49.9 Raw-only).</blockquote>
-          <blockquote><strong>细粒度监督提升可操控性，尤其在姿态、颜色和接近方向：</strong>the largest real-world gains appear on pose (+23), color (+18), and approach direction (+18)--factors where goal-level instructions provide no guidance.</blockquote>
+          <p>证据主要来自摘要和提供的正文节选，未包含完整实验细节，且部分数字在摘要和正文中略有差异（如最佳混合比例的描述），可能影响精确解读。</p>
+          <blockquote><strong>细粒度监督与目标级指令结合可提升任务成功率：</strong>fine-grained supervision does not sacrifice goal-level success: FG-only improves over Raw-only by +1.4 to +8.1 success-rate points across settings.</blockquote>
+          <blockquote><strong>最佳混合比例在仿真与真实世界均获得最高成功率：</strong>The best mixed setting reaches 86.8%/82.5% in RoboTwin simulation and 62.7/100 in real-world dual-arm manipulation (vs. 49.9 Raw-only).</blockquote>
+          <blockquote><strong>细粒度监督改善可控性：</strong>the largest real-world gains appear on pose (+23), color (+18), and approach direction (+18)--factors where goal-level instructions provide no guidance.</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
