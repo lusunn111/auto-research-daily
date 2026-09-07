@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CoFreeVLA：基于视觉-语言-动作模型与风险估计的短时域无碰撞双臂操作</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-09-07 17:35</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>CoFreeVLA：基于视觉-语言-动作模型与风险估计的短时域无碰撞双臂操作</h1>
+<p class="lede">CoFreeVLA: Short-Horizon Collision-Free Dual-Arm Manipulation via Vision-Language-Action Model and Risk Estimation</p>  </header>
+
+  <section class="detail-layout" aria-label="论文完整解读"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2601.21712:v3"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2601.21712/v3/fig1-panel1.png"
+        alt="Figure 1：(a) Risk Estimator. Given a state–action pair, the model applies a cross-attention module followed by three heads to predict collision risk r r , minimum distance d d , and time-to-collision τ \tau . (b) Data Collection and (c) Dataset. For each state, we sample candidate actions and check their outcomes for labeling. (d) CoFree VLA. At run time, the system continuously estimates risk; when it exceeds a threshold, the policy will be blocked and the arms will be returned to a safe configuration, after which the policy resumes to complete the task."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2601.21712v3/pipeline.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> (a) Risk Estimator. Given a state–action pair, the model applies a cross-attention module followed by three heads to predict collision risk r r , minimum distance d d , and time-to-collision τ \tau . (b) Data Collection and (c) Dataset. For each state, we sample candidate actions and check their outcomes for labeling. (d) CoFree VLA. At run time, the system continuously estimates risk; when it exceeds a threshold, the policy will be blocked and the arms will be returned to a safe configuration, after which the policy resumes to complete the task.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v3</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2601.21712/">CoFreeVLA：基于视觉-语言-动作模型与风险估计的短时域无碰撞双臂操作</a></h3>
+    <p class="original-title" lang="en">CoFreeVLA: Short-Horizon Collision-Free Dual-Arm Manipulation via Vision-Language-Action Model and Risk Estimation</p>
+    <p class="authors">Yaohua Liu · Binkai Ou · Hengjun Zhang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将轻量级短时域自碰撞风险估计器与VLA策略闭环集成，通过预测碰撞似然并主动控制命令，能在不牺牲任务成功率的情况下显著降低碰撞率。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>针对VLA双臂系统自碰撞这一关键安全缺口，创新性地将风险估计器集成于闭环控制，提供了显著改善安全性与任务成功率的实证，并展示了实时可行性，对相关研究具有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details" open>
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>VLA模型双臂操作中的自碰撞避免与安全控制</p>
+        <p><strong>模型原始标签：</strong>Vision-Language-Action Model、Dual-Arm Manipulation、Collision Avoidance、Risk Estimation、Real-time Control</p>
+        <p><strong>第一单位：</strong>珠海横琴粤澳深度合作区中医药广东省实验室</p>
+        <p><strong>通讯作者：</strong>Hengjun Zhang, Yaohua Liu, Binkai Ou</p>
+        <p><strong>首次上传：</strong>2026-01</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2601.21712">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2601.21712">PDF ↗</a><a href="https://arxiv.org/html/2601.21712v3">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2601.21712/v3/fig1-panel1.png"
+              alt="Figure 1：(a) Risk Estimator. Given a state–action pair, the model applies a cross-attention module followed by three heads to predict collision risk r r , minimum distance d d , and time-to-collision τ \tau . (b) Data Collection and (c) Dataset. For each state, we sample candidate actions and check their outcomes for labeling. (d) CoFree VLA. At run time, the system continuously estimates risk; when it exceeds a threshold, the policy will be blocked and the arms will be returned to a safe configuration, after which the policy resumes to complete the task."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2601.21712v3/pipeline.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> (a) Risk Estimator. Given a state–action pair, the model applies a cross-attention module followed by three heads to predict collision risk r r , minimum distance d d , and time-to-collision τ \tau . (b) Data Collection and (c) Dataset. For each state, we sample candidate actions and check their outcomes for labeling. (d) CoFree VLA. At run time, the system continuously estimates risk; when it exceeds a threshold, the policy will be blocked and the arms will be returned to a safe configuration, after which the policy resumes to complete the task.
+            <a class="figure-source" href="https://arxiv.org/html/2601.21712v3#S3.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2601.21712/v3/fig2-panel1.png"
+              alt="Figure 2：Experimental results in 5 dual-arm manipulation tasks. Evaluations of collision and success rates are on 30 trials"
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2601.21712v3/experiment-overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Experimental results in 5 dual-arm manipulation tasks. Evaluations of collision and success rates are on 30 trials
+            <a class="figure-source" href="https://arxiv.org/html/2601.21712v3#S4.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>实物机器人实验，基于AgileX PIPER式双臂移动操作平台，跨五个任务、六个VLA骨干网进行测试。</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLA模型在双臂平台上部署时，自碰撞（臂间或臂与抓取物体间）未被充分建模，导致任务失败、硬件损坏等安全风险。传统规划器与VLA策略分离，缺乏端到端的自适应性与响应性，现有端到端方法很少从感知输入和候选动作中预测即将发生的自碰撞。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将轻量级短时域自碰撞风险估计器与VLA策略闭环集成，通过预测碰撞似然并主动控制命令，能在不牺牲任务成功率的情况下显著降低碰撞率。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>双臂高自由度系统下的空间推理与安全关键规划复杂度高</li><li>现有端到端VLA方法忽略臂间及臂与物体间的自碰撞</li><li>需要在实时控制约束下（如&lt;5ms推理）实现可靠的风险估计</li><li>固定阈值可能拦截毫米级精度任务中的合理近距离操作</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过形式化定义系统状态和动作，设计轻量级风险估计器直接预测碰撞概率、最小距离和碰撞时间，并在闭环控制中集成命令门控、恢复轨迹合成与策略细化，形成一个完整的安全执行层。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>设计包含观测流和动作流的双流编码器，融合视觉嵌入和动作序列</li><li>使用四层时序Transformer骨干，通过交叉注意力融合多模态特征</li><li>采用两阶段训练：先用基于模型的合成碰撞标签预训练，再用真实机器人rollout后训练，包括过采样近碰撞样本</li><li>部署时通过温度缩放校准风险概率，使用风险阈值控制命令门控，并通过风险引导的梯度调整或QP/CBF回退合成恢复轨迹</li><li>测试时通过ONNX/TorchScript导出和特征预取实现&lt;5ms前向传播</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在五个双臂任务、六个VLA骨干网上，任务平均碰撞率从0.54降至0.23，成功率从0.45升至0.61</li><li>实验包括预测准确性评估、消融研究和实时控制性能分析</li><li>估计器单次前向传播低于5ms，占VLA更新间隔（100ms）不到5%</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>固定保守阈值可能拦截毫米级精细任务中的合法近距离动作</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接关乎具身智能中视觉语言动作模型的安全部署，提升双臂操作的可执行性与鲁棒性；风险估计器与系统集成优化了实时控制效率，与WAM（世界动作模型）在动作执行层面的安全约束相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>信息来自摘要和全文节选，未提供完整实验细节和作者机构内具体分工，但实体机器人与性能数据明确。</p>
+          <blockquote><strong>CoFreeVLA框架能同时降低碰撞率并提升成功率：</strong>the task-averaged collision rate decreases from 0.54 to 0.23, while the task-averaged success rate increases from 0.45 to 0.61.</blockquote>
+          <blockquote><strong>风险估计器预测碰撞概率、最小距离和时间：</strong>The estimator predicts collision likelihoods directly from proprioceptive states, visual embeddings, and candidate action sequences.</blockquote>
+          <blockquote><strong>估计器集成到闭环控制，用于门控和恢复：</strong>Deeply integrated into the closed-loop control system, this estimator proactively gates risky commands, autonomously synthesizes recovery trajectories to safe states via risk-guided adjustments, and biases policy refinement for safer rollouts.</blockquote>
+          <blockquote><strong>训练采用两阶段：预处理和后期处理：</strong>the estimator utilizes a two-stage training pipeline, pre-training with model-based synthetic collision labels, followed by post-training on real-robot rollouts.</blockquote>
+          <blockquote><strong>单个估计器前向传播小于5毫秒：</strong>A single estimator forward pass remains below 5 ms</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></section>
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>
