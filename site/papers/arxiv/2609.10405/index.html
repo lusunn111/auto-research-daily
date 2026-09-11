@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-09-10 17:04</span>
+      <span>AUTO RESEARCH DAILY · 2026-09-11 17:02</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,8 +193,8 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>摘要级</span>
-      <span>相关性 9/10</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
       <span>v1</span>
     </div>
 
@@ -204,13 +204,12 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>将动作频率从隐式的轨迹属性提升为显式的条件维度，并贯穿整个生成流程，可以更好地建模动作轨迹的频率异质性。</p>
+      <p>动作频率可以被提升为流匹配整个生成流程中的显式条件维度：通过DCT将频率成分显式暴露，使源分布、训练目标和推理引导三个阶段都能基于频率相关的动作统计进行条件化，而不改变VLA骨干网络。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它提出了一种可插入现有流匹配动作专家、不改变 VLA 主干的频率条件生成方法，并在多个仿真基准和真实机器人任务上验证，对关注 VLA 动作生成、长时序轨迹建模和可迁移生成方法的当前研究者具有较高参考价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文提供了一种不修改VLA骨干即可提升动作生成质量的频率条件流匹配框架，在多个仿真基准和真实机器人任务上验证有效，其DCT频率建模、频谱匹配源分布、频率自适应目标与频率预算CFG引导对研究动作生成、长时序预测和推理效率的研究者具有直接迁移价值。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
-      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
     </ul>
 
@@ -222,9 +221,9 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>视觉-语言-动作模型中的动作生成流匹配方法</p>
-        <p><strong>模型原始标签：</strong>VLA、Flow Matching、动作生成、频率建模、机器人操作</p>
-        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>模型细分主题：</strong>视觉-语言-动作模型中的动作生成流匹配框架</p>
+        <p><strong>模型原始标签：</strong>VLA、Flow Matching、DCT、频率条件、动作生成、机器人操控</p>
+        <p><strong>第一单位：</strong>AGIBOT</p>
         <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-09</p>
         <p class="paper-links">
@@ -273,27 +272,26 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>面向视觉-语言-动作模型的动作生成，在时间坐标下使用流匹配生成动作轨迹，并在 LIBERO、LIBERO-Plus、VLA-Arena 及六个真实机器人任务上评测。</dd>
-        <dt>Motivation（研究动机）</dt><dd>机器人动作是时间相关的轨迹，其频率分量在不同尺度上编码运动，并且能量分布高度不均匀；然而基于流匹配的 VLA 模型通常在时间坐标中生成动作，没有显式建模或系统利用这种频率异质性。</dd>
-        <dt>Insight（核心洞察）</dt><dd>将动作频率从隐式的轨迹属性提升为显式的条件维度，并贯穿整个生成流程，可以更好地建模动作轨迹的频率异质性。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>动作轨迹的频率分量能量分布高度不均匀，难以用统一目标建模</li><li>在流匹配生成中显式引入频率条件而不改变 VLA 主干</li><li>在不同频率上平衡训练目标并约束引导残差</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
-        <dt>Method（方法）</dt><dd><ul><li>提出 FreqFM，一种面向 VLA 模型的频率条件流匹配框架</li><li>在 DCT 频率坐标下构建频谱匹配的源分布</li><li>自适应地平衡不同频率上的目标</li><li>使用对应参考传输尺度约束逐频率引导残差</li><li>在不改变 VLA 主干的情况下集成到现有流匹配动作专家中</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在 LIBERO、LIBERO-Plus 和 VLA-Arena 上，FreqFM 持续提升性能</li><li>在 LIBERO-Plus 上获得 9.3 个点的提升</li><li>在六个真实机器人任务上进一步展示有效性</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>该论文直接面向 VLA 模型的动作生成，属于具身智能与视觉-语言-动作模型的核心方向；其频率条件流匹配方法涉及可执行动作生成与长时序轨迹建模，与推理效率和实时控制有潜在关联，但摘要未直接提及模型压缩或系统优化。</dd>
+        <dt>Setting（研究设定）</dt><dd>在LIBERO、LIBERO-Plus、VLA-Arena仿真基准以及六个真实机器人任务上，基于π0与π0.5骨干网络，将流匹配动作专家从时域坐标迁移到DCT频率坐标进行动作块生成。</dd>
+        <dt>Motivation（研究动机）</dt><dd>机器人动作是时间相关的轨迹，其频率成分编码不同尺度的运动且能量分布高度不均匀，但现有基于流匹配的VLA模型通常在时间坐标中生成动作，没有显式建模或系统性地利用这种频率异质性。</dd>
+        <dt>Insight（核心洞察）</dt><dd>动作频率可以被提升为流匹配整个生成流程中的显式条件维度：通过DCT将频率成分显式暴露，使源分布、训练目标和推理引导三个阶段都能基于频率相关的动作统计进行条件化，而不改变VLA骨干网络。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>动作频率成分能量分布高度不均匀，低频集中绝大部分能量</li><li>频率选择性变换在时间坐标中对应密集的跨时间步耦合，难以紧凑参数化</li><li>源分布与目标轨迹频谱不匹配导致源-目标协方差失配</li><li>不同频率对回归目标的贡献差异大，需要自适应平衡</li><li>推理阶段条件引导残差需要按频率预算约束</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过分析真实机器人数据与仿真基准中动作频谱能量分布，发现真实机器人数据（horizon为30）频率能量跨越七个数量级以上且超过99.9%集中在最低三个频率，LIBERO上约3.8个数量级、VLA-Arena上约2.6个数量级，从而论证频率异质性是显著且可被系统利用的结构。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>沿动作时间轴应用DCT-II，将动作块变换到频率坐标，最终通过逆DCT恢复动作块</li><li>从训练动作估计每个频率和每个自由度的功率谱P_{k,d}，用其缩放源分布方差，构造频谱匹配的源分布z~0,k,d=sqrt(P_{k,d})ε_{k,d}</li><li>在频率坐标中对各频率回归误差进行PSD归一化，并用学习到的尺度s_{k,d}重新平衡训练目标</li><li>在每个ODE求解器评估处，将CFG残差按度量M_k径向裁剪到参考传输球半径βR_k内，参考传输尺度由该频率动作功率决定</li><li>将频率条件集成到现有流匹配动作专家中，不修改VLM骨干与动作专家结构，仅替换流匹配公式</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在LIBERO、LIBERO-Plus、VLA-Arena上，FreqFM在配对的时间流匹配基线基础上持续提升性能</li><li>在LIBERO-Plus上取得9.3个百分点的提升</li><li>FreqFM在六个真实机器人任务上进一步展示了有效性</li><li>实验基于π0和π0.5骨干，使用LeRobot代码库，每个模型及配对基线在两张NVIDIA A800 GPU上以全局批大小64训练20k优化步</li><li>使用PSD归一化指数ρ=0.25，条件丢弃概率p_drop=0.05，频率统计仅从训练动作估计</li><li>LIBERO-Plus从LIBERO训练的检查点零样本评估，并复用LIBERO训练数据估计的频率统计</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>FreqFM依赖训练集级别的频谱统计：频谱匹配源在所有条件下固定</li><li>限制引导残差的传输预算来自同一固定频谱，而非当前观测或语言指令</li><li>在VLA-Arena上的Extrapolation回归任务上可见该设计的代价，因为该任务动作统计最不可能匹配训练频谱</li><li>FreqFM要求按具身逐个体指定平滑动作维度</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接面向具身智能与VLA模型的动作生成，通过频率条件改进流匹配动作专家，涉及可执行动作生成与真实机器人评测，对世界动作模型与系统优化方向有明确参考价值。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>仅能依据标题和摘要判断，未提供全文；第一单位、通讯作者、具体网络结构、训练细节、实时性、推理开销和局限均无法确认。</p>
-          <blockquote><strong>机器人动作是时间相关轨迹，其频率分量能量分布高度不均匀。：</strong>Robot actions are temporally correlated trajectories whose frequency components encode motion at different scales with highly non-uniform energy distributions.</blockquote>
-          <blockquote><strong>现有基于流匹配的 VLA 模型通常在时间坐标中生成动作，没有显式建模或系统利用频率异质性。：</strong>Yet Flow Matching--based vision-language-action (VLA) models typically generate actions in temporal coordinates, without explicitly modeling or systematically leveraging this frequency heterogeneity.</blockquote>
-          <blockquote><strong>FreqFM 将动作频率提升为显式条件维度并贯穿整个生成流程。：</strong>It raises action frequency from an implicit trajectory property to an explicit conditioning dimension that spans the entire generation pipeline.</blockquote>
-          <blockquote><strong>FreqFM 在 DCT 频率坐标下构建频谱匹配源分布、平衡目标并约束逐频率引导残差。：</strong>in DCT frequency coordinates, FreqFM constructs a spectrum-matched source distribution, adaptively balances the objective across frequencies, and constrains per-frequency guidance residuals using the corresponding reference transport scales.</blockquote>
-          <blockquote><strong>FreqFM 可集成到现有流匹配动作专家而不改变 VLA 主干。：</strong>FreqFM integrates into existing Flow Matching action experts without changing the VLA backbone.</blockquote>
-          <blockquote><strong>FreqFM 在 LIBERO、LIBERO-Plus 和 VLA-Arena 上持续提升性能，LIBERO-Plus 上提升 9.3 个点。：</strong>Across LIBERO, LIBERO-Plus, and VLA-Arena, FreqFM consistently improves performance, including a 9.3-point gain on LIBERO-Plus, and further demonstrates its effectiveness on six real-robot tasks.</blockquote>
+          <p>全文为节选，部分实验表格和补充材料细节未完整提供；通讯作者信息在节选材料中未明确标注；VLA-Arena上Extrapolation回归的具体数值和真实机器人任务细节未在节选中给出。</p>
+          <blockquote><strong>机器人动作在频率上能量分布高度不均匀，低频集中绝大部分能量。：</strong>On our real-robot data, whose horizon is 30, energy varies by more than seven orders of magnitude across frequency bins, and more than 99.9% is concentrated in the lowest three</blockquote>
+          <blockquote><strong>FreqFM在LIBERO-Plus上取得9.3个百分点的提升。：</strong>Across LIBERO, LIBERO-Plus, and VLA-Arena, FreqFM consistently improves performance, including a 9.3-point gain on LIBERO-Plus, and further demonstrates its effectiveness on six real-robot tasks.</blockquote>
+          <blockquote><strong>FreqFM将频率作为流匹配全流程的条件维度，无需改动VLA骨干。：</strong>FreqFM integrates into existing Flow Matching action experts without changing the VLA backbone.</blockquote>
+          <blockquote><strong>FreqFM的局限是依赖训练集级别固定频谱统计，不随当前观测或语言指令变化。：</strong>FreqFM relies on training-set-level spectral statistics: the spectrum-matched source is fixed across conditions, and the transport budget that limits the guidance residual is derived from the same fixed spectrum rather than from the current observation or language instruction.</blockquote>
+          <blockquote><strong>FreqFM在DCT频率坐标中构造频谱匹配源分布、自适应平衡目标并约束逐频率引导残差。：</strong>Concretely, in DCT frequency coordinates, FreqFM constructs a spectrum-matched source distribution, adaptively balances the objective across frequencies, and constrains per-frequency guidance residuals using the corresponding reference transport scales.</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
