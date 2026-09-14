@@ -303,7 +303,7 @@
         "why_recommended": "该论文展示了在真实非结构化农业环境中集成感知、位姿估计和运动规划的完整机器人操作系统，并提供了详细的实验评估和成功率数据，对具身智能中真实世界操作任务的研究者有参考价值。文中也讨论了未来采用VLA/WMA架构的可能性及其在边缘硬件上的计算成本挑战。"
       },
       "figure_gallery": {
-        "checked_at": "2026-09-14T18:03:08.033629+08:00",
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
         "figures": [
           {
             "caption": "(a) RoMu4o, our proposed robotic manipulation unit for orchard operations aimed for autonomous proximal hyperspectral leaf sensing. The system is comprised of 1) 6-DOF robotic manipulator 2) RGBD camera 3) two-finger gripper end-effector integrated with a hyperspectral sensing system 4) an independent VIS-NIR light source for referencing and self-calibration 5) crawler-type ground robot 6) electric and control boxes, hardware drivers, portable batteries, processing unit, Ethernet hub, and auxiliary hardware needed for the UGV’s navigation. (b) Pistachio leaves used for field experiments; (c) Magnolia leaves used for lab experiments.",
@@ -335,7 +335,7 @@
         "html_url": "https://arxiv.org/html/2501.10621v3",
         "status": "available"
       },
-      "final_score": 0.5429607136395084,
+      "final_score": 0.5411218156645052,
       "provenance": {
         "analyzed_at": "2026-09-14T10:05:02.259667Z",
         "input_hash": "161f47ca37f089dfe25533769179cac0f34afbd8485cd9f280b781df04e9cd20",
@@ -365,16 +365,16 @@
           "url": "https://arxiv.org/abs/2501.10621",
           "version": 3
         },
-        "rank": 7,
+        "rank": 3,
         "score": {
-          "base_score": 0.4962922066172879,
+          "base_score": 0.4929487557536459,
           "exploration": 0.6790424847027691,
           "matched_terms": [
             "robotic manipulation"
           ],
           "negative_terms": [],
           "personal": 0.6268183919945174,
-          "recency": 0.5078542097900528,
+          "recency": 0.4744197011536327,
           "topic": 0.2729550307727795
         }
       },
@@ -1320,78 +1320,92 @@
     },
     "arxiv:2511.05809:v2": {
       "analysis": {
-        "analysis": "作者指出，现有抓取生成方法在生成过程中通常只关注抵抗单一力旋量，而忽略了物体潜在的对 Ã 性运动（例如逃脱），这是抓取不稳定与失败的关键原因。基于此，作者将问题形式化为两人博弈来显式建模对抗性物体运动。",
+        "analysis": "作者在引言中指出，现有方法通常只针对单一力旋量（例如重力）进行抵抗，忽略了物体可能的对抗性运动（如逃逸），导致抓取无法充分约束物体运动；虽然已有工作引入对抗技术，但通常仅作为事后评估而非用于抓取生成。作者据此将问题建模为两人博弈以显式考虑对抗性物体运动。",
         "challenges": [
-          "生成能充分约束物体运动的可靠抓取",
-          "现有方法只考虑抵抗单一力旋量，忽略对抗性物体运动",
-          "需在不同机器人平台与目标物体上保持泛化与成功率",
-          "需在真实部署可接受的时间内生成抓取构型"
+          "现有多数优化或学习方法通常只抵抗单一力旋量，忽略物体对抗性运动，导致抓取约束不足。",
+          "部分引入对抗技术的抓取工作仅将其用于事后评估而非生成阶段。",
+          "作者指出其刚体抓取条件基于运动学约束而未考虑摩擦，可能导致抓取过于保守。",
+          "作者指出许多物体（如锤子、大盒子、圆柱罐）因尺寸或几何难以被手部完全几何约束，导致算法难以收敛。",
+          "作者指出两个玩家的内层优化问题使用迭代局部优化，虽计算高效但易陷入局部极小值。"
         ],
         "corresponding_authors": [
-          "证据未提供"
+          "Jeffrey Ichnowski"
         ],
         "evidence": [
           {
-            "claim": "论文将抓取合成显式建模为两个玩家的博弈，其中一方控制机器人生成抓取，另一方对抗性地控制物体寻求逃脱运动",
+            "claim": "论文将抓取合成建模为两人博弈，一方生成抓取，另一方对抗性地控制物体逃逸。",
             "location": "abstract",
             "quote": "We propose a new grasp-synthesis approach that explicitly captures and leverages the adversarial object motion in grasp generation by formulating the problem as a two-player game. One player controls the robot to generate feasible grasp configurations, while the other adversarially controls the object to seek motions that attempt to escape from the grasp."
           },
           {
-            "claim": "仿真实验成功率为 75.78%，比最优基线高最多 19.61%",
+            "claim": "仿真成功率为75.78%，比最先进基线高出最多19.61%；两人博弈相比无博弈方法提升27.40%。",
             "location": "abstract",
-            "quote": "Simulation experiments on various robot platforms and target objects show that our approach achieves a success rate of 75.78%, up to 19.61% higher than the state-of-the-art baseline."
+            "quote": "Simulation experiments on various robot platforms and target objects show that our approach achieves a success rate of 75.78%, up to 19.61% higher than the state-of-the-art baseline. The two-player game mechanism improves the grasping success rate by 27.40% over the method without the game formulation."
           },
           {
-            "claim": "两人博弈机制相比无博弈形式的方法提升成功率 27.40%",
+            "claim": "生成一个抓取配置平均耗时0.28–1.04秒，真实实验中ShadowHand平均成功率85.0%，LeapHand平均成功率87.5%。",
             "location": "abstract",
-            "quote": "The two-player game mechanism improves the grasping success rate by 27.40% over the method without the game formulation."
+            "quote": "Our approach requires only 0.28-1.04 seconds on average to generate a grasp configuration, depending on the robot platform, making it suitable for real-world deployment. In real-world experiments, our approach achieves an average success rate of 85.0% on ShadowHand and 87.5% on LeapHand, which confirms its feasibility and effectiveness in real robot setups."
           },
           {
-            "claim": "生成抓取构型平均耗时 0.28–1.04 秒，取决于机器人平台",
-            "location": "abstract",
-            "quote": "Our approach requires only 0.28-1.04 seconds on average to generate a grasp configuration, depending on the robot platform, making it suitable for real-world deployment."
+            "claim": "第一署名单位为卡内基梅隆大学机器人研究所。",
+            "location": "supplied_full_text",
+            "quote": "Affiliation: Robotics Institute, Carnegie Mellon University, PA 15213."
           },
           {
-            "claim": "真实世界实验中 ShadowHand 平均成功率 85.0%，LeapHand 为 87.5%",
+            "claim": "通讯作者为Jeffrey Ichnowski。",
+            "location": "supplied_full_text",
+            "quote": "Jeffrey Ichnowski † † thanks: Email: yuchen3@andrew.cmu.edu . Affiliation: Robotics Institute, Carnegie Mellon University, PA 15213."
+          },
+          {
+            "claim": "作者指出现有方法通常只抵抗单一力旋量而忽略物体对抗性运动。",
             "location": "abstract",
-            "quote": "In real-world experiments, our approach achieves an average success rate of 85.0% on ShadowHand and 87.5% on LeapHand, which confirms its feasibility and effectiveness in real robot setups."
+            "quote": "A key reason is that during grasp generation, they typically focus on resisting a single wrench, while ignoring the object's potential for adversarial movements, such as escaping."
+          },
+          {
+            "claim": "作者在结论中指出所提刚体抓取条件未考虑摩擦，可能过于保守，且迭代局部优化易陷局部极小值。",
+            "location": "supplied_full_text",
+            "quote": "First, the proposed firm-grasp condition is defined in terms of kinematic constraints without considering friction. As a result, grasps generated under this condition may be overly conservative. Moreover, due to their size or geometry, many objects (e.g., hammers, large boxes, or cylindrical cans) are difficult to be fully constrained geometrically by the robot hand, which makes the algorithm hard to converge. Incorporating friction into the grasp condition represents an exciting future direction. Second, the inner optimization problems of both players are solved using iterative local optimization. While computationally efficient, this approach suffers from being trapped in local minima."
           }
         ],
         "experiments": [
-          "在不同机器人平台与目标物体上进行仿真实验，方法成功率达到 75.78%，比当前最优基线高出最多 19.61%",
-          "两人博弈机制相比不含博弈形式的方法将抓取成功率提升 27.40%",
-          "生成一个抓取构型平均仅需 0.28–1.04 秒（取决于机器人平台），适合真实世界部署",
-          "真实世界实验中，在 ShadowHand 上平均成功率为 85.0%，在 LeapHand 上为 87.5%，验证了在真实机器人设置中的可行性与有效性"
+          "仿真实验在多种机器人平台和目标物体上进行，方法成功率为75.78%，比最先进基线高出最多19.61%；两人博弈机制相比无博弈公式的方法将抓取成功率提升27.40%。",
+          "生成一个抓取配置平均仅需0.28–1.04秒（取决于机器人平台），适合真实世界部署。",
+          "真实世界实验中，ShadowHand平均成功率85.0%，LeapHand平均成功率87.5%。",
+          "真实机器人实验中，抓取持续保持物体3秒即视为成功；LeapHand上40次试验平均成功率87.5%，ShadowHand上平均成功率85.0%。",
+          "结论部分指出方法可在线以1Hz生成抓取，相比近期最先进方法成功率高出7.51%。",
+          "图7展示了抓取失败示例，包括水壶抓取的失败案例。"
         ],
-        "first_affiliation": "证据未提供",
-        "insight": "将抓取合成显式建模为两个玩家的博弈：一个玩家控制机器人生成可行的抓取构型，另一个玩家对抗性地控制物体，寻找试图从抓取中逃脱的运动。通过显式捕捉并利用这种对抗性物体运动，可以生成约束更强的抓取。",
+        "first_affiliation": "Robotics Institute, Carnegie Mellon University, PA 15213.",
+        "insight": "将抓取合成显式建模为两人博弈，一方生成可行抓取构型，另一方对抗性地控制物体寻找逃逸运动，从而在生成阶段就考虑物体的对抗行为，提升抓取的鲁棒性。",
         "limitations": [
-          "材料未说明"
+          "所提出的刚体抓取条件基于运动学约束，未考虑摩擦；因此在该条件下生成的抓取可能过于保守。",
+          "由于尺寸或几何原因，许多物体（例如锤子、大盒子或圆柱罐）难以被机器人手完全几何约束，导致算法难以收敛。",
+          "两个玩家的内层优化问题使用迭代局部优化，虽然计算高效，但易陷入局部极小值。"
         ],
         "method": [
-          "将抓取合成问题形式化为两个玩家的博弈",
-          "一个玩家控制机器人，生成可行的抓取构型",
-          "另一个玩家对抗性地控制物体，寻找试图从抓取中逃脱的运动",
-          "显式捕捉并利用对抗性物体运动来生成抓取"
+          "将抓取合成问题建模为两人博弈：玩家1控制机器人生成可行抓取构型，玩家2对抗性地控制物体寻找试图逃逸抓取的运动。",
+          "在抓取生成中显式捕捉并利用物体的对抗性运动（逃离抓取的运动）。",
+          "采用迭代局部优化求解两个玩家的内层优化问题。"
         ],
-        "motivation": "多指机器人手在复杂任务中潜力巨大，但可靠抓取仍是重大挑战。现有方法生成的抓取往往无法充分约束物体运动，导致在扰动下不稳定、抓取失败。其关键原因在于抓取生成时通常只关注抵抗单一力旋量（wrench），而忽略了物体发生对抗性运动（如逃脱）的可能性。",
-        "primary_topic": "多指机器人手的灵巧抓取合成",
-        "relation_to_research": "该论文面向多指机器人手的可执行抓取动作生成，属于具身智能中动作生成与真实机器人评测方向；其博弈论对抗建模思路与对物体运动的显式推理，与世界模型/物理人工智能中对未来物理交互结果的预测相关；其 0.28–1.04 秒的抓取生成耗时与真实机器人部署要求，也与系统优化和实时控制主题相关。",
-        "relevance_score": 7,
-        "setting": "给定目标物体的几何形状与位姿，为多指机器人手计算一个手部构型（抓取配置），用于稳定抓取物体。",
+        "motivation": "现有多指灵巧手抓取合成方法生成的抓取往往无法充分约束物体运动，在扰动或使用工具时不稳定甚至失败；其关键原因是抓取生成时通常只针对单一力旋量（如重力）进行抵抗，而忽略了物体可能的对抗性运动（如逃逸）。",
+        "primary_topic": "灵巧手抓取合成",
+        "relation_to_research": "该论文关注灵巧手可执行动作（抓取动作）生成，属于具身智能与机器人操作中的动作生成与真实机器人评测方向；其方法涉及快速在线优化（0.28–1.04秒生成抓取），与实时控制、系统优化有一定关联，但不直接涉及视觉语言动作模型、世界模型或世界动作模型。",
+        "relevance_score": 6,
+        "setting": "给定目标物体的几何与位姿，为多指机器人手计算抓取配置（手部构型），在仿真与真实机器人平台上验证。",
         "tags": [
-          "灵巧抓取",
-          "博弈论",
-          "对抗运动",
-          "机器人手",
-          "真实机器人评测"
+          "dexterous grasping",
+          "grasp synthesis",
+          "game theory",
+          "adversarial optimization",
+          "robot manipulation"
         ],
-        "title_zh": "用于灵巧抓取合成的对抗博弈论算法",
-        "uncertainty": "仅提供标题与摘要，未提供全文；无法核实方法细节、基线选择、实验统计方式、失败案例与作者声明的局限，因此对方法泛化性与结论稳健性的判断存在不确定性。",
-        "why_recommended": "论文提出将抓取合成建模为机器人与物体之间的对抗博弈，方法思路清晰，且在仿真与真实机器人上均报告了成功率与推理耗时，对关注可执行动作生成、物理交互推理与真实机器人评测的研究者有直接参考价值。"
+        "title_zh": "面向灵巧抓取合成的对抗性博弈论算法",
+        "uncertainty": "全文节选不完整，缺失方法的具体推导、公式、实验设置细节以及部分结果表格，因此对方法要点与实验结果的解读受限于摘要和有限节选；第一单位与通讯作者依据全文节选中的署名信息推断，通讯作者依据邮箱标注推断。",
+        "why_recommended": "论文从博弈论角度显式建模物体对抗性逃逸运动以生成更鲁棒的灵巧抓取，提供了可在线运行（1Hz）的抓取合成方法，并在多种仿真平台和真实灵巧手（ShadowHand、LeapHand）上给出成功率与耗时数据，对关注可执行动作生成、实时控制与真实机器人评测的研究者具有参考价值；其关于摩擦缺失与局部极小值的局限讨论也可启发后续工作。"
       },
       "figure_gallery": {
-        "checked_at": "2026-09-14T18:03:08.033629+08:00",
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
         "figures": [
           {
             "caption": "Our approach address the grasp synthesis problem for multi-fingered robotic hands by formulating it as a two-player game: Player 1 controls the hand to generate feasible grasp configurations, while Player 2 adversarially controls the object to attempt escape.",
@@ -1423,13 +1437,13 @@
         "html_url": "https://arxiv.org/html/2511.05809v2",
         "status": "available"
       },
-      "final_score": 0.5625502400939096,
+      "final_score": 0.5157008942571197,
       "provenance": {
-        "analyzed_at": "2026-09-14T10:05:20.660245Z",
-        "input_hash": "022768113617c8b9ec16470ee6098370cb3ae718e864550327d39e12a32742ae",
+        "analyzed_at": "2026-09-14T16:35:57.740500Z",
+        "input_hash": "6bebdb163e9badca954df97166059f8a578c139a1b8db6ae1a936e4259e88ee4",
         "model": "deepseek-v4-flash",
         "prompt_version": "paper-analysis-v1",
-        "reading_scope": "abstract"
+        "reading_scope": "full_text"
       },
       "ranked": {
         "paper": {
@@ -1459,18 +1473,18 @@
           "url": "https://arxiv.org/abs/2511.05809",
           "version": 2
         },
-        "rank": 18,
+        "rank": 7,
         "score": {
-          "base_score": 0.45009134562529024,
+          "base_score": 0.4467288986493086,
           "exploration": 0.557643348222015,
           "matched_terms": [],
           "negative_terms": [],
           "personal": 0.6362320729503659,
-          "recency": 0.5107396284831245,
+          "recency": 0.47711515872330823,
           "topic": 0.1627103289346046
         }
       },
-      "tier": "browse"
+      "tier": "deep_read"
     },
     "arxiv:2511.09681:v2": {
       "analysis": {
@@ -2046,6 +2060,140 @@
           "personal": 0.5457995355536671,
           "recency": 0.6357368967174961,
           "topic": 0.35
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2601.08514:v3": {
+      "analysis": {
+        "analysis": "材料未说明",
+        "challenges": [
+          "从控制律中解耦参考处理逻辑",
+          "支持单点与轨迹两类参考输入",
+          "在控制器采样周期内生成单点参考",
+          "通过ros2_control chaining机制连接下游控制器",
+          "提升跨机器人平台复用性并减少重复代码"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "论文提出一种ROS2模块化架构，将参考的获取、验证、插值与跟踪参考的控制律解耦",
+            "location": "abstract",
+            "quote": "This paper introduces a novel modular architecture for ROS2 that decouples the logic required to acquire, validate, and interpolate references from the control laws that track them."
+          },
+          {
+            "claim": "专用组件Reference Generator接收单点或轨迹参考，并以控制器采样周期通过ros2_control chaining机制写入下游控制器",
+            "location": "abstract",
+            "quote": "The design includes a dedicated component, named Reference Generator, that receives references, in the form of either single points or trajectories, from external nodes (e.g., planners), and writes single-point references at the controller's sampling period via the existing ros2_control chaining mechanism to downstream controllers."
+          },
+          {
+            "claim": "该方法在仿真和真实Universal Robots与Franka Emika机械臂上验证",
+            "location": "abstract",
+            "quote": "validate the approach on simulated and real Universal Robots and Franka Emika manipulators"
+          },
+          {
+            "claim": "参考生成器减少链式控制器之间重复的参考处理代码，有利于构建和复用复杂控制器流水线",
+            "location": "abstract",
+            "quote": "reference generators reduce duplicated reference-handling code across chained controllers to favor the construction and reuse of complex controller pipelines"
+          }
+        ],
+        "experiments": [
+          "在仿真和真实Universal Robots与Franka Emika机械臂上验证该方法",
+          "结果显示：(i) 在所有测试场景中参考被可靠跟踪；(ii) 参考生成器减少了链式控制器之间重复的参考处理代码，有利于构建和复用复杂控制器流水线；(iii) 控制器实现保持只关注控制律"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过引入独立的Reference Generator组件，将参考生成（单点或轨迹）以控制器采样周期写为单点参考，并借助ros2_control的chaining机制传递给下游控制器，可使控制器只关注控制律本身。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出一种新的ROS2模块化架构，将参考的获取、验证和插值与跟踪参考的控制律解耦",
+          "设计专用组件Reference Generator，接收来自外部节点（如规划器）的单点或轨迹形式的参考",
+          "Reference Generator通过现有ros2_control chaining机制，以控制器采样周期向下游控制器写入单点参考",
+          "实现两个参考生成器：一个处理关节空间参考，一个处理笛卡尔参考",
+          "实现一组新控制器：带重力补偿的PD控制器、笛卡尔位姿控制器和导纳控制器"
+        ],
+        "motivation": "控制器中重复实现参考处理逻辑导致代码重复、复用性差，且不利于跨机器人平台构建复杂控制器流水线。",
+        "primary_topic": "ROS2机器人控制软件架构与参考生成模块化",
+        "relation_to_research": "该论文属于机器人系统与软件架构优化，与具身智能中的可执行动作生成、实时控制和真实机器人评测有间接关系：模块化的参考生成与控制器解耦可支持动作指令到控制器的高效、可复用传递，但不涉及视觉语言动作模型、世界模型或长时序预测。",
+        "relevance_score": 6,
+        "setting": "面向ROS2控制框架，将参考的获取、验证与插值逻辑从跟踪这些参考的控制律中解耦，并在仿真和真实Universal Robots与Franka Emika机械臂上验证。",
+        "tags": [
+          "ROS2",
+          "ros2_control",
+          "模块化架构",
+          "参考生成",
+          "控制器",
+          "机器人无关",
+          "系统集成"
+        ],
+        "title_zh": "用模块化架构简化ROS2控制器以实现机器人无关的参考生成",
+        "uncertainty": "仅依据标题与摘要判断，未提供全文；第一单位、通讯作者、具体实验数字、作者明确局限等信息无法确认；相关性主要基于机器人控制架构与系统优化，距离视觉语言动作模型、世界模型和物理人工智能核心主题较远。",
+        "why_recommended": "对于关注真实机器人系统集成、实时控制接口和可复用控制流水线的研究者，该工作提供了ROS2下参考生成与控制器解耦的模块化实现思路，有助于将高层动作或规划输出以机器人无关方式接入底层控制器。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
+        "figures": [
+          {
+            "caption": "Finite state machine of the Reference Generator .",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2601.08514/v3/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2601.08514v3/images/reference_generator_FSM.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2601.08514v3#S2.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2601.08514v3",
+        "status": "available"
+      },
+      "final_score": 0.4657730683614018,
+      "provenance": {
+        "analyzed_at": "2026-09-14T16:36:45.095759Z",
+        "input_hash": "a4bed93160d8a0d8558396c6d27279249c0cf8226ca9441fcf5d2095e5b79507",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "This paper introduces a novel modular architecture for ROS2 that decouples the logic required to acquire, validate, and interpolate references from the control laws that track them. The design includes a dedicated component, named Reference Generator, that receives references, in the form of either single points or trajectories, from external nodes (e.g., planners), and writes single-point references at the controller's sampling period via the existing ros2_control chaining mechanism to downstream controllers. This separation removes duplicated reference-handling code from controllers and improves reusability across robot platforms. We implement two reference generators: one for handling joint-space references and one for Cartesian references, along with a set of new controllers (PD with gravity compensation, Cartesian pose, and admittance controllers) and validate the approach on simulated and real Universal Robots and Franka Emika manipulators. Results show that (i) references are tracked reliably in all tested scenarios, (ii) reference generators reduce duplicated reference-handling code across chained controllers to favor the construction and reuse of complex controller pipelines, and (iii) controller implementations remain focused only on control laws.",
+          "authors": [
+            "Davide Risi",
+            "Vincenzo Petrone",
+            "Antonio Langella",
+            "Lorenzo Pagliara",
+            "Enrico Ferrentino",
+            "Pasquale Chiacchio"
+          ],
+          "canonical_id": "2601.08514",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "5 pages, 7 figures",
+          "pdf_url": "https://arxiv.org/pdf/2601.08514",
+          "published_at": "2026-01-13T12:55:07Z",
+          "source": "arxiv",
+          "title": "Simplifying ROS2 controllers with a modular architecture for robot-agnostic reference generation",
+          "updated_at": "2026-09-11T16:54:23Z",
+          "url": "https://arxiv.org/abs/2601.08514",
+          "version": 3
+        },
+        "rank": 31,
+        "score": {
+          "base_score": 0.35595103338436684,
+          "exploration": 0.3539482755222984,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5507552675415539,
+          "recency": 0.4739257712647438,
+          "topic": 0.07235359517703827
         }
       },
       "tier": "browse"
@@ -3910,6 +4058,159 @@
       },
       "tier": "deep_read"
     },
+    "arxiv:2604.11038:v2": {
+      "analysis": {
+        "analysis": "材料未说明（摘要仅说明任务设定、数据与基准构建以及四阶段流水线，未展开具体问题分析方式）",
+        "challenges": [
+          "从第一人称视频获取仿真就绪的交互3D物体本身困难",
+          "需要超越单纯铰接，建模一般性的跨部件功能映射",
+          "需要同时处理2D/3D分割、几何重建、铰接估计与功能模板推断的多阶段耦合问题",
+          "现有现成方法在该任务上表现吃力"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "论文提出从第一人称视频建模交互式3D物体的任务、数据集与基准",
+            "location": "abstract",
+            "quote": "We present EgoFun3D, a coordinated task formulation, dataset, and benchmark for modeling interactive 3D objects from egocentric videos."
+          },
+          {
+            "claim": "核心表示是功能模板，用于捕捉一般跨部件功能映射",
+            "location": "abstract",
+            "quote": "we capture general cross-part functional mappings (e.g., rotation of stove knob controls stove burner temperature) through function templates, a structured computational representation"
+          },
+          {
+            "claim": "功能模板支持精确评估并可编译为跨仿真平台的可执行代码",
+            "location": "abstract",
+            "quote": "Function templates enable precise evaluation and direct compilation into executable code across simulation platforms."
+          },
+          {
+            "claim": "数据集包含517段第一人称视频及多类标注",
+            "location": "abstract",
+            "quote": "we introduce a dataset of 517 egocentric videos featuring challenging real-world interactions with paired 3D geometry, segmentation over 2D and 3D, articulation and function template annotations"
+          },
+          {
+            "claim": "方法为四阶段流水线",
+            "location": "abstract",
+            "quote": "we propose a 4-stage pipeline consisting of: 2D part segmentation, reconstruction, articulation estimation, and function template inference"
+          },
+          {
+            "claim": "基准显示该任务对现成方法具有挑战性",
+            "location": "abstract",
+            "quote": "Comprehensive benchmarking shows that the task is challenging for off-the-shelf methods, highlighting avenues for future work."
+          }
+        ],
+        "experiments": [
+          "对现成方法进行了全面基准评测（comprehensive benchmarking），结果表明该任务对现成方法具有挑战性，并指出未来工作方向",
+          "摘要未给出具体量化结果或数字"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "用「功能模板」（结构化计算表示）刻画跨部件的功能映射（例如旋转灶台旋钮控制灶台温度），从而支持精确评估，并可直接编译为跨仿真平台的可执行代码。",
+        "limitations": [
+          "材料未说明（摘要仅指出任务对现成方法具有挑战性，未明确陈述作者自认的局限）"
+        ],
+        "method": [
+          "提出功能模板（function templates）作为结构化计算表示，用于捕捉一般跨部件功能映射",
+          "构建数据集：517段第一人称视频，包含具有挑战性的真实世界交互，并配对齐的3D几何、2D与3D分割、铰接与功能模板标注",
+          "构建基准以进行全面评测",
+          "提出4阶段流水线：2D部件分割 → 重建 → 铰接估计 → 功能模板推断",
+          "功能模板支持精确评估并可直接编译为跨仿真平台的可执行代码"
+        ],
+        "motivation": "交互物体对具身AI高度重要但数据稀缺，因此从易于获取的真实世界视频中建模交互物体具有价值；且已有工作多聚焦铰接（articulation），缺乏对一般跨部件功能映射的刻画。",
+        "primary_topic": "从第一人称视频建模可交互三维物体（功能模板与铰接结构）",
+        "relation_to_research": "与具身智能高度相关：产出仿真就绪的可交互3D物体与可执行功能映射，可服务于物理人工智能与机器人交互仿真/评测；其功能模板-可执行代码的思路对世界动作模型中的动作-效果映射与真实机器人评测资产构建有借鉴意义。但与VLA模型、长时序预测、推理效率、模型压缩、实时控制等当前重点并非直接对应。",
+        "relevance_score": 6,
+        "setting": "输入为真实世界第一人称（egocentric）视频，输出为仿真就绪（simulation-ready）的可交互3D物体；任务同时包含协调的任务定义、数据集与基准。",
+        "tags": [
+          "第一人称视频",
+          "交互物体建模",
+          "功能模板",
+          "铰接估计",
+          "仿真就绪资产",
+          "数据集与基准",
+          "具身AI"
+        ],
+        "title_zh": "EgoFun3D：使用功能模板从第一人称视频中建模交互物体",
+        "uncertainty": "仅有标题与摘要，缺少方法细节、实验数字、作者机构与通讯作者信息，且无法判断四阶段流水线的具体实现与性能水平；相关性判断基于任务与具身智能仿真资产的关联，而非直接的VLA/世界模型方法贡献。",
+        "why_recommended": "该工作提供可仿真、可执行的交互物体表示与配套数据集/基准，对构建具身智能仿真环境、动作效果建模与真实世界视频到可执行资产的转换具有明确参考价值；其功能模板形式化方式可能启发世界模型中的因果/功能映射表示。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
+        "figures": [
+          {
+            "caption": "We present EgoFun3D : a coordinated task, dataset and benchmark for modeling interactive 3D objects from egocentric videos. Given an egocentric video as an input, the output is a simulation-ready interactive object (e.g., faucet handle starts water flow from faucet spout). We break down the task into 4 steps to propose a baseline approach using off-the-shelf components. Our function template representation, produced by the proposed system, can be compiled into executable code for a simulator of choice.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2604.11038/v2/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2604.11038v2/teaser3.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2604.11038v2#S0.F1"
+          },
+          {
+            "caption": "Illustration of a typical human-object interaction. An agent interacts with a receptor, changing its state. Part functionality defines how the state change of the receptor maps to the state change of the effector. The example on the right shows a human interacting with a stovetop knob. The part function triggers the temperature change of the burner after knob actuation.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2604.11038/v2/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2604.11038v2/formulation3.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2604.11038v2#S1.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2604.11038v2",
+        "status": "available"
+      },
+      "final_score": 0.4212821375214259,
+      "provenance": {
+        "analyzed_at": "2026-09-14T16:37:11.275853Z",
+        "input_hash": "6ba0b17be5917ef3789a6c1c1f3a00c605d294b8ecb944535766c65d870efdfb",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "We present EgoFun3D, a coordinated task formulation, dataset, and benchmark for modeling interactive 3D objects from egocentric videos. Interactive objects are of high interest for embodied AI but scarce, making modeling from readily available real-world videos valuable. Our task focuses on obtaining simulation-ready interactive 3D objects from egocentric video input. While prior work largely focuses on articulations, we capture general cross-part functional mappings (e.g., rotation of stove knob controls stove burner temperature) through function templates, a structured computational representation. Function templates enable precise evaluation and direct compilation into executable code across simulation platforms. To enable comprehensive benchmarking, we introduce a dataset of 517 egocentric videos featuring challenging real-world interactions with paired 3D geometry, segmentation over 2D and 3D, articulation and function template annotations. To tackle the task, we propose a 4-stage pipeline consisting of: 2D part segmentation, reconstruction, articulation estimation, and function template inference. Comprehensive benchmarking shows that the task is challenging for off-the-shelf methods, highlighting avenues for future work.",
+          "authors": [
+            "Weikun Peng",
+            "Denys Iliash",
+            "Manolis Savva"
+          ],
+          "canonical_id": "2604.11038",
+          "categories": [
+            "cs.CV"
+          ],
+          "comment": "Project website: https://3dlg-hcvc.github.io/EgoFun3D/",
+          "pdf_url": "https://arxiv.org/pdf/2604.11038",
+          "published_at": "2026-04-13T06:06:23Z",
+          "source": "arxiv",
+          "title": "EgoFun3D: Modeling Interactive Objects from Egocentric Videos using Function Templates",
+          "updated_at": "2026-09-11T17:48:40Z",
+          "url": "https://arxiv.org/abs/2604.11038",
+          "version": 2
+        },
+        "rank": 46,
+        "score": {
+          "base_score": 0.27505843185713796,
+          "exploration": 0.05111415615597908,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.42066720972216176,
+          "recency": 0.4784132499034816,
+          "topic": 0.09372984821776885
+        }
+      },
+      "tier": "browse"
+    },
     "arxiv:2604.18271:v2": {
       "analysis": {
         "analysis": "作者通过分析NaVQA数据集上的查询类型（空间、时间）和记忆组件（图、数据库）的消融实验，展示图记忆对位置查询更有效，向量数据库对时间查询更有效，组合两者可提升整体性能。",
@@ -4203,6 +4504,155 @@
         }
       },
       "tier": "browse"
+    },
+    "arxiv:2604.23272:v2": {
+      "analysis": {
+        "analysis": "作者通过对比实验分析指出，现有基线方法在增加物理传感模态时性能不一致甚至下降，而MoSS通过解耦模态流和受控的跨模态联合自注意力，能够有效整合物理传感而不破坏动作表示。",
+        "challenges": [
+          "现有方法难以处理多种物理传感模态，联合使用时性能反而下降",
+          "在集成新模态时需避免破坏预训练VLA的已有表示",
+          "接触交互动态的捕获需要有效的辅助任务设计"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有方法通常仅关注单一类型的物理信号，无法捕获真实世界交互的异质互补特性",
+            "location": "abstract",
+            "quote": "However, they typically focus on a single type of physical signal, failing to capture the heterogeneous and complementary nature of real-world interactions."
+          },
+          {
+            "claim": "MoSS通过解耦模态流和联合跨模态自注意力集成异质物理信号",
+            "location": "abstract",
+            "quote": "we introduce decoupled modality streams that integrate heterogeneous physical signals into the action stream via joint cross-modal self-attention."
+          },
+          {
+            "claim": "采用两阶段训练方案，早期冻结预训练VLA参数以稳定集成新模态",
+            "location": "abstract",
+            "quote": "we adopt a two-stage training scheme that freezes pretrained VLA parameters in the early stage."
+          },
+          {
+            "claim": "MoSS在真实世界实验中成功使VLA利用多种物理信号并实现协同性能增益",
+            "location": "abstract",
+            "quote": "Through extensive real-world experiments, we demonstrate that MoSS successfully augments VLAs to leverage diverse physical signals (i.e., tactile, force, and torque), integrating multiple signals to achieve synergistic performance gains."
+          }
+        ],
+        "experiments": [
+          "在真实世界接触丰富操作任务（Unstack Cup、PnP Egg、Board Erase、Plug Insertion）上评估，使用Franka Research 3平台配备Robotiq 2F-85夹爪和AnySkin触觉传感器",
+          "MoSS在GR00T N1.5上平均成功率从20.8%提升至49.0%（触觉+力矩），在π0上从27.1%提升至45.9%",
+          "MoSS一致优于Tactile-VLA、ForceVLA、TA-VLA等物理模态增强基线",
+          "在H56F1灵巧手平台上MoSS也一致优于GR00T N1.5"
+        ],
+        "first_affiliation": "KAIST",
+        "insight": "通过解耦的模态流和联合跨模态自注意力机制，可以在不破坏预训练VLA特征的前提下，有效集成多种异质物理感觉信号，并随模态增加实现累积性能增益。",
+        "limitations": [
+          "物理传感器在长期使用中可能出现磨损或噪声，需更高保真度、更耐用的传感器和定期校准",
+          "MoSS依赖于基础策略在非接触阶段的表现，若基础策略无法到达物体或形成稳定初始抓取，MoSS提供的纠正信息有限"
+        ],
+        "method": [
+          "在动作专家模块上附加解耦的模态流，通过联合跨模态自注意力与预训练参数交换信息",
+          "采用两阶段训练方案：早期冻结预训练VLA参数，使新模态表示预对齐后再端到端联合微调",
+          "引入辅助任务预测未来物理信号，以捕获接触交互动态"
+        ],
+        "motivation": "人类依赖视觉之外的多种物理反馈来理解和交互真实世界，但现有VLA仅从视觉观测生成动作，且已有物理信号集成方法通常仅关注单一模态，无法捕获真实交互中异质互补的物理信号。",
+        "primary_topic": "将多种物理感觉信号集成到视觉-语言-动作模型（VLA）中以增强接触丰富操作",
+        "relation_to_research": "该论文直接涉及具身智能中VLA模型的多模态物理反馈集成，与视觉-语言-动作模型、真实机器人评测和接触丰富操作中的动作生成密切相关，对系统优化中的多模态融合和训练策略也有参考价值。",
+        "relevance_score": 9,
+        "setting": "在真实世界接触丰富的操作任务中，将触觉、力、力矩等异质物理感觉信号集成到预训练的VLA模型中，用于动作预测。",
+        "tags": [
+          "Vision-Language-Action Models",
+          "多模态物理反馈",
+          "触觉传感",
+          "力/力矩感知",
+          "接触丰富操作",
+          "跨模态自注意力",
+          "机器人操作"
+        ],
+        "title_zh": "模块化感觉流：将物理反馈集成到视觉-语言-动作模型中",
+        "uncertainty": "通讯作者信息未在提供的材料中明确标注；部分实验细节（如模拟基准评测结果）仅在附录中提及但未提供具体内容。",
+        "why_recommended": "该论文提出了首个统一集成多种物理信号（触觉、力、力矩）到VLA的框架，在真实机器人任务上验证了累积性能增益，并公开了模块化架构和两阶段训练策略，对具身智能中多模态感知与动作生成的融合研究具有直接参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
+        "figures": [
+          {
+            "caption": "Limitation of existing approaches to incorporating physical sensory signals into VLAs. We compare the average success rates (%) of VLAs as more diverse physical sensory signals are incorporated. Existing approaches [ 17 , 34 , 36 ] struggle to handle multiple physical sensing modalities, leading to degraded performance when additional modalities are used together. In contrast, MoSS addresses this limitation with a unified adaptation framework that effectively integrates additional physical sensory signals into VLAs, enabling complementary use of heterogeneous physical feedback.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2604.23272/v2/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2604.23272v2/teaser.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2604.23272v2#S1.F1"
+          },
+          {
+            "caption": "Overview of Modular Sensory Stream framework (MoSS). Building on a pretrained VLA, MoSS introduces a multimodal stream architecture that processes multiple physical sensory signals ( e . g ., tactile and torque) in parallel. We extend the self-attention layers of the Action Expert into joint cross-modal self-attention layers, enabling each signal to be processed in a dedicated stream while allowing information exchange only through joint attention.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2604.23272/v2/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2604.23272v2/overview.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2604.23272v2#S1.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2604.23272v2",
+        "status": "available"
+      },
+      "final_score": 0.7569339938021975,
+      "provenance": {
+        "analyzed_at": "2026-09-14T16:36:10.917321Z",
+        "input_hash": "e83acb73461171067b50485272224db3fe82a4b9d5de0f6cdc808d96d7babd8c",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Humans understand and interact with the real world by relying on diverse physical feedback beyond visual perception. Motivated by this, recent approaches attempt to incorporate physical sensory signals into Vision-Language-Action models (VLAs). However, they typically focus on a single type of physical signal, failing to capture the heterogeneous and complementary nature of real-world interactions. In this paper, we propose MoSS, a modular sensory stream framework that adapts VLAs to leverage multiple sensory signals for action prediction. Specifically, we introduce decoupled modality streams that integrate heterogeneous physical signals into the action stream via joint cross-modal self-attention. To enable stable incorporation of new modalities, we adopt a two-stage training scheme that freezes pretrained VLA parameters in the early stage. Furthermore, to better capture contact interaction dynamics, we incorporate an auxiliary task that predicts future physical signals. Through extensive real-world experiments, we demonstrate that MoSS successfully augments VLAs to leverage diverse physical signals (i.e., tactile, force, and torque), integrating multiple signals to achieve synergistic performance gains.",
+          "authors": [
+            "Jimin Lee",
+            "Huiwon Jang",
+            "Myungkyu Koo",
+            "Jungwoo Park",
+            "Jinwoo Shin"
+          ],
+          "canonical_id": "2604.23272",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "CoRL 2026. Project page: https://jiminlx.github.io/MoSS",
+          "pdf_url": "https://arxiv.org/pdf/2604.23272",
+          "published_at": "2026-04-25T12:28:47Z",
+          "source": "arxiv",
+          "title": "Modular Sensory Stream for Integrating Physical Feedback in Vision-Language-Action Models",
+          "updated_at": "2026-09-11T17:42:30Z",
+          "url": "https://arxiv.org/abs/2604.23272",
+          "version": 2
+        },
+        "rank": 2,
+        "score": {
+          "base_score": 0.6398799887312682,
+          "exploration": 0.7783577377421117,
+          "matched_terms": [
+            "vision-language-action",
+            "vision language action",
+            "VLA"
+          ],
+          "negative_terms": [],
+          "personal": 0.5248806652785901,
+          "recency": 0.47790133387020706,
+          "topic": 0.7944508062704877
+        }
+      },
+      "tier": "deep_read"
     },
     "arxiv:2604.24622:v3": {
       "analysis": {
@@ -36040,7 +36490,7 @@
         "why_recommended": "它提供了把策略、世界模型、目标预测与任务理解统一到共享掩码扩散轨迹模型中的具体设计，并系统分析了多种推理时组合对动作性能的影响以及块并行解码带来的实际加速，对VLA与世界模型结合、测试时扩展和推理效率研究具有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-09-14T18:03:08.033629+08:00",
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
         "figures": [
           {
             "caption": "Overview of Dynin-Robotics. A single omnimodal masked-diffusion backbone represents language, image/video, and robot-action tokens in a shared sequence and reconstructs masked target spans. By changing the visible context, objective token, and masked target, the same model supports Policy, World Modeling, Goal-State Prediction, and Task Understanding, generating action chunks, next visual states, goal states, or task instructions.",
@@ -36059,7 +36509,7 @@
         "html_url": "https://arxiv.org/html/2609.13053v1",
         "status": "available"
       },
-      "final_score": 0.7602981530008275,
+      "final_score": 0.7584627475267488,
       "provenance": {
         "analyzed_at": "2026-09-14T10:04:46.285886Z",
         "input_hash": "ade9019ef4ee4bbef740091e4e3a412d64d4f0059b86ec38e0bdc6a3ae9e2732",
@@ -36094,9 +36544,9 @@
           "url": "https://arxiv.org/abs/2609.13053",
           "version": 1
         },
-        "rank": 3,
+        "rank": 1,
         "score": {
-          "base_score": 0.6459966418196861,
+          "base_score": 0.642659540957725,
           "exploration": 0.34307553188257156,
           "matched_terms": [
             "vision-language-action",
@@ -36105,7 +36555,7 @@
           ],
           "negative_terms": [],
           "personal": 0.5952780469859176,
-          "recency": 0.506889674877661,
+          "recency": 0.4735186662580505,
           "topic": 0.8375
         }
       },
@@ -36191,7 +36641,7 @@
         "why_recommended": "对关注真实机器人实时控制、优化规划与语言引导参数调节的研究者有参考价值；其安全校验的LLM调参接口、100 ms控制周期和碰撞消除结果，可为具身智能系统优化提供可迁移思路。"
       },
       "figure_gallery": {
-        "checked_at": "2026-09-14T18:03:08.033629+08:00",
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
         "figures": [
           {
             "caption": "Articulated tracked robot studied in this work.",
@@ -36223,7 +36673,7 @@
         "html_url": "https://arxiv.org/html/2609.13083v1",
         "status": "available"
       },
-      "final_score": 0.4840078273548219,
+      "final_score": 0.4821633392915844,
       "provenance": {
         "analyzed_at": "2026-09-14T10:06:07.414151Z",
         "input_hash": "ec20c8ec0f49c197b7e780e440b9c51467a556ac1fab5d329df97a87839d239a",
@@ -36255,22 +36705,469 @@
           "url": "https://arxiv.org/abs/2609.13083",
           "version": 1
         },
-        "rank": 46,
+        "rank": 15,
         "score": {
-          "base_score": 0.38910514064513063,
+          "base_score": 0.3857515259846988,
           "exploration": 0.08462356309731109,
           "matched_terms": [
             "model predictive control"
           ],
           "negative_terms": [],
           "personal": 0.5220103218878522,
-          "recency": 0.509398041955581,
+          "recency": 0.4758618953512629,
           "topic": 0.27085238654373683
         }
       },
       "tier": "browse"
+    },
+    "arxiv:2609.13134:v1": {
+      "analysis": {
+        "analysis": "材料未说明具体分析过程，仅说明通过展示按次二次注意力的算术强度与内存足迹进行解耦可带来吞吐和能效收益，并给出调整后的 8xB200 异构系统代理与分析模型下的量化结果。",
+        "challenges": [
+          "稀疏注意力中 top-k 选择需要索引完整 KV，与静态内存足迹的 top-k 注意力加 FFN 具有不同资源特征，难以统一调度",
+          "线性注意力与滑窗注意力需按稠密注意力层与次二次注意力加 FFN 层拆分，拆分策略需跨变体通用",
+          "在 DRAM 型与仅 SRAM 型异构系统之间进行细粒度任务划分与资源供给"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "论文核心是按二次与次二次注意力而非算子类型进行解耦",
+            "location": "abstract",
+            "quote": "We introduce SQD (SubQuadratic Disaggregation), a fine-grained heterogeneous disaggregation scheme that splits decode by quadratic and subquadratic attention rather than by operator type, and that applies across subquadratic attention variants."
+          },
+          {
+            "claim": "论文展示按次二次注意力特征解耦可显著提升吞吐与能效",
+            "location": "abstract",
+            "quote": "we show that disaggregating inference around the unique arithmetic intensity and memory footprint of subquadratic attention LLMs can achieve significant throughput and energy efficiency gains on emerging DRAM-based and SRAM-only heterogeneous systems."
+          },
+          {
+            "claim": "论文报告了具体的 tokens/J 提升数字",
+            "location": "abstract",
+            "quote": "we observe average tokens/J improvements of 53% on GLM 5.2, 31% on Nemotron 3 Ultra, and 56% on Gemma 4 31B over the strongest GPU-only baselines."
+          },
+          {
+            "claim": "论文在分析模型中给出延迟与吞吐改善",
+            "location": "abstract",
+            "quote": "we observe 1.2x to 1.5x tighter achievable latencies and up to 3.6x higher throughput over the best baseline of attention-FFN disaggregation."
+          },
+          {
+            "claim": "论文面向异构系统服务次二次注意力的架构供给给出洞察",
+            "location": "abstract",
+            "quote": "Our experiments also reveal architectural insights on chip and interconnect provisioning for next-generation heterogeneous systems serving subquadratic attention."
+          }
+        ],
+        "experiments": [
+          "在调整后的 8xB200 异构系统代理上，相对最强纯 GPU 基线，GLM 5.2 平均 tokens/J 提升 53%",
+          "Nemotron 3 Ultra 平均 tokens/J 提升 31%",
+          "Gemma 4 31B 平均 tokens/J 提升 56%",
+          "在固定功耗预算的 Rubin 加 LPX 系统分析模型中，相对注意力-FFN 解耦最佳基线，可实现延迟紧 1.2 至 1.5 倍，吞吐最高高 3.6 倍",
+          "实验还给出面向下一代异构系统服务次二次注意力的芯片与互连供给的架构洞察"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "解耦推理应围绕注意力是否二次这一本质差异来划分，而非按算子类型划分；次二次注意力变体具有区别于稠密注意力的算术强度和内存足迹，据此做细粒度异构解耦可获得显著吞吐与能效收益。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出 SQD（SubQuadratic Disaggregation）细粒度异构解耦方案",
+          "按二次注意力与次二次注意力拆分解码阶段，而非按算子类型拆分",
+          "对稀疏注意力 LLM：将解码解耦为 top-k 选择（需索引完整 KV）与 top-k 注意力加 FFN（静态内存足迹）",
+          "对线性注意力与滑窗注意力 LLM：将解码解耦为稠密注意力层与次二次注意力层加 FFN",
+          "该方案适用于多种次二次注意力变体",
+          "在调整后的 8xB200 异构系统代理与 Rubin 加 LPX 系统的分析模型（固定功耗预算）中评估"
+        ],
+        "motivation": "前沿模型越来越多采用次二次注意力以降低推理时的内存占用和计算需求，但现有解耦服务系统仍以稠密注意力为中心做决策，未充分利用次二次注意力独特的算术强度和内存足迹特征，从而错失吞吐与能效提升机会。",
+        "primary_topic": "面向次二次注意力大模型推理的异构系统解耦与服务优化",
+        "relation_to_research": "该论文面向大模型推理的系统优化，涉及推理效率、异构硬件资源划分与注意力机制的计算/内存特征，属于系统优化方向；其注意力解耦与能效优化思路可迁移至具身智能中实时推理与模型压缩部署场景，但与可执行动作生成、世界模型、视觉语言动作模型、长时序预测或真实机器人评测无直接关系。",
+        "relevance_score": 6,
+        "setting": "前沿语言模型推理服务场景下，针对采用次二次注意力（稀疏注意力、线性注意力、滑窗注意力）的模型，在基于 DRAM 和仅 SRAM 的异构系统上进行推理调度与解耦方案研究。",
+        "tags": [
+          "系统优化",
+          "推理效率",
+          "注意力机制",
+          "异构计算",
+          "解耦服务",
+          "能效"
+        ],
+        "title_zh": "重新思考面向次二次注意力的异构系统解耦",
+        "uncertainty": "仅能依据标题与摘要判断，未提供全文，作者机构、通讯作者、具体局限、分析细节与实验设置均无法确认；相关性判断基于系统优化这一相邻方向的迁移价值，而非论文直接针对具身智能或世界模型。",
+        "why_recommended": "对关注具身智能与机器人实时推理系统优化的研究者有参考价值：论文展示了按注意力类型进行细粒度异构解耦与资源划分以提升吞吐和能效的方法，其思路可启发具身大模型在异构算力上的推理部署与实时性优化；但论文本身不涉及动作生成或真实机器人评测。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
+        "figures": [
+          {
+            "caption": "SQD makes unique observations on the arithmetic intensity and memory footprint of subquadratic attention and exploits it with disaggregation across DRAM-based and SRAM-only heterogeneous systems. Standard prefill/decode disaggregation copies the full KV cache once per batch and leaves decode monolithic. Attention-FFN disaggregation assumes decode dense attention and keeps it on the GPU pool, which requires activation transfers twice per token per every layer. SQD colocates prefill with quadratic attention and places subquadratic attention and FFN on the SRAM-only ASIC pool, transferring activations only twice per token per layer group, which is sparser in new subquadratic attention LLMs.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2609.13134/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2609.13134v1/figs/disaggregation.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2609.13134v1#S1.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2609.13134v1",
+        "status": "available"
+      },
+      "final_score": 0.4419390029784985,
+      "provenance": {
+        "analyzed_at": "2026-09-14T16:36:56.702831Z",
+        "input_hash": "7fe11b47acb3e6c6c66a53bd31705722f81ab2752fa1b894dfde5f3a67db455b",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Frontier language models are more aggressively using subquadratic attention to reduce the memory footprint and compute requirements during inference while still delivering frontier accuracy. While existing systems make dense attention-centric disaggregated serving decisions, we show that disaggregating inference around the unique arithmetic intensity and memory footprint of subquadratic attention LLMs can achieve significant throughput and energy efficiency gains on emerging DRAM-based and SRAM-only heterogeneous systems. We introduce SQD (SubQuadratic Disaggregation), a fine-grained heterogeneous disaggregation scheme that splits decode by quadratic and subquadratic attention rather than by operator type, and that applies across subquadratic attention variants. For sparse attention LLMs, we disaggregate decode into top-k selection, which must index through the full KV, and top-k attention plus FFN, which have static memory footprints. For linear and sliding-window attention LLMs, we disaggregate decode into dense attention layers and subquadratic attention layers plus FFN. In an adjusted 8xB200 heterogeneous system proxy, we observe average tokens/J improvements of 53% on GLM 5.2, 31% on Nemotron 3 Ultra, and 56% on Gemma 4 31B over the strongest GPU-only baselines. In an analytical model of a Rubin plus LPX system with fixed power budgets, we observe 1.2x to 1.5x tighter achievable latencies and up to 3.6x higher throughput over the best baseline of attention-FFN disaggregation. Our experiments also reveal architectural insights on chip and interconnect provisioning for next-generation heterogeneous systems serving subquadratic attention.",
+          "authors": [
+            "Arya Tschand",
+            "Yaosheng Fu",
+            "Vikram Sharma Mailthody",
+            "Nicolai Oswald",
+            "Po-An Tsai",
+            "Ritchie Zhao",
+            "Oreste Villa",
+            "Vijay Janapa Reddi",
+            "Karu Sankaralingam"
+          ],
+          "canonical_id": "2609.13134",
+          "categories": [
+            "cs.AI"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2609.13134",
+          "published_at": "2026-09-11T17:55:45Z",
+          "source": "arxiv",
+          "title": "Rethinking Heterogeneous System Disaggregation for Subquadratic Attention",
+          "updated_at": "2026-09-11T17:55:45Z",
+          "url": "https://arxiv.org/abs/2609.13134",
+          "version": 1
+        },
+        "rank": 37,
+        "score": {
+          "base_score": 0.31261636905181533,
+          "exploration": 0.08684393854657925,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5227736931739952,
+          "recency": 0.479001938276887,
+          "topic": 0.05938176983191688
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2609.13141:v1": {
+      "analysis": {
+        "analysis": "作者指出已有可训练方法因硬Top-K选择阻断梯度而只能蒸馏逐层稠密注意力分布，导致排序与固定注意力预算下上下文单元对预测的影响不匹配；据此提出用端到端语言建模损失直接优化排序，并识别出若干对简洁设计在实践中至关重要的选择。材料未说明更具体的分析过程。",
+        "challenges": [
+          "硬Top-K选择阻断梯度，无法用语言建模损失端到端优化排序",
+          "稠密注意力蒸馏的排序目标与固定注意力预算下的预测影响不一致",
+          "门控注入需与softmax形式及始终保留的当前块协调校准",
+          "需支持长序列训练的内存高效实现"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有可训练稀疏注意力方法因硬Top-K选择阻断梯度，通常蒸馏逐层稠密注意力分布。",
+            "location": "abstract",
+            "quote": "Existing trainable methods usually use a lightweight selector to score context units, followed by hard Top-K selection that blocks gradients from the language modeling loss. Consequently, these methods commonly distill layer-wise dense attention distributions."
+          },
+          {
+            "claim": "该排序与固定注意力预算下上下文单元对预测的影响不一致，可能浪费预算。",
+            "location": "abstract",
+            "quote": "the ranking is not directly aligned with their impact on predictions under a fixed attention budget (i.e., the number of attended context units per query), potentially wasting the limited budget on less useful units"
+          },
+          {
+            "claim": "SAS通过把选择器连续分数注入注意力logits，使语言建模损失经标准反向传播更新选择器。",
+            "location": "abstract",
+            "quote": "The key idea is to inject the selector's continuous scores into attention logits during training, allowing the loss to update the selector through standard backpropagation."
+          },
+          {
+            "claim": "SAS的关键设计包括softmax内log形式门控、归一化softmax门校准当前块、以及保留连续分数。",
+            "location": "abstract",
+            "quote": "placing the gate inside the attention softmax in log form, using normalized softmax gates to calibrate historical context against the always-retained current block, and preserving continuous selector scores so the model learns relative priorities rather than only hard selections"
+          },
+          {
+            "claim": "作者实现了内存高效的Triton内核以支持长序列训练。",
+            "location": "abstract",
+            "quote": "we implement a memory-efficient Triton kernel that integrates SAS into FlashAttention-style computation"
+          },
+          {
+            "claim": "在推理、长上下文理解与智能体任务上，SAS在紧张预算下提升尤其明显。",
+            "location": "abstract",
+            "quote": "Across reasoning, long-context understanding, and agentic tasks, SAS consistently outperforms trainable sparse attention baselines across attention budgets, with especially large gains under tight budgets"
+          }
+        ],
+        "experiments": [
+          "在推理、长上下文理解与智能体任务上，SAS在不同注意力预算下持续优于可训练稀疏注意力基线",
+          "在紧张预算下提升尤为显著，表明上下文排序对下游任务更有效",
+          "摘要未给出具体数据集、指标数值或消融结果"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "把选择器的连续分数以门控方式注入注意力logits，使语言建模损失能通过标准反向传播直接更新选择器，从而让上下文排序与固定预算下的预测影响对齐，而非仅拟合稠密注意力权重。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出SAS：一种门控稀疏注意力机制，用语言建模损失端到端优化上下文排序",
+          "训练时将选择器的连续分数注入注意力logits，使损失能通过标准反向传播更新选择器",
+          "把门放在注意力softmax内部、以log形式实现",
+          "使用归一化softmax门，将历史上下文与始终保留的当前块进行校准",
+          "保留连续选择器分数，使模型学习相对优先级而非仅做硬选择",
+          "实现内存高效的Triton内核，将SAS集成到FlashAttention风格计算中以支持长序列训练"
+        ],
+        "motivation": "现有可训练稀疏注意力方法依赖轻量选择器打分后做硬Top-K选择，梯度被阻断，只能通过逐层稠密注意力分布蒸馏来训练；这种排序与固定注意力预算下上下文单元对预测的实际影响不一致，可能把有限预算浪费在用处较小的单元上。",
+        "primary_topic": "可训练注意力稀疏化与上下文排序的端到端优化",
+        "relation_to_research": "该工作属于系统优化与推理效率方向：通过注意力稀疏化降低长上下文的二次注意力成本，并面向智能体任务评测；其长序列训练内核与预算受限下的上下文选择，与具身智能、VLA/世界模型等需要长时序上下文与实时推理的场景存在方法迁移价值，但论文本身不涉及动作生成、世界模型或机器人评测。",
+        "relevance_score": 6,
+        "setting": "预训练Transformer的后训练阶段注意力稀疏化：为每个query从上下文单元（token或block）中选取少量单元进行注意力计算，以降低二次累积注意力成本。",
+        "tags": [
+          "注意力稀疏化",
+          "长上下文",
+          "端到端优化",
+          "Triton内核",
+          "推理效率"
+        ],
+        "title_zh": "SAS：通过上下文排序端到端优化的简单注意力稀疏化",
+        "uncertainty": "仅有标题与摘要，未提供全文，因此无法确认具体任务、基线、数据集、注意力预算定义、内核性能数字、消融与作者自述局限；第一单位与通讯作者信息未在输入材料中出现，相关性判断基于主题邻近而非直接证据。",
+        "why_recommended": "对关注推理效率、长上下文处理与系统级内核实现的研究者有参考价值：其端到端可微选择思路可迁移到需要按任务目标筛选长时序上下文或历史观测的世界模型/VLA场景，Triton内核实践也有工程借鉴意义；同时智能体任务评测与具身智能下游需求部分重合。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
+        "figures": [
+          {
+            "caption": "(a) Gradient Blockage in Discrete Selection. Sparse attention with discrete Top- K K selection prevents gradients propagation from language modeling loss to selector. Existing approaches bypass this issue using auxiliary distillation [ DeepSeek-AI, 2026 , Gao et al., 2026 ] or heuristics [ Lu et al., 2025 , Zhao et al., 2026 ] . (b) Differentiable Continuous Gating. SAS keeps discrete Top- K K selection but attaches a continuous soft gate to each selected block, enabling gradient flow from the language modeling loss to the selector.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2609.13141/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2609.13141v1/ours5.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2609.13141v1#S1.F1"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2609.13141v1",
+        "status": "available"
+      },
+      "final_score": 0.47515793298898845,
+      "provenance": {
+        "analyzed_at": "2026-09-14T16:36:32.895136Z",
+        "input_hash": "76c6e7c4994c245318c469125cc0bb64adabce65f1be48cf7f29337064121601",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Post-training attention sparsification reduces the quadratic cumulative attention cost of pretrained Transformers by selecting a small set of context units (tokens or blocks) for each query. Existing trainable methods usually use a lightweight selector to score context units, followed by hard Top-K selection that blocks gradients from the language modeling loss. Consequently, these methods commonly distill layer-wise dense attention distributions. Although this encourages the selector to rank context units by dense attention weights in the original model, the ranking is not directly aligned with their impact on predictions under a fixed attention budget (i.e., the number of attended context units per query), potentially wasting the limited budget on less useful units. To address this misalignment, we propose Simple Attention Sparsification (SAS), a gated sparse attention mechanism that optimizes context ranking end-to-end with the language modeling loss. The key idea is to inject the selector's continuous scores into attention logits during training, allowing the loss to update the selector through standard backpropagation. We identify several choices crucial for this simple design to work well in practice: placing the gate inside the attention softmax in log form, using normalized softmax gates to calibrate historical context against the always-retained current block, and preserving continuous selector scores so the model learns relative priorities rather than only hard selections. To support long-sequence training, we implement a memory-efficient Triton kernel that integrates SAS into FlashAttention-style computation. Across reasoning, long-context understanding, and agentic tasks, SAS consistently outperforms trainable sparse attention baselines across attention budgets, with especially large gains under tight budgets, demonstrating more effective context ranking for downstream tasks.",
+          "authors": [
+            "Zhiwei Li",
+            "Lei Zhu",
+            "Hao Gu",
+            "Xiang Hu",
+            "Yan Wang",
+            "Haitao Mi",
+            "Sirui Han",
+            "Leo Liang",
+            "Zhijiang Guo"
+          ],
+          "canonical_id": "2609.13141",
+          "categories": [
+            "cs.CL"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2609.13141",
+          "published_at": "2026-09-11T17:58:06Z",
+          "source": "arxiv",
+          "title": "SAS: Simple Attention Sparsification via End-to-End Optimization of Context Ranking",
+          "updated_at": "2026-09-11T17:58:06Z",
+          "url": "https://arxiv.org/abs/2609.13141",
+          "version": 1
+        },
+        "rank": 25,
+        "score": {
+          "base_score": 0.3730144236163425,
+          "exploration": 0.16508164077161108,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.6055435788611743,
+          "recency": 0.47919740428589636,
+          "topic": 0.10311973892303818
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2609.13146:v1": {
+      "analysis": {
+        "analysis": "材料未说明具体分析方式；摘要仅指出问题（穿透、无效连接、重力下坍塌）并给出解决流程与评估协议。",
+        "challenges": [
+          "消除部件间穿透",
+          "恢复相邻部件间的接触图",
+          "在接触面引入参数化连接件",
+          "在保持生成几何的前提下提升装配稳定性",
+          "建立直接测试装配有效性与重力稳定性的评估协议"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有方法可生成视觉完整的单个部件，但不能保证形成有效的物理装配。",
+            "location": "abstract",
+            "quote": "yet existing methods can generate visually complete individual parts without ensuring that they form a valid physical assembly."
+          },
+          {
+            "claim": "作者提出物理引导框架，解决穿透、恢复接触图并引入参数化连接件。",
+            "location": "abstract",
+            "quote": "Our method resolves inter-part penetration, recovers a contact graph between neighboring parts, and introduces parameterized connectors at their contact surfaces."
+          },
+          {
+            "claim": "作者利用物理仿真反馈优化连接件的放置、朝向与尺寸，同时保留生成几何。",
+            "location": "abstract",
+            "quote": "Using feedback from physical simulation, we refine connector placement, orientation, and dimensions to improve assembly stability while preserving the generated geometry."
+          },
+          {
+            "claim": "作者引入基于物理的评估协议，在重力下直接测试装配有效性与稳定性。",
+            "location": "abstract",
+            "quote": "We further introduce a physics-based evaluation protocol that complements conventional geometric metrics by directly testing assembly validity and stability under gravity."
+          },
+          {
+            "claim": "实验显示物理可实现性与稳定性显著提升，同时保持几何质量。",
+            "location": "abstract",
+            "quote": "Experiments comparing against multiple part-aware 3D generators show substantial improvements in physical realizability and stability while maintaining geometric quality."
+          },
+          {
+            "claim": "生成的部件通过三维打印与真实世界装配得到验证。",
+            "location": "abstract",
+            "quote": "We additionally validate the resulting parts through 3D printing and real-world assembly."
+          }
+        ],
+        "experiments": [
+          "与多个部件感知三维生成器对比，在物理可实现性与稳定性上取得显著提升，同时保持几何质量",
+          "引入基于物理的评估协议，在重力下直接测试装配有效性与稳定性，作为常规几何指标的补充",
+          "通过三维打印与真实世界装配验证生成的部件"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "仅靠几何生成不足以产生可装配的三维部件；需要在生成流程中引入物理兼容性约束与参数化连接件，并利用物理仿真反馈优化连接件，从而在保持生成几何的同时实现稳定装配。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出物理引导框架，用于改进单图部件感知三维生成，使其具有物理兼容几何与稳定连接",
+          "解决部件间穿透",
+          "恢复相邻部件间的接触图",
+          "在接触面引入参数化连接件",
+          "利用物理仿真反馈优化连接件的放置、朝向与尺寸，以提升装配稳定性，同时保留生成的几何"
+        ],
+        "motivation": "现有部件感知三维生成方法可能生成视觉完整的部件，但无法保证它们构成有效的物理装配——相邻部件可能相互穿透、缺乏有效连接或在重力下坍塌。",
+        "primary_topic": "从单张图像生成物理可装配的三维部件级资产",
+        "relation_to_research": "论文面向可执行、可物理落地的三维部件生成与装配稳定性，与具身智能中对可操作物体结构、物理仿真验证和真实机器人/制造评测的关注相邻；其物理仿真反馈优化、接触图与连接件设计思路可迁移到需要物理有效性的场景，但不直接涉及视觉语言动作模型、世界动作模型、长时序预测、推理效率或实时控制。",
+        "relevance_score": 6,
+        "setting": "输入为单张图像，输出为部件感知的三维资产；目标是保证各部件不仅视觉完整，而且形成物理上可实现的稳定装配体，并通过物理仿真与真实装配验证。",
+        "tags": [
+          "3D部件生成",
+          "物理仿真",
+          "装配稳定性",
+          "单图三维重建",
+          "接触图",
+          "连接件设计",
+          "物理评估"
+        ],
+        "title_zh": "SNAP3D：用于从单张图像生成装配体的物理接地三维部件",
+        "uncertainty": "仅依据标题与摘要判断，未提供全文；具体方法细节、实验数字、对比基线、评估指标定义、第一单位与通讯作者均不明确，相关性评分可能因全文方法细节而变化。",
+        "why_recommended": "对关注物理接地生成、仿真反馈闭环与真实世界验证的研究者有参考价值：它把物理可行性作为生成目标与评估标准，并提供从单图到可打印可装配部件的完整流程，可为具身智能中物体操作与装配任务提供结构先验。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-09-15T00:35:24.099481+08:00",
+        "figures": [
+          {
+            "caption": "Physically grounded 3D part decomposition. Parts generated by a prior part-aware method [ 40 ] share volume and lack explicit connections, causing the assembly to collapse under gravity (bottom left); ours is stable under the same test (bottom right). It is also assemblable through the generated connectors (top left) and fabricable, 3D-printed and assembled by hand (top right). Project page: https://lucytuan.github.io/SNAP3D/",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2609.13146/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2609.13146v1/teaser.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2609.13146v1#S0.F1"
+          },
+          {
+            "caption": "Overview of our framework. Given part meshes generated by a part-level 3D generator from a single image, we first edit the meshes to resolve volume overlap between neighboring parts ( Sec. 3.1 ). We then build a contact graph and instantiate connectors at the identified contact surfaces ( Sec. 3.2 ), followed by physics-based optimization of each connector’s position, direction, and scale to make the assembled object stable ( Sec. 3.3 ). Bottom: in simulation, the baseline generated parts collapse under gravity, while our result settles and remains stable; the exploded view shows the generated peg-and-socket connectors.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2609.13146/v1/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2609.13146v1/pipeline.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2609.13146v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2609.13146v1",
+        "status": "available"
+      },
+      "final_score": 0.45899104126568746,
+      "provenance": {
+        "analyzed_at": "2026-09-14T16:36:26.960402Z",
+        "input_hash": "dc02ec4070707958a586e825d30c0235e855e36dc870369ae420d09d05365ed4",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Part-aware 3D asset generation enables applications such as editing, articulation, simulation, and fabrication, yet existing methods can generate visually complete individual parts without ensuring that they form a valid physical assembly. Consequently, generated neighboring parts may interpenetrate, lack valid connections, or collapse under gravity. We propose a physics-guided framework for improving single-image part-aware 3D generation with physically compatible geometry and stable connections. Our method resolves inter-part penetration, recovers a contact graph between neighboring parts, and introduces parameterized connectors at their contact surfaces. Using feedback from physical simulation, we refine connector placement, orientation, and dimensions to improve assembly stability while preserving the generated geometry. We further introduce a physics-based evaluation protocol that complements conventional geometric metrics by directly testing assembly validity and stability under gravity. Experiments comparing against multiple part-aware 3D generators show substantial improvements in physical realizability and stability while maintaining geometric quality. We additionally validate the resulting parts through 3D printing and real-world assembly.",
+          "authors": [
+            "Yu-Rou Tuan",
+            "Hao-Tang Tsui",
+            "Nicolas Ugrinovic",
+            "Kris Kitani",
+            "Xiaoxuan Ma"
+          ],
+          "canonical_id": "2609.13146",
+          "categories": [
+            "cs.GR",
+            "cs.CV"
+          ],
+          "comment": "Project page: https://lucytuan.github.io/SNAP3D/",
+          "pdf_url": "https://arxiv.org/pdf/2609.13146",
+          "published_at": "2026-09-11T17:59:31Z",
+          "source": "arxiv",
+          "title": "SNAP3D: Physically Grounded 3D Parts for Assembly from a Single Image",
+          "updated_at": "2026-09-11T17:59:31Z",
+          "url": "https://arxiv.org/abs/2609.13146",
+          "version": 1
+        },
+        "rank": 23,
+        "score": {
+          "base_score": 0.34362007502852254,
+          "exploration": 0.747143175105342,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.4237923319862401,
+          "recency": 0.47931527693851983,
+          "topic": 0.08647908694379514
+        }
+      },
+      "tier": "explore"
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-14T18:03:08.033629+08:00"
+  "updated_at": "2026-09-15T00:35:24.099481+08:00"
 }
