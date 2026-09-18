@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-09-17 17:35</span>
+      <span>AUTO RESEARCH DAILY · 2026-09-18 17:07</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -187,7 +187,7 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>全文级</span>
+      <span>摘要级</span>
       <span>相关性 9/10</span>
       <span>v1</span>
     </div>
@@ -198,9 +198,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>将慢速、富有表达力的动作生成与快速、反应式的动作编辑解耦：大型预训练 VLA 依据强行为先验提出动作块，轻量编辑策略基于最新观测对动作进行快速反应式编辑。</p>
+      <p>将缓慢而富有表达力的动作生成与快速反应式动作编辑解耦：大型预训练 VLA 利用其强行为先验提出动作块，轻量编辑策略依据最新观测对动作进行快速反应式编辑，从而在实时控制约束下实现 RL 微调。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作显式处理大 VLA 推理延迟下的强化学习微调，提出可迁移的慢速生成加快速编辑框架，并在仿真与四类动态真实任务上验证了样本效率与实时反应性，对可执行动作生成、实时控制和真实机器人评测的研究者具有直接参考价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对关注 VLA 实时部署、推理延迟、异步执行、强化学习微调与真实机器人动态任务的研究者具有直接价值；它提出了一种将慢速动作生成与快速动作编辑解耦的系统设计，并在真实任务中以极少在线数据显著提升性能，可为实时控制、模型压缩/轻量化与系统优化研究提供可迁移思路。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
@@ -217,10 +217,10 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>面向实时控制的视觉-语言-动作模型强化学习微调</p>
-        <p><strong>模型原始标签：</strong>VLA、强化学习微调、实时控制、推理延迟、动作分块、动态操作、样本效率</p>
-        <p><strong>第一单位：</strong>Stanford University</p>
-        <p><strong>通讯作者：</strong>perryd@stanford.edu</p>
+        <p><strong>模型细分主题：</strong>面向实时机器人控制的视觉-语言-动作（VLA）策略强化学习微调</p>
+        <p><strong>模型原始标签：</strong>视觉-语言-动作模型、强化学习微调、实时控制、推理延迟、异步策略执行、动态操作、样本高效适应</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-09</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2609.18207">arXiv 摘要 ↗</a>
@@ -229,54 +229,26 @@
 
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>在预训练大型 VLA 模型上做强化学习微调，使其满足动态真实世界操作的实时控制要求；显式考虑大模型推理延迟造成的观测陈旧与分布偏移。</dd>
-        <dt>Motivation（研究动机）</dt><dd>预训练 VLA 模型规模大、推理延迟高，执行动作时所用观测已陈旧，形成分布偏移，显著降低可靠性与性能；既有异步执行方法多基于模仿学习，缺乏超越训练分布、提升可靠性的机制。</dd>
-        <dt>Insight（核心洞察）</dt><dd>将慢速、富有表达力的动作生成与快速、反应式的动作编辑解耦：大型预训练 VLA 依据强行为先验提出动作块，轻量编辑策略基于最新观测对动作进行快速反应式编辑。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>大 VLA 推理延迟导致动作基于陈旧观测，破坏马尔可夫假设并使信用分配产生偏差</li><li>既有实时分块/异步方法缺乏超越训练分布、提升可靠性的机制</li><li>真实世界交互代价高，需要样本高效的自适应</li><li>动态任务状态变化快、结果随机、时序要求严格</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者指出延迟下动作实际是 s_{t-d} 的函数，延迟过程在 s_t 下不再马尔可夫，按标准 RL 更新会偏置信用分配；并指出直接对 RTC 类基策略施加 RL 会因动作由旧观测预测而无法充分获得 RL 的可靠性收益。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>构建在 EXPO-FT 之上的 Real-Time EXPO-FT 强化学习微调框架</li><li>将慢速动作生成与快速动作编辑解耦</li><li>大型预训练 VLA 依据行为先验提出动作块</li><li>轻量编辑策略基于最新观测，对状态变化做出快速反应式动作编辑</li><li>采用前缀条件的流匹配目标，训练时对延迟 d 在 0 到 4 间均匀采样并重采样前缀长度</li><li>使用 REDQ 集成评论家、过滤器和编辑策略，共享架构配置</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>Kinetix benchmark：Real-Time EXPO-FT 使带延迟策略在 10/10 个环境中取得延迟与非延迟方法中的最佳性能</li><li>四个动态真实世界任务：机器人递物、平衡球、桌上足球踢球、动态物体抓取</li><li>在线机器人数据限制在 10 分钟，平均策略性能从 42%（12.5/30）提升到 97%（29/30），训练全程无人工干预</li><li>仿真中 4 步延迟下平均成功率 96.2%，分别超过 DSRL、DSRL w/ RTC、EXPO-FT、EXPO-FT w/ RTC 34.5、20.1、21.3、14.5 个百分点</li><li>零延迟 RLPD 基线平均成功率 81.4%，Real-Time EXPO-FT 在基础流匹配策略 4 步推理延迟下达到 96.2%</li><li>真实任务逐项结果：动态抓取 30/30，平衡球 28/30（达到 10 分钟），递物 30/30，足球踢球 28/30（达到 10 分钟）</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>实验中由人类提供环境重置，带来操作负担；自动化重置是重要的未来方向</li><li>使用任务特定的成功检测器，需要为每个任务设计分类器</li><li>未探索替代奖励设定，哪种奖励形式最佳仍是开放问题</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接面向具身智能中 VLA 策略的实时控制与推理效率问题，涉及可执行动作生成、真实机器人动态任务评测和系统级延迟优化；其解耦慢速生成与快速反应式编辑的思路对世界动作模型与实时系统优化具有迁移价值。</dd>
+        <dt>Setting（研究设定）</dt><dd>在大型预训练 Vision-Language-Action (VLA) 模型之上进行强化学习微调，使策略满足动态真实世界操作中的实时控制要求；训练与评测涉及 Kinetix benchmark 以及四个真实机器人动态任务。</dd>
+        <dt>Motivation（研究动机）</dt><dd>大规模预训练 VLA 模型推理延迟高，导致执行动作时所依据的观测已经过时，形成分布偏移并显著降低可靠性与性能；已有异步策略执行方法多基于模仿学习，缺乏超越训练分布、提升可靠性的机制。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将缓慢而富有表达力的动作生成与快速反应式动作编辑解耦：大型预训练 VLA 利用其强行为先验提出动作块，轻量编辑策略依据最新观测对动作进行快速反应式编辑，从而在实时控制约束下实现 RL 微调。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>大型 VLA 模型推理延迟高，观测在动作执行时已过时</li><li>延迟造成分布偏移，损害可靠性</li><li>已有异步执行方法基于模仿学习，难以超越训练分布</li><li>强化学习微调需要满足动态真实世界操作的实时控制要求</li><li>需要在真实机器人上实现样本高效、无需人工干预的快速适应</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明作者如何具体分析延迟与分布偏移问题，仅指出推理延迟使选择动作时使用的观测在执行时变得过时，从而产生分布偏移并降低可靠性与性能。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>在 EXPO-FT 框架基础上进行扩展，EXPO-FT 是用于样本高效、可靠 VLA 强化学习微调的框架</li><li>解耦缓慢、富有表达力的动作生成与快速、反应式的动作编辑</li><li>由大型预训练 VLA 使用其强行为先验提出动作块（action chunks）</li><li>由轻量级编辑策略执行快速反应式决策，依据最新观测、针对状态变化对动作进行编辑</li><li>实例化为 Real-Time EXPO-FT，一个用于微调实时 VLA 策略的强化学习框架</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 Kinetix benchmark 上，Real-Time EXPO-FT 使带延迟的策略在 10 个环境中的 10 个里取得优于带延迟和不带延迟方法的最佳性能</li><li>在四个动态真实世界任务（机器人传递物体、平衡球、桌上足球踢球、动态物体抓取）上，在线机器人数据上限为 10 分钟</li><li>Real-Time EXPO-FT 将平均策略性能从 42% 提升到 97%，全程无需人工干预</li><li>结果展示了对具有挑战性的真实世界动态的快速、样本高效适应</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接关系具身智能中的可执行动作生成与实时控制，聚焦 VLA 策略的推理效率与延迟问题，通过轻量编辑策略与大型 VLA 解耦实现快速反应式控制；在真实机器人动态任务上评测，契合真实机器人评测与系统优化方向；其 RL 微调与样本效率设计也与世界动作模型及物理人工智能部署可靠性相关。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>全文节选存在截断与排版噪声，部分方法细节（如完整算法推导、真实任务成功判据）未完整呈现；四项真实任务的具体评测协议与部分基线的完整设置仅能从节选片段推断。</p>
-          <blockquote><strong>论文研究在预训练大型 VLA 模型上做强化学习微调，以同时获得可靠性与实时反应性：</strong>In this work, we study RL fine-tuning of VLA policies for real-time execution, trained explicitly considering inference latency of a large VLA model so that the policy can retain maximal reactivity to changes in the environment while achieving higher reliability with reinforcement learning.</blockquote>
-          <blockquote><strong>核心方法将慢速、富有表达力的动作生成与快速、反应式的动作编辑解耦：</strong>Our approach builds on EXPO-FT, a framework for sample-efficient, reliable VLA fine-tuning with reinforcement learning, and decouples slow, expressive action generation from fast, reactive action edits</blockquote>
-          <blockquote><strong>延迟会破坏马尔可夫假设并偏置信用分配：</strong>under latency the action at
-t
-t
-is actually a function of
-s
-t
-−
-d
-s_{t-d}
-, so the delayed process is no longer Markovian in
-s
-t
-s_{t}
-, and applying standard RL updates as if can bias credit assignment.</blockquote>
-          <blockquote><strong>在 Kinetix 基准上，带延迟策略在 10/10 个环境中取得延迟与非延迟方法中的最佳性能：</strong>On the Kinetix benchmark, Real-Time EXPO-FT enables a delayed policy to achieve the best performance among delayed and non-delayed methods in 10 out of 10 environments.</blockquote>
-          <blockquote><strong>四项真实动态任务中，在线数据限制为 10 分钟，平均性能从 42% 提升到 97% 且无人工干预：</strong>On four dynamic real-world tasks—robot object passing, ball balancing, table soccer kicking, and dynamic object picking—with online robot data capped at 10 minutes, Real-Time EXPO-FT improves average policy performance from 42% to 97%, all without human intervention</blockquote>
-          <blockquote><strong>作者明确指出环境重置依赖人类以及任务特定成功检测器等局限：</strong>First, a human provides environment resets in our experiments, which introduces operational burden; automating the reset process is an important direction for future work. Second, we use task-specific success detector following prior work; however, this requires designing classifier per task.</blockquote>
-          <blockquote><strong>仿真中 4 步延迟下平均成功率为 96.2%，并超过多个延迟 RL 基线：</strong>Real-Time EXPO-FT achieves an average success rate of
-96.2
-%
-96.2\%
-under the 4-step delay, substantially outperforming all delayed RL baselines.</blockquote>
-          <blockquote><strong>零延迟 RLPD 平均成功率 81.4%，而 Real-Time EXPO-FT 在 4 步延迟下达到 96.2%：</strong>While the RLPD policy achieves an average success rate of
-81.4
-%
-81.4\%
-when evaluated with zero delay, Real-Time EXPO-FT reaches
-96.2
-%
-96.2\%
-while operating with a 4-step inference delay for the base flow-matching policy and no delay for only the action edit.</blockquote>
+          <p>仅基于标题与摘要，无法确认第一单位、通讯作者、具体方法细节、实验统计显著性、延迟数值、在线数据的具体采集方式以及作者对局限性的讨论；相关性判断依赖于摘要中实时控制、强化学习微调与 VLA 等关键词，可能与未提供的全文细节存在偏差。</p>
+          <blockquote><strong>大规模预训练 VLA 模型推理延迟高，导致动作选择时使用的观测在执行时过时并造成分布偏移：</strong>because of their scale, modern VLA models suffer from high inference latency, so the observation used to select an action is often stale by execution time, creating a distribution shift that can substantially degrade reliability and performance</blockquote>
+          <blockquote><strong>已有异步策略执行方法多基于模仿学习，缺乏超越训练分布以提升可靠性的机制：</strong>Prior work has explored asynchronous policy execution to reduce the effect of latency, but these methods are mostly built on imitation learning and offer no mechanism for moving beyond the training distribution toward higher reliability.</blockquote>
+          <blockquote><strong>方法将缓慢、富有表达力的动作生成与快速、反应式的动作编辑解耦：</strong>decouples slow, expressive action generation from fast, reactive action edits: a large pretrained VLA proposes action chunks using its strong behavior prior, while a lightweight edit policy performs fast, reactive decision-making by editing actions in response to changes in state, conditioned on the latest observation.</blockquote>
+          <blockquote><strong>在 Kinetix benchmark 上，带延迟策略在 10 个环境中的 10 个取得最佳性能：</strong>On the Kinetix benchmark, Real-Time EXPO-FT enables a delayed policy to achieve the best performance among delayed and non-delayed methods in 10 out of 10 environments.</blockquote>
+          <blockquote><strong>在四个真实机器人动态任务上，在线数据上限 10 分钟，平均性能从 42% 提升到 97%，无需人工干预：</strong>On four dynamic real-world tasks, robot object passing, ball balancing, table soccer kicking, and dynamic object picking, with online robot data capped at 10 minutes, Real-Time EXPO-FT improves average policy performance from 42% to 97%, all without human intervention</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
