@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-09-19 16:54</span>
+      <span>AUTO RESEARCH DAILY · 2026-09-20 17:24</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,7 +193,7 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>摘要级</span>
+      <span>全文级</span>
       <span>相关性 9/10</span>
       <span>v1</span>
     </div>
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>重复的机器人执行之间存在显著任务相似性，且该相似性不仅体现在观测与动作轨迹上，还延伸到模型内部状态；因此可类比人类肌肉记忆，通过跨执行复用内部状态来降低计算与权重访问开销。</p>
+      <p>同一任务重复执行时，不仅观测和动作轨迹相似，内部模型状态（FFN 输入与神经元激活模式）也相似，因此可跨执行复用计算与权重访问。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作给出了 VLA 推理的具身工作负载刻画与可落地的双阶段缓存系统，明确针对不同推理阶段瓶颈进行优化，并在两类硬件平台和真实机器人上验证加速且不损失成功率，对关注 VLA 实时推理、模型压缩与系统优化的研究者具有直接迁移价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它提供了 VLA 双阶段推理瓶颈的量化分析，并提出可迁移的跨执行缓存复用机制，在保持成功率的同时显著降低延迟，对关注 VLA 部署、实时控制和系统优化的研究者具有直接参考价值。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
@@ -221,10 +221,10 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>视觉-语言-动作（VLA）模型的高效实时推理框架</p>
-        <p><strong>模型原始标签：</strong>VLA 推理加速、具身工作负载特征、缓存复用、实时控制、机器人操作、系统优化</p>
-        <p><strong>第一单位：</strong>证据未提供</p>
-        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>模型细分主题：</strong>VLA 模型实时推理加速与缓存复用系统</p>
+        <p><strong>模型原始标签：</strong>VLA、推理加速、缓存复用、机器人操作、实时控制、系统优化、扩散动作专家</p>
+        <p><strong>第一单位：</strong>Institute of Parallel and Distributed Systems, Shanghai Jiao Tong University</p>
+        <p><strong>通讯作者：</strong>Jinyu Gu</p>
         <p><strong>首次上传：</strong>2026-09</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2609.19104">arXiv 摘要 ↗</a>
@@ -254,26 +254,25 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>面向工厂重复性操作任务的 VLA 策略推理；在 RTX 4090 与 Jetson Thor 上，于 LIBERO、RoboTwin 及真实物理操作任务中评测。</dd>
-        <dt>Motivation（研究动机）</dt><dd>VLA 模型推理延迟直接影响机器人响应性与运动平滑度，但现有 VLA 推理框架未充分利用具身工作负载特性，也未针对 VLA 推理不同阶段的瓶颈分别处理。</dd>
-        <dt>Insight（核心洞察）</dt><dd>重复的机器人执行之间存在显著任务相似性，且该相似性不仅体现在观测与动作轨迹上，还延伸到模型内部状态；因此可类比人类肌肉记忆，通过跨执行复用内部状态来降低计算与权重访问开销。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>具身工作负载的跨执行相似性尚未被现有推理框架充分利用</li><li>VLA 推理不同阶段存在不同瓶颈</li><li>引入缓存会带来内存占用与访问开销，需要同时保持低内存与低访问成本</li><li>加速的同时必须保持原有任务成功率，尤其是在真实机器人上</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者先对具身工作负载进行特征刻画，识别出重复机器人执行之间存在显著任务相似性，并进一步发现该相似性从观测和动作轨迹延伸到内部模型状态；据此设计针对不同阶段的缓存机制。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>双阶段肌肉记忆缓存（dual-phase muscle-memory cache），利用跨执行相似性</li><li>Context Cache：复用视觉 token 输出以减少计算</li><li>Action Cache：复用神经元激活模式以减少权重访问</li><li>通过在线缓存重计算降低缓存内存占用与访问开销</li><li>滑动窗口缓存检索（sliding-window cache retrieval）</li><li>在连续去噪步骤之间共享掩码（mask sharing）</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在 RTX 4090 上取得 1.29-1.42X 加速</li><li>在 Jetson Thor 上取得 1.29-1.42X 加速</li><li>评测覆盖 LIBERO、RoboTwin 与物理操作任务</li><li>在真实机器人上保持原有成功率</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接对应具身智能中的 VLA 模型推理效率与实时控制问题，涉及可执行动作生成（去噪动作生成阶段）与真实机器人评测，属于系统优化方向；其缓存复用内部模型状态的思路可为世界动作模型/长时序预测的高效推理提供参考。</dd>
+        <dt>Setting（研究设定）</dt><dd>面向工厂等结构化场景中重复执行任务的机器人，对 VLA 策略进行端到端推理加速；VLA 采用 VLM 预填充加扩散动作专家去噪的双阶段架构。</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLA 推理延迟直接影响机器人响应速度与运动平滑性，但现有 VLA 推理框架未充分利用具身工作负载特性，也未区分 VLA 推理不同阶段的瓶颈。</dd>
+        <dt>Insight（核心洞察）</dt><dd>同一任务重复执行时，不仅观测和动作轨迹相似，内部模型状态（FFN 输入与神经元激活模式）也相似，因此可跨执行复用计算与权重访问。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>VLM 预填充阶段为计算受限，去噪阶段为内存受限，瓶颈不同</li><li>跨执行缓存需控制内存占用与访问开销</li><li>需在加速同时保持任务成功率不下降</li><li>不同 VLA 架构的优化机会不同</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者先对具身工作负载进行表征，发现重复机器人执行之间存在显著任务相似性，且该相似性从观测、动作轨迹延伸到内部模型状态；并据此区分 VLM 预填充计算瓶颈与去噪内存瓶颈。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>设计双阶段肌肉记忆缓存</li><li>Context Cache 复用视觉 token 输出以减少计算</li><li>Action Cache 复用神经元激活模式以减少权重访问</li><li>通过在线缓存重计算降低缓存内存占用与访问开销</li><li>采用滑动窗口缓存检索</li><li>在连续去噪步之间共享掩码</li><li>针对不同 VLA 架构应用视觉 token 稀疏与神经元稀疏组合策略</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 RTX 4090 和 Jetson Thor 上评估 π0.5、GR00T N1.6、X-VLA 三个模型</li><li>使用 LIBERO（Spatial、Object、Goal、Long 各 10 任务，每任务 100 次种子 rollout）和 RoboTwin（clean 设置 50 任务，每任务 100 次种子 rollout）</li><li>包含两个物理机器人任务：ALOHA 双臂抓放与 Franka/DOBOT 单臂装配线包装</li><li>相对 SOTA 推理引擎 FlashRT，在 RTX 4090 上取得 1.20–1.29× 端到端加速，在 Jetson Thor 上取得 1.23–1.42× 加速</li><li>在仿真与真实机器人任务上匹配原始成功率</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>未说明在线缓存更新的具体实现，作者将 online cache updates 留作未来工作</li><li>未见其他明确陈述的局限</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接面向具身智能中 VLA 的实时推理与系统优化，关注推理效率、模型压缩式复用（缓存/稀疏）以及真实机器人评测，与 VLA、动作生成和实时控制研究高度相关。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>仅提供标题与摘要，缺少全文细节：第一单位、通讯作者、具体任务成功率数值、缓存命中率、内存占用、各阶段瓶颈的定量刻画、消融实验及局限性均无法确认；加速比的具体适用条件与任务成功率保持的统计口径也未说明。</p>
-          <blockquote><strong>论文指出 VLA 推理延迟影响机器人响应性与运动平滑度，且现有框架未充分利用具身工作负载特性：</strong>The inference latency of VLA models directly affects robot responsiveness and motion smoothness. However, existing VLA inference frameworks do not fully exploit the characteristics of embodied workloads or account for the distinct bottlenecks across different stages of VLA inference.</blockquote>
-          <blockquote><strong>论文发现重复机器人执行之间存在显著任务相似性，且相似性延伸到内部模型状态：</strong>we first characterize embodied workloads and identify substantial task similarity across repeated robot executions. We further find that such similarity extends beyond observations and action trajectories to internal model states.</blockquote>
-          <blockquote><strong>方法采用双阶段肌肉记忆缓存，Context Cache 复用视觉 token 输出，Action Cache 复用神经元激活模式：</strong>It exploits cross-execution similarity through a dual-phase muscle-memory cache. The Context Cache reuses visual-token outputs to reduce computation, while the Action Cache reuses neuron activation patterns to reduce weight accesses.</blockquote>
-          <blockquote><strong>通过在线缓存重计算、滑动窗口检索与掩码共享控制内存与访问开销：</strong>We keep both the cache memory footprint and access overhead low through online cache recomputation, sliding-window cache retrieval, and mask sharing across consecutive denoising steps.</blockquote>
-          <blockquote><strong>在两类硬件与多个基准上取得 1.29-1.42X 加速并保持真实机器人成功率：</strong>rMuscle achieves 1.29-1.42X speedup on RTX 4090 and Jetson Thor across LIBERO, RoboTwin, and physical manipulation tasks, while maintaining the original success rates on real-world robots.</blockquote>
+          <p>全文为节选，缺少部分实验细节、缓存命中率与内存开销具体数值，且在线缓存更新未完成，因此对方法泛化边界和更多任务上的表现判断存在不确定性。</p>
+          <blockquote><strong>同一任务重复执行时，内部模型状态也具有相似性。：</strong>We further find that such similarity extends beyond observations and action trajectories to internal model states.</blockquote>
+          <blockquote><strong>rMuscle 通过双阶段缓存复用视觉 token 输出和神经元激活模式。：</strong>It exploits cross-execution similarity through a dual-phase muscle-memory cache. The Context Cache reuses visual-token outputs to reduce computation, while the Action Cache reuses neuron activation patterns to reduce weight accesses.</blockquote>
+          <blockquote><strong>在 RTX 4090 与 Jetson Thor 上取得加速且保持真实机器人成功率。：</strong>rMuscle achieves 1.29-1.42X speedup on RTX 4090 and Jetson Thor across LIBERO, RoboTwin, and physical manipulation tasks, while maintaining the original success rates on real-world robots.</blockquote>
+          <blockquote><strong>作者指出重复执行具有相似 FFN 输入与神经元激活模式，提供计算复用机会。：</strong>We find that repeated executions of the same task have similar FFN inputs and neuron activation patterns, providing opportunities for computation reuse.</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
