@@ -1,0 +1,1765 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2026-09-22 科研日报</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-09-22 00:36</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>2026-09-22 科研日报</h1>
+<p class="lede">保留该次运行的论文顺序、编辑层级、分析范围与结构化解读。</p>    <div class="stats" aria-label="长期档案统计">
+      <div class="stat"><strong>12</strong>当前页面论文</div>
+      <div class="stat"><strong>471</strong>长期论文</div>
+      <div class="stat"><strong>9</strong>稳定主题</div>
+      <div class="stat"><strong>15</strong>固定标签</div>
+      <div class="stat"><strong>240</strong>已有配图</div>
+    </div>
+  </header>
+
+  <section class="gallery-intro" aria-labelledby="gallery-title">
+    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">本期全部论文</h2></div>
+    <p>这是按日期保存的每日日报快照，不混入长期论文库。</p>
+  </section>
+
+  <section data-explorer>
+    <div class="topic-shelves" role="group" aria-label="按研究主题筛选">
+      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>12 篇</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="vla" aria-pressed="false" title="视觉、语言与机器人动作的统一建模、适配与安全。"><strong>视觉语言动作（VLA）</strong><span>1 篇 · 视觉、语言与机器人动作的统一建模、适配与安全。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="wam" aria-pressed="false" title="联合建模世界状态、动作与未来转移的具身模型。"><strong>世界动作模型（WAM）</strong><span>1 篇 · 联合建模世界状态、动作与未来转移的具身模型。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="world-model" aria-pressed="false" title="动态预测、视频生成、世界模拟与物理交互建模。"><strong>世界模型（World Model）</strong><span>1 篇 · 动态预测、视频生成、世界模拟与物理交互建模。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="robot-learning" aria-pressed="false" title="操作、导航、规划、强化学习与跨具身策略。"><strong>机器人学习与控制</strong><span>9 篇 · 操作、导航、规划、强化学习与跨具身策略。</span></button>
+    </div>
+
+    <form class="explorer-controls" data-filter-form aria-label="筛选论文">
+      <label class="control control--query"><span>关键词</span><input type="search" name="q" maxlength="200" autocomplete="off" placeholder="标题、作者、方法、标签……" data-filter-query></label>
+      <label class="control"><span>编辑层级</span><select name="tier" data-filter-tier><option value="">全部层级</option><option value="deep_read">今日必读</option><option value="browse">值得浏览</option><option value="explore">探索发现</option></select></label>
+      <label class="control"><span>证据范围</span><select name="scope" data-filter-scope><option value="">全部范围</option><option value="full_text">全文级</option><option value="abstract">摘要级</option></select></label>
+      <label class="control"><span>最低相关性</span><select name="score" data-filter-score><option value="0">全部</option><option value="8">8 分以上</option><option value="9">9 分以上</option></select></label>
+      <label class="control"><span>论文配图</span><select name="figure" data-filter-figure><option value="">全部</option><option value="yes">已有原图</option><option value="no">暂无原图</option></select></label>
+      <div class="explorer-actions"><button type="button" data-expand-visible>展开结果</button><button type="button" data-collapse-visible>全部收起</button><button type="reset">重置</button></div>
+    </form>
+    <noscript><p class="noscript-notice">筛选功能需要启用 JavaScript；未启用时仍会显示全部论文。</p></noscript>
+    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">12</strong> 篇论文 <span class="active-tag" data-active-tag></span></p><p>标签有稳定永久网址，也可在当前画廊内继续筛选。</p></div>
+
+      <section class="tier-section" data-tier-section="deep_read">
+        <header class="tier-heading"><h2>今日必读</h2><p><span data-tier-count>7</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.21983:v1"
+  data-topic="wam"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.21983/v1/fig2-panel1.png"
+        alt="Figure 2：SkelWAM world–action model. (a) The shared 25-D body/TCP/jaw state defines external and wrist proxies. (b) Thirty paired Video/Action DiT blocks predict a 32 × 25 32\times 25 skeleton chunk. Starred future-video paths provide supervision only during Stage A. Action attention accesses current-frame keys and values (K/V), which are cached at inference. The deployment heads combine 24-D continuous flow with a jaw event. (c) Native joint IK or PCC decoding prioritizes TCP pose and uses the centerline as posture guidance."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.21983v1/figures/fig02_representation/figure.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 2</strong> SkelWAM world–action model. (a) The shared 25-D body/TCP/jaw state defines external and wrist proxies. (b) Thirty paired Video/Action DiT blocks predict a 32 × 25 32\times 25 skeleton chunk. Starred future-video paths provide supervision only during Stage A. Action attention accesses current-frame keys and values (K/V), which are cached at inference. The deployment heads combine 24-D continuous flow with a jaw event. (c) Native joint IK or PCC decoding prioritizes TCP pose and uses the centerline as posture guidance.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界动作模型（WAM）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.21983/">SkelWAM：面向零样本跨具身操作的骨架引导世界-动作模型</a></h3>
+    <p class="original-title" lang="en">SkelWAM: A Skeleton-Guided World-Action Model for Zero-Shot Cross-Embodiment Manipulation</p>
+    <p class="authors">Pengjun Niu · Yujia Xie · Rui Peng · Hang Zhao · Ke Liu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>用一个显式的几何表示（手臂中心线几何、TCP 位姿与平行夹爪命令组成的共享 25-D 状态）同时定义视觉条件、规范化状态与未来全身动作目标，从而把视觉侧与动作侧的具身鸿沟在同一骨架表示中连通，使源训练 WAM 预测的运动意图可由具身特定的约束解码器在原生约束下执行。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它提供了一个把世界模型视觉预测与可执行全身动作生成耦合的共享几何接口，给出可迁移的跨具身动作表示与约束解码思路；其消融揭示了腕部上下文和全身姿态目标的任务依赖效应，并附有 1000 回合基准与真实连续体机器人部署，对研究跨具身泛化、动作分块预测和真实机器人评测的读者具有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/data/" data-tag-filter="data">具身数据</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-learning/" data-tag-filter="robot-learning">机器人学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>零样本跨具身操作的世界-动作模型（WAM）</p>
+        <p><strong>模型原始标签：</strong>世界-动作模型、跨具身迁移、骨架表示、零样本操作、世界模型、具身智能</p>
+        <p><strong>第一单位：</strong>School of Advanced Manufacturing and Robotics, Peking University, Beijing, 100871, China</p>
+        <p><strong>通讯作者：</strong>hangzhao@tsinghua.edu.cn, liuke@pku.edu.cn</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.21983">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.21983">PDF ↗</a><a href="https://arxiv.org/html/2609.21983v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.21983/v1/fig2-panel1.png"
+              alt="Figure 2：SkelWAM world–action model. (a) The shared 25-D body/TCP/jaw state defines external and wrist proxies. (b) Thirty paired Video/Action DiT blocks predict a 32 × 25 32\times 25 skeleton chunk. Starred future-video paths provide supervision only during Stage A. Action attention accesses current-frame keys and values (K/V), which are cached at inference. The deployment heads combine 24-D continuous flow with a jaw event. (c) Native joint IK or PCC decoding prioritizes TCP pose and uses the centerline as posture guidance."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.21983v1/figures/fig02_representation/figure.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> SkelWAM world–action model. (a) The shared 25-D body/TCP/jaw state defines external and wrist proxies. (b) Thirty paired Video/Action DiT blocks predict a 32 × 25 32\times 25 skeleton chunk. Starred future-video paths provide supervision only during Stage A. Action attention accesses current-frame keys and values (K/V), which are cached at inference. The deployment heads combine 24-D continuous flow with a jaw event. (c) Native joint IK or PCC decoding prioritizes TCP pose and uses the centerline as posture guidance.
+            <a class="figure-source" href="https://arxiv.org/html/2609.21983v1#S0.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>单源（source-only）跨具身操作迁移：仅使用一个源机器人（Franka 或 JAKA mini2）的任务演示和策略优化，不采集目标任务演示，也不更新目标策略，直接在多种目标具身（含刚性连杆臂和连续体机器人）上零样本部署。</dd>
+        <dt>Motivation（研究动机）</dt><dd>复用操作经验可扩展机器人学习并减少重复的任务特定数据采集，但具身变化会同时改变视觉外观、动作维度与语义，以及实现同一工具位姿所需的全身构型；现有 WAM 从一台机器人迁移到另一台时观察分布与动作几何都会改变。</dd>
+        <dt>Insight（核心洞察）</dt><dd>用一个显式的几何表示（手臂中心线几何、TCP 位姿与平行夹爪命令组成的共享 25-D 状态）同时定义视觉条件、规范化状态与未来全身动作目标，从而把视觉侧与动作侧的具身鸿沟在同一骨架表示中连通，使源训练 WAM 预测的运动意图可由具身特定的约束解码器在原生约束下执行。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>具身变化导致视觉外观偏移</li><li>动作维度与语义随具身改变</li><li>实现同一工具位姿的全身构型不同</li><li>无需一对一关节对应关系</li><li>目标具身不提供任务演示或策略更新</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过共享 25-D 几何表示把视觉条件与动作目标统一，并用组件消融分析各组件贡献：在相同 1000 回合上比较完整模型与去掉骨架视觉（V）、身体动作监督（A）、腕部输入（W）、解码器身体目标（D）的变体。结果显示去掉 V 与 A 分别掉到 0.0% 和 0.1%，去掉 W 整体仅 -0.3 点但在四个任务子集上出现 -6.7/-14.7/+22.5/+8.0 点的任务依赖反转，去掉 D 整体 -2.4 点（Cross-Object -8.7、Cross-Long +3.0），说明腕部上下文与姿态引导随任务族不同而作用不同。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>定义共享 25-D 状态：手臂中心线几何、工具中心点（TCP）位姿与平行夹爪命令。</li><li>同一 25-D 定义同时用于规范化的第三人称与腕部观察，以及未来全身动作目标。</li><li>采用视频-动作混合 Transformer：30 个成对的 Video/Action DiT 块预测 32×25 的骨架动作块。</li><li>以预测性视觉监督训练，未来视频路径仅在 Stage A 提供监督，动作注意力访问当前帧 K/V 并在推理时缓存。</li><li>具身特定的约束解码器把预测的全身运动意图转换为关节或连续体机器人控制；原生关节 IK 或 PCC 解码优先满足 TCP 位姿并以中心线作为姿态引导。</li><li>部署头结合 24-D 连续流与一个夹爪事件。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>提出 LIBERO-Cross10 基准：十个任务、十个目标具身，覆盖四个形态组（7-DoF 刚性臂 Kinova Gen3/xArm7/Rizon4/IIWA、轻量臂 ARX-L5 与 ViperX300、连续体 Feagine A03 等），基于 MuJoCo 与 robosuite。</li><li>Franka 训练的 SkelWAM 在该基准 1000 回合上取得 43.3% 成功率，超过最佳评估基线 36.2 个百分点。</li><li>消融（每变体 1000 回合）：完整 43.3%；w/o V^R 0.0%（-43.3）；w/o A^R 0.1%（-43.2）；w/o W^R 43.0%（-0.3）；w/o D^I 40.9%（-2.4）。</li><li>源训练数据：467 条成功的 Franka 演示，按回合划分 447 训练 / 20 验证。</li><li>真实机器人部署：277 条质量受控的 JAKA mini2 遥操作演示，按回合划分 249 训练 / 28 验证，编译为 10 Hz 骨架窗口；在 JAKA mini2 数据上以动作目标训练 Action Expert 和最后两个视频块 6k 次更新，仅用源验证做模型选择。</li><li>将 JAKA mini2 训练的策略以固定权重加目标特定 PCC 解码器部署到 Feagine A03，完成 Toy Cleanup、Ring Placement、Peg Insertion 三项桌面操作任务，未使用 Feagine A03 任务演示微调。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>Cross-Goal 与 Cross-Long 的成功率仍低于 Cross-Spatial 与 Cross-Object；消融显示腕部上下文与姿态引导同操作目标存在交互。</li><li>比较使用共同的目标协议，但各方法发布的预训练与源适配方式不同。</li><li>耦合的动作干预限制了组件级归因。</li><li>迁移依赖可达性、夹爪接触几何、相机标定，以及物体遮挡下背景填充的质量，这些因素仍留在目标接口中。</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接面向具身智能与世界-动作模型：以世界模型的预测性视觉监督驱动动作生成，通过显式几何骨架统一跨具身的视觉条件与动作目标，解决可执行动作生成、跨具身泛化与原生约束下的实时执行（IK/PCC 解码、当前帧 K/V 缓存）问题，并在真实机器人上完成评测，契合机器人学习、世界模型与系统优化方向。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>证据范围为全文节选，部分方法细节（如 Stage A 训练流程、基线方法的具体配置、Cross-* 各子集的完整数值）未在节选中给出，因此对方法完整性和各基线对比的解读可能不全面；部分表格标题在节选中被截断。</p>
+          <blockquote><strong>SkelWAM 通过共享 25-D 骨架几何把视觉条件与未来动作目标统一。：</strong>Arm centerline geometry, tool-center-point (TCP) pose, and parallel-jaw commands form a shared 25-D state. The same definition underlies canonical third-person and wrist observations and future whole-body action targets.</blockquote>
+          <blockquote><strong>该方法不需要一对一关节对应，也不使用目标任务演示或目标策略更新。：</strong>This formulation requires no one-to-one joint correspondence and uses no target-task demonstrations or target policy updates.</blockquote>
+          <blockquote><strong>Franka 训练的 SkelWAM 在 LIBERO-Cross10 上取得 43.3% 成功率，超过最佳评估基线 36.2 个百分点。：</strong>On this benchmark, Franka-trained SkelWAM achieves 43.3% success over 1,000 episodes, exceeding the best-performing evaluated baseline by 36.2 percentage points.</blockquote>
+          <blockquote><strong>消融中去掉骨架视觉与身体动作监督会导致成功率近乎归零。：</strong>The w/o V R V^{R} and w/o A R A^{R} variants obtain 0.0% and 0.1%, respectively.</blockquote>
+          <blockquote><strong>腕部输入整体影响很小但在任务子集上出现反转。：</strong>Removing the wrist changes overall success by only − 0.3 -0.3 points, yet its effects are − 6.7 / − 14.7 / + 22.5 / + 8.0 -6.7/-14.7/+22.5/+8.0 points across the four task subsets.</blockquote>
+          <blockquote><strong>作者明确列出迁移依赖可达性、夹爪接触几何、相机标定与背景填充质量等局限。：</strong>Transfer depends on reachability, gripper contact geometry, camera calibration, and the quality of background filling under object occlusion.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2506.12374:v4"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2506.12374/v4/fig1-panel1.png"
+        alt="Figure 1：AntiGrounding overview. Trajectories retained after geometric filtering serve as visual prompts for instruction-conditioned assessment and explicit geometry for validation and execution. Structured VQA scores the candidates across rendered scene views. The surrounding panels illustrate the eight manipulation tasks. Real2Sim2Real comprises initial real-to-sim scene construction followed by simulator-mediated planning and real execution."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2506.12374v4/AntiGrounding_head.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> AntiGrounding overview. Trajectories retained after geometric filtering serve as visual prompts for instruction-conditioned assessment and explicit geometry for validation and execution. Structured VQA scores the candidates across rendered scene views. The surrounding panels illustrate the eight manipulation tasks. Real2Sim2Real comprises initial real-to-sim scene construction followed by simulator-mediated planning and real execution.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v4</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2506.12374/">AntiGrounding：将可执行机器人轨迹作为视觉提示用于VLM引导的操作</a></h3>
+    <p class="original-title" lang="en">AntiGrounding: Executable Robot Trajectories as Visual Prompts for VLM-Guided Manipulation</p>
+    <p class="authors">Wenbo Li · Yiteng Chen · Wenhao Li · Qingyao Wu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>经过可行性过滤后保留的短轨迹本身既是显式几何控制对象，又可作为视觉提示供指令条件化的多模态评估使用；通过结构化多视图VQA与加权视图融合在安全、任务对齐、效率和物理合理性四个维度上打分来选择轨迹，并用分数引导后续平移提案。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作给出把VLM评估与几何可行性结合成统一轨迹接口的具体方案，含八个真实任务与多类基线对比（含VLA与推理规划方法），对研究可执行动作生成、真实机器人评测与数字孪生验证的研究者具有直接参考价值；其消融与评估器敏感性设计也有助于理解该类接口的能力边界。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>VLM引导的机器人操作与可执行轨迹动作选择</p>
+        <p><strong>模型原始标签：</strong>VLM引导操作、可执行轨迹、视觉提示、多视图VQA、数字孪生、Real2Sim2Real、机器人操作</p>
+        <p><strong>第一单位：</strong>School of Software Engineering, South China University of Technology</p>
+        <p><strong>通讯作者：</strong>Wenbo Li, Yiteng Chen, Wenhao Li, Qingyao Wu</p>
+        <p><strong>首次上传：</strong>2025-06</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2506.12374">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2506.12374">PDF ↗</a><a href="https://arxiv.org/html/2506.12374v4">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2506.12374/v4/fig1-panel1.png"
+              alt="Figure 1：AntiGrounding overview. Trajectories retained after geometric filtering serve as visual prompts for instruction-conditioned assessment and explicit geometry for validation and execution. Structured VQA scores the candidates across rendered scene views. The surrounding panels illustrate the eight manipulation tasks. Real2Sim2Real comprises initial real-to-sim scene construction followed by simulator-mediated planning and real execution."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2506.12374v4/AntiGrounding_head.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> AntiGrounding overview. Trajectories retained after geometric filtering serve as visual prompts for instruction-conditioned assessment and explicit geometry for validation and execution. Structured VQA scores the candidates across rendered scene views. The surrounding panels illustrate the eight manipulation tasks. Real2Sim2Real comprises initial real-to-sim scene construction followed by simulator-mediated planning and real execution.
+            <a class="figure-source" href="https://arxiv.org/html/2506.12374v4#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2506.12374/v4/fig2-panel1.png"
+              alt="Figure 2：AntiGrounding framework. Real2Sim initializes the simulator, which supplies the planning state and rendered VLM observations. Feasibility &amp; sync denotes simulator-side execution validation and progression of the simulator state before real execution. Score-guided sampling forms a directional prior from trajectory scores; Execution logs support optional offline prompt refinement. A single GPT-6 Astra evaluator assesses the rendered candidates. Translation, stage-specific orientation, and endpoint gripper commands form separate control channels (Section III-C )."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2506.12374v4/AntiGrounding_frame.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> AntiGrounding framework. Real2Sim initializes the simulator, which supplies the planning state and rendered VLM observations. Feasibility &amp; sync denotes simulator-side execution validation and progression of the simulator state before real execution. Score-guided sampling forms a directional prior from trajectory scores; Execution logs support optional offline prompt refinement. A single GPT-6 Astra evaluator assesses the rendered candidates. Translation, stage-specific orientation, and endpoint gripper commands form separate control channels (Section III-C ).
+            <a class="figure-source" href="https://arxiv.org/html/2506.12374v4#S2.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在初始化的数字孪生（CoppeliaSim）中进行滚动时域规划；从当前末端执行器位置采样短平移轨迹，经几何可行性过滤后渲染为多视图视觉提示，由指令条件化的VLM进行结构化多视图VQA评估，选择并在仿真中验证后在真实机器人（UR5e）上执行相同路点序列。</dd>
+        <dt>Motivation（研究动机）</dt><dd>自然语言指令只指定操作目标而不确定机器人运动，一条无碰撞路径仍可能错过目标；VLM擅长任务语义与场景理解，几何规划器擅长运动约束表示，需要一个接口把任务级判断连接到可执行动作上。</dd>
+        <dt>Insight（核心洞察）</dt><dd>经过可行性过滤后保留的短轨迹本身既是显式几何控制对象，又可作为视觉提示供指令条件化的多模态评估使用；通过结构化多视图VQA与加权视图融合在安全、任务对齐、效率和物理合理性四个维度上打分来选择轨迹，并用分数引导后续平移提案。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>单一投影可能掩盖对齐关系，整体性判断会混淆相互竞争的多项评估标准</li><li>性能依赖数字孪生保真度与真实物理交互</li><li>高层规划从仿真状态继续，没有新的真实图像观测或逐段场景重配准，可能导致真实执行偏离仿真</li><li>未使用视角的评估会贡献在线延迟，场景初始化与在线VLM决策延迟是独立开销</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将推理到动作的接口问题分解为：如何在保留轨迹显式几何可行性的同时，将其暴露给任务条件化的多模态评估；通过对比代码即策略、空间价值图、关键点约束、PIVOT等视觉提示先验，指出自身聚焦于短可执行轨迹本身，并设计组件消融与评估器敏感性实验来刻画轨迹评估、提案搜索、朝向控制与评估器选择。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>采样短平移末端执行器轨迹，线性插值连接目标位置与当前末端位置，默认保持当前朝向</li><li>在CoppeliaSim中进行提案级过滤，检查非目标碰撞、无效几何或物理状态、目标交互或穿透约束；完整有效段保留，违规段保留首个违规前的有序前缀（若可用），否则丢弃，形成可行集</li><li>每个候选带一致标识符与不同颜色跨视图渲染，可选Set-of-Mark标注任务相关物体</li><li>结构化多视图VQA对安全性、任务对齐、效率、物理合理性打分；视图选择识别有用投影，准则权重组合四个维度，保留视图权重融合分数用于轨迹选择</li><li>分数引导后续平移提案采样（候选数量、采样半径、角度分散度）</li><li>单独控制通道提供任务特定朝向目标与夹爪命令</li><li>在数字孪生中验证所选段后，真实机器人执行相同的经仿真验证的路点序列</li><li>可选离线提示精炼：分析执行日志以修订准则权重、问题措辞或任务特定评估标准，同时保持VLM权重固定</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>八个真实世界操作任务，覆盖放置、避障运动、多阶段操作与语义约束（胶带、海绵、迷宫、抽屉、倒水、拖鞋、垃圾、形状）</li><li>使用UR5e与三指柔性夹爪</li><li>AntiGrounding配合单一GPT-6 Astra评估器总体成功率71.25%</li><li>π0.5在同一部署协议下达到50.00%</li><li>PIVOT风格视觉提案选择基线使用同一评估器达到47.50%</li><li>其他对比：OpenVLA 6.25%，OpenVLA-OFT 20.00%，π0 13.75%，Code as Policies 6.25%，VoxPoser 18.75%，ReKep 41.25%</li><li>VLA基线为零样本评估，未使用这些任务的数据进行任务特定微调</li><li>组件消融与评估器敏感性实验刻画轨迹评估、提案搜索、朝向控制与评估器选择</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>性能依赖数字孪生保真度、候选质量与物理交互</li><li>高层规划从仿真状态继续，没有新的真实图像观测或逐段场景重配准</li><li>场景初始化与在线VLM决策延迟是独立开销，未使用视角的评估贡献在线延迟</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接关系具身智能与物理人工智能中的可执行动作生成与真实机器人评测：把VLM的任务级语义判断接到显式可执行轨迹上，在数字孪生中验证后由真实机器人执行，与VLA模型（OpenVLA、π0、π0.5）、PIVOT等视觉行动表示以及世界模型/数字孪生中仿真验证的思路紧密相邻；也涉及系统优化中的在线延迟问题。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>全文为节选，方法部分的多视图VQA具体问题措辞、视图权重细节及离线提示精炼过程未完整给出；部分表格与图示内容被截断，无法核实每任务成功数以外的实验设置细节。</p>
+          <blockquote><strong>AntiGrounding把过滤后保留的短轨迹同时作为显式运动计划和VLM评估的视觉提示：</strong>Each short trajectory retained after feasibility filtering remains an explicit motion plan and serves as a visual prompt for instruction-conditioned vision–language model (VLM) assessment.</blockquote>
+          <blockquote><strong>结构化多视图VQA对安全性、任务对齐、效率与物理合理性打分，加权视图融合用于轨迹选择并引导后续提案：</strong>Structured multi-view visual question answering (VQA) scores safety, task alignment, efficiency, and physical plausibility. Weighted view fusion aggregates these scores for trajectory selection, while the scores also guide subsequent translational proposals.</blockquote>
+          <blockquote><strong>AntiGrounding在八个真实任务上以单一GPT-6 Astra评估器达到71.25%总体成功率：</strong>Across eight real-world manipulation tasks, AntiGrounding with a single GPT-6 Astra evaluator achieves 71.25% overall success.</blockquote>
+          <blockquote><strong>π0.5为50.00%，PIVOT风格基线使用同一评估器为47.50%：</strong>π
+0.5
+\pi_{0.5}
+achieves 50.00%, and a PIVOT-style visual proposal-selection baseline with the same evaluator achieves 47.50%.</blockquote>
+          <blockquote><strong>第一单位为华南理工大学软件学院：</strong>School of Software Engineering, South China University of Technology</blockquote>
+          <blockquote><strong>真实机器人执行经仿真验证的相同路点序列，性能受数字孪生保真度与物理交互约束：</strong>Planning proceeds in an initialized digital twin, which validates selected segments before the real robot executes the same waypoint sequences.</blockquote>
+          <blockquote><strong>高层规划从仿真状态继续，没有新的真实图像观测或逐段场景重配准：</strong>High-level planning continues from the simulator state without fresh real-image observations or per-segment scene re-registration.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.22040:v1"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22040/v1/fig2-panel1.png"
+        alt="Figure 2：Feedback injection in the QT-Former. The Situational Memory conditions decoder queries before they attend to current camera features."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.22040v1/feedback_injection_point.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 2</strong> Feedback injection in the QT-Former. The Situational Memory conditions decoder queries before they attend to current camera features.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 7/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.22040/">PRIME：VLA模型中的情境记忆嵌入感知反馈</a></h3>
+    <p class="original-title" lang="en">PRIME: Perception Feedback with Situational Memory Embeddings in VLA Models</p>
+    <p class="authors">Erik Deinzer · Naya Baslan · Luca Paparusso · Narunas Vaskevicius · Peter Knott · Luigi Palmieri</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过将过去感知、推理、导航目标和预测行为的潜在表示聚合到情境记忆中，并以此条件化感知查询，可实现意图驱动的感知注意力，且计算成本极低。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>本文提供了一种轻量级反馈增强感知的方法，可迁移至具身智能和世界模型中的长时序预测与意图驱动感知，其闭环评测结果和消融分析对理解反馈机制在VLA中的作用具有明确参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>VLA模型中的反馈增强感知与情境记忆</p>
+        <p><strong>模型原始标签：</strong>VLA、自动驾驶、情境记忆、反馈机制、闭环评测、端到端学习</p>
+        <p><strong>第一单位：</strong>Department of Electrical Engineering and Information Technology, RWTH Aachen University, Germany.</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.22040">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.22040">PDF ↗</a><a href="https://arxiv.org/html/2609.22040v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22040/v1/fig2-panel1.png"
+              alt="Figure 2：Feedback injection in the QT-Former. The Situational Memory conditions decoder queries before they attend to current camera features."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22040v1/feedback_injection_point.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Feedback injection in the QT-Former. The Situational Memory conditions decoder queries before they attend to current camera features.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22040v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>自动驾驶VLA模型的闭环驾驶场景，基于Bench2Drive基准与CARLA模拟器，使用Think2Drive专家演示训练。</dd>
+        <dt>Motivation（研究动机）</dt><dd>当前VLA模型主要在感知-推理-规划层级中进行前馈推理，早期感知对下游推理和导航目标不敏感，无法根据先验决策优先处理视觉线索，需要一种反馈机制来弥合这一内部鸿沟。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过将过去感知、推理、导航目标和预测行为的潜在表示聚合到情境记忆中，并以此条件化感知查询，可实现意图驱动的感知注意力，且计算成本极低。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>不同结构与基数的反馈源整合</li><li>在不进行昂贵端到端重训练的情况下研究跨阶段反馈</li><li>确定记忆模块应主要保留感知表示还是整合高层推理与规划信息</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过消融实验分析不同反馈源的影响，发现推理状态作为紧凑的场景理解摘要能有效引导注意力，而单纯的感知和预测表示在闭环中反而降低性能；反馈在情境解释层面比场景表示层面更有效。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出PRIME，一种学习到的反馈机制，将VLA感知查询条件化于新颖的情境记忆</li><li>情境记忆模块聚合六种潜在反馈源，覆盖场景感知、推理、导航目标及预测的自车与对手行为，跨L步窗口</li><li>引入两种整合模块：FiLMXAttn与Attention Pooling</li><li>采用基于适配器的轻量方法研究跨阶段反馈，保持主干基本固定</li><li>通过门控残差连接注入反馈，门初始化为0.1</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在Bench2Drive闭环基准上评估，PRIME取得最先进的驾驶得分82.47（比ORION高+4.73）和成功率60.00%（提升+5.38个百分点）</li><li>PRIME-Full在汇入场景表现最强，而GeRo在超车、紧急制动和交通标志交互上报告更强结果</li><li>适配器消融表明反馈在情境解释层面最有效，推理状态提供任务感知先验，而感知和预测表示单独使用时提升开环指标但降低闭环性能</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>实验仅限单一主干架构和反馈整合设计</li><li>所有实验依赖Think2Drive生成的演示，反馈信号与单一专家策略绑定</li><li>所有实验在仅相机设置下进行，未评估真实世界驾驶条件下的反馈增强感知</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接涉及VLA模型、闭环真实机器人评测（自动驾驶模拟）和系统优化中的推理效率（仅增加0.41%参数），与具身智能中的可执行动作生成和真实机器人评测高度相关，但主要面向自动驾驶而非通用机器人操作。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>由于仅提供摘要和部分全文节选，部分实验细节、完整消融数据和作者机构信息不完整，导致对方法完整性和实验充分性的判断存在一定不确定性。</p>
+          <blockquote><strong>PRIME通过情境记忆条件化VLA感知查询，实现意图驱动的感知注意力。：</strong>PRIME enables intent-driven perceptual attention at minimal computational cost</blockquote>
+          <blockquote><strong>PRIME仅增加最多29.7M参数，占7.3B基础模型的0.41%。：</strong>adding only a maximum of 29.7M parameters (0.41% of the 7.3B-parameter base model)</blockquote>
+          <blockquote><strong>PRIME在Bench2Drive上取得驾驶得分82.47和成功率60.00%。：</strong>PRIME achieves a state-of-the-art Driving Score of 82.47 (+4.73 over ORION) and a Success Rate of 60.00% (+5.38 percentage points)</blockquote>
+          <blockquote><strong>实验仅限单一主干架构和Think2Drive专家演示。：</strong>the experiments are limited to a single backbone architecture and feedback integration design. Furthermore, all experiments rely on demonstrations generated by Think2Drive</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.22085:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22085/v1/fig1-panel1.png"
+        alt="Figure 1：SeeQ overview. We train a generalist Q-value function on diverse robot data using a pretrained vision-language model (VLM) backbone. The value function is then fine-tuned on a downstream task and used to steer a base policy at test time. To address the challenges of long-horizon value learning, we use temporal-difference (TD) learning to fit the Q-value of the currently active subtask rather than that of the entire task. To eliminate the need for humans to specify this subtask at deployment, we modify the Q-function architecture to first predict the active subtask in natural language and then predict its value, encouraging internal representations better aligned with subtask-level value estimation."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.22085v1/seeq_teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> SeeQ overview. We train a generalist Q-value function on diverse robot data using a pretrained vision-language model (VLM) backbone. The value function is then fine-tuned on a downstream task and used to steer a base policy at test time. To address the challenges of long-horizon value learning, we use temporal-difference (TD) learning to fit the Q-value of the currently active subtask rather than that of the entire task. To eliminate the need for humans to specify this subtask at deployment, we modify the Q-function architecture to first predict the active subtask in natural language and then predict its value, encouraging internal representations better aligned with subtask-level value estimation.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.22085/">SeeQ：为长时序机器人操作训练通用价值函数</a></h3>
+    <p class="original-title" lang="en">SeeQ: Training Generalist Value Functions for Long-Horizon Robotic Manipulation</p>
+    <p class="authors">Saksham Singh · Zheyuan Hu · Max Sobol Mark · Jeffrey Yu · Zackory Erickson · Aviral Kumar</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>只对当前活跃子任务（currently active subtask）学习 Q 值，而不是对整个任务学习价值，从而缩短价值预测时域，使时间差分目标能有效学习；同时让 Q 函数自回归地先用自然语言预测当前子任务、再估计其价值，从而在测试时无需人工标注或独立子任务预测模块。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文给出一种可迁移的通用价值函数训练配方：用子任务级 TD 目标缩短信用分配时域，并用语言子任务预测消除部署时的标注依赖；在真实双臂平台上用 best-of-N 引导取得 1.88 倍平均成功率提升，且包含对预训练、备份和子任务条件的消融，对关注长时序机器人操作、VLA 动作选择与真实机器人评测的研究者具有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/data/" data-tag-filter="data">具身数据</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>面向长时序机器人操作的通用价值函数学习与策略引导</p>
+        <p><strong>模型原始标签：</strong>价值函数、Q函数、长时序操作、视觉语言模型、时间差分学习、策略引导、双臂机器人、离线数据</p>
+        <p><strong>第一单位：</strong>Carnegie Mellon University</p>
+        <p><strong>通讯作者：</strong>Aviral Kumar</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.22085">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.22085">PDF ↗</a><a href="https://arxiv.org/html/2609.22085v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22085/v1/fig1-panel1.png"
+              alt="Figure 1：SeeQ overview. We train a generalist Q-value function on diverse robot data using a pretrained vision-language model (VLM) backbone. The value function is then fine-tuned on a downstream task and used to steer a base policy at test time. To address the challenges of long-horizon value learning, we use temporal-difference (TD) learning to fit the Q-value of the currently active subtask rather than that of the entire task. To eliminate the need for humans to specify this subtask at deployment, we modify the Q-function architecture to first predict the active subtask in natural language and then predict its value, encouraging internal representations better aligned with subtask-level value estimation."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22085v1/seeq_teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> SeeQ overview. We train a generalist Q-value function on diverse robot data using a pretrained vision-language model (VLM) backbone. The value function is then fine-tuned on a downstream task and used to steer a base policy at test time. To address the challenges of long-horizon value learning, we use temporal-difference (TD) learning to fit the Q-value of the currently active subtask rather than that of the entire task. To eliminate the need for humans to specify this subtask at deployment, we modify the Q-function architecture to first predict the active subtask in natural language and then predict its value, encouraging internal representations better aligned with subtask-level value estimation.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22085v1#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22085/v1/fig2-panel1.png"
+              alt="Figure 2：Overview of the SeeQ value-function architecture. The model first rolls out the active subtask at state 𝐬 \mathbf{s} in text using a next-token prediction loss, and then predicts a scalar value Q θ ​ ( 𝐬 , 𝐚 , l , l ~ ) Q_{\theta}(\mathbf{s},\mathbf{a},l,\tilde{l}) for the input state-action pair conditioned on the task instruction and the subtask. Ground-truth subtask annotations supervise the rollout during training; at inference the model conditions on its own predicted subtask."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22085v1/arch_attention.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Overview of the SeeQ value-function architecture. The model first rolls out the active subtask at state 𝐬 \mathbf{s} in text using a next-token prediction loss, and then predicts a scalar value Q θ ​ ( 𝐬 , 𝐚 , l , l ~ ) Q_{\theta}(\mathbf{s},\mathbf{a},l,\tilde{l}) for the input state-action pair conditioned on the task instruction and the subtask. Ground-truth subtask annotations supervise the rollout during training; at inference the model conditions on its own predicted subtask.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22085v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>语言条件机器人操作，给定基础通用策略 π_base，在离线机器人轨迹数据上预训练通用 Q 函数，再微调用于下游任务，测试时用 Q 函数对策略提出的 N 个候选动作块打分并执行最高分动作（best-of-N 策略引导）。</dd>
+        <dt>Motivation（研究动机）</dt><dd>通用机器人策略在复杂长时序任务上仍然脆弱：包含多阶段或需要对同一阶段反复尝试与权衡；稀疏任务级奖励导致长信用分配、贝尔曼备份困难，且离线数据覆盖不足。学习 Q 函数可对候选动作排序或引导策略改进，但长时序下的价值学习本身不可靠。</dd>
+        <dt>Insight（核心洞察）</dt><dd>只对当前活跃子任务（currently active subtask）学习 Q 值，而不是对整个任务学习价值，从而缩短价值预测时域，使时间差分目标能有效学习；同时让 Q 函数自回归地先用自然语言预测当前子任务、再估计其价值，从而在测试时无需人工标注或独立子任务预测模块。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>长时序下 Q 估计误差随视野增长（材料引用 Park et al. 称在离线 RL 中近乎指数增长）</li><li>离线数据集对长轨迹中众多状态-动作配置覆盖有限</li><li>稀疏任务级奖励导致信用分配视野长、贝尔曼备份困难</li><li>子任务标注在恢复行为或子任务边界附近存在歧义</li><li>部署时子任务预测错误会让 critic 用错误目标评估动作</li><li>优化当前子任务价值偏向局部进展，可能与整体任务目标不一致</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将长时序价值学习困难的根源归结为预测时域本身：标准 Q 函数估计整个任务的成功期望，随动作数增长而变得困难；离线设置进一步因数据覆盖有限而加剧。因此提出以子任务级价值作为学习目标，利用离线机器人数据中已有的子任务级标注提供分解，并用自然语言子任务预测替代部署时的子任务标注或模块化预测系统。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>训练通用 Q 函数 Q_θ(s_t, a_{t:t+H-1}, l)，基于离线机器人轨迹数据集，使用预训练视觉语言模型作为主干。</li><li>用时间差分（TD）目标拟合当前活跃子任务的 Q 值，而非整个任务的 Q 值，以缩短价值预测时域。</li><li>训练阶段利用离线机器人数据中存在的子任务级标注提供分解，从而可利用广泛、可能次优的机器人数据。</li><li>将 Q 函数架构改为自回归：先以自然语言预测当前活跃子任务，再估计该子任务的价值，使内部表示与子任务级价值估计对齐，并消除测试时对人工标注或模块化子任务预测系统的依赖。</li><li>在多样开源机器人操作数据上预训练 SeeQ，再在下游任务上微调。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在两个双臂机器人平台上的四个真实世界操作任务中评估，SeeQ 价值函数显著改善 best-of-N 策略引导。</li><li>结论部分报告：SeeQ 将平均成功率从 35.4% 提升到 66.7%（1.88 倍），并在不同数据组成上均有提升。</li><li>消融实验强调机器人数据预训练、best-of-N 备份以及显式子任务条件的重要性。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>SeeQ 依赖训练时的子任务标注，而将操作轨迹分解为离散片段可能具有歧义，尤其在恢复行为或子任务边界附近。</li><li>加入过去帧和更细粒度标注可能部分缓解歧义，但合适的子任务粒度仍依赖任务。</li><li>部署时子任务预测错误会导致 critic 用错误目标评估动作。</li><li>优化当前子任务价值偏向局部进展，可能与整体任务目标不一致。</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接位于具身智能与机器人学习交叉处：以视觉语言模型为骨干学习通用价值函数，服务于长时序操作中的可执行动作选择与策略引导（best-of-N），与 VLA/世界动作模型中的动作评估、长时序预测和真实机器人评测高度相关；其子任务分解与 TD 学习思路对推理效率与实时控制中的候选动作排序也有迁移价值。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>输入材料为节选，方法细节、网络结构、训练超参、四个任务的具体定义与逐任务数字、消融的完整设置等未完整给出；实验数字仅来自摘要与结论中的汇总，未提供逐任务表格，因此对方法可复现细节和结论普适性的判断存在不确定性。</p>
+          <blockquote><strong>SeeQ 只对当前活跃子任务学习 Q 值，以缩短价值预测时域。：</strong>We introduce SeeQ (Subtask-elicited Q-functions), which instead learns Q-values for the currently active subtask. This shortens the value-prediction horizon and enables effective learning with temporal-difference (TD) objectives.</blockquote>
+          <blockquote><strong>Q 函数架构自回归地先预测自然语言子任务再估计其价值，从而无需测试时人工标注或模块化子任务预测系统。：</strong>To eliminate the need for human annotations or modular subtask prediction systems at test time, our Q-function architecture is trained to autoregressively predict the active subtask in natural language before estimating its value.</blockquote>
+          <blockquote><strong>SeeQ 用视觉语言骨干在多样开源机器人操作数据上预训练，再在下游任务微调。：</strong>We instantiate SeeQ using a base vision-language backbone, pretrain it on diverse open-source robot manipulation data, and finetune it on downstream tasks.</blockquote>
+          <blockquote><strong>在两个双臂机器人平台的四个真实世界操作任务上，SeeQ 显著改善 best-of-N 策略引导。：</strong>Across four real-world manipulation tasks on two bimanual robot platforms, the SeeQ value function substantially improves best-of-N policy steering.</blockquote>
+          <blockquote><strong>SeeQ 将平均成功率从 35.4% 提升到 66.7%（1.88 倍）。：</strong>SeeQ raises the average success rate from 35.4% to 66.7% ( 1.88 × 1.88\times ), with improvements on various data compositions.</blockquote>
+          <blockquote><strong>作者明确指出的局限包括训练依赖子任务标注、分解存在歧义，以及部署时子任务预测错误会使 critic 用错误目标评估动作。：</strong>SeeQ relies on subtask annotations during training, but decomposing manipulation trajectories into discrete spans can be ambiguous, particularly during recoveries or near subtask boundaries.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.22062:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22062/v1/fig1-panel1.png"
+        alt="Figure 1：Dense packing pipeline. Perception detects the next target object and scans the container, Planning composes the object with its grasp and searches over placements with CMA-ES, and Execution picks, descends with force/torque monitoring, and consolidates eligible placements before looping back."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.22062v1/Pipeline.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Dense packing pipeline. Perception detects the next target object and scans the container, Planning composes the object with its grasp and searches over placements with CMA-ES, and Execution picks, descends with force/torque monitoring, and consolidates eligible placements before looping back.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.22062/">夹爪感知的不规则物体自动密集装箱</a></h3>
+    <p class="original-title" lang="en">Gripper-Aware Automatic Dense Packing of Irregular Objects</p>
+    <p class="authors">Tianhao Qin · Connor McCann · Berk Calli · Jing Xiao</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>把物体与夹爪表示为分层球树的单一复合刚体，使夹爪可达性与占用空间进入放置优化内环；再通过力监测下降、释放后 consolidation push 与逐次重新感知，把规划中残留的间隙和执行漂移在执行端闭环吸收。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文提供了一套在真实机械臂上运行的闭环密集装箱系统，明确把夹爪几何纳入放置优化并用力反馈和释放后推压来补偿执行误差，还包含消融与固定计算预算下的基线对比；对于关注可执行动作生成、接触感知规划、真实机器人评测和计算效率的研究者具有直接的迁移价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>真实机械臂上的不规则物体闭环密集装箱</p>
+        <p><strong>模型原始标签：</strong>机器人操作、密集装箱、不规则物体、CMA-ES、力引导装配、真实机器人评测</p>
+        <p><strong>第一单位：</strong>伍斯特理工学院机器人工程系（Robotics Engineering Department, Worcester Polytechnic Institute）</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.22062">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.22062">PDF ↗</a><a href="https://arxiv.org/html/2609.22062v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22062/v1/fig1-panel1.png"
+              alt="Figure 1：Dense packing pipeline. Perception detects the next target object and scans the container, Planning composes the object with its grasp and searches over placements with CMA-ES, and Execution picks, descends with force/torque monitoring, and consolidates eligible placements before looping back."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22062v1/Pipeline.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Dense packing pipeline. Perception detects the next target object and scans the container, Planning composes the object with its grasp and searches over placements with CMA-ES, and Execution picks, descends with force/torque monitoring, and consolidates eligible placements before looping back.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22062v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22062/v1/fig2-panel1.jpg"
+              alt="Figure 2：Hardware platform and object set. 𝐋𝐞𝐟𝐭 \mathbf{Left} : (a) Intel RealSense D415 and D455 depth cameras mounted on opposite sides of the workspace, (b) 7-DoF Franka Emika Panda Haddadin et al. (2022) , (c) ATI wrist force/torque sensor, (d) 3D-printed soft parallel fin-ray gripper, (e) Container, (f) Staging area with the seven-object set. 𝐑𝐢𝐠𝐡𝐭 \mathbf{Right} : the eight-object YCB subset used to test generalization."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22062v1/media/isrr_experiment_setup.jpg"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Hardware platform and object set. 𝐋𝐞𝐟𝐭 \mathbf{Left} : (a) Intel RealSense D415 and D455 depth cameras mounted on opposite sides of the workspace, (b) 7-DoF Franka Emika Panda Haddadin et al. (2022) , (c) ATI wrist force/torque sensor, (d) 3D-printed soft parallel fin-ray gripper, (e) Container, (f) Staging area with the seven-object set. 𝐑𝐢𝐠𝐡𝐭 \mathbf{Right} : the eight-object YCB subset used to test generalization.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22062v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在真实 Franka Emika Panda 机械臂上，对3D打印的扁平、弯曲、凹形物体集合与YCB物体子集进行容器内自动密集装箱；配备RealSense深度相机、ATI腕部力/力矩传感器与软体平行鳍状夹爪，优化在NVIDIA RTX 3090上运行。</dd>
+        <dt>Motivation（研究动机）</dt><dd>仓库作业中密集装箱需求广泛，但现有不规则物体装箱工作多面向理想接触的仿真，把物体当作孤立刚体，夹爪仅作为离散的事后可行性检查，且未处理执行过程中累积的感知与接触漂移。</dd>
+        <dt>Insight（核心洞察）</dt><dd>把物体与夹爪表示为分层球树的单一复合刚体，使夹爪可达性与占用空间进入放置优化内环；再通过力监测下降、释放后 consolidation push 与逐次重新感知，把规划中残留的间隙和执行漂移在执行端闭环吸收。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>夹爪在规划阶段通常只做事后可行性检查，而实际上夹爪会占据空间并影响可达性</li><li>真实执行中存在感知漂移与接触漂移的累积</li><li>不规则几何与凹形物体难以用长方体等简单表示获得高密度</li><li>在有限计算预算下进行五自由度放置优化</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将问题分解为感知、夹爪感知放置优化与力引导执行三部分：优化器以分层球树表示物体加夹爪的复合体，在GPU上用CMA-ES搜索五个自由度，竖直坐标依据当前高度图解析确定；执行时以力监测的竖直下降在首次接触停止；释放后执行 consolidation push 关闭夹爪感知规划遗留的横向间隙；每次放置之间重新感知容器以避免漂移累积。并通过消融分别隔离夹爪感知优化、consolidation push 与网格导出几何的贡献，以及与高度图最小化基线的对比来分析各组件作用。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将物体与夹爪表示为单一分层球树复合体，使夹爪几何进入优化内环</li><li>在GPU上用CMA-ES搜索五自由度放置，竖直坐标依据当前高度图解析接地</li><li>执行阶段采用力监测竖直下降，首次接触即停止</li><li>释放后执行 consolidation push，闭合夹爪感知规划遗留的横向间隙</li><li>每次放置之间重新感知容器，避免感知与接触漂移累积</li><li>使用CAD网格、表面点云与物体坐标系中预注册的单个对跖抓取</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在真实Franka Emika Panda上对7件3D打印物体（1个扁平支撑、2个高瘦花瓶、2个鸭形弯曲物体、2个L形凹形物体）和8件YCB子集进行装箱评测</li><li>三条测试序列各五次试验，共14/15次端到端成功；Optimized序列空间利用率95.59±6.06%、Random 1为81.37±0.02%、Random 2为75.19±5.66%，总体84.05±9.89%</li><li>每放置成功率总体104/105；CMA优化墙钟时间约3.19至3.56秒/物体</li><li>消融研究分别隔离夹爪感知优化、consolidation push 与网格导出几何对端到端成功、达到密度和计算成本的影响；结论称夹爪感知优化决定放置是否可达而非密度，consolidation push 恢复遗留间隙，非棱柱物体表示对非紧凑形状获得高密度是必要的</li><li>与高度图最小化基线在两种网格分辨率下对比：基线墙钟时间从0.42±0.03升至1.04±0.03秒/物体，本方法在两个分辨率下均超过基线且计算成本固定</li><li>结论称系统在20次试验中19次端到端完成</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>假设存在预注册库且每个物体仅有一个对跖抓取，匹配工业单品目录场景，但排除了新颖物体装箱（需要把抓取规划纳入内环）</li><li>系统不重新估计每个物体放置后的位姿，而是把容器内原始合并点云当作 C_k，因此传感器噪声与部分遮挡会相对真实已放置几何放大 C_k，略微限制优化器对自由空间的视野</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作属于具身智能与机器人操作中的真实世界闭环系统：其夹爪感知规划把执行器几何纳入动作可行性内环，力引导执行与逐次重新感知处理真实接触和感知漂移，与可执行动作生成、实时控制和真实机器人评测方向直接相关；其球树复合体表示与GPU CMA-ES优化也涉及长时序放置序列与计算效率，可为世界动作模型中的接触/几何先验与系统优化提供参考。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅获得摘要与部分正文节选，缺少方法细节、完整的实验表格与消融数值；第一单位与通讯作者信息来自正文中给出的机构署名和邮箱，通讯作者的明确标注未提供；部分结论（如消融结论）只在正文文字中出现，未获得对应完整数据表。</p>
+          <blockquote><strong>作者把物体与夹爪建模为单一分层球树复合体，并在GPU上用CMA-ES搜索五自由度放置。：</strong>The optimizer represents the object together with the gripper as a single composite body of hierarchical sphere trees. It searches over five degrees of freedom on a GPU within a CMA-ES framework, with the vertical coordinate grounded analytically against the current heightmap.</blockquote>
+          <blockquote><strong>执行阶段使用力监测竖直下降，并在释放后用 consolidation push 闭合夹爪感知规划留下的横向间隙。：</strong>During execution, a force-monitored vertical descent stops on first contact. A post-release consolidation push then closes the residual lateral clearance that gripper-aware planning leaves behind.</blockquote>
+          <blockquote><strong>系统在后续放置前重新感知容器，以避免漂移累积。：</strong>The container is re-perceived between placements so that drift does not accumulate.</blockquote>
+          <blockquote><strong>论文在真实Franka Emika Panda上对3D打印物体集合与YCB子集进行验证，并做了消融与基线对比。：</strong>We validate the system on a Franka Emika Panda robot packing a 3D-printed set of flat, curved, and concave objects, and a YCB object subset. An ablation study isolates the contribution of gripper-aware optimization, the consolidation push, and mesh-derived geometry to end-to-end success, achieved density, and computational cost. We further benchmark against the heightmap-minimization method as a baseline representative of prior irregular-object packing work.</blockquote>
+          <blockquote><strong>Optimized序列空间利用率为95.59±6.06%，总体为84.05±9.89%。：</strong>95.59
+±
+6.06
+\mathbf{95.59\boldsymbol{\pm}6.06}
+81.37
+±
+0.02
+81.37\pm 0.02
+75.19
+±
+5.66
+75.19\pm 5.66
+84.05
+±
+9.89
+84.05\pm 9.89</blockquote>
+          <blockquote><strong>系统限制包括假设预注册库中每个物体仅有一个对跖抓取，且放置后不重新估计物体位姿。：</strong>Our results assume a pre-registered library with a single antipodal grasp per object. This matches industrial unit-catalog settings but excludes novel-object packing, where grasp planning is part of the inner loop. The system also does not re-estimate each object’s pose after placement, instead treating the raw merged point cloud inside the container as
+𝒞
+k
+\mathcal{C}_{k}
+. Sensor noise and partial occlusion therefore inflate
+𝒞
+k
+\mathcal{C}_{k}
+relative to the true placed geometry</blockquote>
+          <blockquote><strong>与高度图最小化基线相比，基线墙钟时间随网格细化从0.42±0.03升至1.04±0.03秒/物体，而本方法计算成本固定。：</strong>Wall time rises from
+0.42
+±
+0.03
+0.42\pm 0.03
+to
+1.04
+±
+0.03
+1.04\pm 0.03
+s/obj for that gain in utilization, and closing the remaining gap to our own result would require much larger refinement at correspondingly larger cost.</blockquote>
+          <blockquote><strong>第一单位是伍斯特理工学院机器人工程系。：</strong>Robotics Engineering Department
+Worcester Polytechnic Institute, Worcester, MA 01609, USA</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.19796:v2"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.19796/v2/fig1-panel1.png"
+        alt="Figure 1：Staged representation learning. (a) Anchor-conditioned aggregation and self-distillation learn multi-view scene tokens. (b) Rectified flow completes them conditioned on current-view features and recurrent memory, progressing from noise at u = 0 u=0 to teacher GST at u = 1 u=1 ."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.19796v2/LIFD_fig2.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Staged representation learning. (a) Anchor-conditioned aggregation and self-distillation learn multi-view scene tokens. (b) Rectified flow completes them conditioned on current-view features and recurrent memory, progressing from noise at u = 0 u=0 to teacher GST at u = 1 u=1 .</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.19796/">LIFD：面向机器人操作的3D感知场景记忆锚定扩散方法</a></h3>
+    <p class="original-title" lang="en">LIFD: Anchored Diffusion for 3D-Aware Scene Memory in Robotic Manipulation</p>
+    <p class="authors">Wenbo Li · Yiteng Chen · Wenhao Li · Qingyao Wu</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过多视角自蒸馏学习场景令牌，再用锚定整流流从单视图RGB特征与循环记忆中补全场景令牌，使生成式补全始终以当前几何感知特征为锚，从而在部分可观测下为策略提供一致的3D感知场景表征。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文给出了在部分可观测机器人操作中构建持久3D感知场景记忆的完整方案，并通过分阶段训练、锚定生成与延迟测量展示了表示学习、生成式补全与实时控制之间的权衡；其LIBERO、MetaWorld、RoboTwin 2.0与真实UR5e评测覆盖仿真到真机，对关注具身智能、世界模型、模型压缩与实时控制的读者具有直接迁移价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>面向部分可观测机器人操作的3D感知持久场景记忆与视运动策略</p>
+        <p><strong>模型原始标签：</strong>机器人操作、场景记忆、整流流、扩散策略、部分可观测、3D感知、视觉运动控制、推理效率</p>
+        <p><strong>第一单位：</strong>华南理工大学软件工程学院</p>
+        <p><strong>通讯作者：</strong>Qingyao Wu</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.19796">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.19796">PDF ↗</a><a href="https://arxiv.org/html/2609.19796v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.19796/v2/fig1-panel1.png"
+              alt="Figure 1：Staged representation learning. (a) Anchor-conditioned aggregation and self-distillation learn multi-view scene tokens. (b) Rectified flow completes them conditioned on current-view features and recurrent memory, progressing from noise at u = 0 u=0 to teacher GST at u = 1 u=1 ."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.19796v2/LIFD_fig2.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Staged representation learning. (a) Anchor-conditioned aggregation and self-distillation learn multi-view scene tokens. (b) Rectified flow completes them conditioned on current-view features and recurrent memory, progressing from noise at u = 0 u=0 to teacher GST at u = 1 u=1 .
+            <a class="figure-source" href="https://arxiv.org/html/2609.19796v2#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.19796/v2/fig2-panel1.png"
+              alt="Figure 2：Policy and physical tasks. (a) Imagine completes scene tokens, Focus groups them into object-centric slots, and Do predicts actions. (b) UR5e task families: Occluded Manipulation (OM), Sequential Assembly (SA), Hidden-Target Retrieval (HTR), and Long-Horizon Relocation (LR)."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.19796v2/LIFD_policy_and_task.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Policy and physical tasks. (a) Imagine completes scene tokens, Focus groups them into object-centric slots, and Do predicts actions. (b) UR5e task families: Occluded Manipulation (OM), Sequential Assembly (SA), Hidden-Target Retrieval (HTR), and Long-Horizon Relocation (LR).
+            <a class="figure-source" href="https://arxiv.org/html/2609.19796v2#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在部分可观测的机器人操作环境中，机器人与场景运动会将先前观察到的区域移出相机视野；训练阶段使用多视角与几何监督，部署阶段仅需单张RGB图像、本体感知与任务指令。</dd>
+        <dt>Motivation（研究动机）</dt><dd>操作任务中物体离开视野后仍可能与后续动作相关，而操作本身又不断改变相机可见内容；现有几何感知图像编码器只能提供当前视图的3D先验，无法覆盖未观测区域，生成式补全又可能偏离可见结构，因此需要一个既能整合观测历史又能将推断内容锚定在当前几何证据上的持久场景记忆。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过多视角自蒸馏学习场景令牌，再用锚定整流流从单视图RGB特征与循环记忆中补全场景令牌，使生成式补全始终以当前几何感知特征为锚，从而在部分可观测下为策略提供一致的3D感知场景表征。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>从单目RGB与历史观测中推断未观测区域，同时避免生成内容与可见结构冲突</li><li>在部署时仅用单相机与本体感知维持3D一致的场景记忆</li><li>迭代式整流流补全带来推理延迟，需在精度与实时性之间权衡</li><li>长时序重定位任务在环境随机化下成功率显著下降</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过消融对比分阶段（Staged）训练与联合（Joint）训练，评估生成式补全、可见锚定与观测历史对控制的作用；用观察干预实验（遮挡ROI）检验记忆的贡献；并测量不同整流流积分步数下的端到端延迟，刻画迭代推理的成本。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>用LoRA适配预训练VGGT得到GeoVGGT-R，以相机、深度、点图与跟踪监督获得几何感知RGB特征，并在后续阶段冻结</li><li>多视角自蒸馏学习Global Scene Tokens（GST），训练子集始终包含同一锚点视图</li><li>以当前视图的Local Sense Tokens（LST）与循环记忆为条件，用锚定整流流（Anchor-Guided Cross-Attention）从噪声补全GST</li><li>将GST压缩为槽特征（slot features）以条件化轻量视运动策略</li><li>采用分阶段训练：先表示学习，再整流流补全，最后训练槽注意力与策略；对照联合训练同时优化所有模块</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>LIFD (Staged) 在LIBERO平均成功率91.6%，MetaWorld成功率79.8%</li><li>相比Joint训练，LIBERO平均成功率提升11.1个百分点，各套件提升10.8–11.2个百分点，MetaWorld提升10.4个百分点</li><li>RoboTwin 2.0上Staged在Hard（Clean→Random）为19.4%、Easy（Clean→Clean）为63.2%，Joint分别为8.8%与51.6%；Easy到Hard下降43.8个百分点</li><li>经过每类任务族10条演示的策略头适配后，LIFD在四个UR5e任务族平均成功率56.0%，OpenVLA-7B为40.5%</li><li>在受控遮挡实验中LIFD成功14/50（28%），Diffusion Policy为8/50（16%）</li><li>单张RTX 4090上，整流流积分步数从50降至35和20时，端到端延迟从190 ms降至130 ms和75 ms，对应5.3、7.7、13.3次策略更新每秒</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>表示学习阶段需要多视角监督，推理阶段需要迭代式补全</li><li>对episode内从未观测到的物体的恢复能力尚未测试</li><li>不同方法的预训练资源差异限制了跨方法比较</li><li>物理评估仅覆盖一个机器人平台和四个任务族</li><li>长时序重定位任务仍然困难</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接面向具身智能与视觉运动控制，将3D感知场景记忆与生成式整流流结合用于部分可观测操作；其锚定扩散、场景令牌补全、槽特征条件策略以及推理延迟测量，与世界模型中的长时序预测、可执行动作生成、推理效率与真实机器人评测高度相关，可作为WAM/世界模型方向中场景记忆与实时性权衡的参考。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>全文节选在参考文献与附录部分存在截断，部分实验细节（如附录B的完整计时表、基线的具体传感与训练设置）无法完整核实；跨方法比较受预训练资源差异影响，LIFD的增益部分可能来源于此；摘要与正文中标称的部分数字（如RoboTwin的Hard/Easy结果）在表格与正文中表述略有差异，需以原文完整版为准。</p>
+          <blockquote><strong>LIFD在部分可观测操作中通过多视角一致学习场景令牌，并用整流流从单视图与循环记忆补全：</strong>LIFD learns scene tokens through multi-view agreement, then completes them from a single RGB view and recurrent memory using rectified flow.</blockquote>
+          <blockquote><strong>锚定交叉注意力将生成锚定到当前几何感知特征，槽特征条件化视运动策略：</strong>Anchor-Guided Cross-Attention anchors generation to current geometry-aware features, and compact slot features condition a visuomotor policy.</blockquote>
+          <blockquote><strong>LIFD分阶段训练在LIBERO达到91.6%平均成功率，在MetaWorld达到79.8%：</strong>LIFD (Staged) reaches 91.6\% average success on LIBERO and 79.8\% on MetaWorld, improving LIBERO average success by 11.1 percentage points over Joint training.</blockquote>
+          <blockquote><strong>经每条任务族10条演示适配后，LIFD在四个UR5e任务族平均成功率56.0%，高于OpenVLA-7B的40.5%：</strong>After policy-head adaptation with ten demonstrations per family, LIFD achieves 56.0\% mean success across four UR5e task families, compared with 40.5\% for OpenVLA-7B.</blockquote>
+          <blockquote><strong>部署阶段只需要单目RGB相机、本体感知与任务指令：</strong>deployment requires one RGB camera, proprioception, and a task instruction</blockquote>
+          <blockquote><strong>减少整流流积分步数可显著降低端到端延迟：</strong>reducing integration to 35 and 20 steps lowers end-to-end latency from 190 ms to 130 ms and 75 ms, respectively</blockquote>
+          <blockquote><strong>作者明确指出的局限包括需要多视角监督与迭代补全，且长时序重定位仍然困难：</strong>LIFD requires multi-view supervision during representation learning and iterative completion at inference. Recovery of objects never observed within an episode remains untested.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.12549:v2"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.12549/v2/fig2-panel1.png"
+        alt="Figure 2：Real Robot and Teleoperation System."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.12549v2/system_new.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 2</strong> Real Robot and Teleoperation System.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v2</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.12549/">STAR：面向灵巧操作的视觉-触觉-语言-动作模型中的稀疏触觉表征学习</a></h3>
+    <p class="original-title" lang="en">STAR: Sparse Tactile Representation Learning in Vision-Tactile-Language-Action Models for Dexterous Manipulation</p>
+    <p class="authors">Xiangcheng Liu · Tianhao Wu · Le Zheng · Yidong Wang · Bowen Jiang · Mingjie Pan · Xinlin Ren · Yi Liu · Jianlan Luo</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>触觉信号存在空间稀疏（多数时刻仅少量传感器激活）、时间稀疏（大段操作时间内无触觉激活）、信息稀疏（仅提供局部接触信息而无全局上下文）三重稀疏性，因此需要更强的归纳偏置，从预训练表征、token 构造与未来预测三个层面系统性地加以应对。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文提供了大规模真实双臂灵巧触觉数据集与系统性触觉稀疏性分析，提出从预训练、token 表征到未来预测的完整训练配方，并在真实机器人上给出量化评测，对研究 VLA/VTLA、触觉表征、真实机器人灵巧操作与多模态策略优化具有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/data/" data-tag-filter="data">具身数据</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视觉-触觉-语言-动作（VTLA）模型中的稀疏触觉表征学习与灵巧操作</p>
+        <p><strong>模型原始标签：</strong>VTLA、灵巧操作、触觉表征、稀疏表征、多模态预训练、真实机器人评测</p>
+        <p><strong>第一单位：</strong>Shanghai Innovation Institute</p>
+        <p><strong>通讯作者：</strong>Jianlan Luo</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.12549">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.12549">PDF ↗</a><a href="https://arxiv.org/html/2609.12549v2">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.12549/v2/fig2-panel1.png"
+              alt="Figure 2：Real Robot and Teleoperation System."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.12549v2/system_new.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Real Robot and Teleoperation System.
+            <a class="figure-source" href="https://arxiv.org/html/2609.12549v2#S4.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在真实双臂灵巧手机器人平台上，通过遥操作系统采集同步视觉、触觉与语言标注数据，训练并在真实世界任务上评测 VTLA 策略。</dd>
+        <dt>Motivation（研究动机）</dt><dd>灵巧操作需要多指协同控制与有效触觉反馈，但大规模真实世界数据稀缺，且触觉信号严重稀疏（空间、时间、信息三个层面），使 VTLA 模型难以学到有效触觉表征。</dd>
+        <dt>Insight（核心洞察）</dt><dd>触觉信号存在空间稀疏（多数时刻仅少量传感器激活）、时间稀疏（大段操作时间内无触觉激活）、信息稀疏（仅提供局部接触信息而无全局上下文）三重稀疏性，因此需要更强的归纳偏置，从预训练表征、token 构造与未来预测三个层面系统性地加以应对。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>大规模真实灵巧手数据采集困难（灵巧手与触觉传感器鲁棒性有限、遥操作困难）</li><li>人类第一视角视频存在具身差距，难以迁移到接触密集的灵巧任务</li><li>触觉信号在空间、时间、信息三方面的严重稀疏性</li><li>现有方法通常只处理触觉稀疏性的某一方面，无法综合解决</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过分析自采集数据集量化触觉稀疏性：所有帧中最高激活 taxel 比例仅为 24%，激活触觉帧比例仅为 35%，并指出触觉模态本身只表达局部接触信息、缺乏全局上下文。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>构建机器人平台与遥操作系统，采集 200 小时双臂灵巧操作数据集，包含同步的视觉、触觉与语言标注。</li><li>视觉-触觉联合预训练：基于 MAE 架构，对 RGB 与触觉图像进行掩码 token 联合预测，进行模态内与模态间触觉预训练。</li><li>稀疏-全局触觉 token 表征：在策略训练时保留激活的空间触觉 token 与每手全局触觉 token。</li><li>稀疏未来触觉预测：在策略预训练中增加对未来触觉的预测辅助目标，建模未来接触动态。</li><li>策略训练：以 π0.5 权重初始化（除动作层以匹配机器人动作维度），在多任务数据上微调，再用任务特定数据进行后训练。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>数据集规模：200 小时、10,576 条轨迹、65 个任务，其中 69.5% 涉及灵巧多指操作。</li><li>真实世界评测：四个任务（耳机翻转、叠放书籍抽取、明信片抽取、多物体抓取），每任务 100 条后训练轨迹。</li><li>指标：成功率（SR）与任务完成率（TCR），并将任务拆分为子任务计算 TCR。</li><li>结果：STAR 在四个真实任务上取得 61% 的平均成功率。</li><li>对比基线包括 GR00T N1.7 等。</li><li>触觉遮蔽实验表明移除触觉输入会降低两个任务的表现，说明策略利用触觉进行动作生成。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>数据集目前仅覆盖有限任务，规模相较平行夹爪数据集仍较小。</li><li>训练配方目前只包含策略训练前的视觉-触觉对齐，与语言的对齐同样重要但未纳入。</li><li>在某些任务上使用触觉并未带来正向效果，可能由于策略过度关注触觉而牺牲视觉信息利用，以及触觉传感器覆盖范围有限。</li><li>将方法扩展到其他手与触觉传感器仍是重要方向，未来需提升在传感器噪声、漂移与 taxel 缺失下的鲁棒性。</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接面向视觉-触觉-语言-动作（VTLA）模型，属于 VLA 与具身智能方向的扩展，强调可执行灵巧动作生成、真实机器人评测，并通过稀疏 token 表征与预训练辅助目标提升多模态策略效率，与世界模型式的未来接触动态预测及系统层面的多模态表征优化相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>全文节选虽包含摘要、引言、方法、实验与局限等片段，但部分内容（如具体对比结果数值、完整实验表格、更细的消融）在节选中被截断，因此部分实验细节与结论的完整性判断存在不确定性；第一单位与通讯作者依据节选中的 affiliation 标注推断。</p>
+          <blockquote><strong>论文构建了 200 小时双臂灵巧操作数据集，包含 10,576 条轨迹与 65 个任务，69.5% 涉及灵巧多指操作。：</strong>we build a robot platform and teleoperation system to collect a 200-hour bimanual dexterous manipulation dataset with synchronized visual, tactile, and language annotations, comprising 10,576 trajectories across 65 tasks, 69.5% of which involve dexterous multi-finger manipulation.</blockquote>
+          <blockquote><strong>论文提出 STAR 训练配方，通过视觉-触觉联合预训练、稀疏-全局触觉 token 表征与稀疏未来触觉预测应对触觉的三种稀疏性。：</strong>we further propose STAR, an integrated training recipe for vision–tactile–language–action (VTLA) models that addresses the spatial, temporal, and informational sparsity of tactile signals through visual–tactile joint pre-training, sparse-global tactile token representation, and sparse future tactile prediction.</blockquote>
+          <blockquote><strong>STAR 在四个真实任务上达到 61% 平均成功率，每任务 100 条后训练轨迹。：</strong>STAR achieves a 61% average success rate across four real-world tasks with 100 post-training trajectories per task</blockquote>
+          <blockquote><strong>作者通过数据分析量化触觉稀疏性：最高激活 taxel 比例仅 24%，激活触觉帧比例仅 35%。：</strong>we observe that the highest activated taxel ratio across all frames is only 24%. Meanwhile, the activated tactile frame number ratio is only 35%, indicating severe temporal sparsity.</blockquote>
+          <blockquote><strong>作者明确列出数据集规模有限、缺少语言对齐、部分任务触觉无正向效果等局限。：</strong>Currently, our dataset only covers a limited set of tasks, and its size is still small compared to parallel gripper datasets</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="browse">
+        <header class="tier-heading"><h2>值得浏览</h2><p><span data-tier-count>4</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.22055:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22055/v1/fig1-panel1.png"
+        alt="Figure 1：Overview of our compositional continual learning benchmark for world models in robot manipulation. Top : Each task suite presents a sequence of primitive manipulation tasks, ending with a composition task that recombines them across action, perception, or full composition axes. Bottom : We evaluate the continual learning ability of world models to efficiently adapt to the composition tasks through knowledge reuse, without forgetting previously learnt primitives along the sequence."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.22055v1/teaser_figure.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of our compositional continual learning benchmark for world models in robot manipulation. Top : Each task suite presents a sequence of primitive manipulation tasks, ending with a composition task that recombines them across action, perception, or full composition axes. Bottom : We evaluate the continual learning ability of world models to efficiently adapt to the composition tasks through knowledge reuse, without forgetting previously learnt primitives along the sequence.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.22055/">面向组合任务持续学习的世界模型基准测试</a></h3>
+    <p class="original-title" lang="en">Benchmarking World Models for Continual Learning on Compositional Tasks</p>
+    <p class="authors">Haoyu Zhou · Joe Watson · Anson Lei · Ingmar Posner</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过设计组合式任务课程，使新任务由序列中已见任务的方面组合而成，从而将知识复用与学习新内容解耦；进一步沿动作和感知两个轴因子分解组合方式，以定位不同输入模态对知识复用的瓶颈。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该基准将知识复用从新任务学习中隔离出来，为评估世界模型在机器人操作中的持续学习提供了可分解的实验设定；其沿动作与感知轴的因子分解有助于理解不同输入模态对复用的瓶颈；结论指出模块化优于常规方法但仍未完全解决问题，为后续研究指明方向。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>世界模型在机器人操作中的组合式持续学习基准</p>
+        <p><strong>模型原始标签：</strong>世界模型、持续学习、组合泛化、机器人操作、模块化架构、基准测试</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.22055">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.22055">PDF ↗</a><a href="https://arxiv.org/html/2609.22055v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22055/v1/fig1-panel1.png"
+              alt="Figure 1：Overview of our compositional continual learning benchmark for world models in robot manipulation. Top : Each task suite presents a sequence of primitive manipulation tasks, ending with a composition task that recombines them across action, perception, or full composition axes. Bottom : We evaluate the continual learning ability of world models to efficiently adapt to the composition tasks through knowledge reuse, without forgetting previously learnt primitives along the sequence."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22055v1/teaser_figure.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of our compositional continual learning benchmark for world models in robot manipulation. Top : Each task suite presents a sequence of primitive manipulation tasks, ending with a composition task that recombines them across action, perception, or full composition axes. Bottom : We evaluate the continual learning ability of world models to efficiently adapt to the composition tasks through knowledge reuse, without forgetting previously learnt primitives along the sequence.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22055v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22055/v1/fig2-panel1.png"
+              alt="Figure 2：World model separation for continual learning. The task-agnostic part captures how the world evolves and is learnt continually across the curriculum. The task-specific heads consume the dynamics latent and are re-initialised for each new task."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22055v1/model_separation.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> World model separation for continual learning. The task-agnostic part captures how the world evolves and is learnt continually across the curriculum. The task-specific heads consume the dynamics latent and are re-initialised for each new task.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22055v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>机器人操作场景下，为世界模型设计组合式持续学习基准；每个任务课程由组合任务构成，这些组合任务融合了序列中已见任务的若干方面，并沿动作与感知两个轴进行因子分解，以考察不同输入模态对知识复用的瓶颈作用。</dd>
+        <dt>Motivation（研究动机）</dt><dd>世界模型理想上应能跨任务持续学习，适应新环境而不遗忘已学知识。由于物理世界动力学常可用反复出现的机制描述，保留和复用先前经验中的知识是高效适应新环境的基础。但现有对世界模型适应能力的度量混淆了两种能力：学习未见任务的速度与容量，以及对已获得知识的复用，因为新任务同时包含新内容与重复出现的内容。作者希望将知识复用从先前经验中隔离出来单独考察。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过设计组合式任务课程，使新任务由序列中已见任务的方面组合而成，从而将知识复用与学习新内容解耦；进一步沿动作和感知两个轴因子分解组合方式，以定位不同输入模态对知识复用的瓶颈。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>世界模型的适应能力度量同时纠缠了学习新任务的容量与对旧知识的复用，难以隔离知识复用这一因素</li><li>新任务同时包含新颖内容与重复出现的机制，如何设计任务使其可分解为已见成分</li><li>不同输入模态（动作与感知）可能对知识复用形成不同瓶颈</li><li>在复用旧知识与避免遗忘之间取得平衡</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将世界模型的适应能力拆解为两个纠缠的部分：学习未见任务的速度与容量，以及复用已获得的知识。为隔离知识复用，作者提出组合式持续学习基准，令课程中的任务由序列中已见任务的方面组合而成，并沿动作与感知轴因子分解，以分析不同输入模态如何形成知识复用的瓶颈。材料未说明更具体的分析过程。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出面向机器人操作中世界模型的组合式持续学习基准</li><li>为每个任务课程设计组合任务，这些任务融合序列中已见任务的若干方面</li><li>沿动作与感知两个轴对组合进行因子分解，以理解不同输入模态如何瓶颈化知识复用</li><li>在典型持续学习方法下评估最先进的世界模型</li><li>额外评估一个模块化世界模型，其动力学主干包含显式可复用组件</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在典型持续学习方法下评估了最先进的世界模型</li><li>评估了一个模块化世界模型，其动力学主干包含显式可复用组件</li><li>结果显示模块化在复用与遗忘之间取得比常规方法更好的平衡，但没有任何方法完全解决问题，仍为面向复用而不遗忘的持续世界模型留有明显空间</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>作者指出没有方法完全解决该问题，仍为持续世界模型留有明显空间（摘要明确陈述的结果性局限）</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接面向世界模型这一核心主题，研究其在机器人操作中的持续学习与知识复用，涉及动作与感知模态对知识复用的瓶颈、模块化动力学主干的可复用组件，与具身智能、世界模型、物理人工智能及机器人操作评测高度相关。其基准设计可用于评估世界模型在长时序与多任务条件下的适应与遗忘行为，对系统优化（模块化、可复用组件）亦有参考价值。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅依据标题与摘要，未提供全文，因此无法确认具体任务环境、世界模型清单、评价指标与数值结果；第一单位与通讯作者信息未提供；组合任务的具体构造与因子分解细节未知。</p>
+          <blockquote><strong>论文提出面向机器人操作中世界模型的组合式持续学习基准，以隔离知识复用。：</strong>In order to isolate knowledge reuse from prior experiences, we propose a compositional continual learning benchmark for world models in robot manipulation.</blockquote>
+          <blockquote><strong>任务课程由组合任务构成，融合序列中已见任务的方面，并沿动作与感知轴因子分解。：</strong>we design each task curriculum with compositional tasks that combine aspects of the tasks seen in the sequence. We further factorise this composition along the axes of action and perception to better understand how different input modalities bottleneck knowledge reuse.</blockquote>
+          <blockquote><strong>实验评估了最先进世界模型在典型持续学习方法下的表现，以及一个含显式可复用组件的模块化世界模型。：</strong>We evaluate state-of-the-art world models under canonical continual learning methods, alongside a modular world model whose dynamics backbone contains explicitly reusable components.</blockquote>
+          <blockquote><strong>结果显示模块化在复用与遗忘之间平衡更好，但无方法完全解决该问题。：</strong>Results show that modularity balances reuse against forgetting better than conventional methods, but none solve the problem fully, leaving clear room for continual world models built to reuse without forgetting.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.22075:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22075/v1/fig1-panel1.png"
+        alt="Figure 1：Safety synthesized and distilled into agile behavior. The deployed 29 29 -DoF humanoid performs backward-leaning limbo (top) and dodgeball evasion (bottom) using policies trained from an automatically synthesized Q-CBF and subsequent safe policy distillation."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.22075v1/figure1_hero_limbo.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Safety synthesized and distilled into agile behavior. The deployed 29 29 -DoF humanoid performs backward-leaning limbo (top) and dodgeball evasion (bottom) using policies trained from an automatically synthesized Q-CBF and subsequent safe policy distillation.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 7/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.22075/">LIMBO：学习并内化无模型障碍目标以实现敏捷安全的全身控制</a></h3>
+    <p class="original-title" lang="en">LIMBO: Learning and Internalizing Model-Free Barrier Objectives for Agile and Safe Whole-Body Control</p>
+    <p class="authors">Jake Gonzales · Arturo Flores Alvarez · Yu-Ming Chen · Aaron D. Ames · Lillian J. Ratliff · Manikantan Nambi</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将安全证书的学习放在任务策略的控制空间中，并通过风险引导采样探索可恢复性边界，可以在不部署在线安全过滤器的情况下获得敏捷且安全的全身控制策略。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文展示了在高维人形机器人上学习并内化安全证书以消除部署时在线安全过滤器的可行路径，其风险引导采样探索可恢复性边界的机制对具身智能中安全-敏捷权衡、真实机器人部署和系统优化研究者具有明确迁移价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>安全全身控制中的控制障碍函数合成与策略蒸馏</p>
+        <p><strong>模型原始标签：</strong>全身控制、控制障碍函数、安全强化学习、人形机器人、sim-to-real、策略蒸馏</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.22075">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.22075">PDF ↗</a><a href="https://arxiv.org/html/2609.22075v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22075/v1/fig1-panel1.png"
+              alt="Figure 1：Safety synthesized and distilled into agile behavior. The deployed 29 29 -DoF humanoid performs backward-leaning limbo (top) and dodgeball evasion (bottom) using policies trained from an automatically synthesized Q-CBF and subsequent safe policy distillation."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22075v1/figure1_hero_limbo.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Safety synthesized and distilled into agile behavior. The deployed 29 29 -DoF humanoid performs backward-leaning limbo (top) and dodgeball evasion (bottom) using policies trained from an automatically synthesized Q-CBF and subsequent safe policy distillation.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22075v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22075/v1/fig2-panel1.png"
+              alt="Figure 2：LIMBO Overview. Stage I : Q-CBF synthesis via black-box transitions using the residual formulation and risk-guided boundary replay. Stage II : learned Q-CBF is a safety teacher , shaping task-policy rewards via constraint violations and corrections. Deployment : compose task policy with the frozen base controller, with optional filtering. Hardware demonstrations operate without online filtering, relying on the safety behavior internalized during Stage II."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22075v1/figure2_overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> LIMBO Overview. Stage I : Q-CBF synthesis via black-box transitions using the residual formulation and risk-guided boundary replay. Stage II : learned Q-CBF is a safety teacher , shaping task-policy rewards via constraint violations and corrections. Deployment : compose task policy with the frozen base controller, with optional filtering. Hardware demonstrations operate without online filtering, relying on the safety behavior internalized during Stage II.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22075v1#S2.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在冻结的基控制器周围的残差动作空间上，从黑盒状态转移和基于状态的失败规范中学习状态-动作控制障碍函数（Q-CBF），并将其安全结构蒸馏到任务策略中；在29自由度人形机器人上验证躲避球与低障碍物下行走任务。</dd>
+        <dt>Motivation（研究动机）</dt><dd>安全全身控制需要在高维非线性动力学下协调避碰与平衡，使得安全证书难以设计且难以跨行为复用。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将安全证书的学习放在任务策略的控制空间中，并通过风险引导采样探索可恢复性边界，可以在不部署在线安全过滤器的情况下获得敏捷且安全的全身控制策略。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>高维非线性动力学下的安全证书设计</li><li>安全证书跨行为复用困难</li><li>全控制维度下Q-CBF合成可处理性</li><li>部署时去除在线安全过滤器的需求</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明作者对问题的具体分析过程。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>在冻结基控制器周围的残差动作上学习状态-动作控制障碍函数（Q-CBF），使其在全控制维度可行。</li><li>利用黑盒状态转移和基于状态的失败规范进行安全证书学习。</li><li>合成阶段使用学习到的安全值驱动风险引导采样，集中在估计的可恢复性边界附近。</li><li>任务学习阶段将学习到的安全值作为教师，提供动作级安全反馈以训练鲁棒任务策略。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在29自由度人形机器人上演示躲避球规避和低障碍物下行走。</li><li>在同安全规范下，改变采样集中度产生从下蹲到新颖的后仰limbo动作的策略变化。</li><li>两种设置下学习到的策略均迁移到硬件，且无需在线安全过滤。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作涉及具身智能中可执行动作生成与真实机器人评测，特别是高维全身控制的安全策略学习与sim-to-real迁移；其无模型安全证书学习与策略蒸馏思路对世界动作模型中的安全约束内化及系统优化具有参考价值。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅基于标题与摘要，无法确认具体实验数字、基线对比、消融细节、第一单位与通讯作者信息，因此对方法有效性和可复现性的判断存在不确定性。</p>
+          <blockquote><strong>论文提出从黑盒状态转移和基于状态的失败规范中学习状态-动作控制障碍函数并蒸馏到任务策略。：</strong>LIMBO learns the safety certificate from black-box transitions and a state-based failure specification over residual actions around a frozen base controller</blockquote>
+          <blockquote><strong>合成阶段的风险引导采样集中在估计的可恢复性边界附近。：</strong>During synthesis, the learned safety value drives risk-guided sampling near the estimated boundary of recoverability</blockquote>
+          <blockquote><strong>任务学习阶段安全值作为教师提供动作级安全反馈，部署时无需在线安全过滤器。：</strong>during task learning, it serves as a teacher that provides action-level safety feedback, yielding a robust task policy and alleviating the need for an online safety filter at deployment</blockquote>
+          <blockquote><strong>在29自由度人形机器人上验证躲避球与低障碍行走，并成功迁移到硬件。：</strong>We demonstrate LIMBO on a 29-degree-of-freedom humanoid performing dodgeball avoidance and locomotion beneath low obstacles.</blockquote>
+          <blockquote><strong>改变采样集中度可在同一安全规范下产生从下蹲到后仰limbo动作的不同策略。：</strong>varying the sampling concentration produces strategies ranging from crouching to a novel backward-leaning limbo maneuver</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.22083:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22083/v1/fig1-panel1.png"
+        alt="Figure 1：Overview of the diverse visual agentic tasks supported by MintAct . MintAct unifies three capabilities including UI grounding, multi-step navigation (across mobile, desktop and web) and visual tool use."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.22083v1/mint_va_tasks_v6.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of the diverse visual agentic tasks supported by MintAct . MintAct unifies three capabilities including UI grounding, multi-step navigation (across mobile, desktop and web) and visual tool use.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.22083/">MintAct：面向数字环境的统一视觉智能体</a></h3>
+    <p class="original-title" lang="en">MintAct: A Unified Visual Agent for Digital Environments</p>
+    <p class="authors">Mingfei Gao · Rui Tian · Haiming Gang · Bohan Zhai · Le Zhang · Yuanzheng Gong · Di Feng · Ege \&#34;Ozsoy · Kaixin Ma · Vishwesh Kirthivasan · O\u{g}uzhan Fatih Kar · Roman Bachmann · Anders Boesen Lindbo Larsen · Afshin Dehghan</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过精心设计环境、数据与训练配方，加上可扩展的异步 RL 架构，单一视觉语言模型家族能够在多类数字环境智能体任务上匹配领域专用模型，并在可比模型规模下取得领先性能。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对关注视觉语言动作模型训练配方、异构环境大规模 RL 基础设施、异步训练稳定性与跨域分布控制的研究者有直接借鉴价值，其多域统一与领域专用性能对齐的结论也可为具身智能多任务策略训练提供参照。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/data/" data-tag-filter="data">具身数据</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>面向数字/UI环境的统一视觉语言智能体与可扩展强化学习训练基础设施</p>
+        <p><strong>模型原始标签：</strong>视觉语言模型、GUI智能体、多步导航、工具使用、强化学习、异步训练、模型缩放</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.22083">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.22083">PDF ↗</a><a href="https://arxiv.org/html/2609.22083v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22083/v1/fig1-panel1.png"
+              alt="Figure 1：Overview of the diverse visual agentic tasks supported by MintAct . MintAct unifies three capabilities including UI grounding, multi-step navigation (across mobile, desktop and web) and visual tool use."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22083v1/mint_va_tasks_v6.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of the diverse visual agentic tasks supported by MintAct . MintAct unifies three capabilities including UI grounding, multi-step navigation (across mobile, desktop and web) and visual tool use.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22083v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>训练 2B、4B、8B 规模的视觉语言模型家族，在移动端、桌面端和网页等数字环境中统一执行 UI grounding、跨环境多步导航与视觉工具使用；同时搭建支持轨迹数据采集与在线 RL 的可扩展环境与训练基础设施。</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有能力（UI grounding、多步导航、视觉工具使用）通常由各自领域的专用模型分别解决，作者希望用统一模型在这些能力上达到与领域专用模型相当的性能，并解决跨异构环境大规模 RL 训练的效率与稳定性问题。</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过精心设计环境、数据与训练配方，加上可扩展的异步 RL 架构，单一视觉语言模型家族能够在多类数字环境智能体任务上匹配领域专用模型，并在可比模型规模下取得领先性能。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>跨移动、桌面、网页等异构后端的环境构建与并发托管</li><li>在线 RL 中跨域训练分布的显式控制</li><li>噪声环境反馈与 off-policy 漂移下的训练稳定性</li><li>在 2B–8B 规模同时保持多领域能力不互相干扰</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明具体的分析手段；摘要仅提出通过环境、数据与训练配方设计以及异步 RL 框架来解决多域统一与训练稳定性问题。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>构建统一视觉语言模型家族，覆盖 UI grounding、跨移动/桌面/网页的多步导航与视觉工具使用</li><li>在 2B、4B、8B 三个规模上训练</li><li>设计可扩展环境基础设施，在异构的按领域后端上并发托管数百个实例，同时服务轨迹数据采集与在线 RL</li><li>采用异步 RL 框架，显式控制跨域训练分布，并在噪声环境反馈和 off-policy 漂移下保持稳定</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在广泛基准上评测，MintAct 在可比模型规模下取得 state-of-the-art，其中 OSWorld-Verified 得分为 48.9</li><li>摘要称其性能匹配各领域专用模型，但未给出各基准的完整数字</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作面向数字环境（UI/网页/桌面/移动）的智能体而非物理机器人，但其统一视觉语言模型、多步长时序决策、工具调用以及异步可扩展 RL 训练与分布控制的系统优化思路，与具身智能中的 VLA 训练、长时序预测和高效推理/训练系统存在可迁移的方法论关联；WAM/物理人工智能层面为间接相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅有标题与摘要，缺少正文、实验表格、单位机构与局限讨论；OSWorld-Verified 48.9 的总分含义、对比基线和各领域具体结果无法核实，方法细节（如奖励设计、数据配比、异步机制）均不可见，因此方法层面的判断存在较大不确定性。</p>
+          <blockquote><strong>论文提出一个统一的视觉语言模型家族，覆盖 UI grounding、多步导航与视觉工具使用，并在 2B/4B/8B 规模训练：</strong>We present MintAct, a family of vision-language models that unifies UI grounding, multi-step navigation across mobile, desktop, and web, and visual tool use, trained at 2B, 4B, and 8B scales.</blockquote>
+          <blockquote><strong>作者通过环境、数据与训练配方设计，使统一模型匹配各领域专用模型性能：</strong>Through careful design of our environments, data, and training recipes, MintAct models match the performance of per-domain specialists across all of these capabilities.</blockquote>
+          <blockquote><strong>作者构建了可扩展环境与 RL 基础设施，异构后端并发托管数百实例，用于轨迹采集与在线 RL：</strong>we host hundreds of concurrent instances across heterogeneous per-domain backends, serving both trajectory data collection and online RL.</blockquote>
+          <blockquote><strong>采用异步框架显式控制跨域训练分布并在噪声反馈与 off-policy 漂移下保持稳定：</strong>an asynchronous framework keeps explicit control over the cross-domain training distribution and remains stable under noisy environment feedback and off-policy drift.</blockquote>
+          <blockquote><strong>在 OSWorld-Verified 上取得 48.9 的 state-of-the-art 结果：</strong>MintAct achieves state-of-the-art performance (48.9 on OSWorld-Verified) across a wide range of benchmarks at comparable model sizes.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.22073:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22073/v1/fig1-panel1.png"
+        alt="Figure 1：In this work, we demonstrate that the robustness of quadruped locomotion improves with an increase in duty factor. This finding is validated with the first demonstration of a quadruped robot walking across a narrow beam without the aid of external mechanisms like a reaction wheel."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.22073v1/hardware.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> In this work, we demonstrate that the robustness of quadruped locomotion improves with an increase in duty factor. This finding is validated with the first demonstration of a quadruped robot walking across a narrow beam without the aid of external mechanisms like a reaction wheel.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.22073/">占空比可预测不同步态类型下鲁棒的约束四足运动</a></h3>
+    <p class="original-title" lang="en">Duty Factor Predicts Robust Constrained Quadrupedal Locomotion Across Gait Types</p>
+    <p class="authors">James Zhu · David Ologan · George Ortiz · Thomas Chun Fai Lee · Selvin Garcia Gonzalez · Ardalan Tajbakhsh · Pinhas Ben-Tzvi · Aaron M. Johnson</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>占空比是比名义步态类型更强的局部误差收敛预测因子，可作为低维参数用于在窄地形环境中调节运动鲁棒性，且该趋势在不同控制架构下保持一致。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文在真实四足机器人上验证了占空比作为低维鲁棒性调节参数的有效性，并跨三种控制架构（轨迹优化+LQR、学习控制器、质心MPC）验证趋势，对具身智能中真实机器人运动控制、鲁棒性评测和低维参数化策略设计具有参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>四足机器人运动控制中的步态参数与鲁棒性关系</p>
+        <p><strong>模型原始标签：</strong>四足机器人、运动控制、步态参数、占空比、鲁棒性、模型预测控制、轨迹优化</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.22073">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.22073">PDF ↗</a><a href="https://arxiv.org/html/2609.22073v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22073/v1/fig1-panel1.png"
+              alt="Figure 1：In this work, we demonstrate that the robustness of quadruped locomotion improves with an increase in duty factor. This finding is validated with the first demonstration of a quadruped robot walking across a narrow beam without the aid of external mechanisms like a reaction wheel."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22073v1/hardware.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> In this work, we demonstrate that the robustness of quadruped locomotion improves with an increase in duty factor. This finding is validated with the first demonstration of a quadruped robot walking across a narrow beam without the aid of external mechanisms like a reaction wheel.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22073v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.22073/v1/fig2-panel1.jpg"
+              alt="Figure 2：Convergence across walking and trotting gaits over a range of speeds and duty factors. Walking and trotting exhibit a continuous transition at the matched duty factor of 0.75 0.75 . Overall, convergence is strongly associated with duty factor."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.22073v1/convergence.jpg"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Convergence across walking and trotting gaits over a range of speeds and duty factors. Walking and trotting exhibit a continuous transition at the matched duty factor of 0.75 0.75 . Overall, convergence is strongly associated with duty factor.
+            <a class="figure-source" href="https://arxiv.org/html/2609.22073v1#S5.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>研究四足机器人在扰动与受限地形下的运动鲁棒性，考察步态类型（如行走、小跑）内参数（占空比、速度、站距）对局部误差收敛与鲁棒性的影响，使用三种不同的四足运动控制方法。</dd>
+        <dt>Motivation（研究动机）</dt><dd>步态类型常被用来表征四足运动，但同一步态类型内占空比、速度、站距等参数可变，因此步态类型不能唯一决定运动特性，需要找到更有效的低维参数来理解和选择鲁棒运动。</dd>
+        <dt>Insight（核心洞察）</dt><dd>占空比是比名义步态类型更强的局部误差收敛预测因子，可作为低维参数用于在窄地形环境中调节运动鲁棒性，且该趋势在不同控制架构下保持一致。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>步态类型内参数变化导致运动特性不唯一</li><li>扰动与受限地形下保持鲁棒运动</li><li>在不同控制架构下验证参数趋势的普适性</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过三种不同的四足运动控制方法分析步态参数与鲁棒性的关系：首先使用全身轨迹优化与LQR反馈分析局部误差收敛；其次研究学习型运动控制器中占空比选择对窄地形适应性的影响；最后在质心模型预测控制框架下验证趋势，并在物理四足机器人上进行窄地形实验。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>使用全身轨迹优化与LQR反馈，分析占空比与局部误差收敛的关系</li><li>使用学习型运动控制器研究占空比选择对窄地形鲁棒性的影响</li><li>使用质心模型预测控制框架验证占空比趋势</li><li>在物理四足机器人上进行窄地形实验验证</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>全身轨迹优化与LQR反馈表明占空比是比名义步态类型更强的局部误差收敛预测因子</li><li>学习型运动控制器中占空比可作为低维参数调节窄地形环境中的运动鲁棒性</li><li>质心模型预测控制框架下趋势保持一致</li><li>物理四足机器人窄地形实验验证了上述趋势</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该研究涉及四足机器人真实物理平台上的运动控制与评测，与具身智能中的真实机器人评测和实时控制相关；占空比作为低维参数调节鲁棒性，可为可执行动作生成与系统优化提供启发，但不直接涉及视觉语言动作模型、世界模型或世界动作模型。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅基于标题与摘要，未提供全文，无法确认具体实验数值、统计显著性、物理实验规模、控制频率、地形具体参数以及作者声明的局限；第一单位与通讯作者信息未提供。</p>
+          <blockquote><strong>占空比是比名义步态类型更强的局部误差收敛预测因子：</strong>we show that duty factor is a stronger predictor of local error convergence than nominal gait type</blockquote>
+          <blockquote><strong>占空比可作为低维参数用于调节窄地形环境中的运动鲁棒性：</strong>suggesting how duty factor may serve as a low-dimensional parameter for adapting locomotion robustness in narrow-terrain environments</blockquote>
+          <blockquote><strong>趋势在质心模型预测控制框架下保持一致并在物理四足上验证：</strong>we show that these trends persist under a centroidal model predictive control framework and validate them through narrow-terrain experiments on a physical quadruped</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="explore">
+        <header class="tier-heading"><h2>探索发现</h2><p><span data-tier-count>1</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2609.21982:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.21982/v1/fig1-panel1.png"
+        alt="Figure 1：CARF leverages a crucial yet largely underexplored source of data: Failure-Critical Segments . It further formulates an attraction-repulsion flow-matching policy that pulls the policy toward the correct action distribution while pushing it away from failure distributions."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.21982v1/teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> CARF leverages a crucial yet largely underexplored source of data: Failure-Critical Segments . It further formulates an attraction-repulsion flow-matching policy that pulls the policy toward the correct action distribution while pushing it away from failure distributions.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.21982/">CARF：失败引导流匹配的对比吸引-排斥框架</a></h3>
+    <p class="original-title" lang="en">CARF: Contrastive Attraction-Repulsion of Failure-Guided Flow Matching</p>
+    <p class="authors">Shuqi Zhao · Bang Du · Cheng-En Wu · Yichen Xie · Yixiao Wang · Masayoshi Tomizuka</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>进展片段应被模仿，失败关键片段应被显式回避，两类监督信号需要区别对待，同时排除模糊片段以避免不可靠监督。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对于关注机器人学习数据效率、失败数据利用和流匹配策略生成的研究者，该工作提供了将失败轨迹转化为非对称监督信号的明确思路，并包含仿真与真实世界验证，具有方法迁移和实验设计参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-learning/" data-tag-filter="robot-learning">机器人学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>从不完美机器人数据中学习的机器人策略学习</p>
+        <p><strong>模型原始标签：</strong>机器人学习、失败数据利用、流匹配、对比学习、模仿学习、数据质量</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-09</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2609.21982">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2609.21982">PDF ↗</a><a href="https://arxiv.org/html/2609.21982v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.21982/v1/fig1-panel1.png"
+              alt="Figure 1：CARF leverages a crucial yet largely underexplored source of data: Failure-Critical Segments . It further formulates an attraction-repulsion flow-matching policy that pulls the policy toward the correct action distribution while pushing it away from failure distributions."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.21982v1/teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> CARF leverages a crucial yet largely underexplored source of data: Failure-Critical Segments . It further formulates an attraction-repulsion flow-matching policy that pulls the policy toward the correct action distribution while pushing it away from failure distributions.
+            <a class="figure-source" href="https://arxiv.org/html/2609.21982v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.21982/v1/fig2-panel1.png"
+              alt="Figure 2：Overview framework of CARF. After automatically labeling success dataset based on subtask segmentation, CARF trains a progress prediction scorer that provides importance score for observation-action chunking sequence, which is used for attraction-repulsion flow matching training."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.21982v1/levefd.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Overview framework of CARF. After automatically labeling success dataset based on subtask segmentation, CARF trains a progress prediction scorer that provides importance score for observation-action chunking sequence, which is used for attraction-repulsion flow matching training.
+            <a class="figure-source" href="https://arxiv.org/html/2609.21982v1#S2.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>机器人演示数据中包含成功轨迹、不完美/失败轨迹，需要从中学习可执行策略。</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有方法在利用失败轨迹时通常只识别其中仍有任务进展的片段，而忽略直接导致任务失败的关键行为；作者认为进展片段与失败关键片段提供的是非对称监督信号。</dd>
+        <dt>Insight（核心洞察）</dt><dd>进展片段应被模仿，失败关键片段应被显式回避，两类监督信号需要区别对待，同时排除模糊片段以避免不可靠监督。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>如何自动识别失败轨迹中仍有进展的片段与直接导致失败的片段</li><li>如何用非对称监督统一训练策略，同时避免模糊失败片段带来的噪声</li><li>如何在仿真与真实世界多类失败场景中稳定提升策略表现</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者观察到现有方法未充分利用失败关键行为，并据此提出进展片段与失败关键片段提供非对称监督，需要分别吸引和排斥。具体分析手段在摘要中未详细说明。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出 CARF 框架，用于从不完美机器人数据中学习</li><li>引入基于进展的重要性评分器，仅用成功专家演示及其扰动结果训练，估计每一步对任务完成的贡献并识别失败轨迹中有信息量的区域</li><li>用这些评分指导统一的流匹配目标，吸引策略趋向进展行为，排斥其远离失败关键行为，同时排除模糊片段</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在仿真和真实世界中进行大量实验，在不同失败场景下相对竞争基线取得一致提升</li><li>消融实验进一步验证了所提评分机制和吸引-排斥机制的有效性</li><li>摘要未给出具体数字</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作面向具身智能中的机器人策略学习，直接处理视觉-语言-动作/机器人轨迹数据中失败样本的利用问题，涉及可执行动作生成与真实机器人评测；其流匹配策略学习与数据筛选机制也可为世界动作模型和系统优化中的训练数据质量控制提供参考。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅有标题与摘要，无法确认具体网络结构、评分器实现、实验规模、基线选择和数值结果，因此对方法细节与实证强度的判断存在不确定性。</p>
+          <blockquote><strong>机器人演示收集常同时产生成功与失败轨迹，现有方法多只利用仍有进展的失败片段。：</strong>Robot demonstration collection often produces imperfect or failed trajectories in addition to successful demonstrations. Existing methods typically exploit failed trajectories by identifying segments that still make progress toward task completion, but largely overlook \textit{failure-critical behaviors} that directly lead to task failure.</blockquote>
+          <blockquote><strong>论文提出进展片段应被模仿、失败关键片段应被显式回避的非对称监督观点。：</strong>Here we argue that these two types of segments provide fundamentally asymmetric supervision: progressive segments should be imitated, whereas failure-critical segments should be explicitly avoided.</blockquote>
+          <blockquote><strong>CARF 使用仅由成功专家演示及其扰动训练的进展重要性评分器，并用其指导统一的流匹配目标。：</strong>CARF introduces a progress-based importance scorer, trained solely on successful expert demonstrations and its perturbation results, to estimate step-wise contributions toward task completion and identify informative regions in failed trajectories. These scores guide a unified flow-matching objective that attracts the policy toward progressive behaviors and repels it from failure-critical ones, while excluding ambiguous segments.</blockquote>
+          <blockquote><strong>仿真和真实世界实验表明在不同失败场景下相对基线有一致提升，消融验证了评分和吸引-排斥机制。：</strong>Extensive experiments in simulation and the real world demonstrate consistent improvements over competing baselines across diverse failure scenarios, with ablations further validating the effectiveness of the proposed scoring and attraction-repulsion mechanisms.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、标签、层级或相关性条件。</p>
+    <script type="application/json" data-paper-json>[{"id":"arxiv:2609.21983:v1","topic":"wam","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["data","evaluation","generalist-robotics","robot-learning","robot-manipulation","world-modeling"],"searchText":"世界动作模型(wam) 零样本跨具身操作的世界-动作模型(wam) 世界-动作模型 跨具身迁移 骨架表示 零样本操作 世界模型 具身智能 skelwam: a skeleton-guided world-action model for zero-shot cross-embodiment manipulation skelwam:面向零样本跨具身操作的骨架引导世界-动作模型 pengjun niu yujia xie rui peng hang zhao ke liu reusing manipulation experience across robot embodiments is important for scaling robot learning and reducing repeated task-specific data collection. however, changes in embodiment alter visual appearance, action dimensionality and semantics, and the whole-body configurations that can realize the same tool pose. we present skelwam, a skeleton-guided world-action model that couples perception and control through one explicit geometric representation for single-source cross-embodiment manipulation. arm centerline geometry, tool-center-point (tcp) pose, and parallel-jaw commands form a shared 25-d state. the same definition underlies canonical third-person and wrist observations and future whole-body action targets. trained with predictive visual supervision, a video-action mixture of transformers predicts canonical skeleton action chunks, which embodiment-specific constrained decoders convert into joint or continuum-robot controls. this formulation requires no one-to-one joint correspondence and uses no target-task demonstrations or target policy updates. we introduce libero-cross10, a source-only cross-embodiment transfer benchmark covering ten tasks and ten target embodiments across four morphological groups. on this benchmark, franka-trained skelwam achieves 43.3% success over 1,000 episodes, exceeding the best-performing evaluated baseline by 36.2 percentage points. we further deploy a jaka mini2-trained policy on the feagine a03 continuum robot for three tabletop manipulation tasks, illustrating the approach's potential for real-world cross-embodiment manipulation. project page: http://www.liukepku.com/skelwam/index.html 单源(source-only)跨具身操作迁移:仅使用一个源机器人(franka 或 jaka mini2)的任务演示和策略优化,不采集目标任务演示,也不更新目标策略,直接在多种目标具身(含刚性连杆臂和连续体机器人)上零样本部署。 复用操作经验可扩展机器人学习并减少重复的任务特定数据采集,但具身变化会同时改变视觉外观、动作维度与语义,以及实现同一工具位姿所需的全身构型;现有 wam 从一台机器人迁移到另一台时观察分布与动作几何都会改变。 用一个显式的几何表示(手臂中心线几何、tcp 位姿与平行夹爪命令组成的共享 25-d 状态)同时定义视觉条件、规范化状态与未来全身动作目标,从而把视觉侧与动作侧的具身鸿沟在同一骨架表示中连通,使源训练 wam 预测的运动意图可由具身特定的约束解码器在原生约束下执行。 作者通过共享 25-d 几何表示把视觉条件与动作目标统一,并用组件消融分析各组件贡献:在相同 1000 回合上比较完整模型与去掉骨架视觉(v)、身体动作监督(a)、腕部输入(w)、解码器身体目标(d)的变体。结果显示去掉 v 与 a 分别掉到 0.0% 和 0.1%,去掉 w 整体仅 -0.3 点但在四个任务子集上出现 -6.7/-14.7/+22.5/+8.0 点的任务依赖反转,去掉 d 整体 -2.4 点(cross-object -8.7、cross-long +3.0),说明腕部上下文与姿态引导随任务族不同而作用不同。 定义共享 25-d 状态:手臂中心线几何、工具中心点(tcp)位姿与平行夹爪命令。 同一 25-d 定义同时用于规范化的第三人称与腕部观察,以及未来全身动作目标。 采用视频-动作混合 transformer:30 个成对的 video/action dit 块预测 32×25 的骨架动作块。 以预测性视觉监督训练,未来视频路径仅在 stage a 提供监督,动作注意力访问当前帧 k/v 并在推理时缓存。 具身特定的约束解码器把预测的全身运动意图转换为关节或连续体机器人控制;原生关节 ik 或 pcc 解码优先满足 tcp 位姿并以中心线作为姿态引导。 部署头结合 24-d 连续流与一个夹爪事件。 提出 libero-cross10 基准:十个任务、十个目标具身,覆盖四个形态组(7-dof 刚性臂 kinova gen3/xarm7/rizon4/iiwa、轻量臂 arx-l5 与 viperx300、连续体 feagine a03 等),基于 mujoco 与 robosuite。 franka 训练的 skelwam 在该基准 1000 回合上取得 43.3% 成功率,超过最佳评估基线 36.2 个百分点。 消融(每变体 1000 回合):完整 43.3%;w/o v^r 0.0%(-43.3);w/o a^r 0.1%(-43.2);w/o w^r 43.0%(-0.3);w/o d^i 40.9%(-2.4)。 源训练数据:467 条成功的 franka 演示,按回合划分 447 训练 / 20 验证。 真实机器人部署:277 条质量受控的 jaka mini2 遥操作演示,按回合划分 249 训练 / 28 验证,编译为 10 hz 骨架窗口;在 jaka mini2 数据上以动作目标训练 action expert 和最后两个视频块 6k 次更新,仅用源验证做模型选择。 将 jaka mini2 训练的策略以固定权重加目标特定 pcc 解码器部署到 feagine a03,完成 toy cleanup、ring placement、peg insertion 三项桌面操作任务,未使用 feagine a03 任务演示微调。 该工作直接面向具身智能与世界-动作模型:以世界模型的预测性视觉监督驱动动作生成,通过显式几何骨架统一跨具身的视觉条件与动作目标,解决可执行动作生成、跨具身泛化与原生约束下的实时执行(ik/pcc 解码、当前帧 k/v 缓存)问题,并在真实机器人上完成评测,契合机器人学习、世界模型与系统优化方向。 它提供了一个把世界模型视觉预测与可执行全身动作生成耦合的共享几何接口,给出可迁移的跨具身动作表示与约束解码思路;其消融揭示了腕部上下文和全身姿态目标的任务依赖效应,并附有 1000 回合基准与真实连续体机器人部署,对研究跨具身泛化、动作分块预测和真实机器人评测的读者具有直接参考价值。"},{"id":"arxiv:2506.12374:v4","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["action-prediction","evaluation","physical-ai","robot-manipulation"],"searchText":"机器人学习与控制 vlm引导的机器人操作与可执行轨迹动作选择 vlm引导操作 可执行轨迹 视觉提示 多视图vqa 数字孪生 real2sim2real 机器人操作 antigrounding: executable robot trajectories as visual prompts for vlm-guided manipulation antigrounding:将可执行机器人轨迹作为视觉提示用于vlm引导的操作 wenbo li yiteng chen wenhao li qingyao wu natural-language instructions specify manipulation goals but leave the robot's motion underdetermined. we present antigrounding, a visual action-selection framework built around a dual geometric--visual trajectory interface. each short trajectory retained after feasibility filtering remains an explicit motion plan and serves as a visual prompt for instruction-conditioned vision--language model (vlm) assessment. structured multi-view visual question answering (vqa) scores safety, task alignment, efficiency, and physical plausibility. weighted view fusion aggregates these scores for trajectory selection, while the scores also guide subsequent translational proposals. separate orientation and gripper controls coordinate physical interaction. planning proceeds in an initialized digital twin, which validates selected segments before the real robot executes the same waypoint sequences. across eight real-world manipulation tasks, antigrounding with a single gpt-6 astra evaluator achieves \\astraoverall\\% overall success. under the reported deployment protocol, $\\pi_{0.5}$ achieves \\pioverall\\%, and a pivot-style visual proposal-selection baseline with the same evaluator achieves \\pivotoverall\\%. component ablations and evaluator sensitivity characterize trajectory assessment, proposal search, orientation control, and evaluator choice. performance depends on digital-twin fidelity and physical interaction. 在初始化的数字孪生(coppeliasim)中进行滚动时域规划;从当前末端执行器位置采样短平移轨迹,经几何可行性过滤后渲染为多视图视觉提示,由指令条件化的vlm进行结构化多视图vqa评估,选择并在仿真中验证后在真实机器人(ur5e)上执行相同路点序列。 自然语言指令只指定操作目标而不确定机器人运动,一条无碰撞路径仍可能错过目标;vlm擅长任务语义与场景理解,几何规划器擅长运动约束表示,需要一个接口把任务级判断连接到可执行动作上。 经过可行性过滤后保留的短轨迹本身既是显式几何控制对象,又可作为视觉提示供指令条件化的多模态评估使用;通过结构化多视图vqa与加权视图融合在安全、任务对齐、效率和物理合理性四个维度上打分来选择轨迹,并用分数引导后续平移提案。 作者将推理到动作的接口问题分解为:如何在保留轨迹显式几何可行性的同时,将其暴露给任务条件化的多模态评估;通过对比代码即策略、空间价值图、关键点约束、pivot等视觉提示先验,指出自身聚焦于短可执行轨迹本身,并设计组件消融与评估器敏感性实验来刻画轨迹评估、提案搜索、朝向控制与评估器选择。 采样短平移末端执行器轨迹,线性插值连接目标位置与当前末端位置,默认保持当前朝向 在coppeliasim中进行提案级过滤,检查非目标碰撞、无效几何或物理状态、目标交互或穿透约束;完整有效段保留,违规段保留首个违规前的有序前缀(若可用),否则丢弃,形成可行集 每个候选带一致标识符与不同颜色跨视图渲染,可选set-of-mark标注任务相关物体 结构化多视图vqa对安全性、任务对齐、效率、物理合理性打分;视图选择识别有用投影,准则权重组合四个维度,保留视图权重融合分数用于轨迹选择 分数引导后续平移提案采样(候选数量、采样半径、角度分散度) 单独控制通道提供任务特定朝向目标与夹爪命令 在数字孪生中验证所选段后,真实机器人执行相同的经仿真验证的路点序列 可选离线提示精炼:分析执行日志以修订准则权重、问题措辞或任务特定评估标准,同时保持vlm权重固定 八个真实世界操作任务,覆盖放置、避障运动、多阶段操作与语义约束(胶带、海绵、迷宫、抽屉、倒水、拖鞋、垃圾、形状) 使用ur5e与三指柔性夹爪 antigrounding配合单一gpt-6 astra评估器总体成功率71.25% π0.5在同一部署协议下达到50.00% pivot风格视觉提案选择基线使用同一评估器达到47.50% 其他对比:openvla 6.25%,openvla-oft 20.00%,π0 13.75%,code as policies 6.25%,voxposer 18.75%,rekep 41.25% vla基线为零样本评估,未使用这些任务的数据进行任务特定微调 组件消融与评估器敏感性实验刻画轨迹评估、提案搜索、朝向控制与评估器选择 直接关系具身智能与物理人工智能中的可执行动作生成与真实机器人评测:把vlm的任务级语义判断接到显式可执行轨迹上,在数字孪生中验证后由真实机器人执行,与vla模型(openvla、π0、π0.5)、pivot等视觉行动表示以及世界模型/数字孪生中仿真验证的思路紧密相邻;也涉及系统优化中的在线延迟问题。 该工作给出把vlm评估与几何可行性结合成统一轨迹接口的具体方案,含八个真实任务与多类基线对比(含vla与推理规划方法),对研究可执行动作生成、真实机器人评测与数字孪生验证的研究者具有直接参考价值;其消融与评估器敏感性设计也有助于理解该类接口的能力边界。"},{"id":"arxiv:2609.22040:v1","topic":"vla","tier":"deep_read","scope":"full_text","score":7,"hasFigure":true,"tags":["evaluation","navigation","vision-language"],"searchText":"视觉语言动作(vla) vla模型中的反馈增强感知与情境记忆 vla 自动驾驶 情境记忆 反馈机制 闭环评测 端到端学习 prime: perception feedback with situational memory embeddings in vla models prime:vla模型中的情境记忆嵌入感知反馈 erik deinzer naya baslan luca paparusso narunas vaskevicius peter knott luigi palmieri current vision-language-action (vla) models for autonomous driving operate primarily through feedforward inference across the perception--reasoning--planning hierarchy. while modern architectures maintain temporal recurrence within the perceptual module, early perception remains blind to downstream reasoning and navigation goals, processing visual inputs agnostically without prioritizing cues informed by prior decisions. to bridge this gap, this paper introduces prime, a learned feedback mechanism that conditions the vla perceptual queries on a novel situational memory. by aggregating latent representations of past perception, reasoning, navigation goals, and predicted behaviors across an l-step window via cross-attention, prime enables intent-driven perceptual attention at minimal computational cost, adding only a maximum of 29.7m parameters (0.41% of the 7.3b-parameter base model). evaluated on the bench2drive closed-loop benchmark, prime achieves a state-of-the-art driving score of 82.47 (+4.73 over orion) and a success rate of 60.00% (+5.38 percentage points), the highest reported driving score among published vlas trained on think2drive demonstrations. 自动驾驶vla模型的闭环驾驶场景,基于bench2drive基准与carla模拟器,使用think2drive专家演示训练。 当前vla模型主要在感知-推理-规划层级中进行前馈推理,早期感知对下游推理和导航目标不敏感,无法根据先验决策优先处理视觉线索,需要一种反馈机制来弥合这一内部鸿沟。 通过将过去感知、推理、导航目标和预测行为的潜在表示聚合到情境记忆中,并以此条件化感知查询,可实现意图驱动的感知注意力,且计算成本极低。 作者通过消融实验分析不同反馈源的影响,发现推理状态作为紧凑的场景理解摘要能有效引导注意力,而单纯的感知和预测表示在闭环中反而降低性能;反馈在情境解释层面比场景表示层面更有效。 提出prime,一种学习到的反馈机制,将vla感知查询条件化于新颖的情境记忆 情境记忆模块聚合六种潜在反馈源,覆盖场景感知、推理、导航目标及预测的自车与对手行为,跨l步窗口 引入两种整合模块:filmxattn与attention pooling 采用基于适配器的轻量方法研究跨阶段反馈,保持主干基本固定 通过门控残差连接注入反馈,门初始化为0.1 在bench2drive闭环基准上评估,prime取得最先进的驾驶得分82.47(比orion高+4.73)和成功率60.00%(提升+5.38个百分点) prime-full在汇入场景表现最强,而gero在超车、紧急制动和交通标志交互上报告更强结果 适配器消融表明反馈在情境解释层面最有效,推理状态提供任务感知先验,而感知和预测表示单独使用时提升开环指标但降低闭环性能 该论文直接涉及vla模型、闭环真实机器人评测(自动驾驶模拟)和系统优化中的推理效率(仅增加0.41%参数),与具身智能中的可执行动作生成和真实机器人评测高度相关,但主要面向自动驾驶而非通用机器人操作。 本文提供了一种轻量级反馈增强感知的方法,可迁移至具身智能和世界模型中的长时序预测与意图驱动感知,其闭环评测结果和消融分析对理解反馈机制在vla中的作用具有明确参考价值。"},{"id":"arxiv:2609.22085:v1","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":8,"hasFigure":true,"tags":["data","generalist-robotics","robot-manipulation","vision-language"],"searchText":"机器人学习与控制 面向长时序机器人操作的通用价值函数学习与策略引导 价值函数 q函数 长时序操作 视觉语言模型 时间差分学习 策略引导 双臂机器人 离线数据 seeq: training generalist value functions for long-horizon robotic manipulation seeq:为长时序机器人操作训练通用价值函数 saksham singh zheyuan hu max sobol mark jeffrey yu zackory erickson aviral kumar despite rapid progress, generalist robot policies remain brittle on complex, long-horizon tasks that comprise multiple stages or require repeated attempts and deliberation on the same underlying stage before success. q-value functions can improve these policies by ranking candidate actions or guiding policy improvement, but learning from sparse task-level rewards entails long credit-assignment horizons, difficult bellman backups, and broad data-coverage requirements. we introduce seeq (subtask-elicited q-functions), which instead learns q-values for the currently active subtask. this shortens the value-prediction horizon and enables effective learning with temporal-difference (td) objectives. during training, subtask-level annotations present in offline robot data provide the decomposition and enable learning from broad, potentially suboptimal robot datasets. to eliminate the need for human annotations or modular subtask prediction systems at test time, our q-function architecture is trained to autoregressively predict the active subtask in natural language before estimating its value. we instantiate seeq using a base vision-language backbone, pretrain it on diverse open-source robot manipulation data, and finetune it on downstream tasks. across four real-world manipulation tasks on two bimanual robot platforms, the seeq value function substantially improves best-of-n policy steering. 语言条件机器人操作,给定基础通用策略 π_base,在离线机器人轨迹数据上预训练通用 q 函数,再微调用于下游任务,测试时用 q 函数对策略提出的 n 个候选动作块打分并执行最高分动作(best-of-n 策略引导)。 通用机器人策略在复杂长时序任务上仍然脆弱:包含多阶段或需要对同一阶段反复尝试与权衡;稀疏任务级奖励导致长信用分配、贝尔曼备份困难,且离线数据覆盖不足。学习 q 函数可对候选动作排序或引导策略改进,但长时序下的价值学习本身不可靠。 只对当前活跃子任务(currently active subtask)学习 q 值,而不是对整个任务学习价值,从而缩短价值预测时域,使时间差分目标能有效学习;同时让 q 函数自回归地先用自然语言预测当前子任务、再估计其价值,从而在测试时无需人工标注或独立子任务预测模块。 作者将长时序价值学习困难的根源归结为预测时域本身:标准 q 函数估计整个任务的成功期望,随动作数增长而变得困难;离线设置进一步因数据覆盖有限而加剧。因此提出以子任务级价值作为学习目标,利用离线机器人数据中已有的子任务级标注提供分解,并用自然语言子任务预测替代部署时的子任务标注或模块化预测系统。 训练通用 q 函数 q_θ(s_t, a_{t:t+h-1}, l),基于离线机器人轨迹数据集,使用预训练视觉语言模型作为主干。 用时间差分(td)目标拟合当前活跃子任务的 q 值,而非整个任务的 q 值,以缩短价值预测时域。 训练阶段利用离线机器人数据中存在的子任务级标注提供分解,从而可利用广泛、可能次优的机器人数据。 将 q 函数架构改为自回归:先以自然语言预测当前活跃子任务,再估计该子任务的价值,使内部表示与子任务级价值估计对齐,并消除测试时对人工标注或模块化子任务预测系统的依赖。 在多样开源机器人操作数据上预训练 seeq,再在下游任务上微调。 在两个双臂机器人平台上的四个真实世界操作任务中评估,seeq 价值函数显著改善 best-of-n 策略引导。 结论部分报告:seeq 将平均成功率从 35.4% 提升到 66.7%(1.88 倍),并在不同数据组成上均有提升。 消融实验强调机器人数据预训练、best-of-n 备份以及显式子任务条件的重要性。 该工作直接位于具身智能与机器人学习交叉处:以视觉语言模型为骨干学习通用价值函数,服务于长时序操作中的可执行动作选择与策略引导(best-of-n),与 vla/世界动作模型中的动作评估、长时序预测和真实机器人评测高度相关;其子任务分解与 td 学习思路对推理效率与实时控制中的候选动作排序也有迁移价值。 论文给出一种可迁移的通用价值函数训练配方:用子任务级 td 目标缩短信用分配时域,并用语言子任务预测消除部署时的标注依赖;在真实双臂平台上用 best-of-n 引导取得 1.88 倍平均成功率提升,且包含对预训练、备份和子任务条件的消融,对关注长时序机器人操作、vla 动作选择与真实机器人评测的研究者具有直接参考价值。"},{"id":"arxiv:2609.22062:v1","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":8,"hasFigure":true,"tags":["evaluation","physical-ai","robot-manipulation","simulation"],"searchText":"机器人学习与控制 真实机械臂上的不规则物体闭环密集装箱 机器人操作 密集装箱 不规则物体 cma-es 力引导装配 真实机器人评测 gripper-aware automatic dense packing of irregular objects 夹爪感知的不规则物体自动密集装箱 tianhao qin connor mccann berk calli jing xiao automatic dense packing is widely desired in warehouse operations but remains a fundamental challenge in robotic manipulation. existing work on irregular-object packing largely targets simulation with idealized contact, treating the object as an isolated rigid body. the gripper often enters as a discrete, post-hoc feasibility check, if considered at all, and the perception and contact drift accumulated during execution are not addressed. we present a closed-loop pipeline that integrates perception, gripper-aware placement optimization, and force-guided execution on a real manipulator. the optimizer represents the object together with the gripper as a single composite body of hierarchical sphere trees. it searches over five degrees of freedom on a gpu within a cma-es framework, with the vertical coordinate grounded analytically against the current heightmap. during execution, a force-monitored vertical descent stops on first contact. a post-release consolidation push then closes the residual lateral clearance that gripper-aware planning leaves behind. the container is re-perceived between placements so that drift does not accumulate. we validate the system on a franka emika panda robot packing a 3d-printed set of flat, curved, and concave objects, and a ycb object subset. an ablation study isolates the contribution of gripper-aware optimization, the consolidation push, and mesh-derived geometry to end-to-end success, achieved density, and computational cost. we further benchmark against the heightmap-minimization method as a baseline representative of prior irregular-object packing work. 在真实 franka emika panda 机械臂上,对3d打印的扁平、弯曲、凹形物体集合与ycb物体子集进行容器内自动密集装箱;配备realsense深度相机、ati腕部力/力矩传感器与软体平行鳍状夹爪,优化在nvidia rtx 3090上运行。 仓库作业中密集装箱需求广泛,但现有不规则物体装箱工作多面向理想接触的仿真,把物体当作孤立刚体,夹爪仅作为离散的事后可行性检查,且未处理执行过程中累积的感知与接触漂移。 把物体与夹爪表示为分层球树的单一复合刚体,使夹爪可达性与占用空间进入放置优化内环;再通过力监测下降、释放后 consolidation push 与逐次重新感知,把规划中残留的间隙和执行漂移在执行端闭环吸收。 作者将问题分解为感知、夹爪感知放置优化与力引导执行三部分:优化器以分层球树表示物体加夹爪的复合体,在gpu上用cma-es搜索五个自由度,竖直坐标依据当前高度图解析确定;执行时以力监测的竖直下降在首次接触停止;释放后执行 consolidation push 关闭夹爪感知规划遗留的横向间隙;每次放置之间重新感知容器以避免漂移累积。并通过消融分别隔离夹爪感知优化、consolidation push 与网格导出几何的贡献,以及与高度图最小化基线的对比来分析各组件作用。 将物体与夹爪表示为单一分层球树复合体,使夹爪几何进入优化内环 在gpu上用cma-es搜索五自由度放置,竖直坐标依据当前高度图解析接地 执行阶段采用力监测竖直下降,首次接触即停止 释放后执行 consolidation push,闭合夹爪感知规划遗留的横向间隙 每次放置之间重新感知容器,避免感知与接触漂移累积 使用cad网格、表面点云与物体坐标系中预注册的单个对跖抓取 在真实franka emika panda上对7件3d打印物体(1个扁平支撑、2个高瘦花瓶、2个鸭形弯曲物体、2个l形凹形物体)和8件ycb子集进行装箱评测 三条测试序列各五次试验,共14/15次端到端成功;optimized序列空间利用率95.59±6.06%、random 1为81.37±0.02%、random 2为75.19±5.66%,总体84.05±9.89% 每放置成功率总体104/105;cma优化墙钟时间约3.19至3.56秒/物体 消融研究分别隔离夹爪感知优化、consolidation push 与网格导出几何对端到端成功、达到密度和计算成本的影响;结论称夹爪感知优化决定放置是否可达而非密度,consolidation push 恢复遗留间隙,非棱柱物体表示对非紧凑形状获得高密度是必要的 与高度图最小化基线在两种网格分辨率下对比:基线墙钟时间从0.42±0.03升至1.04±0.03秒/物体,本方法在两个分辨率下均超过基线且计算成本固定 结论称系统在20次试验中19次端到端完成 该工作属于具身智能与机器人操作中的真实世界闭环系统:其夹爪感知规划把执行器几何纳入动作可行性内环,力引导执行与逐次重新感知处理真实接触和感知漂移,与可执行动作生成、实时控制和真实机器人评测方向直接相关;其球树复合体表示与gpu cma-es优化也涉及长时序放置序列与计算效率,可为世界动作模型中的接触/几何先验与系统优化提供参考。 论文提供了一套在真实机械臂上运行的闭环密集装箱系统,明确把夹爪几何纳入放置优化并用力反馈和释放后推压来补偿执行误差,还包含消融与固定计算预算下的基线对比;对于关注可执行动作生成、接触感知规划、真实机器人评测和计算效率的研究者具有直接的迁移价值。"},{"id":"arxiv:2609.19796:v2","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":8,"hasFigure":true,"tags":["efficient-inference","policy-learning","robot-manipulation"],"searchText":"机器人学习与控制 面向部分可观测机器人操作的3d感知持久场景记忆与视运动策略 机器人操作 场景记忆 整流流 扩散策略 部分可观测 3d感知 视觉运动控制 推理效率 lifd: anchored diffusion for 3d-aware scene memory in robotic manipulation lifd:面向机器人操作的3d感知场景记忆锚定扩散方法 wenbo li yiteng chen wenhao li qingyao wu during manipulation, robot and scene motion can move previously observed regions outside the camera's field of view. geometry-aware rgb features encode visible structure, while control under partial observability requires scene memory that integrates observation history and grounds inferred content in current evidence. we introduce \\lifd{} (look, imagine, focus, and do), a framework for persistent, 3d-aware scene memory. lifd learns scene tokens through multi-view agreement, then completes them from a single rgb view and recurrent memory using rectified flow. anchor-guided cross-attention anchors generation to current geometry-aware features, and compact slot features condition a visuomotor policy. multi-view and geometric supervision are used during representation learning; deployment requires one rgb camera, proprioception, and a task instruction. lifd (staged) reaches 91.6\\% average success on libero and 79.8\\% on metaworld, improving libero average success by 11.1 percentage points over joint training. after policy-head adaptation with ten demonstrations per family, lifd achieves 56.0\\% mean success across four ur5e task families, compared with 40.5\\% for openvla-7b. 在部分可观测的机器人操作环境中,机器人与场景运动会将先前观察到的区域移出相机视野;训练阶段使用多视角与几何监督,部署阶段仅需单张rgb图像、本体感知与任务指令。 操作任务中物体离开视野后仍可能与后续动作相关,而操作本身又不断改变相机可见内容;现有几何感知图像编码器只能提供当前视图的3d先验,无法覆盖未观测区域,生成式补全又可能偏离可见结构,因此需要一个既能整合观测历史又能将推断内容锚定在当前几何证据上的持久场景记忆。 通过多视角自蒸馏学习场景令牌,再用锚定整流流从单视图rgb特征与循环记忆中补全场景令牌,使生成式补全始终以当前几何感知特征为锚,从而在部分可观测下为策略提供一致的3d感知场景表征。 作者通过消融对比分阶段(staged)训练与联合(joint)训练,评估生成式补全、可见锚定与观测历史对控制的作用;用观察干预实验(遮挡roi)检验记忆的贡献;并测量不同整流流积分步数下的端到端延迟,刻画迭代推理的成本。 用lora适配预训练vggt得到geovggt-r,以相机、深度、点图与跟踪监督获得几何感知rgb特征,并在后续阶段冻结 多视角自蒸馏学习global scene tokens(gst),训练子集始终包含同一锚点视图 以当前视图的local sense tokens(lst)与循环记忆为条件,用锚定整流流(anchor-guided cross-attention)从噪声补全gst 将gst压缩为槽特征(slot features)以条件化轻量视运动策略 采用分阶段训练:先表示学习,再整流流补全,最后训练槽注意力与策略;对照联合训练同时优化所有模块 lifd (staged) 在libero平均成功率91.6%,metaworld成功率79.8% 相比joint训练,libero平均成功率提升11.1个百分点,各套件提升10.8–11.2个百分点,metaworld提升10.4个百分点 robotwin 2.0上staged在hard(clean→random)为19.4%、easy(clean→clean)为63.2%,joint分别为8.8%与51.6%;easy到hard下降43.8个百分点 经过每类任务族10条演示的策略头适配后,lifd在四个ur5e任务族平均成功率56.0%,openvla-7b为40.5% 在受控遮挡实验中lifd成功14/50(28%),diffusion policy为8/50(16%) 单张rtx 4090上,整流流积分步数从50降至35和20时,端到端延迟从190 ms降至130 ms和75 ms,对应5.3、7.7、13.3次策略更新每秒 该工作直接面向具身智能与视觉运动控制,将3d感知场景记忆与生成式整流流结合用于部分可观测操作;其锚定扩散、场景令牌补全、槽特征条件策略以及推理延迟测量,与世界模型中的长时序预测、可执行动作生成、推理效率与真实机器人评测高度相关,可作为wam/世界模型方向中场景记忆与实时性权衡的参考。 论文给出了在部分可观测机器人操作中构建持久3d感知场景记忆的完整方案,并通过分阶段训练、锚定生成与延迟测量展示了表示学习、生成式补全与实时控制之间的权衡;其libero、metaworld、robotwin 2.0与真实ur5e评测覆盖仿真到真机,对关注具身智能、世界模型、模型压缩与实时控制的读者具有直接迁移价值。"},{"id":"arxiv:2609.12549:v2","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":8,"hasFigure":true,"tags":["data","evaluation","physical-ai","robot-manipulation"],"searchText":"机器人学习与控制 视觉-触觉-语言-动作(vtla)模型中的稀疏触觉表征学习与灵巧操作 vtla 灵巧操作 触觉表征 稀疏表征 多模态预训练 真实机器人评测 star: sparse tactile representation learning in vision-tactile-language-action models for dexterous manipulation star:面向灵巧操作的视觉-触觉-语言-动作模型中的稀疏触觉表征学习 xiangcheng liu tianhao wu le zheng yidong wang bowen jiang mingjie pan xinlin ren yi liu jianlan luo dexterous manipulation requires coordinated multi-finger control and effective tactile feedback, yet learning these capabilities remains challenging due to the lack of large-scale real-world data and the difficulty of extracting effective representations from sparse tactile signals. we build a robot platform and teleoperation system to collect a 200-hour bimanual dexterous manipulation dataset with synchronized visual, tactile, and language annotations, comprising 10,576 trajectories across 65 tasks, 69.5% of which involve dexterous multi-finger manipulation. we further propose star, an integrated training recipe for vision-tactile-language-action (vtla) models that addresses the spatial, temporal, and informational sparsity of tactile signals through visual-tactile joint pre-training, sparse-global tactile token representation, and sparse future tactile prediction. trained on this dataset, star achieves a 61% average success rate across four real-world tasks with 100 post-training trajectories per task, demonstrating dexterous performance under task-specific post-training. 在真实双臂灵巧手机器人平台上,通过遥操作系统采集同步视觉、触觉与语言标注数据,训练并在真实世界任务上评测 vtla 策略。 灵巧操作需要多指协同控制与有效触觉反馈,但大规模真实世界数据稀缺,且触觉信号严重稀疏(空间、时间、信息三个层面),使 vtla 模型难以学到有效触觉表征。 触觉信号存在空间稀疏(多数时刻仅少量传感器激活)、时间稀疏(大段操作时间内无触觉激活)、信息稀疏(仅提供局部接触信息而无全局上下文)三重稀疏性,因此需要更强的归纳偏置,从预训练表征、token 构造与未来预测三个层面系统性地加以应对。 作者通过分析自采集数据集量化触觉稀疏性:所有帧中最高激活 taxel 比例仅为 24%,激活触觉帧比例仅为 35%,并指出触觉模态本身只表达局部接触信息、缺乏全局上下文。 构建机器人平台与遥操作系统,采集 200 小时双臂灵巧操作数据集,包含同步的视觉、触觉与语言标注。 视觉-触觉联合预训练:基于 mae 架构,对 rgb 与触觉图像进行掩码 token 联合预测,进行模态内与模态间触觉预训练。 稀疏-全局触觉 token 表征:在策略训练时保留激活的空间触觉 token 与每手全局触觉 token。 稀疏未来触觉预测:在策略预训练中增加对未来触觉的预测辅助目标,建模未来接触动态。 策略训练:以 π0.5 权重初始化(除动作层以匹配机器人动作维度),在多任务数据上微调,再用任务特定数据进行后训练。 数据集规模:200 小时、10,576 条轨迹、65 个任务,其中 69.5% 涉及灵巧多指操作。 真实世界评测:四个任务(耳机翻转、叠放书籍抽取、明信片抽取、多物体抓取),每任务 100 条后训练轨迹。 指标:成功率(sr)与任务完成率(tcr),并将任务拆分为子任务计算 tcr。 结果:star 在四个真实任务上取得 61% 的平均成功率。 对比基线包括 gr00t n1.7 等。 触觉遮蔽实验表明移除触觉输入会降低两个任务的表现,说明策略利用触觉进行动作生成。 该论文直接面向视觉-触觉-语言-动作(vtla)模型,属于 vla 与具身智能方向的扩展,强调可执行灵巧动作生成、真实机器人评测,并通过稀疏 token 表征与预训练辅助目标提升多模态策略效率,与世界模型式的未来接触动态预测及系统层面的多模态表征优化相关。 论文提供了大规模真实双臂灵巧触觉数据集与系统性触觉稀疏性分析,提出从预训练、token 表征到未来预测的完整训练配方,并在真实机器人上给出量化评测,对研究 vla/vtla、触觉表征、真实机器人灵巧操作与多模态策略优化具有直接参考价值。"},{"id":"arxiv:2609.22055:v1","topic":"world-model","tier":"browse","scope":"abstract","score":8,"hasFigure":true,"tags":["evaluation","physical-ai","robot-manipulation","world-modeling"],"searchText":"世界模型(world model) 世界模型在机器人操作中的组合式持续学习基准 世界模型 持续学习 组合泛化 机器人操作 模块化架构 基准测试 benchmarking world models for continual learning on compositional tasks 面向组合任务持续学习的世界模型基准测试 haoyu zhou joe watson anson lei ingmar posner a desirable property of a world model is the ability to learn continually across tasks, adapting to new environments without forgetting what the agent has already learnt. in particular, the ability to retain and reuse knowledge obtained from prior experiences underpins an agent's ability to efficiently adapt to novel environments, as the dynamics of the physical world can often be described in recurring mechanisms. however, the world model's measure of adaptation entangles two abilities: the speed and capacity to learn unseen tasks, and the reuse of knowledge already acquired, since incoming tasks carry novel content alongside what recurs. in order to isolate knowledge reuse from prior experiences, we propose a compositional continual learning benchmark for world models in robot manipulation. specifically, we design each task curriculum with compositional tasks that combine aspects of the tasks seen in the sequence. we further factorise this composition along the axes of action and perception to better understand how different input modalities bottleneck knowledge reuse. we evaluate state-of-the-art world models under canonical continual learning methods, alongside a modular world model whose dynamics backbone contains explicitly reusable components. results show that modularity balances reuse against forgetting better than conventional methods, but none solve the problem fully, leaving clear room for continual world models built to reuse without forgetting. more details are available on our project website: https://object814.github.io/compositional-continual-learning/. 机器人操作场景下,为世界模型设计组合式持续学习基准;每个任务课程由组合任务构成,这些组合任务融合了序列中已见任务的若干方面,并沿动作与感知两个轴进行因子分解,以考察不同输入模态对知识复用的瓶颈作用。 世界模型理想上应能跨任务持续学习,适应新环境而不遗忘已学知识。由于物理世界动力学常可用反复出现的机制描述,保留和复用先前经验中的知识是高效适应新环境的基础。但现有对世界模型适应能力的度量混淆了两种能力:学习未见任务的速度与容量,以及对已获得知识的复用,因为新任务同时包含新内容与重复出现的内容。作者希望将知识复用从先前经验中隔离出来单独考察。 通过设计组合式任务课程,使新任务由序列中已见任务的方面组合而成,从而将知识复用与学习新内容解耦;进一步沿动作和感知两个轴因子分解组合方式,以定位不同输入模态对知识复用的瓶颈。 作者将世界模型的适应能力拆解为两个纠缠的部分:学习未见任务的速度与容量,以及复用已获得的知识。为隔离知识复用,作者提出组合式持续学习基准,令课程中的任务由序列中已见任务的方面组合而成,并沿动作与感知轴因子分解,以分析不同输入模态如何形成知识复用的瓶颈。材料未说明更具体的分析过程。 提出面向机器人操作中世界模型的组合式持续学习基准 为每个任务课程设计组合任务,这些任务融合序列中已见任务的若干方面 沿动作与感知两个轴对组合进行因子分解,以理解不同输入模态如何瓶颈化知识复用 在典型持续学习方法下评估最先进的世界模型 额外评估一个模块化世界模型,其动力学主干包含显式可复用组件 在典型持续学习方法下评估了最先进的世界模型 评估了一个模块化世界模型,其动力学主干包含显式可复用组件 结果显示模块化在复用与遗忘之间取得比常规方法更好的平衡,但没有任何方法完全解决问题,仍为面向复用而不遗忘的持续世界模型留有明显空间 该论文直接面向世界模型这一核心主题,研究其在机器人操作中的持续学习与知识复用,涉及动作与感知模态对知识复用的瓶颈、模块化动力学主干的可复用组件,与具身智能、世界模型、物理人工智能及机器人操作评测高度相关。其基准设计可用于评估世界模型在长时序与多任务条件下的适应与遗忘行为,对系统优化(模块化、可复用组件)亦有参考价值。 该基准将知识复用从新任务学习中隔离出来,为评估世界模型在机器人操作中的持续学习提供了可分解的实验设定;其沿动作与感知轴的因子分解有助于理解不同输入模态对复用的瓶颈;结论指出模块化优于常规方法但仍未完全解决问题,为后续研究指明方向。"},{"id":"arxiv:2609.22075:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":7,"hasFigure":true,"tags":["evaluation","physical-ai","policy-learning"],"searchText":"机器人学习与控制 安全全身控制中的控制障碍函数合成与策略蒸馏 全身控制 控制障碍函数 安全强化学习 人形机器人 sim-to-real 策略蒸馏 limbo: learning and internalizing model-free barrier objectives for agile and safe whole-body control limbo:学习并内化无模型障碍目标以实现敏捷安全的全身控制 jake gonzales arturo flores alvarez yu-ming chen aaron d. ames lillian j. ratliff manikantan nambi safe whole-body control requires coordinating collision avoidance and balance under high-dimensional, nonlinear dynamics--making safety certificates difficult to design and reuse across behaviors. we present limbo, a framework for synthesizing a state-action control barrier function and distilling its safety structure into a task policy. limbo learns the safety certificate from black-box transitions and a state-based failure specification over residual actions around a frozen base controller, making q-cbf synthesis tractable in the full control dimension while placing the certificate in the task policy's control space. during synthesis, the learned safety value drives risk-guided sampling near the estimated boundary of recoverability; during task learning, it serves as a teacher that provides action-level safety feedback, yielding a robust task policy and alleviating the need for an online safety filter at deployment. we demonstrate limbo on a 29-degree-of-freedom humanoid performing dodgeball avoidance and locomotion beneath low obstacles. beyond scaling learned q-cbfs to whole-body control, we show that risk-guided boundary sampling provides a theoretically grounded way to explore the edge of recoverability. under the same safety specification, ceteris paribus, varying the sampling concentration produces strategies ranging from crouching to a novel backward-leaning limbo maneuver. in both settings, the learned policies transfer to hardware without online safety filtering, showing that learned safety synthesis scales to agile whole-body control. 在冻结的基控制器周围的残差动作空间上,从黑盒状态转移和基于状态的失败规范中学习状态-动作控制障碍函数(q-cbf),并将其安全结构蒸馏到任务策略中;在29自由度人形机器人上验证躲避球与低障碍物下行走任务。 安全全身控制需要在高维非线性动力学下协调避碰与平衡,使得安全证书难以设计且难以跨行为复用。 将安全证书的学习放在任务策略的控制空间中,并通过风险引导采样探索可恢复性边界,可以在不部署在线安全过滤器的情况下获得敏捷且安全的全身控制策略。 材料未说明作者对问题的具体分析过程。 在冻结基控制器周围的残差动作上学习状态-动作控制障碍函数(q-cbf),使其在全控制维度可行。 利用黑盒状态转移和基于状态的失败规范进行安全证书学习。 合成阶段使用学习到的安全值驱动风险引导采样,集中在估计的可恢复性边界附近。 任务学习阶段将学习到的安全值作为教师,提供动作级安全反馈以训练鲁棒任务策略。 在29自由度人形机器人上演示躲避球规避和低障碍物下行走。 在同安全规范下,改变采样集中度产生从下蹲到新颖的后仰limbo动作的策略变化。 两种设置下学习到的策略均迁移到硬件,且无需在线安全过滤。 该工作涉及具身智能中可执行动作生成与真实机器人评测,特别是高维全身控制的安全策略学习与sim-to-real迁移;其无模型安全证书学习与策略蒸馏思路对世界动作模型中的安全约束内化及系统优化具有参考价值。 论文展示了在高维人形机器人上学习并内化安全证书以消除部署时在线安全过滤器的可行路径,其风险引导采样探索可恢复性边界的机制对具身智能中安全-敏捷权衡、真实机器人部署和系统优化研究者具有明确迁移价值。"},{"id":"arxiv:2609.22083:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":6,"hasFigure":true,"tags":["action-prediction","data","evaluation","navigation","policy-learning","vision-language"],"searchText":"机器人学习与控制 面向数字/ui环境的统一视觉语言智能体与可扩展强化学习训练基础设施 视觉语言模型 gui智能体 多步导航 工具使用 强化学习 异步训练 模型缩放 mintact: a unified visual agent for digital environments mintact:面向数字环境的统一视觉智能体 mingfei gao rui tian haiming gang bohan zhai le zhang yuanzheng gong di feng ege \\\"ozsoy kaixin ma vishwesh kirthivasan o\\u{g}uzhan fatih kar roman bachmann anders boesen lindbo larsen afshin dehghan we present mintact, a family of vision-language models that unifies ui grounding, multi-step navigation across mobile, desktop, and web, and visual tool use, trained at 2b, 4b, and 8b scales. through careful design of our environments, data, and training recipes, mintact models match the performance of per-domain specialists across all of these capabilities. to enable this, we develop a scalable environment and reinforcement learning (rl) infrastructure. on the environment side, we host hundreds of concurrent instances across heterogeneous per-domain backends, serving both trajectory data collection and online rl. to enable efficient and scalable rl training, an asynchronous framework keeps explicit control over the cross-domain training distribution and remains stable under noisy environment feedback and off-policy drift. experimental results show that mintact achieves state-of-the-art performance (48.9 on osworld-verified) across a wide range of benchmarks at comparable model sizes. 训练 2b、4b、8b 规模的视觉语言模型家族,在移动端、桌面端和网页等数字环境中统一执行 ui grounding、跨环境多步导航与视觉工具使用;同时搭建支持轨迹数据采集与在线 rl 的可扩展环境与训练基础设施。 现有能力(ui grounding、多步导航、视觉工具使用)通常由各自领域的专用模型分别解决,作者希望用统一模型在这些能力上达到与领域专用模型相当的性能,并解决跨异构环境大规模 rl 训练的效率与稳定性问题。 通过精心设计环境、数据与训练配方,加上可扩展的异步 rl 架构,单一视觉语言模型家族能够在多类数字环境智能体任务上匹配领域专用模型,并在可比模型规模下取得领先性能。 材料未说明具体的分析手段;摘要仅提出通过环境、数据与训练配方设计以及异步 rl 框架来解决多域统一与训练稳定性问题。 构建统一视觉语言模型家族,覆盖 ui grounding、跨移动/桌面/网页的多步导航与视觉工具使用 在 2b、4b、8b 三个规模上训练 设计可扩展环境基础设施,在异构的按领域后端上并发托管数百个实例,同时服务轨迹数据采集与在线 rl 采用异步 rl 框架,显式控制跨域训练分布,并在噪声环境反馈和 off-policy 漂移下保持稳定 在广泛基准上评测,mintact 在可比模型规模下取得 state-of-the-art,其中 osworld-verified 得分为 48.9 摘要称其性能匹配各领域专用模型,但未给出各基准的完整数字 该工作面向数字环境(ui/网页/桌面/移动)的智能体而非物理机器人,但其统一视觉语言模型、多步长时序决策、工具调用以及异步可扩展 rl 训练与分布控制的系统优化思路,与具身智能中的 vla 训练、长时序预测和高效推理/训练系统存在可迁移的方法论关联;wam/物理人工智能层面为间接相关。 对关注视觉语言动作模型训练配方、异构环境大规模 rl 基础设施、异步训练稳定性与跨域分布控制的研究者有直接借鉴价值,其多域统一与领域专用性能对齐的结论也可为具身智能多任务策略训练提供参照。"},{"id":"arxiv:2609.22073:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":6,"hasFigure":true,"tags":["action-prediction","evaluation"],"searchText":"机器人学习与控制 四足机器人运动控制中的步态参数与鲁棒性关系 四足机器人 运动控制 步态参数 占空比 鲁棒性 模型预测控制 轨迹优化 duty factor predicts robust constrained quadrupedal locomotion across gait types 占空比可预测不同步态类型下鲁棒的约束四足运动 james zhu david ologan george ortiz thomas chun fai lee selvin garcia gonzalez ardalan tajbakhsh pinhas ben-tzvi aaron m. johnson quadrupedal robots are increasingly deployed in environments where locomotion must remain robust to disturbances and constrained terrain. gait type, such as walking or trotting, is commonly used to characterize quadrupedal locomotion. however, gait type does not uniquely define locomotion, as parameters such as duty factor, speed, and stance width can vary within a single gait type. in this work, we investigate the relationship between these gait parameters using three distinct quadrupedal locomotion control approaches. first, using whole body trajectory optimization with lqr feedback, we show that duty factor is a stronger predictor of local error convergence than nominal gait type. second, we investigate duty factor selection with a learned locomotion controller, suggesting how duty factor may serve as a low-dimensional parameter for adapting locomotion robustness in narrow-terrain environments. finally, we show that these trends persist under a centroidal model predictive control framework and validate them through narrow-terrain experiments on a physical quadruped. these results show that duty factor provides a simple and effective basis for understanding and selecting robust quadrupedal locomotion across gait types and control architectures. 研究四足机器人在扰动与受限地形下的运动鲁棒性,考察步态类型(如行走、小跑)内参数(占空比、速度、站距)对局部误差收敛与鲁棒性的影响,使用三种不同的四足运动控制方法。 步态类型常被用来表征四足运动,但同一步态类型内占空比、速度、站距等参数可变,因此步态类型不能唯一决定运动特性,需要找到更有效的低维参数来理解和选择鲁棒运动。 占空比是比名义步态类型更强的局部误差收敛预测因子,可作为低维参数用于在窄地形环境中调节运动鲁棒性,且该趋势在不同控制架构下保持一致。 作者通过三种不同的四足运动控制方法分析步态参数与鲁棒性的关系:首先使用全身轨迹优化与lqr反馈分析局部误差收敛;其次研究学习型运动控制器中占空比选择对窄地形适应性的影响;最后在质心模型预测控制框架下验证趋势,并在物理四足机器人上进行窄地形实验。 使用全身轨迹优化与lqr反馈,分析占空比与局部误差收敛的关系 使用学习型运动控制器研究占空比选择对窄地形鲁棒性的影响 使用质心模型预测控制框架验证占空比趋势 在物理四足机器人上进行窄地形实验验证 全身轨迹优化与lqr反馈表明占空比是比名义步态类型更强的局部误差收敛预测因子 学习型运动控制器中占空比可作为低维参数调节窄地形环境中的运动鲁棒性 质心模型预测控制框架下趋势保持一致 物理四足机器人窄地形实验验证了上述趋势 该研究涉及四足机器人真实物理平台上的运动控制与评测,与具身智能中的真实机器人评测和实时控制相关;占空比作为低维参数调节鲁棒性,可为可执行动作生成与系统优化提供启发,但不直接涉及视觉语言动作模型、世界模型或世界动作模型。 论文在真实四足机器人上验证了占空比作为低维鲁棒性调节参数的有效性,并跨三种控制架构(轨迹优化+lqr、学习控制器、质心mpc)验证趋势,对具身智能中真实机器人运动控制、鲁棒性评测和低维参数化策略设计具有参考价值。"},{"id":"arxiv:2609.21982:v1","topic":"robot-learning","tier":"explore","scope":"abstract","score":8,"hasFigure":true,"tags":["policy-learning","robot-learning","simulation"],"searchText":"机器人学习与控制 从不完美机器人数据中学习的机器人策略学习 机器人学习 失败数据利用 流匹配 对比学习 模仿学习 数据质量 carf: contrastive attraction-repulsion of failure-guided flow matching carf:失败引导流匹配的对比吸引-排斥框架 shuqi zhao bang du cheng-en wu yichen xie yixiao wang masayoshi tomizuka robot demonstration collection often produces imperfect or failed trajectories in addition to successful demonstrations. existing methods typically exploit failed trajectories by identifying segments that still make progress toward task completion, but largely overlook \\textit{failure-critical behaviors} that directly lead to task failure. here we argue that these two types of segments provide fundamentally asymmetric supervision: progressive segments should be imitated, whereas failure-critical segments should be explicitly avoided. based on this observation, we propose carf, a contrastive attraction-repulsion of failure-guided framework for learning from imperfect robot data. carf introduces a progress-based importance scorer, trained solely on successful expert demonstrations and its perturbation results, to estimate step-wise contributions toward task completion and identify informative regions in failed trajectories. these scores guide a unified flow-matching objective that attracts the policy toward progressive behaviors and repels it from failure-critical ones, while excluding ambiguous segments. this enables more comprehensive utilization of imperfect data and avoids unreliable supervision from ambiguous failure segments. extensive experiments in simulation and the real world demonstrate consistent improvements over competing baselines across diverse failure scenarios, with ablations further validating the effectiveness of the proposed scoring and attraction-repulsion mechanisms. our website is https://zhao-sq.github.io/carf/#. 机器人演示数据中包含成功轨迹、不完美/失败轨迹,需要从中学习可执行策略。 现有方法在利用失败轨迹时通常只识别其中仍有任务进展的片段,而忽略直接导致任务失败的关键行为;作者认为进展片段与失败关键片段提供的是非对称监督信号。 进展片段应被模仿,失败关键片段应被显式回避,两类监督信号需要区别对待,同时排除模糊片段以避免不可靠监督。 作者观察到现有方法未充分利用失败关键行为,并据此提出进展片段与失败关键片段提供非对称监督,需要分别吸引和排斥。具体分析手段在摘要中未详细说明。 提出 carf 框架,用于从不完美机器人数据中学习 引入基于进展的重要性评分器,仅用成功专家演示及其扰动结果训练,估计每一步对任务完成的贡献并识别失败轨迹中有信息量的区域 用这些评分指导统一的流匹配目标,吸引策略趋向进展行为,排斥其远离失败关键行为,同时排除模糊片段 在仿真和真实世界中进行大量实验,在不同失败场景下相对竞争基线取得一致提升 消融实验进一步验证了所提评分机制和吸引-排斥机制的有效性 摘要未给出具体数字 该工作面向具身智能中的机器人策略学习,直接处理视觉-语言-动作/机器人轨迹数据中失败样本的利用问题,涉及可执行动作生成与真实机器人评测;其流匹配策略学习与数据筛选机制也可为世界动作模型和系统优化中的训练数据质量控制提供参考。 对于关注机器人学习数据效率、失败数据利用和流匹配策略生成的研究者,该工作提供了将失败轨迹转化为非对称监督信号的明确思路,并包含仿真与真实世界验证,具有方法迁移和实验设计参考价值。"}]</script>
+  </section>
+
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>
