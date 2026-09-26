@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-09-25 17:44</span>
+      <span>AUTO RESEARCH DAILY · 2026-09-26 17:28</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,7 +193,7 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">机器人学习与控制</span>
-      <span>全文级</span>
+      <span>摘要级</span>
       <span>相关性 8/10</span>
       <span>v1</span>
     </div>
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>缺失的是可访问的3D空间理解与测量的感知工具包；将感知作为工具暴露给VLM，使其无需改变架构即可理解深度与空间，从而在保留VLM原生训练接口的同时获得操作能力。</p>
+      <p>将感知（深度、视觉锚点、空间测量、抓取假设）暴露为 VLM 可调用的工具，使 3D 几何信息可被访问，而无需改变 VLM 架构或训练深度编码器，从而使智能体能够从返回的证据中选择通用运动。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>为VLA替代路线提供具体系统与量化证据，展示感知工具化如何提升泛化与样本效率；其harness接口设计、跨本体零样本迁移与工具调用轨迹训练范式对世界模型与动作生成研究具迁移价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它展示了一种样本高效、可泛化的机器人策略路径，利用 VLM 能力通过可访问的工具接口实现，与 VLA 模型相比，显著提升了样本效率和泛化能力。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
@@ -220,8 +220,8 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>机器人操作的感知工具化智能体框架（RUA）</p>
-        <p><strong>模型原始标签：</strong>机器人使用智能体、视觉语言模型、感知工具、机器人操作、样本效率、泛化</p>
+        <p><strong>模型细分主题：</strong>面向机器人操作的感知增强型机器人使用智能体（RUA）框架</p>
+        <p><strong>模型原始标签：</strong>机器人使用智能体、视觉语言模型、感知作为工具、机器人操作、样本效率、工具调用、VLA</p>
         <p><strong>第一单位：</strong>证据未提供</p>
         <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-09</p>
@@ -253,26 +253,29 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>将预训练VLM保持完整作为直接控制器，通过工具接口提供校准深度、持久视觉锚点、空间测量与抓取假设，使智能体在现有图像-文本界面中进行3D推理并选择通用运动，无需训练深度编码器或动作头。</dd>
-        <dt>Motivation（研究动机）</dt><dd>VLA模型需要大量示范、可能损害VLM预训练的视觉语言理解能力且泛化差；直接RGB-only VLM控制成本高、依赖模型能力。作者追问：能力强的VLM与可工作的操作策略之间根本缺失什么。</dd>
-        <dt>Insight（核心洞察）</dt><dd>缺失的是可访问的3D空间理解与测量的感知工具包；将感知作为工具暴露给VLM，使其无需改变架构即可理解深度与空间，从而在保留VLM原生训练接口的同时获得操作能力。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>VLA动作适配会损害VLM的视觉语言表示与语义迁移</li><li>VLA在对象、布局或指令变化时倾向于复现记忆轨迹，泛化差</li><li>直接RGB-only VLM控制慢、昂贵且对弱模型困难</li><li>需要在不重训练深度编码器的前提下让VLM理解3D几何</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者通过对比VLA与RUA两条路线，分析VLA在表示损坏与泛化上的代价，并论证感知工具是弥合VLM与操作策略之间缺口的要素；通过LIBERO-PRO、RoboSuite、RoboTwin及学生模型训练实验验证该判断。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>构建任务无关的harness，以感知为工具：区域检测获得持久身份锚点，跨观测保持</li><li>在VLM现有RGB视图上叠加校准测量参考线，使3D关系、朝向、距离可见</li><li>智能体按需查询区域定位、校准几何、锚点跟踪与抓取假设</li><li>深度与校准保留在工具接口之后，VLM负责选择目标、运动与恢复策略</li><li>工具调用轨迹与下一token预测对齐，用于SFT训练学生RUA模型</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>LIBERO-PRO匹配任务上，Gemini 3.7 Flash+K1达77.8%，超过RGB-only harness的GPT-6 Astra 61.1%；K1将Astra提升至88.9%</li><li>无目标微调下，Gemini+K1迁移到三个RoboSuite机械臂（共享任务平均90.0%）与双臂RoboTwin任务</li><li>RoboTwin上达到Easy 32.0%、Hard 28.0%，Hard仅比Easy低4个百分点</li><li>Qwen3.5-9B学生仅用107个教师episode训练，新初始状态达44.2%对OpenVLA 30.2%，留出任务条件13.9%对OpenVLA 0.0%</li><li>消融图像历史长度，默认K=1、N=8；更长文本历史有助于多步行为一致性，超过一帧的图像历史引入冗余或过时视觉上下文噪声</li><li>表1报告K1+Gemini总体77.2%：Object 86.7%、Spatial 81.7%、Goal 63.3%；RATs 43.8%、CaP-Agent0 23.2%</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>留出任务准确率有限</li><li>仅限仿真环境，当前结论受此约束</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接关联具身智能与VLA研究：提出不修改VLM架构、用感知工具进行3D空间推理的RUA路径；涉及可执行动作生成（通用运动选择）、样本效率与模型压缩（9B学生从107 episode学习）、真实机器人评测方向中的仿真迁移与跨本体适配。</dd>
+        <dt>Setting（研究设定）</dt><dd>该论文提出了 Robo-Harness K1，一个机器人使用智能体（RUA）框架，将感知暴露为工具。智能体查询校准深度、持久视觉锚点、空间测量和抓取假设，然后从返回的证据中选择通用运动。该框架旨在让基础 VLM 能够进行机器人操作，而无需改变 VLM 架构或训练深度编码器。在 LIBERO-PRO、RoboSuite、RoboTwin 上使用 Gemini 3.7 Flash、GPT-6 Astra 以及一个 Qwen3.5-9B 学生模型进行了评估。</dd>
+        <dt>Motivation（研究动机）</dt><dd>基础视觉语言模型理解物体、指令和空间关系，但将这种能力转化为机器人操作仍然困难。VLA 模型需要大量演示，并且可能损害预训练理解，而仅使用 RGB 的 VLM 直接控制成本高昂，并且强烈依赖模型能力。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将感知（深度、视觉锚点、空间测量、抓取假设）暴露为 VLM 可调用的工具，使 3D 几何信息可被访问，而无需改变 VLM 架构或训练深度编码器，从而使智能体能够从返回的证据中选择通用运动。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>将 VLM 理解转化为机器人操作</li><li>VLA 模型对大量演示的需求</li><li>VLA 训练可能损害预训练理解</li><li>仅使用 RGB 的 VLM 控制成本高昂且依赖模型能力</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>摘要中未详细说明作者如何分析问题；仅报告了基准上的定量准确率，并未描述错误分析或消融研究。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将感知作为工具暴露：智能体查询校准深度、持久视觉锚点、空间测量和抓取假设。</li><li>智能体从返回的证据中选择通用运动。</li><li>该接口在不改变 VLM 架构或训练深度编码器的情况下提供 3D 几何信息。</li><li>工具调用轨迹与下一 token 训练对齐。</li><li>训练一个 Qwen3.5-9B 学生模型，使用 107 个教师 episode。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在匹配的 LIBERO-PRO 任务上，Gemini 3.7 Flash 配合 K1 达到 77.8% 准确率，超过 GPT-6 Astra 使用仅 RGB harness 的 61.1%；K1 将 Astra 提升至 88.9%。</li><li>无需目标微调，Gemini 配合 K1 迁移到三个 RoboSuite 机械臂和双臂 RoboTwin 任务。</li><li>在 RoboTwin 上，Easy 达到 32.0%，Hard 达到 28.0%，显示出对视觉和环境扰动的鲁棒性。</li><li>仅使用 107 个教师 episode 训练的 Qwen3.5-9B 学生模型在新初始状态上达到 44.2% 准确率，而 OpenVLA 为 30.2%；在留出任务条件上达到 13.9%，而 OpenVLA 为 0.0%。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文通过利用 VLM 进行可执行动作生成（机器人操作运动）、基于工具调用的感知增强、样本高效策略学习以及真实/模拟机器人基准上的长时程任务评估，与具身智能、视觉语言动作模型、世界模型和物理人工智能直接相关。这涉及 VLA 模型和世界模型，但它并未提出学习到的世界模型或 WAM。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>第一单位与通讯作者在提供材料中未出现；论文标识为未来时间戳（2026），部分模型名称如Gemini 3.7 Flash、GPT-6 Astra、Qwen3.5-9B及OpenVLA对比可能为设定性材料；仅基于摘要与有限全文节选，部分实验细节与基线来源未完全展示。</p>
-          <blockquote><strong>K1将感知作为工具暴露，使VLM无需改变架构即可理解深度与空间：</strong>Robo-Harness K1 enables the VLM to understand depth and space without invasive depth-encoder retraining, so the agent can reason about 3D object relations instead of guessing.</blockquote>
-          <blockquote><strong>Gemini 3.7 Flash with K1在LIBERO-PRO上超过RGB-only的GPT-6 Astra：</strong>On LIBERO-PRO, Gemini 3.7 Flash with K1 reaches 77.8%, surpassing GPT-6 Astra’s 61.1% with an RGB-only harness, and K1 further augments Astra to 88.9%.</blockquote>
-          <blockquote><strong>无目标微调下K1可迁移到三个RoboSuite机械臂与双臂RoboTwin：</strong>Without target fine-tuning, Gemini with K1 transfers to three RoboSuite arms (90.0% average on shared tasks) and dual-arm RoboTwin tasks.</blockquote>
-          <blockquote><strong>学生模型仅用107 episode训练即优于OpenVLA：</strong>A Qwen3.5-9B model fine-tuned on only 107 episodes reaches 44.2% on new-state generalization versus 30.2% for OpenVLA, and 13.9% on new-task generalization versus 0.0% for OpenVLA.</blockquote>
-          <blockquote><strong>作者明确局限为有限留出准确率与仅仿真设定：</strong>Modest held-out accuracy and the simulation-only setting bound the current conclusion.</blockquote>
+          <p>全文未提供；所有细节均来自摘要。由于缺乏全文，方法、分析、局限和确切实验细节不完整。作者、单位和通讯作者信息未提供。</p>
+          <blockquote><strong>论文提出了 Robo-Harness K1，一个将感知暴露为工具的机器人使用智能体框架。：</strong>We introduce Robo-Harness K1, a robot-use agent (RUA) framework that exposes perception as tools.</blockquote>
+          <blockquote><strong>智能体查询校准深度、持久视觉锚点、空间测量和抓取假设，然后选择通用运动。：</strong>The agent queries calibrated depth, persistent visual anchors, spatial measurements, and grasp hypotheses, then selects generic motions from the returned evidence.</blockquote>
+          <blockquote><strong>该接口在不改变 VLM 架构或训练深度编码器的情况下使 3D 几何信息可被访问。：</strong>This interface makes 3D geometry accessible without changing the VLM architecture or training a depth encoder.</blockquote>
+          <blockquote><strong>Gemini 3.7 Flash 配合 K1 在 LIBERO-PRO 上达到 77.8% 准确率，超过 GPT-6 Astra 的 61.1%。：</strong>On matched LIBERO-PRO tasks, Gemini 3.7 Flash with K1 reaches 77.8% accuracy, surpassing GPT-6 Astra&#39;s 61.1% with an RGB-only harness; K1 further improves Astra to 88.9%.</blockquote>
+          <blockquote><strong>无需微调，K1 迁移到 RoboSuite 机械臂和 RoboTwin 任务。：</strong>Without target fine-tuning, Gemini with K1 transfers to three RoboSuite arms and dual-arm RoboTwin tasks.</blockquote>
+          <blockquote><strong>在 RoboTwin 上，Easy 达到 32.0%，Hard 达到 28.0%。：</strong>On RoboTwin, it achieves 32.0% on Easy and 28.0% on Hard, showing resilience to visual and environmental perturbations.</blockquote>
+          <blockquote><strong>一个 Qwen3.5-9B 学生模型在 107 个教师 episode 上训练，在新初始状态上达到 44.2%，而 OpenVLA 为 30.2%；在留出任务条件上达到 13.9%，而 OpenVLA 为 0.0%。：</strong>A Qwen3.5-9B student trained on only 107 teacher episodes reaches 44.2% accuracy on new initial states versus 30.2% for OpenVLA, and 13.9% on held-out task conditions versus 0.0% for OpenVLA.</blockquote>
+          <blockquote><strong>作者认为感知增强的 RUA 为样本高效、可泛化的机器人策略提供了一条有前景的路径。：</strong>These results suggest that perception-augmented RUAs offer a promising route to sample-efficient, generalizable robotic policies that leverage VLM capabilities through an accessible tool interface.</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
