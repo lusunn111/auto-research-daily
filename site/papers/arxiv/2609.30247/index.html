@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>滚动世界动作模型：以滚动想象实现的世界动作模型</title>
+  <title>Rolling-WAM：具有滚动想象的世界动作模型</title>
   <style>
     :root {
       --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-09-26 17:28</span>
+      <span>AUTO RESEARCH DAILY · 2026-09-27 18:08</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -168,7 +168,7 @@
         <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
       </nav>
     </div>
-    <h1>滚动世界动作模型：以滚动想象实现的世界动作模型</h1>
+    <h1>Rolling-WAM：具有滚动想象的世界动作模型</h1>
 <p class="lede">Rolling-WAM: World Action Models with Rolling Imagination</p>  </header>
 
   <section class="detail-layout" aria-label="论文完整解读"><article
@@ -178,29 +178,35 @@
   data-topic="wam"
 >
 <div class="paper-card__cover">
-      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
-        <span>世界动作模型（WAM）</span>
-        <strong>arXiv:2609.30247</strong>
-        <small>本期暂无可用论文原图</small>
-      </div>
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.30247/v1/fig2-panel1.png"
+        alt="Figure 2：Rolling-WAM framework. (a) Video and action experts jointly predict flow velocities using masked joint attention and cross-attention to text and state context, conditioned on the current camera observation and per-chunk noise levels shared by video and actions. (b) Rolling inference denoises the window, executes the first action chunk, and shifts the retained future chunks while appending a new chunk initialized with Gaussian noise. (c) The same attention mask is used during training and inference."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2609.30247v1/rollingwam-framework.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 2</strong> Rolling-WAM framework. (a) Video and action experts jointly predict flow velocities using masked joint attention and cross-attention to text and state context, conditioned on the current camera observation and per-chunk noise levels shared by video and actions. (b) Rolling inference denoises the window, executes the first action chunk, and shifts the retained future chunks while appending a new chunk initialized with Gaussian noise. (c) The same attention mask is used during training and inference.</p>
   </div>
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">世界动作模型（WAM）</span>
-      <span>摘要级</span>
+      <span>全文级</span>
       <span>相关性 9/10</span>
       <span>v1</span>
     </div>
 
-    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.30247/">滚动世界动作模型：以滚动想象实现的世界动作模型</a></h3>
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.30247/">Rolling-WAM：具有滚动想象的世界动作模型</a></h3>
     <p class="original-title" lang="en">Rolling-WAM: World Action Models with Rolling Imagination</p>
     <p class="authors">Yinghua Zhou · Junjie Ye · Yiqi Zhao · Hao Dong · Celina Shiyu Wang · Ruohai Ge · Tingyi Yang · Basile Van Hoorick · Gaurav Sukhatme · Vitor Guizilini · Yue Wang</p>
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>可以把联合去噪过程分摊到连续的重规划周期上：维护一个处于交错噪声水平的视频-动作块滑动窗口，每步只完全去噪即将执行的动作块，同时对更远未来的块做部分精化，使计算成本在时间上分布，并在块边界间携带不断演化的视觉-动作上下文。</p>
+      <p>去噪计算可以在连续的重规划周期之间更高效地组织：未执行完的预测尾部不应被丢弃，而应被保留并在后续周期中继续逐步精炼，从而复用去噪计算、保留预测上下文，并减少产生下一个可执行动作块所需的顺序步骤。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它提出了一种无需在每个重规划周期从零去噪整个预测视野的滚动想象机制，将计算成本沿时间分摊，在保持操作性能的同时给出 4.5 倍稳态重规划加速，对研究世界动作模型的推理效率、实时闭环控制与长时序预测具有直接参考价值，并在仿真基准与真实人形机器人上验证。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作提出了一种将联合视频-动作去噪计算跨重规划周期分摊的滚动公式，在保持未来视觉预测的同时实现4.5倍稳态重规划加速，并在仿真和真实人形机器人上验证了竞争力。对于关注可执行动作生成、推理效率、模型压缩式优化和真实机器人闭环控制的研究者，提供了可直接借鉴的时序计算复用思路和有价值的基线对比。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
@@ -216,38 +222,61 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>面向机器人操作的世界动作模型（World Action Models）的联合视频-动作去噪效率优化</p>
-        <p><strong>模型原始标签：</strong>世界动作模型、WAM、滚动想象、视频-动作联合去噪、实时闭环控制、重规划延迟、机器人操作、人形机器人</p>
-        <p><strong>第一单位：</strong>证据未提供</p>
-        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>模型细分主题：</strong>世界动作模型（WAM）中的滚动去噪与实时闭环控制</p>
+        <p><strong>模型原始标签：</strong>世界动作模型、滚动去噪、扩散模型、机器人操作、实时推理、闭环控制、人形机器人</p>
+        <p><strong>第一单位：</strong>University of Southern California</p>
+        <p><strong>通讯作者：</strong>Vitor Guizilini, Yue Wang</p>
         <p><strong>首次上传：</strong>2026-09</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2609.30247">arXiv 摘要 ↗</a>
-<a href="https://arxiv.org/pdf/2609.30247">PDF ↗</a>        </p>
+<a href="https://arxiv.org/pdf/2609.30247">PDF ↗</a><a href="https://arxiv.org/html/2609.30247v1">官方 HTML ↗</a>        </p>
       </div>
 
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2609.30247/v1/fig2-panel1.png"
+              alt="Figure 2：Rolling-WAM framework. (a) Video and action experts jointly predict flow velocities using masked joint attention and cross-attention to text and state context, conditioned on the current camera observation and per-chunk noise levels shared by video and actions. (b) Rolling inference denoises the window, executes the first action chunk, and shifts the retained future chunks while appending a new chunk initialized with Gaussian noise. (c) The same attention mask is used during training and inference."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2609.30247v1/rollingwam-framework.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Rolling-WAM framework. (a) Video and action experts jointly predict flow velocities using masked joint attention and cross-attention to text and state context, conditioned on the current camera observation and per-chunk noise levels shared by video and actions. (b) Rolling inference denoises the window, executes the first action chunk, and shifts the retained future chunks while appending a new chunk initialized with Gaussian noise. (c) The same attention mask is used during training and inference.
+            <a class="figure-source" href="https://arxiv.org/html/2609.30247v1#S1.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>将动作生成与未来视觉预测耦合的世界动作模型（WAMs）用于机器人操作；在每个重规划周期需要完成联合视频-动作去噪，导致显著延迟。论文在 LIBERO、RoboTwin 仿真基准以及真实 Unitree G1 人形机器人上评估所提方法。</dd>
-        <dt>Motivation（研究动机）</dt><dd>标准 WAM 在每个重规划周期从零完成整个预测视野的联合视频-动作去噪，产生大量延迟，延迟了动作更新，限制了闭环响应能力。</dd>
-        <dt>Insight（核心洞察）</dt><dd>可以把联合去噪过程分摊到连续的重规划周期上：维护一个处于交错噪声水平的视频-动作块滑动窗口，每步只完全去噪即将执行的动作块，同时对更远未来的块做部分精化，使计算成本在时间上分布，并在块边界间携带不断演化的视觉-动作上下文。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>联合视频-动作去噪在每个重规划周期完成会造成高延迟</li><li>延迟会推迟动作更新并限制闭环响应</li><li>需要在滚动窗口推进时跨块边界保留并延续去噪上下文</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
-        <dt>Method（方法）</dt><dd><ul><li>将联合视频-动作去噪分布到连续的重规划周期中</li><li>维护一个处于交错噪声水平的视频-动作块滑动窗口</li><li>使用滚动噪声调度：完全去噪即将执行的动作块，同时对更远的未来块进行部分精化</li><li>随着新相机观测使窗口推进，保留的未来块继续其去噪过程</li><li>在块边界之间携带不断演化的视觉-动作上下文</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在 LIBERO、RoboTwin 以及真实 Unitree G1 人形机器人上进行评估，展现出有竞争力的操作性能</li><li>通过消除从零去噪整个预测视野的需要，相比标准联合 WAM 实现 4.5 倍稳态重规划加速</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>该论文直接面向具身智能中的世界动作模型（WAM）与视觉-语言-动作（VLA）式机器人操作，关注动作生成与未来视觉预测的联合建模，并通过滚动去噪调度优化重规划延迟与闭环实时性，且包含真实机器人（Unitree G1 人形）评测，与具身智能、世界模型、物理人工智能、WAM 及系统优化中的实时控制与推理效率方向高度相关。</dd>
+        <dt>Setting（研究设定）</dt><dd>语言条件化的机器人操作，从视觉观测和本体感知出发，联合预测动作序列与未来视频潜变量；在闭环重规划中执行动作块，并在LIBERO、RoboTwin 2.0仿真基准和真实Unitree G1人形机器人上评估。</dd>
+        <dt>Motivation（研究动机）</dt><dd>标准世界动作模型在每个重规划周期都需要从纯噪声开始完整地对整个预测时域进行联合视频-动作去噪，导致推理延迟高，延迟了动作更新，限制了闭环响应能力。现有方法通过测试时省略未来视频生成来加速，但牺牲了可指导动作生成的显式视觉预测。</dd>
+        <dt>Insight（核心洞察）</dt><dd>去噪计算可以在连续的重规划周期之间更高效地组织：未执行完的预测尾部不应被丢弃，而应被保留并在后续周期中继续逐步精炼，从而复用去噪计算、保留预测上下文，并减少产生下一个可执行动作块所需的顺序步骤。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>联合视频-动作去噪在每个重规划周期计算开销大</li><li>推理延迟限制闭环响应性</li><li>保留的未来预测可能滞后于快速场景变化并误导动作生成</li><li>窗口大小和块大小等设计选择在不同动态和控制频率下需要进一步探索</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将问题形式化为学习联合分布 p_θ(a_{t:t+H-1}, v_{t+1:t+H} | c_t)，其中 c_t=(o_t, s_t, ℓ)，并指出标准联合去噪采样器在每个重规划周期从纯噪声处理整个预测时域是计算瓶颈。作者借鉴滚动扩散思想，提出维护一个滑动窗口，其内视频-动作块处于递增的噪声水平，从而将计算分摊到多个控制周期。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>维护一个对齐的视频-动作块滑动窗口，未来方向的噪声水平逐渐升高</li><li>每个重规划周期仅对即将执行的动作块完全去噪，同时对更远的未来块进行部分精炼</li><li>随着新相机观测到来窗口前移，保留的未来块继续其去噪过程</li><li>采用滚动噪声调度，使每个稳态周期只需总步数的一小部分即可产生下一个可执行动作块</li><li>在匹配的噪声分布上训练模型，动作token通过掩码联合注意力和交叉注意力关注窗口中部分去噪的视觉未来</li><li>训练和推理使用相同的注意力掩码</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在LIBERO上达到98.1%的平均成功率</li><li>在RoboTwin 2.0上达到93.3%的平均成功率，其中干净设置93.5%、随机化设置93.0%，超过LingBot-VA（92.2%）、Fast-WAM（91.8%）和Joint-WAM（90.6%）</li><li>在真实Unitree G1人形机器人上完成三个操作任务，表现具有竞争力</li><li>在单张NVIDIA A100 GPU、RoboTwin 2.0设置、384×320图像分辨率下测量稳态重规划延迟：Rolling-WAM（N=10, W=5, 每更新2步去噪）为215 ms，Joint-WAM为978 ms，Fast-WAM为548 ms，对应约4.5倍和2.5倍加速</li><li>VLA基线π0.5和GR00T N1.7每次更新分别耗时296 ms和285 ms</li><li>每个重规划周期仅需两次去噪步骤</li><li>定性比较了RoboTwin 2.0中Put Object Cabinet任务的想象与观测 rollout，显示想象的机器人运动和任务进展与观测紧密跟随</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>窗口大小和块大小等设计选择需要在不同动态和控制频率的任务设置中进一步探索</li><li>尽管有观测反馈，保留的预测可能滞后于快速场景变化并误导动作生成，尤其是在长窗口情况下</li><li>自适应窗口管理和异步执行是改善闭环响应性的方向</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接涉及具身智能与世界动作模型（WAM）的核心问题：如何在保持未来视觉想象能力的同时实现低延迟实时闭环控制。滚动去噪机制为动作生成提供了高效的时序计算分配方案，与推理效率、实时控制和真实机器人评测等关注点高度一致，可迁移至VLA模型和世界模型的系统优化中。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>本次仅能依据标题与摘要作答，未提供全文；因此第一单位、通讯作者、具体方法细节、实验数字之外的结果、分析过程与作者明确局限均无法确定。</p>
-          <blockquote><strong>世界动作模型将动作生成与未来视觉预测耦合，但每个重规划周期完成联合去噪会带来显著延迟并限制闭环响应：</strong>World Action Models (WAMs) couple action generation with future visual prediction for robotic manipulation. However, completing the joint video-action denoising process at each replanning cycle incurs substantial latency, delaying action updates and limiting closed-loop responsiveness.</blockquote>
-          <blockquote><strong>该方法将联合去噪分摊到连续重规划周期，并维护交错噪声水平的滑动窗口：</strong>We present Rolling-WAM, a formulation that distributes joint denoising across successive replanning cycles. Our method maintains a sliding window of video-action chunks at staggered noise levels.</blockquote>
-          <blockquote><strong>滚动噪声调度完全去噪即将执行的动作块，同时部分精化更远未来的块，并随窗口推进延续去噪：</strong>At each step, a rolling noise schedule fully denoises the imminent action chunk for execution, while partially refining farther-future chunks. As the window advances with new camera observations, the retained future chunks continue their denoising process.</blockquote>
-          <blockquote><strong>该方法在 LIBERO、RoboTwin 与真实 Unitree G1 人形机器人上评估并取得有竞争力的操作性能：</strong>Evaluations on LIBERO, RoboTwin, and a real-world Unitree G1 humanoid show that Rolling-WAM achieves competitive manipulation performance.</blockquote>
-          <blockquote><strong>相比标准联合 WAM 实现 4.5 倍稳态重规划加速：</strong>By removing the need to denoise the entire prediction horizon from scratch, it delivers a 4.5x steady-state replanning speedup over standard joint WAMs.</blockquote>
+          <p>全文为节选，部分章节内容被截断（如方法细节、训练目标完整描述、附录表格），部分实验细节如消融研究和真实机器人任务的完整定量结果未完全呈现。相关性评分基于摘要和可用正文片段，可能与完整论文存在细微偏差。</p>
+          <blockquote><strong>标准WAM在每个重规划周期完整去噪整个预测时域导致高延迟：</strong>Joint denoising samplers process the entire prediction horizon from pure noise to clean data at each replanning cycle.</blockquote>
+          <blockquote><strong>Rolling-WAM将去噪计算分布到连续重规划周期，维护错开噪声水平的滑动窗口：</strong>Our method maintains a sliding window of video-action chunks at staggered noise levels.</blockquote>
+          <blockquote><strong>Rolling-WAM实现4.5倍稳态重规划加速：</strong>it delivers a 4.5x steady-state replanning speedup over standard joint WAMs.</blockquote>
+          <blockquote><strong>在LIBERO上达到98.1%平均成功率，在RoboTwin上达到93.3%：</strong>It achieves a 98.1% average success rate on LIBERO and 93.3% on RoboTwin</blockquote>
+          <blockquote><strong>Rolling-WAM每更新使用两步去噪，耗时215 ms，相比Joint-WAM的978 ms：</strong>Rolling-WAM uses two denoising steps per update and takes 215 ms, compared with 978 ms for Joint-WAM</blockquote>
+          <blockquote><strong>保留的预测可能滞后于快速场景变化：</strong>Despite observation feedback, retained predictions may lag behind rapid scene changes and misguide action generation, particularly with long windows.</blockquote>
+          <blockquote><strong>第一单位为University of Southern California：</strong>1 University of Southern California</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
