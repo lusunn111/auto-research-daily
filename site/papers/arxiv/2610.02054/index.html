@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UniWAM：统一的世界-动作模型</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-10-03 00:22</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>UniWAM：统一的世界-动作模型</h1>
+<p class="lede">UniWAM: Unified World-Action Model</p>  </header>
+
+  <section class="detail-layout" aria-label="论文完整解读"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.02054:v1"
+  data-topic="wam"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.02054/v1/fig1-panel1.png"
+        alt="Figure 1：UniWAM unifies physical reasoning, visual generation, and action prediction in a unified architecture and pretrains on robot and human egocentric data as well as VQA data. The resulting model exhibits strong robustness, generalization, instruction-following, and reasoning abilities."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.02054v1/uniwam_teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> UniWAM unifies physical reasoning, visual generation, and action prediction in a unified architecture and pretrains on robot and human egocentric data as well as VQA data. The resulting model exhibits strong robustness, generalization, instruction-following, and reasoning abilities.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界动作模型（WAM）</span>
+      <span>全文级</span>
+      <span>相关性 10/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.02054/">UniWAM：统一的世界-动作模型</a></h3>
+    <p class="original-title" lang="en">UniWAM: Unified World-Action Model</p>
+    <p class="authors">Jiayi Chen · Wenxuan Song · Jingbo Wang · Shuai Zhou · Xicheng Gong · Zehua Fan · Ziyang Zhou · Junwu E · Haodong Yan · Fuhao Li · Qize Yu · Xu Huang · Pengwei Wang · Wen Chen · Shunbo Zhou · Haoang Li</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>语义理解、视觉生成与动作预测可以在同一多专家架构中通过互补监督联合学习：用自然语言表示低层动作使 VLM 适配具身任务同时保留语言能力，用 VQA、人类自我中心数据和机器人演示分别监督合适组件，并在后训练阶段用未来视觉噪声增强与历史条件流匹配在维持性能的同时显著减少去噪步数。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作给出一个把 VLM、视频生成模型与动作专家统一到单一 MoT 架构的完整训练配方，覆盖数据清洗、互补监督、后训练加速与真实/仿真多类评测，并报告人机联合训练的对数线性缩放规律，对世界-动作模型、长时序操作、推理效率与真实机器人评测方向均有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+    </ul>
+
+<details class="paper-details" open>
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>统一世界模型与动作生成的多专家机器人基础模型</p>
+        <p><strong>模型原始标签：</strong>世界-动作模型、视觉-语言-动作模型、世界模型、流匹配、人机联合训练、长时序操作、扩散步数压缩</p>
+        <p><strong>第一单位：</strong>The Hong Kong University of Science and Technology (Guangzhou)</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.02054">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.02054">PDF ↗</a><a href="https://arxiv.org/html/2610.02054v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.02054/v1/fig1-panel1.png"
+              alt="Figure 1：UniWAM unifies physical reasoning, visual generation, and action prediction in a unified architecture and pretrains on robot and human egocentric data as well as VQA data. The resulting model exhibits strong robustness, generalization, instruction-following, and reasoning abilities."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.02054v1/uniwam_teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> UniWAM unifies physical reasoning, visual generation, and action prediction in a unified architecture and pretrains on robot and human egocentric data as well as VQA data. The resulting model exhibits strong robustness, generalization, instruction-following, and reasoning abilities.
+            <a class="figure-source" href="https://arxiv.org/html/2610.02054v1#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在单一 Mixture-of-Transformers 架构中联合训练物理推理器、世界生成器与动作预测器，预训练数据混合机器人演示、人类自我中心数据与 VQA 数据，并在真实与仿真操作任务上评测（LIBERO、LIBERO-Plus、RoboTwin 2.0 Clean2Clean/Clean2Rand 以及真实世界实验）。</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLA 模型受益于预训练 VLM 的理解与推理能力，但仅用动作监督难以获得对世界动力学的接地；WAM 继承视频生成模型的时空先验，却在分布偏移下的语义理解与推理上受限。作者试图把 VLM 的强推理与泛化能力和 WAM 的强动力学理解结合起来，构建真正通用的机器人模型。</dd>
+        <dt>Insight（核心洞察）</dt><dd>语义理解、视觉生成与动作预测可以在同一多专家架构中通过互补监督联合学习：用自然语言表示低层动作使 VLM 适配具身任务同时保留语言能力，用 VQA、人类自我中心数据和机器人演示分别监督合适组件，并在后训练阶段用未来视觉噪声增强与历史条件流匹配在维持性能的同时显著减少去噪步数。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>将 VLM 适配到具身任务需要更新参数以获取具身知识，同时必须保留预训练继承的语言能力，需要精心设计监督信号</li><li>人类自我中心数据与机器人数据的清洗、标注与统一表示困难</li><li>在分布偏移下兼顾语义推理与动力学理解</li><li>减少去噪步数以提升推理效率而不损失策略性能</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料以 LIBERO 与 RoboTwin 2.0 及其 OOD 变体（LIBERO-Plus、Clean2Rand）作为主要评测，并统计各扰动维度成功率；同时通过消融比较动作到动作生成与噪声到动作生成、未来视觉增强等训练设计对成功率的影响，并给出人机联合训练的对数线性缩放规律。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>构建统一架构：物理推理器（基于 Qwen3-VL-2B-Instruct）、世界生成器（视频生成骨干）与动作预测器，通过联合多模态注意力（MoT）交换信息</li><li>用自然语言表示低层动作，引入物理语言监督，使 VLM 适配具身任务同时保留语言能力</li><li>设计覆盖人类自我中心数据与机器人数据的严格数据清洗与标注流程，形成一致的视觉观测、子任务描述与人类运动表示</li><li>预训练配方为 VQA 数据、人类自我中心数据与机器人演示分配互补监督到相应模型组件</li><li>后训练使用未来视觉噪声增强降低对精确未来预测的依赖</li><li>历史条件流匹配：用编码的动作历史初始化动作生成，学习从历史源到干净目标的位移</li><li>联合分布建模：给定当前观测、本体状态与任务指令，学习语言输出、未来观测与动作的联合分布</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>LIBERO 标准套件上 UniWAM 取得最高平均成功率（表 4 中 UniWAM 所在行被加粗为最高）</li><li>LIBERO-Plus 上总体成功率 92.6%，为所列方法中最高；在机器人（89.5%）、语言（92.2%）、光照（97.9%）、背景（97.6%）扰动维度上为所列方法中最高</li><li>RoboTwin 2.0 Clean2Rand 上成功率 68.32%，为所列方法中最高；从 C2C 到 C2R 仅下降 6.82 个百分点，而 π0.5 与 Spatial Forcing 分别下降 24.70 与 50.46 个百分点</li><li>消融显示动作到动作生成优于噪声到动作，平均成功率由 64.80% 提升到 69.73%；未来视觉增强进一步将平均成功率提升到 71.34%</li><li>发现人机统一联合训练的对数线性缩放规律</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接对应具身智能与世界-动作模型（WAM）核心议题：统一世界模型与动作生成、可执行动作生成、长时序任务与指令跟随；历史条件流匹配与去噪步数压缩直接关系推理效率与实时控制；模型由 VLM 与视频生成骨干组合，涉及模型压缩与部署效率；人机联合预训练与缩放规律为大规模机器人基础模型训练提供系统优化视角。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>给出的全文为节选，部分实验表格（如真实世界实验、完整消融）与作者声明的局限未在材料中完整呈现；作者与机构分工仅从作者列表中推断，通讯作者信息未明确给出；部分数字来自表格片段，可能存在上下文不完整。</p>
+          <blockquote><strong>论文提出统一架构 UniWAM，整合物理推理器、世界生成器与动作预测器：</strong>We introduce UniWAM, a unified architecture that integrates a physical reasoner, a world generator, and an action predictor to jointly learn semantic understanding of the physical world, visual generation, and action prediction.</blockquote>
+          <blockquote><strong>预训练配方为 VQA、人类自我中心数据与机器人演示分配互补监督：</strong>we represent low-level actions in natural language and introduce a pre-training recipe that assigns complementary supervision from visual question answering (VQA) data, human egocentric data, and robot demonstrations to the appropriate model components</blockquote>
+          <blockquote><strong>后训练设计显著减少去噪步数并保持性能：</strong>Together, these designs significantly reduce denoising steps while maintaining performance.</blockquote>
+          <blockquote><strong>论文报告在多种评测上达到 SOTA，并发现人机联合训练的对数线性缩放规律：</strong>UniWAM achieves state-of-the-art (SOTA) performance across multiple evaluations, including in-distribution performance, robustness, generalization, instruction following, and long-horizon task execution. Furthermore, we uncover a log-linear scaling law of unified human-robot co-training</blockquote>
+          <blockquote><strong>架构基于 Mixture-of-Transformers，专家通过联合注意力交换信息：</strong>UniWAM unifies semantic understanding, language modeling, visual generation, and action prediction in a Mixture-of-Transformers (MoT) architecture</blockquote>
+          <blockquote><strong>LIBERO-Plus 总体成功率为 92.6%：</strong>UniWAM achieves an overall success rate of 92.6% on LIBERO-Plus, the highest reported value among the listed methods.</blockquote>
+          <blockquote><strong>动作历史初始化与未来视觉增强提升策略性能：</strong>action-to-action generation outperforms noise-to-action, increasing average SR from 64.80% to 69.73%. Future visual augmentation further brings the average SR to 71.34%.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></section>
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>
