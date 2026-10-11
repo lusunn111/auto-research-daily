@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-11 18:58</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-12 00:25</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,7 +193,7 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">机器人学习与控制</span>
-      <span>摘要级</span>
+      <span>全文级</span>
       <span>相关性 8/10</span>
       <span>v1</span>
     </div>
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>具身世界可视为一台具身图灵机，其纸带是机器人与环境状态，规则是策略；如果状态能被准确表示，决策可以完全用代码编写</p>
+      <p>把具身世界看作图灵机——纸带是机器人与环境状态，规则是策略；若状态能被准确表示，决策即可完全写成代码，且同一代码跨回合复用、不同任务共享同一代码库。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该文提出一种可迁移的替代范式：用有状态代码取代模型在环，直接触及可执行动作生成、状态表示、推理效率与真实机器人评测等当前核心议题；其跨任务共享库与递归自我改进设想对构建可累积能力的具身系统具有参考价值</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它提供了一个与 VLA、Agent Harness、WAM 并列的对照范式与强基线结果（70.24% vs 最强基线 +38.86），并且其“测试时无模型、决策廉价可复现”的结论可直接迁移到对推理效率与实时控制敏感的具身系统研究；此外其失败分类与上限讨论为状态表示精度研究提供了明确的问题清单。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
     </ul>
@@ -219,9 +219,9 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>以代码为策略的具身机器人决策范式</p>
-        <p><strong>模型原始标签：</strong>具身智能、代码策略、递归自我改进、状态表示、双臂操作</p>
-        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>模型细分主题：</strong>以代码为唯一策略的具身任务范式与递归自我改进</p>
+        <p><strong>模型原始标签：</strong>Code-Only-as-Policy、具身图灵机、递归自我改进、机器人操作、无模型运行时、状态显式表示</p>
+        <p><strong>第一单位：</strong>Nanyang Technological University</p>
         <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-10</p>
         <p class="paper-links">
@@ -270,26 +270,29 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>机器人策略学习与决策生成，面向双臂操作任务，测试时不使用 VLM 或 VLA 在环</dd>
-        <dt>Motivation（研究动机）</dt><dd>现有机器人策略通常在控制回路中保留模型，由 VLA 将观测映射为动作，或由 Agent Harness 在运行时查询 VLM 做决策；作者希望探索一种不依赖模型在环的替代范式</dd>
-        <dt>Insight（核心洞察）</dt><dd>具身世界可视为一台具身图灵机，其纸带是机器人与环境状态，规则是策略；如果状态能被准确表示，决策可以完全用代码编写</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>从相机图像和本体感觉准确度量并跟踪机器人、环境与任务状态</li><li>代码逻辑的鲁棒性决定性能上限</li><li>跨回合与跨任务复用同一代码库的状态表示一致性</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者通过概念性对比分析提出 COAP 的三项优势：显式状态可存储在代码中；执行层面决策可控、可灵活从失败恢复、在线运行快速廉价；可扩展性上新任务可复用、继承或扩展共享库，使能力跨任务累积；摘要未说明量化分析过程</dd>
-        <dt>Method（方法）</dt><dd><ul><li>提出 Code-Only-as-Policy（COAP）：代码从相机图像和本体感觉测量并跟踪机器人、环境与任务状态</li><li>所有决策完全由该状态驱动，不在回路中放置 VLM 或 VLA</li><li>同一代码跨回合适用，不同任务共享一个库</li><li>以代码库作为递归自我改进（RSI）的媒介，由编码智能体在闭环中开发库，每次修改显式且可控</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在 RoboDojo 的 42 个双臂任务上，所得库在测试时无模型的情况下达到 70.24% 成功率</li><li>摘要提出该库因跨回合适用，可作为 VLA 与 Agent Harness 的高效数据引擎</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>作者明确表示 COAP 的上限取决于状态表示用于决策的准确程度以及代码逻辑的鲁棒性</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>与具身智能和机器人策略生成直接相关：它挑战 VLA/VLM 在环的范式，强调可显式表示状态的可执行代码，并涉及长时序跟踪、在线执行效率与真实机器人双臂评测；对世界模型而言，它把环境状态作为可写纸带，对系统优化而言它强调代码的在线速度与低成本</dd>
+        <dt>Setting（研究设定）</dt><dd>在仿真基准 RoboDojo 的 42 个双臂操作任务上评测，测试时控制回路中不含 VLM 或 VLA，策略为离线由编码智能体开发的共享代码库。</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有机器人策略（VLA、Agent Harness）在控制回路中保留模型：状态隐式编码于权重或存于模型上下文，导致每次调用有随机性、单回合成本高、决策不可复现。作者希望探索一种状态完全显式、决策完全由代码完成的范式。</dd>
+        <dt>Insight（核心洞察）</dt><dd>把具身世界看作图灵机——纸带是机器人与环境状态，规则是策略；若状态能被准确表示，决策即可完全写成代码，且同一代码跨回合复用、不同任务共享同一代码库。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>状态表示精度不足：仅用 RGB 输入时识别会出错，错误值会进入状态</li><li>接触状态（尤其可变形物体）的表示目前较粗糙</li><li>代码逻辑本身的鲁棒性有限</li><li>需要少量任务特定代码逻辑，泛化能力受限</li><li>离线 RSI 循环仍需进一步优化以让编码智能体写出更好的代码</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者将现有策略按“状态存放位置”和“如何从状态选动作”分类（VLA 隐式编码于权重，Agent Harness 以文本存于模型上下文），据此论述代码策略在显式状态、执行可控、可扩展三方面的优势；并通过失败回合的最小修复类别统计来定位上限来源（状态测量与代码逻辑）。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将机器人与环境建模为具身图灵机：纸带为环境状态（物体位姿与空间关系）与机器人状态（关节角、手部位姿、夹爪开度、持物）</li><li>提出 Code-Only-as-Policy：代码从相机图像与本体感知测量并跟踪机器人、环境与任务状态，并据此做出全部决策</li><li>状态分为机器人状态、环境状态、任务状态，全部以物理单位存储在程序中</li><li>同一代码跨回合复用，不同任务共享一个代码库，运行时不调用 VLM 或 VLA</li><li>以代码为递归自我改进（RSI）的媒介：编码智能体在闭环内总结、编写、调试代码</li><li>RSI 规则：固定约束（禁止针对单回合的特化、测试时禁止使用 oracle 状态）、不使用基准测试集、无人在回路</li><li>接受准则：兼容性条件保护未被 diff 针对的任务，接受规则确保被针对任务提升，使每一步被接受的改动单调不降、改进可累积</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 RoboDojo 的 42 个双臂任务上，COAP 达到 70.24% 成功率，比最强基线（state-of-the-art）高 38.86 个百分点（原文亦写 38.9%），并在全部五个维度领先</li><li>分维度成功率：Memory 89.9、Precision 75.1、Open 64.1、Generalization 65.7、Long-Horizon 56.4；Score 为 75.45</li><li>对比方法包括 Agent Harness（PhysicalRSI 37.3、GPT-6 Astra 22.48）、World Action Model 类（Awomo-0.5 29.64 等）与 VLA 类（Simate-beta 27.96、Rex-M1 Preview 27.44 等）</li><li>代码库由编码智能体（Opus 5.5 Max）在作者设计的闭环 RSI 流程中开发，开发过程不涉及基准测试集</li><li>开发记录显示：尝试两个或更多变体时，五次中有四次找到了被接受的改动</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>泛化能力较弱，因为它需要少量任务特定代码逻辑</li><li>上限受状态表示精度与代码逻辑鲁棒性限制</li><li>仅用 RGB 输入导致感知错误可能进入状态，在真实场景中此类错误可能更严重</li><li>接触状态（尤其涉及可变形物体时）的表示较粗糙</li><li>当前编码能力有局限，离线 RSI 循环仍需进一步优化</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接挑战“控制回路中必须保留 VLA/VLA 模型”的假设，提出无模型运行时的代码策略，与具身智能中可执行动作生成、实时控制（决策廉价、可复现）和数据引擎方向相关；文中将 World Action Model（WAM）作为对比类别并给出其基准成绩，但未提出新的世界模型或长时序预测方法。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>仅依据标题与摘要判断，未提供全文，无法核实状态表示的具体实现、基线设置、实验细节、跨任务泛化统计与失败模式；70.24% 成功率的具体任务构成与对比条件也无法确认</p>
-          <blockquote><strong>论文提出将具身世界视为具身图灵机，纸带是机器人与环境状态，规则是策略：</strong>We propose a different view: the embodied world is an Embodied Turing Machine, whose tape is the robot and environment state and rules are the policy.</blockquote>
-          <blockquote><strong>论文提出 Code-Only-as-Policy，由代码从图像和本体感觉跟踪状态并做出全部决策，回路中不含 VLM 或 VLA：</strong>We therefore propose Code-Only-as-Policy (COAP): code measures and tracks the robot, environment, and task state from camera images and proprioception, and makes every decision from it.</blockquote>
-          <blockquote><strong>COAP 的三项优势为显式状态、执行与可扩展性：</strong>we analyze three advantages of COAP: (i) Explicit State: the state can be stored in code; (ii) Execution: code makes decision making controllable, recovers from failures flexibly, and runs fast and cheaply online; (iii) Extensibility: new tasks reuse, inherit, or extend the shared library, so capabilities can accumulate over tasks.</blockquote>
-          <blockquote><strong>在 RoboDojo 的 42 个双臂任务上，所得库在测试时无模型的情况下达到 70.24% 成功率：</strong>On RoboDojo&#39;s 42 bimanual tasks, the resulting library reaches a success rate of 70.24% without a model at test time.</blockquote>
-          <blockquote><strong>作者明确承认 COAP 的上限取决于状态表示的准确性与代码逻辑的鲁棒性：</strong>The upper bound of COAP lies in how accurately the state is represented for decision making and how robust the code logic is.</blockquote>
+          <p>本次仅依据摘要与全文节选判断；节选缺少方法细节（RSI 闭环的完整算法、Equation 3/5 的完整表述）、实验设置细节与消融，且部分表格文本存在截断，故对方法完整性与部分数据的解读存在不确定性。</p>
+          <blockquote><strong>论文提出把具身世界视为具身图灵机，并据此提出 Code-Only-as-Policy。：</strong>We propose a different view: the embodied world is an Embodied Turing Machine, whose tape is the robot and environment state and rules are the policy.</blockquote>
+          <blockquote><strong>COAP 在 RoboDojo 的 42 个双臂任务上达到 70.24% 成功率，且测试时无模型。：</strong>On RoboDojo’s 42 bimanual tasks, the resulting library reaches a success rate of 70.24% without a model at test time.</blockquote>
+          <blockquote><strong>作者列出 COAP 相对 VLA 与 Agent Harness 的三个优势。：</strong>we analyze three advantages of COAP: (i) Explicit State: the state can be stored in code; (ii) Execution: code makes decision making controllable, recovers from failures flexibly, and runs fast and cheaply online; (iii) Extensibility: new tasks reuse, inherit, or extend the shared library, so capabilities can accumulate over tasks.</blockquote>
+          <blockquote><strong>论文明确指出 COAP 的泛化弱点。：</strong>The weakness of COAP mainly lies in its generalization capabilities since it needs a small amount of task-specific code logic.</blockquote>
+          <blockquote><strong>COAP 的结果比最强方法高 38.9%。：</strong>The resulting COAP policy reaches 70.24% success rate, 38.9% above the state-of-the-art method.</blockquote>
+          <blockquote><strong>失败被归为状态测量与代码逻辑两类。：</strong>The failures fall into two groups: limits of state measurement and limits of the code logic.</blockquote>
+          <blockquote><strong>第一单位是南洋理工大学。：</strong>Affiliation: Nanyang Technological University</blockquote>
+          <blockquote><strong>编码智能体在闭环中开发代码库，且开发不涉及基准测试集。：</strong>A coding agent (Opus 5.5 Max) develop the code library in a closed RSI loop that we design: under fixed rules, such as no hack for single episodes and no oracle state at test time, the coding agent summarizes, writes, and debugs the code without human in the loop. The development does not involve test set of a benchmark.</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
