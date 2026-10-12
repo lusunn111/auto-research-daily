@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2026-10-13 科研日报</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-10-13 00:48</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>2026-10-13 科研日报</h1>
+<p class="lede">保留该次运行的论文顺序、编辑层级、分析范围与结构化解读。</p>    <div class="stats" aria-label="长期档案统计">
+      <div class="stat"><strong>9</strong>当前页面论文</div>
+      <div class="stat"><strong>908</strong>长期论文</div>
+      <div class="stat"><strong>9</strong>稳定主题</div>
+      <div class="stat"><strong>15</strong>固定标签</div>
+      <div class="stat"><strong>463</strong>已有配图</div>
+    </div>
+  </header>
+
+  <section class="gallery-intro" aria-labelledby="gallery-title">
+    <div><p class="eyebrow">Research Gallery</p><h2 id="gallery-title">本期全部论文</h2></div>
+    <p>这是按日期保存的每日日报快照，不混入长期论文库。</p>
+  </section>
+
+  <section data-explorer>
+    <div class="topic-shelves" role="group" aria-label="按研究主题筛选">
+      <button class="topic-filter" type="button" data-topic-choice="" aria-pressed="true"><strong>全部研究</strong><span>9 篇</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="vla" aria-pressed="false" title="视觉、语言与机器人动作的统一建模、适配与安全。"><strong>视觉语言动作（VLA）</strong><span>2 篇 · 视觉、语言与机器人动作的统一建模、适配与安全。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="world-model" aria-pressed="false" title="动态预测、视频生成、世界模拟与物理交互建模。"><strong>世界模型（World Model）</strong><span>1 篇 · 动态预测、视频生成、世界模拟与物理交互建模。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="robot-learning" aria-pressed="false" title="操作、导航、规划、强化学习与跨具身策略。"><strong>机器人学习与控制</strong><span>3 篇 · 操作、导航、规划、强化学习与跨具身策略。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="benchmark" aria-pressed="false" title="任务基准、评价指标、可靠性与系统性对比。"><strong>基准评测（Benchmark）</strong><span>2 篇 · 任务基准、评价指标、可靠性与系统性对比。</span></button>
+      <button class="topic-filter" type="button" data-topic-choice="efficient-inference" aria-pressed="false" title="推理解码、令牌压缩、早停、时延与吞吐优化。"><strong>高效推理</strong><span>1 篇 · 推理解码、令牌压缩、早停、时延与吞吐优化。</span></button>
+    </div>
+
+    <form class="explorer-controls" data-filter-form aria-label="筛选论文">
+      <label class="control control--query"><span>关键词</span><input type="search" name="q" maxlength="200" autocomplete="off" placeholder="标题、作者、方法、标签……" data-filter-query></label>
+      <label class="control"><span>编辑层级</span><select name="tier" data-filter-tier><option value="">全部层级</option><option value="deep_read">今日必读</option><option value="browse">值得浏览</option><option value="explore">探索发现</option></select></label>
+      <label class="control"><span>证据范围</span><select name="scope" data-filter-scope><option value="">全部范围</option><option value="full_text">全文级</option><option value="abstract">摘要级</option></select></label>
+      <label class="control"><span>最低相关性</span><select name="score" data-filter-score><option value="0">全部</option><option value="8">8 分以上</option><option value="9">9 分以上</option></select></label>
+      <label class="control"><span>论文配图</span><select name="figure" data-filter-figure><option value="">全部</option><option value="yes">已有原图</option><option value="no">暂无原图</option></select></label>
+      <div class="explorer-actions"><button type="button" data-expand-visible>展开结果</button><button type="button" data-collapse-visible>全部收起</button><button type="reset">重置</button></div>
+    </form>
+    <noscript><p class="noscript-notice">筛选功能需要启用 JavaScript；未启用时仍会显示全部论文。</p></noscript>
+    <div class="explorer-status"><p>当前显示 <strong data-result-count aria-live="polite">9</strong> 篇论文 <span class="active-tag" data-active-tag></span></p><p>标签有稳定永久网址，也可在当前画廊内继续筛选。</p></div>
+
+      <section class="tier-section" data-tier-section="deep_read">
+        <header class="tier-heading"><h2>今日必读</h2><p><span data-tier-count>5</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13945:v1"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13945/v1/fig1-panel1.png"
+        alt="Figure 1：An overview of Splat2Act. From a handheld scan of a deployment scene and images of user-selected objects, Splat2Act builds a simulation-ready digital twin, generates pickup demonstrations without any teleoperation, and fine-tunes a VLA for deployment in the captured scene."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13945v1/figs/splat2act-teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> An overview of Splat2Act. From a handheld scan of a deployment scene and images of user-selected objects, Splat2Act builds a simulation-ready digital twin, generates pickup demonstrations without any teleoperation, and fine-tunes a VLA for deployment in the captured scene.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13945/">Splat2Act：从捕获场景到个性化VLA操作</a></h3>
+    <p class="original-title" lang="en">Splat2Act: From Captured Scenes to Personalized VLA Manipulation</p>
+    <p class="authors">Xiaomeng Ye · Krishna Jaganathan · Gyubeum Lim · Gunjan Chhablani · Muhammad Zubair Irshad · Zsolt Kira</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>核心洞察是：仅使用仿真预言机生成的数据，通过建筑级逼真数字孪生与自动发现的可抓取容器，进行两阶段微调，就能将通用VLA个性化到目标场景与物体，并在真实机器人上保持与仿真接近的成功率。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>推荐当前研究者阅读，因为它提供了一套完整的真实到仿真再到真实个性化VLA流程，覆盖建筑级场景重建、自动任务构建、大规模仿真演示生成、两阶段微调以及真实Stretch 3部署，并报告了仿真与真实成功率对比、数据规模消融和分布外泛化结果，对VLA个性化、仿真数据生成和真实机器人评测具有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>面向部署场景个性化的真实到仿真再到真实的VLA操作策略自动化训练</p>
+        <p><strong>模型原始标签：</strong>VLA、real-to-sim-to-real、3D Gaussian Splatting、操作策略个性化、仿真数据生成、Stretch 3、π0.5</p>
+        <p><strong>第一单位：</strong>Institute for Robotics and Intelligent Machines, Georgia Institute of Technology, Atlanta, GA, USA</p>
+        <p><strong>通讯作者：</strong>Zsolt Kira</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13945">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13945">PDF ↗</a><a href="https://arxiv.org/html/2610.13945v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13945/v1/fig1-panel1.png"
+              alt="Figure 1：An overview of Splat2Act. From a handheld scan of a deployment scene and images of user-selected objects, Splat2Act builds a simulation-ready digital twin, generates pickup demonstrations without any teleoperation, and fine-tunes a VLA for deployment in the captured scene."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13945v1/figs/splat2act-teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> An overview of Splat2Act. From a handheld scan of a deployment scene and images of user-selected objects, Splat2Act builds a simulation-ready digital twin, generates pickup demonstrations without any teleoperation, and fine-tunes a VLA for deployment in the captured scene.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13945v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13945/v1/fig2-panel1.png"
+              alt="Figure 2：The end-to-end pipeline of Splat2Act. Scene captures are reconstructed as a 3DGS with a mesh collision geometry, while simulation-ready 3D assets are generated from object captures. Receptacle discovery and reachability-aware task planning construct feasible pickup tasks, and a privileged oracle generates demonstrations for broad Stage 1 adaptation and Stage 2 personalization before real-world deployment."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13945v1/figs/splat2act-pipeline.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> The end-to-end pipeline of Splat2Act. Scene captures are reconstructed as a 3DGS with a mesh collision geometry, while simulation-ready 3D assets are generated from object captures. Receptacle discovery and reachability-aware task planning construct feasible pickup tasks, and a privileged oracle generates demonstrations for broad Stage 1 adaptation and Stage 2 personalization before real-world deployment.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13945v1#S2.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>研究设定为：用户用手机扫描其家庭或办公等建筑级室内场景并提供目标物体图像，系统自动构建逼真数字孪生并生成抓取演示，从而将一个预训练通用VLA策略（π0.5）个性化到该具体场景与物体集合，最终部署到真实移动操作机器人上。</dd>
+        <dt>Motivation（研究动机）</dt><dd>动机是通用操作策略在用户真实部署场景中零样本抓取成功率为0%，而在每个用户环境中收集真实演示成本过高，因此需要一种仅依赖场景与物体采集、无需遥操作的自动化个性化方案。</dd>
+        <dt>Insight（核心洞察）</dt><dd>核心洞察是：仅使用仿真预言机生成的数据，通过建筑级逼真数字孪生与自动发现的可抓取容器，进行两阶段微调，就能将通用VLA个性化到目标场景与物体，并在真实机器人上保持与仿真接近的成功率。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>通用VLA在部署场景零样本抓取失败</li><li>为每个新环境收集真实演示成本高昂</li><li>将单个桌面重建扩展到建筑级室内环境</li><li>自动发现桌面与非桌面容器并构建可行抓取任务</li><li>生成成功演示并弥合仿真到真实的视觉与物理差距</li><li>在容器数量和物体多样性增长时维持个性化策略的成功率</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过实验测量预训练π0.5在目标场景的0%抓取成功率，并系统比较不同阶段（预训练基座、Stage 1、Stage 2）和不同适配源（单场景Office1k、多场景Multi1k）的策略表现，分析容器数量与增强深度对分布内成功率的影响，以及在分布外容器偏移和真实机器人12任务子集上的泛化与迁移表现。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>使用手持手机扫描建筑级室内场景，用3D Gaussian Splatting构建逼真数字孪生并附加碰撞几何</li><li>自动发现桌面和非桌面容器，构建可行抓取任务</li><li>用特权仿真预言机生成成功抓取演示，无需人类遥操作</li><li>在101个扫描的校园环境中生成852个容器和超过68,000条抓取演示</li><li>两阶段微调π0.5：Stage 1用大量公共物体资产适配，Stage 2在部署场景容器上个性化到用户物体</li><li>每个物体-容器对使用约24个以上增强轨迹以保证覆盖</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>预训练π0.5在两个目标场景零样本抓取成功率为0.0%</li><li>在101个扫描校园环境中位可导航面积104.87平方米、7个容器，流水线产出852个容器和超过68,000条抓取演示</li><li>最强个性化策略在目标场景达到62.5%总体抓取成功率</li><li>部署到真实Stretch 3上，同一策略在12任务子集达到63.9%成功率，仿真在这些任务上为66.7%</li><li>分布内成功率随容器数和增强深度变化：每个物体8个任务时成功率21.9%至43.8%；每个物体24个任务时，一、二、四个容器分别达到75.0%、87.5%、75.0%，轨迹数从96增至384</li><li>Office Stage 2从Office1k Stage 1微调达到62.5%，Conference Stage 2从Multi1k Stage 1微调达到51.4%</li><li>Office上从Multi1k Stage 1和π0.5基座微调的Stage 2分别达到47.5%和45.0%</li><li>Conference上从π0.5基座和Office1k Stage 1微调的Stage 2分别达到42.9%和37.1%</li><li>分布外容器偏移下，单一场景适配更脆弱，而从Multi1k Stage 1微调的Stage 2策略在不同容器上保持一致性</li><li>相对个性化场景中62.5%和47.5%的成功率，分布外场景成功率大幅下降</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明作者明确陈述的局限</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接涉及具身智能中的VLA操作策略部署、真实到仿真再到真实的训练流水线、仿真数据生成、模型微调与真实机器人评测，与视觉语言动作模型、物理人工智能和系统优化方向高度相关；其建筑级场景重建、自动容器发现、演示生成与两阶段微调流程可迁移到长时序移动操作和世界模型研究。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>本次判断的不确定性主要在于输入为全文节选而非完整论文，部分实验细节、失败案例分析、计算成本与局限性讨论可能未包含在节选中；此外，提供的摘要和节选已足以支撑主要结论，但无法确认作者是否在其他章节陈述了额外限制。</p>
+          <blockquote><strong>预训练π0.5在目标部署场景零样本抓取成功率为0%：</strong>Yet even a strong generalist like $\pi_{0.5}$ achieves 0% pickup success in our captured deployment scenes without adaptation</blockquote>
+          <blockquote><strong>系统仅需手持手机扫描和物体图像即可个性化VLA策略：</strong>personalizes a pretrained vision-language-action (VLA) policy to a specific scene and object set using only a handheld phone scan and images of the user&#39;s objects</blockquote>
+          <blockquote><strong>流水线在101个校园环境生成852个容器和超过68000条抓取演示：</strong>Applied to 101 scanned campus environments with a median navigable area of 104.87 m$^2$ and 7 receptacles, the pipeline yields 852 receptacles and over 68,000 pickup demonstrations.</blockquote>
+          <blockquote><strong>最强个性化策略在目标场景达到62.5%总体抓取成功率：</strong>Our strongest personalized policy reaches 62.5% aggregate pickup success in the target scene.</blockquote>
+          <blockquote><strong>真实Stretch 3上12任务子集成功率为63.9%，仿真为66.7%：</strong>Deployed on a real Stretch 3, the same policy achieves 63.9% success on a 12-task subset, closely tracking its 66.7% simulated success on those tasks.</blockquote>
+          <blockquote><strong>Stage 1适配数百个公共物体资产，Stage 2在部署场景容器上个性化到用户物体：</strong>We fine-tune $\pi_{0.5}$ in two stages: Stage 1 adapts to hundreds of public object assets, drawn either from the deployment scene alone or from all 101 scenes; Stage 2 personalizes to the user&#39;s own objects on the deployment scene&#39;s receptacles.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13943:v1"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13943/v1/fig1-panel1.png"
+        alt="Figure 1：Different VLA adaptation approaches for a deterministic generator. NSL learns a context-conditioned noise distribution, generator adaptation updates the noise-to-action map, and residual adaptation modifies generated actions before execution. Orange modules are trainable; blue modules are fixed."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13943v1/figures/nsl_interfaces_large/figure.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Different VLA adaptation approaches for a deterministic generator. NSL learns a context-conditioned noise distribution, generator adaptation updates the noise-to-action map, and residual adaptation modifies generated actions before execution. Orange modules are trainable; blue modules are fixed.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13943/">面向 VLA 适配的噪声空间学习</a></h3>
+    <p class="original-title" lang="en">Noise Space Learning for VLA Adaptation</p>
+    <p class="authors">Junjie Lu · Chuheng Zhang · Yucen Wang · Yuhua Jiang · Xinyao Qin · Min Xu · Li Zhao</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将流匹配 VLA 的适配从更新动作生成器或残差动作，转移到学习一个上下文条件的噪声分布（噪声 actor）来引导动作生成，从而冻结强大预训练先验，仅通过轻量噪声接口实现任务适配。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>为在有限交互、计算与安全约束下适配大规模流匹配 VLA 提供了统一接口与多种强化学习实例，并给出模拟与真实机器人上的实践建议；其噪声空间适配思路对模型压缩、推理效率与真实机器人部署具有直接可迁移价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>面向流匹配视觉-语言-动作模型的适配方法（噪声空间学习）</p>
+        <p><strong>模型原始标签：</strong>VLA适配、扩散/流匹配策略、噪声空间学习、强化学习微调、参数高效适配、真实机器人操作、推理效率、安全执行</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13943">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13943">PDF ↗</a><a href="https://arxiv.org/html/2610.13943v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13943/v1/fig1-panel1.png"
+              alt="Figure 1：Different VLA adaptation approaches for a deterministic generator. NSL learns a context-conditioned noise distribution, generator adaptation updates the noise-to-action map, and residual adaptation modifies generated actions before execution. Orange modules are trainable; blue modules are fixed."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13943v1/figures/nsl_interfaces_large/figure.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Different VLA adaptation approaches for a deterministic generator. NSL learns a context-conditioned noise distribution, generator adaptation updates the noise-to-action map, and residual adaptation modifies generated actions before execution. Orange modules are trainable; blue modules are fixed.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13943v1#S3.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>预训练流匹配 VLA 模型（如 SmolVLA、π0.5）在有限机器人交互预算、计算资源和物理安全约束下，适配到特定操作任务；保持 VLA 主干冻结，仅训练轻量级上下文条件噪声 actor。</dd>
+        <dt>Motivation（研究动机）</dt><dd>全参数微调代价高且易破坏预训练先验；LoRA 等参数高效方法保留先验但效果有限；仅适配动作头会欠拟合任务执行；推理时候选搜索增加推断成本；残差适配受限于与基础策略的接近程度。核心问题是：如何在保留先验的同时有效且高效地适配 VLA。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将流匹配 VLA 的适配从更新动作生成器或残差动作，转移到学习一个上下文条件的噪声分布（噪声 actor）来引导动作生成，从而冻结强大预训练先验，仅通过轻量噪声接口实现任务适配。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>在有限交互预算下高效适配</li><li>计算资源限制下的算法选择</li><li>真实机器人执行安全（噪声分布偏离标准高斯会导致不安全动作与急停）</li><li>在保持预训练先验的同时获得足够的行为改变</li><li>不同资源与部署条件下选择合适优化器</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者从信息论角度分析噪声重加权与行为分布变化的关系，并将其与生成器适配和残差适配进行对比，证明 NSL 在何种条件下达到共同行为信息下界。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将 NSL 形式化为 VLA 适配接口：学习上下文条件的噪声 actor，VLA 主干保持冻结。</li><li>以 PPO、SAC、AWR 三种强化学习算法实例化噪声 actor，并针对实现细节改进得到 NSL-PPO、NSL-SAC、NSL-AWR。</li><li>噪声 actor 输入为池化的 VLA 隐特征与本体感知拼接，包含独立均值与对数标准差头，采样噪声在 50 步预测时域上重复。</li><li>PPO 与 AWR 使用独立价值 MLP，SAC 使用两个标量评论家；PPO 每轮采集-更新后清空缓冲区，SAC 与 AWR 保留回放。</li><li>策略预测 50 个动作并执行前 10 个后重新规划，最大回合长度 520 环境步。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 LIBERO-10 上使用 SmolVLA 与 π0.5 的 Full 与 One demonstration 设定评估；所有三种 NSL 方法均超过基础策略参考。</li><li>Full 设定下峰值成功率：SmolVLA 达 95.8%，π0.5 达 99.8%；One 设定下分别从 24.4% 和 40.4% 提升至 77.0% 和 71.2%。</li><li>NSL-PPO 在两种 Full 设定下接近 NSL-SAC，并在两种 One 设定下超过 NSL-AWR 的峰值。</li><li>真实机器人任务：杯子堆叠、玩具钓鱼、顺序插入、珠子放置，使用经监督微调初始化的任务特定 π0.5 策略。</li><li>真实机器人比较：NSL-AWR 与 Action-AWR、RLT 对比；有人的引导时 NSL-AWR 与 DAgger、UniSteer 对比；每任务评估 40 次试验。</li><li>真实机器人结果：NSL-AWR 在人引导下耗时 2.04 分钟；相比 Action-AWR 与 RLT 的训练时间（摘要节选中显示 23.2 分钟对应 RLT）更少，且在每个任务上每轮使用的人类轨迹少于 UniSteer 同时平均成功率更高。</li><li>模拟中 NSL-SAC 在交互预算充足时表现最佳但计算需求更高，且噪声分布可能偏离标准高斯，在真实机器人上伴随不安全动作与急停；NSL-AWR 更适合交互受限的真实机器人适配，计算成本更低且执行更安全。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>NSL 的适配能力受固定生成器和噪声 actor 表达能力的限制。</li><li>更丰富的噪声参数化以及噪声学习与选择性生成器更新的结合是有待研究的方向。</li><li>未来工作需考察对新任务与新机器人本体的泛化、既有技能的保持以及协同场景中的执行可靠性。</li><li>理论分析未将噪声矩转化为碰撞、力或关节限位的保证，物理安全仍是实验与工程要求，需要额外假设。</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接面向具身智能中的 VLA 模型适配，关注可执行动作生成、推理与计算效率、真实机器人评测及安全执行，与视觉-语言-动作模型、世界动作模型和系统优化中的模型压缩与实时控制方向高度相关。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>全文节选仅覆盖部分实验细节和结论，部分具体数值（如完整真实机器人成功率、训练时间明细）不完整；作者机构和通讯作者信息未在提供的材料中给出。</p>
+          <blockquote><strong>NSL 通过冻结 VLA 主干、学习上下文条件的噪声分布来适配流匹配 VLA。：</strong>Noise space learning (NSL) adapts flow-matching-based VLAs by learning a context-conditioned distribution over noise while keeping the pretrained VLA fixed.</blockquote>
+          <blockquote><strong>NSL 被形式化为兼容多种学习算法的适配接口，并以 PPO、SAC、AWR 实例化。：</strong>we formulate NSL as an interface for VLA adaptation that accommodates different learning algorithms and instantiate it with PPO, SAC, and AWR.</blockquote>
+          <blockquote><strong>作者提供了关于 NSL 如何实现高效适配的信息论分析。：</strong>Theoretically, we provide an information-theoretic analysis of how NSL enables efficient adaptation.</blockquote>
+          <blockquote><strong>实验覆盖 LIBERO、RoboTwin 和四个真实机器人操作任务，并受交互、计算与执行约束。：</strong>we study these NSL algorithms on LIBERO, RoboTwin, and four real-robot manipulation tasks under interaction, computation, and execution constraints.</blockquote>
+          <blockquote><strong>NSL-SAC 在模拟中表现好但噪声分布可能偏离标准高斯，与真实机器人上的不安全动作和急停相关；NSL-AWR 更适合交互受限的真实机器人适配。：</strong>NSL-SAC performs well in simulation with ample interaction budgets and requires more computation. However, its noise distribution can deviate from standard Gaussian, with associated unsafe motions and emergency-stop interventions on real robots. In contrast, NSL-AWR is better suited to interaction-limited real-robot adaptation, combining lower computational cost with safer execution.</blockquote>
+          <blockquote><strong>NSL 的适配能力受固定生成器和噪声 actor 表达能力的限制。：</strong>The adaptation capacity of NSL remains constrained by the fixed generator and the expressiveness of the noise actor.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13929:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13929/v1/fig1-panel1.png"
+        alt="Figure 1：Timing-related issues in robot policy learning. (a) Real robot systems exhibit multiple sources of temporal variation, including variable sensor sampling rate, observation latency and dropout, inference latency, control frequency, and execution latency. These timing effects matter differently across tasks. (b) In dynamic tasks, the key temporal relationship is between when an observation is captured and when an action takes effect . (c) In multisensory tasks, the key temporal relationship is between when different observations are captured . (d) Even in quasi-static tasks, differences between data-collection and deployment timing can create temporal mismatch. Standard fixed-rate policy representations obscure these distinctions by treating sequence position as a proxy for time."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13929v1/figs/Teaser.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Timing-related issues in robot policy learning. (a) Real robot systems exhibit multiple sources of temporal variation, including variable sensor sampling rate, observation latency and dropout, inference latency, control frequency, and execution latency. These timing effects matter differently across tasks. (b) In dynamic tasks, the key temporal relationship is between when an observation is captured and when an action takes effect . (c) In multisensory tasks, the key temporal relationship is between when different observations are captured . (d) Even in quasi-static tasks, differences between data-collection and deployment timing can create temporal mismatch. Standard fixed-rate policy representations obscure these distinctions by treating sequence position as a proxy for time.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 9/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13929/">Chronos Policy：在物理时间上学习机器人策略</a></h3>
+    <p class="original-title" lang="en">Chronos Policy: Learning Robot Policies on Physical Time</p>
+    <p class="authors">Changhao Wang · Jaden Clark · Shuran Song</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>物理时间应作为策略的显式输入，而不是由序列位置隐式表示。通过同时以观察捕获时间和期望动作执行时间为条件，策略可直接解释时间变化；时间感知旋转位置编码比加性时间戳嵌入更稳健，因为它让注意力直接依赖物理时间而不改变 token 内容。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文为机器人策略中的时序失配问题提供了统一且可迁移的解决方案，实验覆盖动态、多传感器和准静态任务，并包含真实机器人验证，对关注可执行动作生成、实时控制、推理延迟鲁棒性和异步数据学习的研究者具有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>将物理时间显式建模到机器人扩散策略中，实现可执行动作生成与对时序变化的鲁棒控制</p>
+        <p><strong>模型原始标签：</strong>机器人策略、扩散变压器、时间感知位置编码、时间感知RoPE、物理时间、异步多速率数据、推理延迟鲁棒性、真实机器人评测</p>
+        <p><strong>第一单位：</strong>Stanford University</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13929">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13929">PDF ↗</a><a href="https://arxiv.org/html/2610.13929v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13929/v1/fig1-panel1.png"
+              alt="Figure 1：Timing-related issues in robot policy learning. (a) Real robot systems exhibit multiple sources of temporal variation, including variable sensor sampling rate, observation latency and dropout, inference latency, control frequency, and execution latency. These timing effects matter differently across tasks. (b) In dynamic tasks, the key temporal relationship is between when an observation is captured and when an action takes effect . (c) In multisensory tasks, the key temporal relationship is between when different observations are captured . (d) Even in quasi-static tasks, differences between data-collection and deployment timing can create temporal mismatch. Standard fixed-rate policy representations obscure these distinctions by treating sequence position as a proxy for time."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13929v1/figs/Teaser.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Timing-related issues in robot policy learning. (a) Real robot systems exhibit multiple sources of temporal variation, including variable sensor sampling rate, observation latency and dropout, inference latency, control frequency, and execution latency. These timing effects matter differently across tasks. (b) In dynamic tasks, the key temporal relationship is between when an observation is captured and when an action takes effect . (c) In multisensory tasks, the key temporal relationship is between when different observations are captured . (d) Even in quasi-static tasks, differences between data-collection and deployment timing can create temporal mismatch. Standard fixed-rate policy representations obscure these distinctions by treating sequence position as a proxy for time.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13929v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13929/v1/fig2-panel1.png"
+              alt="Figure 2：Overview of Chronos Policy. Tokens are paired with their physical times. Time-aware RoPE uses these physical timestamps as positional coordinates, so attention depends on elapsed time rather than sequence index. The diffusion transformer then predicts an action chunk at the requested execution times."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13929v1/figs/method.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Overview of Chronos Policy. Tokens are paired with their physical times. Time-aware RoPE uses these physical timestamps as positional coordinates, so attention depends on elapsed time rather than sequence index. The diffusion transformer then predicts an action chunk at the requested execution times.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13929v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>机器人模仿学习中的观察-动作序列建模，研究机器人在传感器采样率、观察延迟、推理延迟和动作执行时间发生变化时的策略学习与部署。任务包括动态传送带抓取、接触丰富的多传感器枢轴操作，以及标准准静态操作任务。</dd>
+        <dt>Motivation（研究动机）</dt><dd>传统机器人策略将感知和控制转换为固定速率的观察-动作序列，使物理时间隐含在序列位置中。当观察速率、延迟或推理延迟变化时，这一假设失效，导致策略无法判断观察之间经过了多少时间或动作将在多远的未来执行。</dd>
+        <dt>Insight（核心洞察）</dt><dd>物理时间应作为策略的显式输入，而不是由序列位置隐式表示。通过同时以观察捕获时间和期望动作执行时间为条件，策略可直接解释时间变化；时间感知旋转位置编码比加性时间戳嵌入更稳健，因为它让注意力直接依赖物理时间而不改变 token 内容。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>真实机器人系统中传感器速率、观察延迟、推理延迟和控制频率存在多种时序变化来源</li><li>动态任务中观察捕获时间与动作生效时间之间的时序关系至关重要</li><li>多传感器任务中不同观察之间的相对时序关系难以用固定序列位置表示</li><li>准静态任务中数据采集与部署时序差异也会造成时序失配</li><li>训练时需要接触更广泛的感知和执行时序分布，同时避免引入无法解释的时序歧义</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过将策略形式化为以观察时间、动作时间和观察为条件的函数来分析问题，并在仿真中设计动态传送带任务、多传感器枢轴任务和六个标准准静态任务，在标称、观察时序扰动、推理延迟扰动及组合扰动下评估方法，通过消融时间表示和时间随机化来分析各个设计选择的作用。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将策略定义为 A_{t_a}=f_θ(O_{t_o}, t_o, t_a)，其中 t_o 表示观察捕获时间，t_a 表示期望动作执行时间</li><li>研究两种将时间融入扩散变压器的方式：向 token 特征添加时间戳嵌入，或通过时间感知旋转位置编码（time-aware RoPE）将物理时间编码到位置编码中</li><li>采用时间感知 RoPE，使注意力直接依赖物理时间，同时保持 token 内容不变</li><li>训练时对采样哪些观察以及动作块何时开始进行时间随机化，使策略暴露于更广泛的感知和执行时序安排</li><li>支持从异步、多速率数据中学习，无需将所有测量强制对齐到固定时间网格</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>Conveyor 动态抓放任务：标称时序下 Chronos Policy 成功率从 73.1% 提升至 82.0%；中等观察变化下 Diffusion Policy 降至 15.6%，Chronos Policy 保持 77.6%；推理延迟最高 200 ms 下 Diffusion Policy 降至 1.8%，Chronos Policy 达 76.4%；组合扰动下 Chronos Policy 保持 32.7%，Diffusion Policy 完全失败</li><li>Pivoting 多传感器接触任务：推理延迟最高 200 ms 下成功率从 51.3% 提升至 60.2%；组合条件下从 19.6% 提升至 38.4%</li><li>消融实验：时间随机化单独用于 Diffusion Policy 时，Conveyor 五种扰动条件平均成功率从 6.3% 提升至 26% 左右，但 Wide sensing 下仅从 0.0% 提升至 6.4%，组合条件下两者接近零，且标称性能从 73.1% 降至 53.6%；Pivoting 上时间随机化使所有条件性能下降，标称从 61.6% 降至 29.8%</li><li>时间戳与时间随机化互补：Conveyor 上 RoPE 无随机化在 100 ms 和 200 ms 延迟下达 76.4% 和 69.3%，但 Wide sensing 降至 20.2%，组合条件降至 10.7%；加入时间随机化后分别提升至 45.6% 和 32.7%。Pivoting 上 RoPE 无随机化 Wide sensing 为 9.1%，组合为 4.2%；完整模型达 48.0% 和 38.4%</li><li>AddTime 在 Conveyor 标称性能略高（85.8% 对 82.0%），但 RoPE 在更广泛条件下表现更强</li><li>作者也在真实机器人上进行了评估，但材料未提供具体真实机器人实验数字</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>未来工作方向是扩展 Chronos 策略超越固定动作速率，支持可变控制频率和时间缩放，使机器人能以比示范更快或更慢的速度执行相同行为</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接涉及具身智能和视觉语言动作模型中的可执行动作生成、实时控制与真实机器人评测，通过显式物理时间条件化提升策略对观察延迟和推理延迟的鲁棒性，与推理效率和系统优化中的时序问题密切相关；其时间感知位置编码和异步多速率学习机制可迁移至世界模型和世界动作模型中的长时序预测与动作执行建模。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>全文节选未提供通讯作者信息，因此通讯作者标注为证据未提供；真实机器人实验的具体任务、指标和数字未在材料中完整给出，因此相关结论仅基于摘要和节选中明确陈述的内容；分类字段中 arxiv:2610.13929:v1 的日期为 2026 年，可能为预印本时间异常或材料标识问题，但不影响技术内容判断。</p>
+          <blockquote><strong>论文提出 Chronos Policy，通过以观察捕获时间和期望动作执行时间为条件使物理时间显式化：</strong>We introduce Chronos Policy, which makes physical time explicit by conditioning on observation capture times and desired action execution times.</blockquote>
+          <blockquote><strong>时间感知 RoPE 比加性时间戳嵌入更稳健：</strong>We find that time-aware RoPE is more robust, allowing attention to depend directly on physical time while keeping token content unchanged.</blockquote>
+          <blockquote><strong>训练时进行时间随机化可暴露策略于更广泛的感知和执行时序安排，并支持异步多速率数据学习：</strong>During training, we temporally randomize which observations are sampled and when the action chunk begins, exposing the policy to a wider range of sensing and execution schedules that may occur during deployments. This also enables learning from asynchronous, multi-rate data without forcing all measurements onto a fixed temporal grid.</blockquote>
+          <blockquote><strong>Conveyor 动态任务标称时序下 Chronos Policy 成功率从 73.1% 提升至 82.0%：</strong>Under nominal timing, Chronos Policy improves success from 73.1% to 82.0%.</blockquote>
+          <blockquote><strong>Pivoting 多传感器任务在推理延迟最高 200 ms 下成功率从 51.3% 提升至 60.2%，组合条件下从 19.6% 提升至 38.4%：</strong>Under inference delays up to 200 ms, success improves from 51.3% to 60.2%, and under the combined condition from 19.6% to 38.4%.</blockquote>
+          <blockquote><strong>时间戳与时间随机化互补，二者结合才能提供最强鲁棒性：</strong>These results clarify the roles of the two components. Timestamps make a particular sensing and execution schedule interpretable, while temporal randomization exposes the policy to a broader set of such schedules during training. Neither component alone provides the same robustness as their combination.</blockquote>
+          <blockquote><strong>未来工作方向是扩展至可变控制频率和时间缩放：</strong>A direction for future work is to extend Chronos policies beyond fixed action rates to variable control frequencies and temporal scaling, allowing robots to execute the same behavior faster or slower than demonstration.</blockquote>
+          <blockquote><strong>第一单位为 Stanford University：</strong>Affiliation: Stanford University</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13912:v1"
+  data-topic="world-model"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13912/v1/fig1-panel1.png"
+        alt="Figure 1：RSI-Anything overview. Building on the cross-domain predictive foundation of JEPA-Anything, RSI-Anything uses world-model predictions to support understanding, planning, and action selection across diverse tasks. Interaction feedback drives policy or workflow updates and conditional world-model adaptation. Component and compatibility checks determine which policy–model pair is retained to guide the next round of interaction and learning, closing the recursive self-improvement loop."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13912v1/figures/concept/jepa_to_rsi_overview.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> RSI-Anything overview. Building on the cross-domain predictive foundation of JEPA-Anything, RSI-Anything uses world-model predictions to support understanding, planning, and action selection across diverse tasks. Interaction feedback drives policy or workflow updates and conditional world-model adaptation. Component and compatibility checks determine which policy–model pair is retained to guide the next round of interaction and learning, closing the recursive self-improvement loop.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">世界模型（World Model）</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13912/">RSI-Anything：用世界模型解锁递归自我改进</a></h3>
+    <p class="original-title" lang="en">RSI-Anything: Unlocking Recursive Self-Improvement with World Models</p>
+    <p class="authors">Taoyong Cui · Pinxian Zeng · Wanghan Xu · Hao Xiao · Shuhan Xue · Qiang Gao · Wanli Ouyang · Pheng Ann Heng · Zhenfei Yin · Yingcheng Wu · Ling Yang</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>预测性世界模型可以用于前瞻性评估与规划，在有限外部反馈下优先收集反馈并指导学习数据选择；同时需要通过条件式世界模型适配与策略-模型兼容性检查，决定是否保留更新后的策略-模型对，从而闭合递归自我改进循环。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文提出了将世界模型预测、动作或数据选择、条件模型适配与递归保留相结合的通用框架，并在代码修复、图形用户界面交互、实验室规划、反应优化及免疫科学等跨领域任务中给出量化结果，对具身智能、世界模型和系统优化方向的研究者具有方法迁移与实验设计参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/world-modeling/" data-tag-filter="world-modeling">世界建模</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>以预测性世界模型驱动的递归自我改进框架</p>
+        <p><strong>模型原始标签：</strong>世界模型、递归自我改进、JEPA、策略-模型协同适配、预测引导选择、智能体、系统优化</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>Pheng Ann Heng, Zhenfei Yin, Yingcheng Wu, Ling Yang</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13912">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13912">PDF ↗</a><a href="https://arxiv.org/html/2610.13912v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13912/v1/fig1-panel1.png"
+              alt="Figure 1：RSI-Anything overview. Building on the cross-domain predictive foundation of JEPA-Anything, RSI-Anything uses world-model predictions to support understanding, planning, and action selection across diverse tasks. Interaction feedback drives policy or workflow updates and conditional world-model adaptation. Component and compatibility checks determine which policy–model pair is retained to guide the next round of interaction and learning, closing the recursive self-improvement loop."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13912v1/figures/concept/jepa_to_rsi_overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> RSI-Anything overview. Building on the cross-domain predictive foundation of JEPA-Anything, RSI-Anything uses world-model predictions to support understanding, planning, and action selection across diverse tasks. Interaction feedback drives policy or workflow updates and conditional world-model adaptation. Component and compatibility checks determine which policy–model pair is retained to guide the next round of interaction and learning, closing the recursive self-improvement loop.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13912v1#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13912/v1/fig2-panel1.png"
+              alt="Figure 2：RSI-Anything couples prediction-guided action with retained system updates. a , Building on JEPA-Anything, world-model predictions guide candidate selection for external evaluation. Only the executed candidate (B) yields paired prediction–observation feedback. Feedback supports policy or workflow revision and reliability assessment; world-model adaptation depends on prediction reliability, available data, and budget. Component and compatibility checks determine the retained policy–model pair, which shapes candidates and learning experiences in the next round. b , The shared mechanism is instantiated in code repair, GUI interaction, laboratory planning, and reaction optimization. An end-to-end immune-science application connects workflow evolution, immune world-model construction, analysis with self-correction, and prospective hypothesis generation."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13912v1/figure1_v12_2026-10-09.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> RSI-Anything couples prediction-guided action with retained system updates. a , Building on JEPA-Anything, world-model predictions guide candidate selection for external evaluation. Only the executed candidate (B) yields paired prediction–observation feedback. Feedback supports policy or workflow revision and reliability assessment; world-model adaptation depends on prediction reliability, available data, and budget. Component and compatibility checks determine the retained policy–model pair, which shapes candidates and learning experiences in the next round. b , The shared mechanism is instantiated in code repair, GUI interaction, laboratory planning, and reaction optimization. An end-to-end immune-science application connects workflow evolution, immune world-model construction, analysis with self-correction, and prospective hypothesis generation.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13912v1#S1.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在代码修复、图形用户界面交互、实验室规划、化学反应优化和免疫科学等多类计算与科学领域，构建一个基于 JEPA-Anything 的领域通用递归自我改进框架，使世界模型预测指导动作与学习数据选择。</dd>
+        <dt>Motivation（研究动机）</dt><dd>递归自我改进旨在将交互经验转化为持久改进，但外部反馈成本高，且随着策略演化，世界模型预测可能变得不可靠。</dd>
+        <dt>Insight（核心洞察）</dt><dd>预测性世界模型可以用于前瞻性评估与规划，在有限外部反馈下优先收集反馈并指导学习数据选择；同时需要通过条件式世界模型适配与策略-模型兼容性检查，决定是否保留更新后的策略-模型对，从而闭合递归自我改进循环。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>外部反馈成本高，限制探索</li><li>策略演化后世界模型预测可能变得不可靠</li><li>需要判断模型适配是否足够以及是否触发适配</li><li>策略与预测器之间存在依赖：策略可生成预测器不可靠的候选，预测器也会改变候选选择</li><li>需在预声明接受准则下比较并保留组件与组装后的策略-模型对</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>摘要与全文节选表明，作者通过条件世界模型适配触发机制、组件与兼容性检查以及递归保留协议来分析问题；但材料未说明部分分析细节，如具体误差、校准、漂移和覆盖判据的完整定义。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>基于 JEPA-Anything 构建领域通用的 RSI-Anything 框架，使用预测性世界模型指导动作与学习数据选择。</li><li>观察到的反馈驱动策略或工作流改进以及条件式世界模型适配。</li><li>通过组件与兼容性检查决定是否保留更新后的策略-模型对。</li><li>使用世界模型预测进行候选选择，并在代码修复中保持编码器固定，仅引入预测引导选择与预测器适配。</li><li>递归保留协议比较候选组件及其组装对与当前版本，依据预声明接受准则判断是否进入保留系统。</li><li>适配触发依据可靠性评估、适配数据充分性和更新预算等条件决定是否执行 Adapt 操作。</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>代码修复中，编码器固定，使用 200 个 CodeContests 任务、三个随机种子、最多三轮反馈，在线测试提供反馈，隐藏测试衡量最终成功率。</li><li>预测引导选择将最终隐藏测试成功率提升至 29.2%（175/600），静态验证器为 26.3%，随机选择为 26.0%。</li><li>经过世界模型适配后成功率进一步提升至 31.2%；相对静态验证器的配对增益为 +2.83 个百分点（95% 区间 [+0.17, +5.50]）。</li><li>图形用户界面评测显示更高任务完成率，同时平均动作数减少 39.4%。</li><li>经过五个连续策略版本，实验室规划得分从 21.80% 提升至 46.01%，实现翻倍以上增长。</li><li>在相同 40 次实验预算下，反应优化中 RSI-Anything 达到 96.15% 的平均最佳观测产率，而贝叶斯优化为 82.16%。</li><li>端到端免疫科学应用将工作流演化与预测建模同治疗假设生成相连接。</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>外部反馈成本高。</li><li>世界模型预测可能随策略演化而变得不可靠。</li><li>反馈来自被选中的候选，因此结论受限于已观测和覆盖的候选范围；覆盖不足时只能判定为评估不充分，而非可靠性证据，且不激活适配触发。</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接关联世界模型、物理人工智能与系统优化：以预测性世界模型指导动作与数据选择，通过条件适配和保留协议提升策略-模型系统在有限反馈下的递归改进能力；其代码修复与图形界面评测也涉及可执行动作生成、推理效率与真实任务评测。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>全文节选未提供作者单位与通讯作者的具体隶属信息；部分公式和实验细节因节选不完整而无法完整核验；部分结果仅依据摘要给出的数值，未获完整正文表格确认。</p>
+          <blockquote><strong>论文提出 RSI-Anything，一个基于 JEPA-Anything 的领域通用递归自我改进框架，使用预测性世界模型指导动作与学习数据选择。：</strong>We introduce RSI-Anything, a domain-general framework built on JEPA-Anything that uses predictive world models to guide action and learning-data selection.</blockquote>
+          <blockquote><strong>外部反馈成本高，且世界模型预测可能随策略演化而不可靠。：</strong>Recursive self-improvement (RSI) aims to transform interaction experience into persistent improvements, yet external feedback is costly and world-model predictions may become unreliable as policies evolve.</blockquote>
+          <blockquote><strong>代码修复中，编码器固定，预测引导选择使成功率从静态验证器的 26.3% 提升至 29.2%，世界模型适配后达到 31.2%。：</strong>In code repair, with the coder fixed, success increases from 26.3% with a static verifier to 29.2% through predictive selection and 31.2% after world-model adaptation, at comparable test usage.</blockquote>
+          <blockquote><strong>图形用户界面评测显示任务完成率更高，平均动作数减少 39.4%。：</strong>Graphical user interface (GUI) evaluations showed higher task completion, while average actions decrease by 39.4%.</blockquote>
+          <blockquote><strong>五个连续策略版本使实验室规划得分从 21.80% 提升至 46.01%。：</strong>Across five successive policy versions, laboratory-planning scores more than double from 21.80% to 46.01%.</blockquote>
+          <blockquote><strong>反应优化中，相同 40 次实验预算下 RSI-Anything 达到 96.15% 平均最佳观测产率，贝叶斯优化为 82.16%。：</strong>In reaction optimization, RSI-Anything achieves 96.15% mean best observed yield versus 82.16% for Bayesian optimization under the same 40-experiment budget.</blockquote>
+          <blockquote><strong>观察到的反馈驱动策略或工作流改进以及条件式世界模型适配。：</strong>Observed feedback drives policy or workflow improvement and conditional world-model adaptation, while component and compatibility checks govern the retention of updated policy–model pairs.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13862:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13862/v1/fig2-panel1.png"
+        alt="Figure 2：Physics-aligned task construction. Simulator geometry and camera records produce scene memory, navigation graphs, and task definitions. Habitat and Isaac tasks receive text counterparts; graded simulator evaluation covers 39 primary Habitat tasks. Instance masks are construction evidence, not VLM input."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13862v1/fig2_benchmark_pipeline.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 2</strong> Physics-aligned task construction. Simulator geometry and camera records produce scene memory, navigation graphs, and task definitions. Habitat and Isaac tasks receive text counterparts; graded simulator evaluation covers 39 primary Habitat tasks. Instance masks are construction evidence, not VLM input.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13862/">BT-Agent：使用行为树与多保真度评估在机器人上部署机载智能体</a></h3>
+    <p class="original-title" lang="en">BT-Agent: Deploying Onboard Robot Agents with Behavior Trees and Multi-Fidelity Evaluation</p>
+    <p class="authors">Fabio H\&#34;ubel · Adam Lilja · Yue Yin · Siming He · Claire Tomlin · Shankar Sastry · Jonas Frey · Marco Pavone</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将任务级模型推理与反应式机器人执行分离：LLM Actor负责选择技能和参数，预定义行为树技能负责强制执行条件、在每个tick重新检查守卫，并可在不等待下一次模型决策的情况下中断正在运行的动作。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它提供了面向机载机器人部署的架构设计，明确分离任务推理与反应式执行，并用行为树守卫支持实时中断；同时给出161任务多保真度评估方案、吞吐量对比、干预测试和消融结果，对具身智能体、实时控制和真实机器人评测具有直接参考价值。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>在有限计算与内存下，将LLM驱动的任务推理与行为树技能结合，实现机载机器人智能体的部署与评估</p>
+        <p><strong>模型原始标签：</strong>具身智能、机器人智能体、行为树、LLM任务推理、机载部署、多保真度基准、四足机器人、实时控制</p>
+        <p><strong>第一单位：</strong>Stanford University</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13862">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13862">PDF ↗</a><a href="https://arxiv.org/html/2610.13862v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13862/v1/fig2-panel1.png"
+              alt="Figure 2：Physics-aligned task construction. Simulator geometry and camera records produce scene memory, navigation graphs, and task definitions. Habitat and Isaac tasks receive text counterparts; graded simulator evaluation covers 39 primary Habitat tasks. Instance masks are construction evidence, not VLM input."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13862v1/fig2_benchmark_pipeline.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Physics-aligned task construction. Simulator geometry and camera records produce scene memory, navigation graphs, and task definitions. Habitat and Isaac tasks receive text counterparts; graded simulator evaluation covers 39 primary Habitat tasks. Instance masks are construction evidence, not VLM input.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13862v1#S4.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在移动机器人上完全机载运行语言模型智能体，使用9B模型在四足机器人上跨五类任务进行验证，并构建161个任务的多保真度基准，其中全部任务在文本环境中评估、39个任务在Habitat模拟器中评估。</dd>
+        <dt>Motivation（研究动机）</dt><dd>移动机器人需要在有限计算和内存下独立于远程计算运行，既要进行任务级推理，又要保证响应式物理执行；现有语言模型机器人智能体主要解决‘下一步做什么’，但缺乏统一接口来暴露执行状态、强制执行条件并支持中断。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将任务级模型推理与反应式机器人执行分离：LLM Actor负责选择技能和参数，预定义行为树技能负责强制执行条件、在每个tick重新检查守卫，并可在不等待下一次模型决策的情况下中断正在运行的动作。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>在有限机载计算和内存下同时运行任务推理、感知与控制</li><li>不同技能之间缺乏暴露执行状态、强制执行条件和支持中断的共享接口</li><li>必须处理感知与运动失败，且不能让不适合的动作继续执行</li><li>需要高效比较不同智能体设计，同时覆盖文本决策与模拟器物理执行</li><li>观察不完整或模糊时，可靠传达任务相关证据仍是开放挑战</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过将任务级选择与执行分离来分析问题：LLM Actor基于任务、历史与存储结果选择技能或声明完成；监督行为树一次执行一个技能并返回状态与结果；每个物理技能的反应式序列在每个tick重新检查取消、耗时和技能特定守卫，守卫失败则中断分支并请求终止。作者还通过多保真度基准在文本和Habitat中评估，并做干预测试与消融来识别有用组件。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>BT-Agent机载架构：LLM Actor使用任务、状态和历史选择技能与参数，形成ReAct式推理-行动循环</li><li>监督行为树一次启动一个技能，返回结构化反馈，并将Actor的完成声明转换为终止提交</li><li>每个机器人技能实现为预定义行为树并作为命名工具暴露，其执行逻辑可独立于模型选择进行审查和测试</li><li>执行前检查前置条件：验证参数、解析对象引用、检查所需先前观察，过滤不可用物理技能并拒绝不合格调用</li><li>物理技能的反应式序列在每个tick重新检查取消、耗时和技能特定守卫；守卫失败会中断当前分支并请求终止</li><li>Actor不能修改技能实现或守卫，因此技能逻辑可独立于任务级策略进行审查和测试</li><li>用摘要限制上下文，并将技能结果保存在类型化对象存储中以便复用</li><li>失败反馈允许Actor重试、改变动作或报告无法继续的原因；取消任务会中断正在运行的技能</li><li>构建161个任务的多保真度基准，任务目标与技能接口在文本环境和模拟器执行之间共享</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>使用9B模型在四足机器人上展示完全机载运行，覆盖五类任务</li><li>干预测试显示本地检查可停止正在进行的导航，而无需等待另一次模型决策，同时智能体保持活跃以重试或报告约束</li><li>161个任务的多保真度基准：全部任务在文本中评估，39个任务在Habitat中评估</li><li>文本评估吞吐量比模拟器高10.9倍</li><li>模拟器揭示感知和运动失败如何改变任务结果</li><li>相比最强的Act/ReAct基线，BT-Agent在4B和9B模型上取得最大成功率提升，分别约为10和5个百分点</li><li>消融识别出结构化工具调用和有信息量的失败反馈是最有用的组件</li><li>较小模型从执行框架支持中获益最多；有用组件取决于任务和推理成本</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>Actor只能对可用技能进行排序和参数化，其实现和守卫在运行时保持固定；这支持部署前审查和测试，但新增能力需要技能编写和平台特定集成</li><li>当观察不完整或模糊时，可靠传达任务相关证据仍是开放挑战</li><li>任务级推理未来可与正在执行技能的行为树监督并行运行</li><li>随着边缘模型改进，它们还可以显式推理树结构和失败叶节点，以诊断失败并选择更有效的恢复动作</li><li>在同一架构中评估前沿模型有助于区分模型限制与技能接口限制</li><li>可执行文本环境可支持任务级策略的强化学习，随后在模拟器和机器人上评估</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>论文与具身智能、机器人学习、世界模型和系统优化直接相关：它研究在机载有限计算下部署语言模型智能体，将任务推理与反应式执行分离，使用行为树强制执行可执行动作生成与实时控制，并通过多保真度基准在文本和Habitat模拟器中进行长时序任务评估和真实机器人评测。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>全文节选不完整，部分实验细节、基线配置、统计显著性和技能实现未完整呈现；通讯作者信息、单位对应关系和代码地址未提供，因此相关字段只能写证据未提供。</p>
+          <blockquote><strong>BT-Agent将LLM驱动的任务决策与预定义行为树技能结合，用于机载机器人部署。：</strong>We propose BT-Agent, an onboard architecture combining LLM-driven task decisions with predefined behavior-tree (BT) skills.</blockquote>
+          <blockquote><strong>技能强制执行执行条件并返回结构化失败反馈。：</strong>These skills enforce execution conditions and return structured failure feedback.</blockquote>
+          <blockquote><strong>在四足机器人上使用9B模型实现完全机载运行，覆盖五类任务。：</strong>We demonstrate fully onboard operation with a 9B model on a quadruped across five task categories.</blockquote>
+          <blockquote><strong>文本评估吞吐量比模拟器高10.9倍。：</strong>Text supports 10.9$\times$ higher evaluation throughput, while simulation reveals how perception and motion failures change task outcomes.</blockquote>
+          <blockquote><strong>相比最强Act/ReAct基线，BT-Agent在4B和9B上分别取得约10和5个百分点的最大成功率提升。：</strong>BT-Agent&#39;s largest success gains over the strongest Act/ReAct baseline occur at 4B and 9B: approximately 10 and 5 percentage points.</blockquote>
+          <blockquote><strong>消融表明结构化工具调用和有信息量的失败反馈是最有用的组件。：</strong>Ablations identify structured tool calls and informative failure feedback as the most useful components.</blockquote>
+          <blockquote><strong>Actor不能修改技能实现或守卫，因此其逻辑可独立于任务级策略被审查和测试。：</strong>The Actor cannot modify skill implementations or guards, so their logic can be reviewed and tested independently of the task-level policy.</blockquote>
+          <blockquote><strong>每个物理技能的反应式序列在每个tick重新检查取消、耗时和技能特定守卫，守卫失败会中断分支并请求终止。：</strong>Each physical skill’s reactive sequence rechecks cancellation, elapsed time, and skill-specific guards on every tick, a periodic tree update. By construction, the skill body advances only if all guards pass on that tick. A failed guard interrupts the branch and requests t</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="browse">
+        <header class="tier-heading"><h2>值得浏览</h2><p><span data-tier-count>3</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13849:v1"
+  data-topic="robot-learning"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13849/v1/fig1-panel1.png"
+        alt="Figure 1：Overview of the HorizonNav framework. Visual reasoning and exploration planning: a VLM analyzes the initial RGB image and language task to generate structured exploration commands. Exploratory video generation: Wan 2.2 synthesizes plausible future observations along multiple virtual camera trajectories. Geometry-guided 3D reconstruction: ORB-SLAM3 estimates camera poses and sparse landmarks, while Video Depth Anything predicts dense depth maps. Landmark-guided depth alignment, multi-view registration, and point-cloud fusion produce a geometrically consistent imagined 3D map for subsequent robot navigation and path planning."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13849v1/figures/system.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of the HorizonNav framework. Visual reasoning and exploration planning: a VLM analyzes the initial RGB image and language task to generate structured exploration commands. Exploratory video generation: Wan 2.2 synthesizes plausible future observations along multiple virtual camera trajectories. Geometry-guided 3D reconstruction: ORB-SLAM3 estimates camera poses and sparse landmarks, while Video Depth Anything predicts dense depth maps. Landmark-guided depth alignment, multi-view registration, and point-cloud fusion produce a geometrically consistent imagined 3D map for subsequent robot navigation and path planning.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">机器人学习与控制</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13849/">HorizonNav：面向预见性3D机器人导航的几何引导视频扩散</a></h3>
+    <p class="original-title" lang="en">HorizonNav: Geometry-Guided Video Diffusion for Anticipatory 3D Robot Navigation</p>
+    <p class="authors">Hajira Amjad · Valerii Serpiva · Viacheslav Liubimov · Didar Seyidov · Dzmitry Tsetserukou</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>将视觉语言模型引导的视频扩散生成与单目SLAM位姿估计、密集深度预测以及三角化视觉地标约束相结合，通过几何引导的深度对齐提升多视图稠密深度预测的几何一致性。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>展示了视频扩散模型与几何约束结合的预见性导航框架，在想象3D环境中评估规划可行性，对世界模型、长时序预测和实时控制研究者有参考价值，且提供了具体的失败模式分析。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/navigation/" data-tag-filter="navigation">具身导航</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>基于视频扩散与几何引导的预见性3D机器人导航</p>
+        <p><strong>模型原始标签：</strong>视频扩散、预见性导航、3D重建、视觉语言模型、SLAM、深度估计、RRT规划</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13849">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13849">PDF ↗</a><a href="https://arxiv.org/html/2610.13849v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13849/v1/fig1-panel1.png"
+              alt="Figure 1：Overview of the HorizonNav framework. Visual reasoning and exploration planning: a VLM analyzes the initial RGB image and language task to generate structured exploration commands. Exploratory video generation: Wan 2.2 synthesizes plausible future observations along multiple virtual camera trajectories. Geometry-guided 3D reconstruction: ORB-SLAM3 estimates camera poses and sparse landmarks, while Video Depth Anything predicts dense depth maps. Landmark-guided depth alignment, multi-view registration, and point-cloud fusion produce a geometrically consistent imagined 3D map for subsequent robot navigation and path planning."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13849v1/figures/system.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of the HorizonNav framework. Visual reasoning and exploration planning: a VLM analyzes the initial RGB image and language task to generate structured exploration commands. Exploratory video generation: Wan 2.2 synthesizes plausible future observations along multiple virtual camera trajectories. Geometry-guided 3D reconstruction: ORB-SLAM3 estimates camera poses and sparse landmarks, while Video Depth Anything predicts dense depth maps. Landmark-guided depth alignment, multi-view registration, and point-cloud fusion produce a geometrically consistent imagined 3D map for subsequent robot navigation and path planning.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13849v1#S1.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13849/v1/fig2-panel1.jpg"
+              alt="Figure 2：Qualitative generated-view geometry. Left: representative exploration branches showing generated RGB, dense-depth diagnostic, ORB-SLAM3 sparse structure, and corresponding real-view references. Right: reconstructed structure registered to the external LiDAR reference for visualization and evaluation; LiDAR is not available to HorizonNav during reconstruction or planning."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13849v1/figures/reconstruction_2.jpg"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> Qualitative generated-view geometry. Left: representative exploration branches showing generated RGB, dense-depth diagnostic, ORB-SLAM3 sparse structure, and corresponding real-view references. Right: reconstructed structure registered to the external LiDAR reference for visualization and evaluation; LiDAR is not available to HorizonNav during reconstruction or planning.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13849v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>给定单张RGB图像和文本提示，预测周围可行3D空间的几何对齐表示，并在想象出的3D环境中评估导航规划可行性。</dd>
+        <dt>Motivation（研究动机）</dt><dd>机器人导航需要预见过渡环境中的未来观测，但仅靠生成视频的时间一致性无法保证几何一致性，需要几何引导的深度对齐来构建可用于规划的3D环境。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将视觉语言模型引导的视频扩散生成与单目SLAM位姿估计、密集深度预测以及三角化视觉地标约束相结合，通过几何引导的深度对齐提升多视图稠密深度预测的几何一致性。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>生成视频的时间一致性不足以解决3D重建的几何不一致问题</li><li>无lidar条件下重建和自由空间存在失败模式</li><li>规划可行性与生成相机轨迹的碰撞约束违反问题</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明作者如何分析问题；摘要仅提及通过几何引导的深度对齐来约束多视图稠密深度预测，并指出时间一致性无法解决重建不一致性。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>输入单张RGB图像和文本提示，由视觉语言模型在指令引导下解析场景并构建结构化提示</li><li>视频扩散模型根据结构化提示生成合理的未来观测视频序列</li><li>使用单目ORB-SLAM3处理生成视频以估计相机位姿</li><li>使用Video Depth Anything进行稠密深度预测</li><li>几何引导的深度对齐阶段：结合估计相机位姿与三角化视觉地标，约束多视图稠密深度预测，提升重建3D环境的几何一致性</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>19场景horizon研究：规划可行场景从P20的13/19增加到P81的15/19</li><li>成功RRT试验从62/90增加到75/90</li><li>走廊研究：25条可评估生成相机轨迹中有6条违反重建碰撞约束，RRT规划器在其中5/6情况下恢复可行替代方案</li><li>较大存档：67次尝试中有58次可用重建，其中36次支持下游规划，22次不支持</li><li>15次走廊重建中，匹配结构地标处的平均重建误差约为0.30米</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>重建和自由空间存在失败模式（摘要提及暴露失败模式而非隐藏）</li><li>部分生成相机轨迹违反重建碰撞约束</li><li>较大存档中22/58可用重建不支持下游规划</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接关联具身智能与机器人导航，利用视频扩散生成未来观测、视觉语言模型进行场景理解，并结合SLAM与深度估计构建3D空间，涉及长时序预测、可执行动作生成（RRT规划）和真实机器人评测相关方向。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅基于摘要，无法确认作者机构、通讯作者、具体方法细节、实验设置和完整局限性。</p>
+          <blockquote><strong>HorizonNav是一个视频扩散框架，将单张RGB图像和文本提示转换为几何对齐的周围3D空间表示。：</strong>We present HorizonNav, a video diffusion-based framework for anticipatory robot navigation that transforms a single RGB image and a text prompt into a geometrically aligned representation of plausible surrounding 3D space.</blockquote>
+          <blockquote><strong>核心贡献是几何引导的深度对齐阶段，结合相机位姿与三角化视觉地标约束多视图稠密深度预测。：</strong>Our central contribution is a geometry-guided depth alignment stage that combines the estimated camera poses with triangulated visual landmarks to constrain dense depth predictions across multiple views.</blockquote>
+          <blockquote><strong>19场景horizon研究中，规划可行场景从P20的13/19增加到P81的15/19，成功RRT试验从62/90增加到75/90。：</strong>planning-feasible scenes increase from 13/19 at P20 to 15/19 at P81, while successful RRT trials increase from 62/90 to 75/90.</blockquote>
+          <blockquote><strong>走廊研究中25条可评估生成相机轨迹有6条违反碰撞约束，RRT在5/6情况下恢复可行替代方案。：</strong>In a separate corridor study, 6 of 25 evaluable generated-camera trajectories violate the reconstructed collision constraints; RRT planner recovers feasible alternatives in 5 of those 6 cases.</blockquote>
+          <blockquote><strong>15次走廊重建中平均重建误差约0.30米。：</strong>Across 15 corridor reconstructions, the mean reconstruction error is approximately 0.30 m at matched structural landmarks.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13858:v1"
+  data-topic="efficient-inference"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13858/v1/fig1-panel1.png"
+        alt="Figure 1：Overview of the standard LapMerge pipeline. Given an ordered sequence of M M input tokens, LapMerge produces exactly N N budget-exact, soft-merged output tokens. A learned scorer assigns each input token a mass, represented as a Laplace kernel. The summed density is scanned cumulatively and partitioned into N N equal-mass segments, each of which is collapsed into a single output token. The resulting N N tokens are then processed by a Transformer classifier. The rightmost panel shows a real histopathology slide with the learned scorer weights overlaid on the tissue; opacity indicates the importance attributed to each patch. These same scores determine the token merging and can therefore be read as a learned routing-mass map: a direct view of where the model allocates its token budget."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13858v1/figures/pipeline_thumb_rot90cw.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of the standard LapMerge pipeline. Given an ordered sequence of M M input tokens, LapMerge produces exactly N N budget-exact, soft-merged output tokens. A learned scorer assigns each input token a mass, represented as a Laplace kernel. The summed density is scanned cumulatively and partitioned into N N equal-mass segments, each of which is collapsed into a single output token. The resulting N N tokens are then processed by a Transformer classifier. The rightmost panel shows a real histopathology slide with the learned scorer weights overlaid on the tissue; opacity indicates the importance attributed to each patch. These same scores determine the token merging and can therefore be read as a learned routing-mass map: a direct view of where the model allocates its token budget.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">高效推理</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13858/">LapMerge：线性时间内的可微精确预算令牌合并</a></h3>
+    <p class="original-title" lang="en">LapMerge: Differentiable Exact-Budget Token Merging in Linear Time</p>
+    <p class="authors">Magdalena Tr\k{e}dowicz · Aleksandra Nowak · Tomasz Steifer · {\L}ukasz Struski · Szymon P{\l}otka · Jacek Tabor</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>通过学习的质量分布，在拉普拉斯核密度下把有序序列划分成恰好 N 个等质量段，并用前缀/后缀扫描聚合每段，从而同时实现精确输出预算、端到端可微性和线性计算成本</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>若研究关注视觉语言动作模型与世界模型中的长时序令牌序列处理、推理效率与模型压缩，LapMerge 提供了一种同时满足精确预算、可微与线性复杂度的通用令牌合并算子，可能作为可迁移的架构组件或效率优化手段</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>面向有序序列的可微令牌压缩与合并算子</p>
+        <p><strong>模型原始标签：</strong>令牌压缩、令牌合并、可微算子、线性复杂度、视觉语言模型、推理效率</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13858">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13858">PDF ↗</a><a href="https://arxiv.org/html/2610.13858v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13858/v1/fig1-panel1.png"
+              alt="Figure 1：Overview of the standard LapMerge pipeline. Given an ordered sequence of M M input tokens, LapMerge produces exactly N N budget-exact, soft-merged output tokens. A learned scorer assigns each input token a mass, represented as a Laplace kernel. The summed density is scanned cumulatively and partitioned into N N equal-mass segments, each of which is collapsed into a single output token. The resulting N N tokens are then processed by a Transformer classifier. The rightmost panel shows a real histopathology slide with the learned scorer weights overlaid on the tissue; opacity indicates the importance attributed to each patch. These same scores determine the token merging and can therefore be read as a learned routing-mass map: a direct view of where the model allocates its token budget."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13858v1/figures/pipeline_thumb_rot90cw.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of the standard LapMerge pipeline. Given an ordered sequence of M M input tokens, LapMerge produces exactly N N budget-exact, soft-merged output tokens. A learned scorer assigns each input token a mass, represented as a Laplace kernel. The summed density is scanned cumulatively and partitioned into N N equal-mass segments, each of which is collapsed into a single output token. The resulting N N tokens are then processed by a Transformer classifier. The rightmost panel shows a real histopathology slide with the learned scorer weights overlaid on the tissue; opacity indicates the importance attributed to each patch. These same scores determine the token merging and can therefore be read as a learned routing-mass map: a direct view of where the model allocates its token budget.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13858v1#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>针对视觉与语言模型中越来越长的有序令牌序列，在给定精确输出预算下进行可微令牌合并，应用于视觉与视觉语言任务</dd>
+        <dt>Motivation（研究动机）</dt><dd>现代视觉与语言模型的令牌序列不断增长，压缩令牌是降低下游成本的主要手段，但现有令牌压缩方法面临根本性的权衡：选择令牌会丢弃信息，而现有合并方法只能通过成对的令牌匹配或 M×N 的令牌到输出交互来保留信息</dd>
+        <dt>Insight（核心洞察）</dt><dd>通过学习的质量分布，在拉普拉斯核密度下把有序序列划分成恰好 N 个等质量段，并用前缀/后缀扫描聚合每段，从而同时实现精确输出预算、端到端可微性和线性计算成本</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>在压缩令牌的同时保留信息</li><li>同时满足精确输出预算、端到端可微与线性成本这三个通常互相权衡的目标</li><li>在大序列长度下保持高效</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过指出既有令牌压缩方法在信息保留方式与计算成本上的权衡，将问题形式化为在有序序列上按学习到的质量分布进行等质量分段与聚合，并用前缀/后缀扫描实现线性时间的前向与反向传播</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出 LapMerge，一个面向有序序列的可微合并算子</li><li>学习一个质量分布，在拉普拉斯核密度下将序列划分为恰好 N 个等质量段</li><li>使用前缀/后缀扫描聚合每个段</li><li>前向与反向传播均为 O(M+N) 时间</li><li>预算可在不改变算子参数的情况下更改</li><li>学习到的质量同时充当令牌级预算分配图</li><li>可作为即插即用的缩减模块，也可作为可训练架构组件</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在视觉与视觉语言任务上，LapMerge 匹配或优于强令牌缩减器</li><li>在大序列长度下最多快两个数量级</li><li>当令牌顺序反映空间或时间局部性时尤其有效</li><li>可作为即插即用缩减模块与可训练架构组件使用</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作属于面向长序列模型的高效令牌压缩与系统优化方向；其线性时间、精确预算与可微合并特性可迁移到具身智能与视觉语言动作模型中长时序观测/动作令牌的压缩，从而影响实时控制与推理效率，但论文本身未涉及机器人动作生成、世界模型或真实机器人评测</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅有标题与摘要，无法确认具体实验任务、数据集、基线、数值结果、是否涉及具身或机器人场景，以及作者声明的局限；相关性判断基于方法可迁移性而非论文核心主题</p>
+          <blockquote><strong>LapMerge 是一种可微合并算子，在有序序列上按学习到的质量分布划分成恰好 N 个等质量段：</strong>We introduce LapMerge, a differentiable merging operator that resolves this trade-off for ordered sequences: a learned mass distribution partitions the sequence into exactly $N$ equal-mass segments under a Laplace-kernel density</blockquote>
+          <blockquote><strong>前向与反向传播均为线性时间：</strong>prefix/suffix scans aggregate each segment, so both the forward and the backward pass run in $\mathcal{O}(M+N)$ time</blockquote>
+          <blockquote><strong>该方法同时实现精确输出预算、端到端可微与线性成本：</strong>This combination - an exact output budget, end-to-end differentiability, and linear cost - is precisely what previous reducers trade off against one another.</blockquote>
+          <blockquote><strong>在大序列长度下最多快两个数量级：</strong>Across vision and vision-language tasks, LapMerge matches or improves on strong token reducers while being up to two orders of magnitude faster at large sequence lengths</blockquote>
+          <blockquote><strong>在令牌顺序反映空间或时间局部性时尤其有效：</strong>it is particularly effective when token order reflects spatial or temporal locality</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13947:v1"
+  data-topic="benchmark"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13947/v1/fig1-panel1.png"
+        alt="Figure 1：Physically grounded articulated 3D objects generated by Artisan (assembled into scenes). Orange and blue annotations indicate revolute and prismatic axes, respectively. Insets list the physical attributes composition of individual parts for exampled objects. Zoom in for more details ."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.13947v1/teaser_rooms.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Physically grounded articulated 3D objects generated by Artisan (assembled into scenes). Orange and blue annotations indicate revolute and prismatic axes, respectively. Insets list the physical attributes composition of individual parts for exampled objects. Zoom in for more details .</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">基准评测（Benchmark）</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13947/">迈向物理落地的铰接式三维资产：多智能体流水线与基准</a></h3>
+    <p class="original-title" lang="en">Towards Physically Grounded Articulated 3D Assets: A Multi-Agent Pipeline and Benchmark</p>
+    <p class="authors">Xudong Cai · Ruijie Zhu · Haoliang Shang · Ruining Li · Marc Pollefeys · Shangzhe Wu · Andrea Vedaldi · Chuanxia Zheng</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>在最新方法 Articraft 基础上引入带物理仿真反馈的多智能体流水线，可超越几何、外观与物理合理铰接，获得无碰撞运动、重力稳定性与准确质量、材质属性等更全面的属性，并通过统一基准系统评估。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它提供了物理落地铰接式3D资产的生成流水线与多维度评测基准，包含碰撞率、稳定性率等关键物理指标，并覆盖100个参考资产、50个稳定性提示词和50个带参考质量的ABO物体，可为具身智能仿真环境与可交互物体资产构建提供可复用评测协议与基线参考。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/simulation/" data-tag-filter="simulation">仿真与生成</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>物理落地的铰接式三维资产生成与评测基准</p>
+        <p><strong>模型原始标签：</strong>铰接式3D资产、多智能体流水线、物理仿真反馈、生成基准、碰撞与稳定性、质量与材质属性</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13947">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13947">PDF ↗</a><a href="https://arxiv.org/html/2610.13947v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13947/v1/fig1-panel1.png"
+              alt="Figure 1：Physically grounded articulated 3D objects generated by Artisan (assembled into scenes). Orange and blue annotations indicate revolute and prismatic axes, respectively. Insets list the physical attributes composition of individual parts for exampled objects. Zoom in for more details ."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13947v1/teaser_rooms.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Physically grounded articulated 3D objects generated by Artisan (assembled into scenes). Orange and blue annotations indicate revolute and prismatic axes, respectively. Insets list the physical attributes composition of individual parts for exampled objects. Zoom in for more details .
+            <a class="figure-source" href="https://arxiv.org/html/2610.13947v1#S0.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.13947/v1/fig2-panel1.png"
+              alt="Figure 2：The staged pipeline of the three agents: Design Agent, Coding Agent, and Review Agent."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.13947v1/overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 2.</strong> The staged pipeline of the three agents: Design Agent, Coding Agent, and Review Agent.
+            <a class="figure-source" href="https://arxiv.org/html/2610.13947v1#S3.F2">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>从复现物体外观转向捕捉物体如何运动与发挥功能，生成具备几何、外观、物理合理铰接、无碰撞运动、重力下稳定性、准确质量与材质属性的铰接式三维资产，并在统一基准上评测。</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有铰接式3D资产生成多关注几何与外观，缺乏物理仿真反馈，难以保证碰撞自由、重力稳定性以及质量与材质等物理属性的准确性，也缺少覆盖空间保真度、物理合理性、下游任务性能与整体质量的统一评测基准。</dd>
+        <dt>Insight（核心洞察）</dt><dd>在最新方法 Articraft 基础上引入带物理仿真反馈的多智能体流水线，可超越几何、外观与物理合理铰接，获得无碰撞运动、重力稳定性与准确质量、材质属性等更全面的属性，并通过统一基准系统评估。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>把物理仿真反馈闭环融入多智能体生成流程</li><li>同时保证无碰撞运动与重力下稳定性</li><li>准确估计质量与材质属性</li><li>构建覆盖空间保真度、物理合理性、下游任务性能与整体质量的统一评测协议</li><li>在超过10个代表性模型之间进行可比评测</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>摘要说明借鉴程序化与智能体生成文献，通过多智能体流水线加物理仿真反馈扩展 Articraft；并构建统一基准，从空间保真度、物理合理性、下游任务性能与整体质量四方面，在来自 ArtVIP 与 LightWheel 的100个参考资产、50个稳定性提示词与50个带参考质量的 ABO 物体上，用协议评估多种指标。更细粒度的分析方法材料未说明。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>在最新方法 Articraft 基础上扩展，提出 Artisan 系统</li><li>引入多智能体流水线并加入物理仿真反馈</li><li>生成超越几何、外观、物理合理铰接的属性，如无碰撞运动、重力下稳定性、准确质量与材质属性</li><li>构建覆盖空间保真度、物理合理性、下游任务性能与整体质量的统一基准</li><li>基准包含来自 ArtVIP 与 LightWheel 的100个参考资产、50个稳定性提示词、50个带参考质量的 ABO 物体，并设计协议评估多种指标</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>对超过10个代表性模型进行广泛评测</li><li>Artisan 取得有竞争力的空间保真度</li><li>在被评测方法中取得最低碰撞率与最高稳定性率</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作面向具身智能所需的物理可用三维资产，其铰接结构、无碰撞运动、重力稳定性、质量与材质属性与真实机器人操作和仿真环境构建直接相关；多智能体加物理仿真反馈的思路也可迁移到世界模型与物理人工智能中的可交互资产生成，但与视觉语言动作模型、推理效率、模型压缩和实时控制的直接关联较弱。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅依据标题与摘要，第一单位与通讯作者未提供；方法细节、评测指标定义、下游任务类型、具体数值与作者明确陈述的局限均无法确认；相关性判断基于其物理合理性与具身资产构建的间接联系，未提供全文可能遗漏更直接的系统优化或动作生成结论。</p>
+          <blockquote><strong>论文研究物理落地的铰接式3D资产生成，目标从物体外观转向运动与功能。：</strong>In this paper, we study physically grounded articulated 3D asset generation---moving the goal from reproducing how objects look to capturing how they move and function.</blockquote>
+          <blockquote><strong>方法在 Articraft 基础上引入带物理仿真反馈的多智能体流水线。：</strong>we present Artisan, a system that extends the latest method Articraft by introducing a multi-agent pipeline with physical simulation feedback</blockquote>
+          <blockquote><strong>生成属性扩展到无碰撞运动、重力稳定性和准确质量与材质属性。：</strong>such as collision-free motion, stability under gravity, and accurate mass and material properties</blockquote>
+          <blockquote><strong>构建了覆盖空间保真度、物理合理性、下游任务性能与整体质量的统一基准。：</strong>we construct a unified benchmark spanning four key aspects: spatial fidelity, physical plausibility, downstream task performance, and overall quality</blockquote>
+          <blockquote><strong>基准包含100个参考资产、50个稳定性提示词和50个带参考质量的ABO物体。：</strong>The benchmark encompasses 100 reference assets from ArtVIP and LightWheel, 50 stability prompts, and 50 ABO objects with reference masses</blockquote>
+          <blockquote><strong>对超过10个代表性模型评测，Artisan 取得最低碰撞率与最高稳定性率。：</strong>Through extensive evaluation of more than 10 representative models, Artisan achieves competitive spatial fidelity while attaining the lowest collision rates and highest stability rates among the evaluated methods.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+      <section class="tier-section" data-tier-section="explore">
+        <header class="tier-heading"><h2>探索发现</h2><p><span data-tier-count>1</span> 篇</p></header>
+        <div class="paper-grid"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.13910:v1"
+  data-topic="benchmark"
+>
+<div class="paper-card__cover">
+      <div class="paper-card__placeholder" aria-label="该论文暂未提取到可用原图">
+        <span>基准评测（Benchmark）</span>
+        <strong>arXiv:2610.13910</strong>
+        <small>本期暂无可用论文原图</small>
+      </div>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">基准评测（Benchmark）</span>
+      <span>摘要级</span>
+      <span>相关性 6/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.13910/">当视觉语言模型摧毁它们已知的信息：空间表征跌破词汇先验</a></h3>
+    <p class="original-title" lang="en">When VLMs Destroy What They Know: Spatial Representations Fall Below Lexical Priors</p>
+    <p class="authors">Shubh Garg · Chen Shani</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>空间关系在谓词自身 token 处可被识别，但当句子被聚合为全局表征（EOS token 或均值池化）时关系信息丢失；因此模型在下游使用的表征并未保留其自身输入中存在的空间关系信息，且这种失败在基于输出的评测中不可见。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它揭示了一种基于输出的评测无法发现的空间关系表征系统性失败，提醒研究者在具身智能与 VLA/世界模型系统中不能仅依赖输出指标判断空间理解能力，并为诊断模型内部是否真正保留可执行、可迁移的空间关系提供了可迁移的评测思路。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details">
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>视觉语言模型内部表征对空间关系的编码忠实度</p>
+        <p><strong>模型原始标签：</strong>视觉语言模型、空间表征、表征忠实度、组合性推理、因果干预、评测基准</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.13910">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.13910">PDF ↗</a><a href="https://arxiv.org/html/2610.13910v1">官方 HTML ↗</a>        </p>
+      </div>
+
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>在多个 VLM 架构上，用受控的单概念干预和基于 Visual Genome 场景图构造的因果控制空间扰动基准，检验模型内部表征是否忠实编码空间关系，并与词汇信息编码及基于输出的组合性基准表现进行对比。</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLM 越来越多用于图像分析与推理，但其内部表征是否忠实编码结构化关系尚不清楚；基于输出的评测可能掩盖表征层面的系统性失败。</dd>
+        <dt>Insight（核心洞察）</dt><dd>空间关系在谓词自身 token 处可被识别，但当句子被聚合为全局表征（EOS token 或均值池化）时关系信息丢失；因此模型在下游使用的表征并未保留其自身输入中存在的空间关系信息，且这种失败在基于输出的评测中不可见。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>如何设计受控的单概念干预以检验表征的概念稳定性，而不依赖输出层表现</li><li>如何构造因果控制的空间扰动，使其可归因于空间关系而非其他混杂因素</li><li>如何在多种 VLM 架构上统一度量表征对空间关系与词汇信息的忠实度差异</li><li>如何解释谓词 token 级可识别性在聚合为全局表征后丢失的现象</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者提出 EICS 指标，通过受控的单概念干预测试表征是否一致编码概念；并构建 CASP-VL 基准，基于 Visual Genome 场景图生成因果控制的空间扰动。作者在多个 VLM 架构上比较空间关系与词汇信息的表征忠实度，并进一步分析谓词 token 级与全局聚合表征（EOS token、均值池化）中关系信息的可识别性。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出 EICS（Evaluation-Invariant Concept Stability）指标，用于在受控单概念干预下测试表征是否一致编码概念</li><li>构建 CASP-VL（Causally controlled Spatial Perturbations for Vision-Language models）基准，从 Visual Genome 场景图导出因果控制的空间扰动</li><li>在多个 VLM 架构上评估空间关系与词汇信息的表征忠实度，并与基于输出的组合性基准得分对照</li><li>分析关系信息在谓词自身 token 处与在 EOS token 或均值池化得到的全局表征中的可识别性差异</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在多个 VLM 架构上，空间关系的表征忠实度显著低于词汇信息，即使同一模型在组合性基准上得分远高于随机水平</li><li>进一步分析显示，关系在谓词自身 token 处可识别，但当句子通过 EOS token 或均值池化聚合为全局表征时关系信息丢失</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该工作直接关系到具身智能与视觉语言动作模型所依赖的空间关系理解：若 VLM 下游使用的全局表征不保留空间关系，则基于此类模型的动作生成、长时序空间预测与真实机器人评测可能建立在不可靠的空间表征之上；其受控干预与表征忠实度度量思路也可迁移到世界模型与物理人工智能中对结构化关系的内部表征评估。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>仅有标题与摘要，无法确认具体模型架构、数据集规模、数值结果、显著性水平、EICS 与 CASP-VL 的详细定义及作者陈述的局限；相关工作与实验细节均未知。</p>
+          <blockquote><strong>论文提出 EICS 指标用于在受控单概念干预下测试表征是否一致编码概念：</strong>We introduce EICS (Evaluation-Invariant Concept Stability), a metric for testing whether representations consistently encode concepts under controlled one-concept interventions</blockquote>
+          <blockquote><strong>论文构建了基于 Visual Genome 场景图的因果控制空间扰动基准 CASP-VL：</strong>CASP-VL (Causally controlled Spatial Perturbations for Vision-Language models), a benchmark of causally controlled spatial perturbations derived from Visual Genome scene graphs</blockquote>
+          <blockquote><strong>在多个 VLM 架构上，空间关系的表征忠实度显著低于词汇信息：</strong>Across multiple VLM architectures, we find that spatial relations are represented substantially less faithfully than lexical information, even when the same models score well above chance on compositional benchmarks.</blockquote>
+          <blockquote><strong>关系信息在谓词自身 token 处可识别，但在聚合为全局表征后丢失：</strong>Further analysis shows that the relation is identifiable at the predicate&#39;s own tokens but is lost when the sentence is aggregated into a global representation, whether through the (EOS) token or by mean pooling.</blockquote>
+          <blockquote><strong>这种失败在基于输出的评测中不可见，模型下游使用的表征未保留输入中存在的空间关系信息：</strong>These findings reveal a systematic failure invisible to output-based evaluation: VLMs do not preserve, in the representation used downstream, relational information that is present in their own input.</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></div>
+      </section>
+    <p class="empty-state" data-no-results hidden>没有符合当前条件的论文，请放宽主题、标签、层级或相关性条件。</p>
+    <script type="application/json" data-paper-json>[{"id":"arxiv:2610.13945:v1","topic":"vla","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["generalist-robotics","robot-manipulation","simulation","vision-language"],"searchText":"视觉语言动作(vla) 面向部署场景个性化的真实到仿真再到真实的vla操作策略自动化训练 vla real-to-sim-to-real 3d gaussian splatting 操作策略个性化 仿真数据生成 stretch 3 π0.5 splat2act: from captured scenes to personalized vla manipulation splat2act:从捕获场景到个性化vla操作 xiaomeng ye krishna jaganathan gyubeum lim gunjan chhablani muhammad zubair irshad zsolt kira a user who brings a generalist manipulation policy into their home or office wants it to pick up their objects from their shelves, counters, and tables. yet even a strong generalist like $\\pi_{0.5}$ achieves 0% pickup success in our captured deployment scenes without adaptation, and collecting real demonstrations in every user's environment is prohibitively expensive. we present splat2act, an automated real-to-sim-to-real pipeline that personalizes a pretrained vision-language-action (vla) policy to a specific scene and object set using only a handheld phone scan and images of the user's objects. unlike prior real-to-sim work that reconstructs individual tabletops, splat2act operates on building-scale indoor environments: it builds a photorealistic digital twin with 3d gaussian splatting and collision geometry, automatically discovers tabletop and non-tabletop receptacles, constructs feasible pickup tasks, and generates successful demonstrations with a privileged simulation oracle, with only scene and object capture required from a human. applied to 101 scanned campus environments with a median navigable area of 104.87 m$^2$ and 7 receptacles, the pipeline yields 852 receptacles and over 68,000 pickup demonstrations. we fine-tune $\\pi_{0.5}$ in two stages: stage 1 adapts to hundreds of public object assets, drawn either from the deployment scene alone or from all 101 scenes; stage 2 personalizes to the user's own objects on the deployment scene's receptacles. our strongest personalized policy reaches 62.5% aggregate pickup success in the target scene. deployed on a real stretch 3, the same policy achieves 63.9% success on a 12-task subset, closely tracking its 66.7% simulated success on those tasks. these results suggest that automated real-to-sim-to-real training can personalize vla manipulation policies using only simulation-oracle data. 研究设定为:用户用手机扫描其家庭或办公等建筑级室内场景并提供目标物体图像,系统自动构建逼真数字孪生并生成抓取演示,从而将一个预训练通用vla策略(π0.5)个性化到该具体场景与物体集合,最终部署到真实移动操作机器人上。 动机是通用操作策略在用户真实部署场景中零样本抓取成功率为0%,而在每个用户环境中收集真实演示成本过高,因此需要一种仅依赖场景与物体采集、无需遥操作的自动化个性化方案。 核心洞察是:仅使用仿真预言机生成的数据,通过建筑级逼真数字孪生与自动发现的可抓取容器,进行两阶段微调,就能将通用vla个性化到目标场景与物体,并在真实机器人上保持与仿真接近的成功率。 作者通过实验测量预训练π0.5在目标场景的0%抓取成功率,并系统比较不同阶段(预训练基座、stage 1、stage 2)和不同适配源(单场景office1k、多场景multi1k)的策略表现,分析容器数量与增强深度对分布内成功率的影响,以及在分布外容器偏移和真实机器人12任务子集上的泛化与迁移表现。 使用手持手机扫描建筑级室内场景,用3d gaussian splatting构建逼真数字孪生并附加碰撞几何 自动发现桌面和非桌面容器,构建可行抓取任务 用特权仿真预言机生成成功抓取演示,无需人类遥操作 在101个扫描的校园环境中生成852个容器和超过68,000条抓取演示 两阶段微调π0.5:stage 1用大量公共物体资产适配,stage 2在部署场景容器上个性化到用户物体 每个物体-容器对使用约24个以上增强轨迹以保证覆盖 预训练π0.5在两个目标场景零样本抓取成功率为0.0% 在101个扫描校园环境中位可导航面积104.87平方米、7个容器,流水线产出852个容器和超过68,000条抓取演示 最强个性化策略在目标场景达到62.5%总体抓取成功率 部署到真实stretch 3上,同一策略在12任务子集达到63.9%成功率,仿真在这些任务上为66.7% 分布内成功率随容器数和增强深度变化:每个物体8个任务时成功率21.9%至43.8%;每个物体24个任务时,一、二、四个容器分别达到75.0%、87.5%、75.0%,轨迹数从96增至384 office stage 2从office1k stage 1微调达到62.5%,conference stage 2从multi1k stage 1微调达到51.4% office上从multi1k stage 1和π0.5基座微调的stage 2分别达到47.5%和45.0% conference上从π0.5基座和office1k stage 1微调的stage 2分别达到42.9%和37.1% 分布外容器偏移下,单一场景适配更脆弱,而从multi1k stage 1微调的stage 2策略在不同容器上保持一致性 相对个性化场景中62.5%和47.5%的成功率,分布外场景成功率大幅下降 该论文直接涉及具身智能中的vla操作策略部署、真实到仿真再到真实的训练流水线、仿真数据生成、模型微调与真实机器人评测,与视觉语言动作模型、物理人工智能和系统优化方向高度相关;其建筑级场景重建、自动容器发现、演示生成与两阶段微调流程可迁移到长时序移动操作和世界模型研究。 推荐当前研究者阅读,因为它提供了一套完整的真实到仿真再到真实个性化vla流程,覆盖建筑级场景重建、自动任务构建、大规模仿真演示生成、两阶段微调以及真实stretch 3部署,并报告了仿真与真实成功率对比、数据规模消融和分布外泛化结果,对vla个性化、仿真数据生成和真实机器人评测具有直接参考价值。"},{"id":"arxiv:2610.13943:v1","topic":"vla","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["efficient-inference","evaluation","physical-ai","policy-learning","robot-manipulation","vision-language"],"searchText":"视觉语言动作(vla) 面向流匹配视觉-语言-动作模型的适配方法(噪声空间学习) vla适配 扩散/流匹配策略 噪声空间学习 强化学习微调 参数高效适配 真实机器人操作 推理效率 安全执行 noise space learning for vla adaptation 面向 vla 适配的噪声空间学习 junjie lu chuheng zhang yucen wang yuhua jiang xinyao qin min xu li zhao pretrained vision-language-action (vla) models encode broad manipulation priors, yet adapting them to specific tasks requires balancing limited robot interaction, computational resources, and safety constraints. noise space learning (nsl) adapts flow-matching-based vlas by learning a context-conditioned distribution over noise while keeping the pretrained vla fixed. building on prior noise-steering methods, we formulate nsl as an interface for vla adaptation that accommodates different learning algorithms and instantiate it with ppo, sac, and awr. theoretically, we provide an information-theoretic analysis of how nsl enables efficient adaptation. empirically, we study these nsl algorithms on libero, robotwin, and four real-robot manipulation tasks under interaction, computation, and execution constraints. across these settings, we develop a suite of effective nsl variants and derive practical recommendations for choosing among them under different resource and deployment regimes. 预训练流匹配 vla 模型(如 smolvla、π0.5)在有限机器人交互预算、计算资源和物理安全约束下,适配到特定操作任务;保持 vla 主干冻结,仅训练轻量级上下文条件噪声 actor。 全参数微调代价高且易破坏预训练先验;lora 等参数高效方法保留先验但效果有限;仅适配动作头会欠拟合任务执行;推理时候选搜索增加推断成本;残差适配受限于与基础策略的接近程度。核心问题是:如何在保留先验的同时有效且高效地适配 vla。 将流匹配 vla 的适配从更新动作生成器或残差动作,转移到学习一个上下文条件的噪声分布(噪声 actor)来引导动作生成,从而冻结强大预训练先验,仅通过轻量噪声接口实现任务适配。 作者从信息论角度分析噪声重加权与行为分布变化的关系,并将其与生成器适配和残差适配进行对比,证明 nsl 在何种条件下达到共同行为信息下界。 将 nsl 形式化为 vla 适配接口:学习上下文条件的噪声 actor,vla 主干保持冻结。 以 ppo、sac、awr 三种强化学习算法实例化噪声 actor,并针对实现细节改进得到 nsl-ppo、nsl-sac、nsl-awr。 噪声 actor 输入为池化的 vla 隐特征与本体感知拼接,包含独立均值与对数标准差头,采样噪声在 50 步预测时域上重复。 ppo 与 awr 使用独立价值 mlp,sac 使用两个标量评论家;ppo 每轮采集-更新后清空缓冲区,sac 与 awr 保留回放。 策略预测 50 个动作并执行前 10 个后重新规划,最大回合长度 520 环境步。 在 libero-10 上使用 smolvla 与 π0.5 的 full 与 one demonstration 设定评估;所有三种 nsl 方法均超过基础策略参考。 full 设定下峰值成功率:smolvla 达 95.8%,π0.5 达 99.8%;one 设定下分别从 24.4% 和 40.4% 提升至 77.0% 和 71.2%。 nsl-ppo 在两种 full 设定下接近 nsl-sac,并在两种 one 设定下超过 nsl-awr 的峰值。 真实机器人任务:杯子堆叠、玩具钓鱼、顺序插入、珠子放置,使用经监督微调初始化的任务特定 π0.5 策略。 真实机器人比较:nsl-awr 与 action-awr、rlt 对比;有人的引导时 nsl-awr 与 dagger、unisteer 对比;每任务评估 40 次试验。 真实机器人结果:nsl-awr 在人引导下耗时 2.04 分钟;相比 action-awr 与 rlt 的训练时间(摘要节选中显示 23.2 分钟对应 rlt)更少,且在每个任务上每轮使用的人类轨迹少于 unisteer 同时平均成功率更高。 模拟中 nsl-sac 在交互预算充足时表现最佳但计算需求更高,且噪声分布可能偏离标准高斯,在真实机器人上伴随不安全动作与急停;nsl-awr 更适合交互受限的真实机器人适配,计算成本更低且执行更安全。 该论文直接面向具身智能中的 vla 模型适配,关注可执行动作生成、推理与计算效率、真实机器人评测及安全执行,与视觉-语言-动作模型、世界动作模型和系统优化中的模型压缩与实时控制方向高度相关。 为在有限交互、计算与安全约束下适配大规模流匹配 vla 提供了统一接口与多种强化学习实例,并给出模拟与真实机器人上的实践建议;其噪声空间适配思路对模型压缩、推理效率与真实机器人部署具有直接可迁移价值。"},{"id":"arxiv:2610.13929:v1","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":9,"hasFigure":true,"tags":["action-prediction","efficient-inference","evaluation","physical-ai","policy-learning","simulation"],"searchText":"机器人学习与控制 将物理时间显式建模到机器人扩散策略中,实现可执行动作生成与对时序变化的鲁棒控制 机器人策略 扩散变压器 时间感知位置编码 时间感知rope 物理时间 异步多速率数据 推理延迟鲁棒性 真实机器人评测 chronos policy: learning robot policies on physical time chronos policy:在物理时间上学习机器人策略 changhao wang jaden clark shuran song robot policies often convert sensing and control into fixed-rate observation-action sequences, leaving physical time implicit in sequence position. this assumption breaks when observation rates or delays vary, or when inference latency changes. we introduce chronos policy, which makes physical time explicit by conditioning on observation capture times and desired action execution times. we study two ways to incorporate time into a diffusion transformer: adding timestamp embeddings to token features, or encoding physical time in positional encoding through time-aware rotary positional encodings (time-aware rope). we find that time-aware rope is more robust, allowing attention to depend directly on physical time while keeping token content unchanged. during training, we temporally randomize which observations are sampled and when the action chunk begins, exposing the policy to a wider range of sensing and execution schedules that may occur during deployments. this also enables learning from asynchronous, multi-rate data without forcing all measurements onto a fixed temporal grid. across simulation and real-world experiments, chronos policy improves performance on dynamic tasks, where observation-to-action timing is critical, and on multisensory tasks, where the relative timing between observations matters. on standard quasi-static tasks, it preserves nominal performance while improving robustness to changes in sensing and inference timing. 机器人模仿学习中的观察-动作序列建模,研究机器人在传感器采样率、观察延迟、推理延迟和动作执行时间发生变化时的策略学习与部署。任务包括动态传送带抓取、接触丰富的多传感器枢轴操作,以及标准准静态操作任务。 传统机器人策略将感知和控制转换为固定速率的观察-动作序列,使物理时间隐含在序列位置中。当观察速率、延迟或推理延迟变化时,这一假设失效,导致策略无法判断观察之间经过了多少时间或动作将在多远的未来执行。 物理时间应作为策略的显式输入,而不是由序列位置隐式表示。通过同时以观察捕获时间和期望动作执行时间为条件,策略可直接解释时间变化;时间感知旋转位置编码比加性时间戳嵌入更稳健,因为它让注意力直接依赖物理时间而不改变 token 内容。 作者通过将策略形式化为以观察时间、动作时间和观察为条件的函数来分析问题,并在仿真中设计动态传送带任务、多传感器枢轴任务和六个标准准静态任务,在标称、观察时序扰动、推理延迟扰动及组合扰动下评估方法,通过消融时间表示和时间随机化来分析各个设计选择的作用。 将策略定义为 a_{t_a}=f_θ(o_{t_o}, t_o, t_a),其中 t_o 表示观察捕获时间,t_a 表示期望动作执行时间 研究两种将时间融入扩散变压器的方式:向 token 特征添加时间戳嵌入,或通过时间感知旋转位置编码(time-aware rope)将物理时间编码到位置编码中 采用时间感知 rope,使注意力直接依赖物理时间,同时保持 token 内容不变 训练时对采样哪些观察以及动作块何时开始进行时间随机化,使策略暴露于更广泛的感知和执行时序安排 支持从异步、多速率数据中学习,无需将所有测量强制对齐到固定时间网格 conveyor 动态抓放任务:标称时序下 chronos policy 成功率从 73.1% 提升至 82.0%;中等观察变化下 diffusion policy 降至 15.6%,chronos policy 保持 77.6%;推理延迟最高 200 ms 下 diffusion policy 降至 1.8%,chronos policy 达 76.4%;组合扰动下 chronos policy 保持 32.7%,diffusion policy 完全失败 pivoting 多传感器接触任务:推理延迟最高 200 ms 下成功率从 51.3% 提升至 60.2%;组合条件下从 19.6% 提升至 38.4% 消融实验:时间随机化单独用于 diffusion policy 时,conveyor 五种扰动条件平均成功率从 6.3% 提升至 26% 左右,但 wide sensing 下仅从 0.0% 提升至 6.4%,组合条件下两者接近零,且标称性能从 73.1% 降至 53.6%;pivoting 上时间随机化使所有条件性能下降,标称从 61.6% 降至 29.8% 时间戳与时间随机化互补:conveyor 上 rope 无随机化在 100 ms 和 200 ms 延迟下达 76.4% 和 69.3%,但 wide sensing 降至 20.2%,组合条件降至 10.7%;加入时间随机化后分别提升至 45.6% 和 32.7%。pivoting 上 rope 无随机化 wide sensing 为 9.1%,组合为 4.2%;完整模型达 48.0% 和 38.4% addtime 在 conveyor 标称性能略高(85.8% 对 82.0%),但 rope 在更广泛条件下表现更强 作者也在真实机器人上进行了评估,但材料未提供具体真实机器人实验数字 该论文直接涉及具身智能和视觉语言动作模型中的可执行动作生成、实时控制与真实机器人评测,通过显式物理时间条件化提升策略对观察延迟和推理延迟的鲁棒性,与推理效率和系统优化中的时序问题密切相关;其时间感知位置编码和异步多速率学习机制可迁移至世界模型和世界动作模型中的长时序预测与动作执行建模。 该论文为机器人策略中的时序失配问题提供了统一且可迁移的解决方案,实验覆盖动态、多传感器和准静态任务,并包含真实机器人验证,对关注可执行动作生成、实时控制、推理延迟鲁棒性和异步数据学习的研究者具有直接参考价值。"},{"id":"arxiv:2610.13912:v1","topic":"world-model","tier":"deep_read","scope":"full_text","score":8,"hasFigure":true,"tags":["evaluation","world-modeling"],"searchText":"世界模型(world model) 以预测性世界模型驱动的递归自我改进框架 世界模型 递归自我改进 jepa 策略-模型协同适配 预测引导选择 智能体 系统优化 rsi-anything: unlocking recursive self-improvement with world models rsi-anything:用世界模型解锁递归自我改进 taoyong cui pinxian zeng wanghan xu hao xiao shuhan xue qiang gao wanli ouyang pheng ann heng zhenfei yin yingcheng wu ling yang recursive self-improvement (rsi) aims to transform interaction experience into persistent improvements, yet external feedback is costly and world-model predictions may become unreliable as policies evolve. we introduce rsi-anything, a domain-general framework built on jepa-anything that uses predictive world models to guide action and learning-data selection. observed feedback drives policy or workflow improvement and conditional world-model adaptation, while component and compatibility checks govern the retention of updated policy-model pairs. across diverse computational and scientific domains, rsi-anything demonstrates substantial gains. in code repair, with the coder fixed, success increases from 26.3% with a static verifier to 29.2% through predictive selection and 31.2% after world-model adaptation, at comparable test usage. graphical user interface (gui) evaluations showed higher task completion, while average actions decrease by 39.4%. across five successive policy versions, laboratory-planning scores more than double from 21.80% to 46.01%. in reaction optimization, rsi-anything achieves 96.15% mean best observed yield versus 82.16% for bayesian optimization under the same 40-experiment budget. an end-to-end immune-science application further connects workflow evolution and predictive modeling with therapeutic hypothesis generation. these results demonstrate how predictive world models and retained system updates enable recursive improvement across diverse environments. 在代码修复、图形用户界面交互、实验室规划、化学反应优化和免疫科学等多类计算与科学领域,构建一个基于 jepa-anything 的领域通用递归自我改进框架,使世界模型预测指导动作与学习数据选择。 递归自我改进旨在将交互经验转化为持久改进,但外部反馈成本高,且随着策略演化,世界模型预测可能变得不可靠。 预测性世界模型可以用于前瞻性评估与规划,在有限外部反馈下优先收集反馈并指导学习数据选择;同时需要通过条件式世界模型适配与策略-模型兼容性检查,决定是否保留更新后的策略-模型对,从而闭合递归自我改进循环。 摘要与全文节选表明,作者通过条件世界模型适配触发机制、组件与兼容性检查以及递归保留协议来分析问题;但材料未说明部分分析细节,如具体误差、校准、漂移和覆盖判据的完整定义。 基于 jepa-anything 构建领域通用的 rsi-anything 框架,使用预测性世界模型指导动作与学习数据选择。 观察到的反馈驱动策略或工作流改进以及条件式世界模型适配。 通过组件与兼容性检查决定是否保留更新后的策略-模型对。 使用世界模型预测进行候选选择,并在代码修复中保持编码器固定,仅引入预测引导选择与预测器适配。 递归保留协议比较候选组件及其组装对与当前版本,依据预声明接受准则判断是否进入保留系统。 适配触发依据可靠性评估、适配数据充分性和更新预算等条件决定是否执行 adapt 操作。 代码修复中,编码器固定,使用 200 个 codecontests 任务、三个随机种子、最多三轮反馈,在线测试提供反馈,隐藏测试衡量最终成功率。 预测引导选择将最终隐藏测试成功率提升至 29.2%(175/600),静态验证器为 26.3%,随机选择为 26.0%。 经过世界模型适配后成功率进一步提升至 31.2%;相对静态验证器的配对增益为 +2.83 个百分点(95% 区间 [+0.17, +5.50])。 图形用户界面评测显示更高任务完成率,同时平均动作数减少 39.4%。 经过五个连续策略版本,实验室规划得分从 21.80% 提升至 46.01%,实现翻倍以上增长。 在相同 40 次实验预算下,反应优化中 rsi-anything 达到 96.15% 的平均最佳观测产率,而贝叶斯优化为 82.16%。 端到端免疫科学应用将工作流演化与预测建模同治疗假设生成相连接。 该工作直接关联世界模型、物理人工智能与系统优化:以预测性世界模型指导动作与数据选择,通过条件适配和保留协议提升策略-模型系统在有限反馈下的递归改进能力;其代码修复与图形界面评测也涉及可执行动作生成、推理效率与真实任务评测。 论文提出了将世界模型预测、动作或数据选择、条件模型适配与递归保留相结合的通用框架,并在代码修复、图形用户界面交互、实验室规划、反应优化及免疫科学等跨领域任务中给出量化结果,对具身智能、世界模型和系统优化方向的研究者具有方法迁移与实验设计参考价值。"},{"id":"arxiv:2610.13862:v1","topic":"robot-learning","tier":"deep_read","scope":"full_text","score":8,"hasFigure":true,"tags":["efficient-inference","evaluation","navigation","simulation"],"searchText":"机器人学习与控制 在有限计算与内存下,将llm驱动的任务推理与行为树技能结合,实现机载机器人智能体的部署与评估 具身智能 机器人智能体 行为树 llm任务推理 机载部署 多保真度基准 四足机器人 实时控制 bt-agent: deploying onboard robot agents with behavior trees and multi-fidelity evaluation bt-agent:使用行为树与多保真度评估在机器人上部署机载智能体 fabio h\\\"ubel adam lilja yue yin siming he claire tomlin shankar sastry jonas frey marco pavone deploying language-model agents onboard mobile robots requires task reasoning and responsive execution within limited compute and memory. we propose bt-agent, an onboard architecture combining llm-driven task decisions with predefined behavior-tree (bt) skills. these skills enforce execution conditions and return structured failure feedback. we demonstrate fully onboard operation with a 9b model on a quadruped across five task categories. intervention tests show that local checks stop ongoing navigation without waiting for another model decision, while the agent remains active to retry or report constraints. to compare agent designs efficiently, we introduce a 161-task multi-fidelity benchmark, evaluated in text on all tasks and in habitat on 39. text supports 10.9$\\times$ higher evaluation throughput, while simulation reveals how perception and motion failures change task outcomes. bt-agent's largest success gains over the strongest act/react baseline occur at 4b and 9b: approximately 10 and 5 percentage points. ablations identify structured tool calls and informative failure feedback as the most useful components. 在移动机器人上完全机载运行语言模型智能体,使用9b模型在四足机器人上跨五类任务进行验证,并构建161个任务的多保真度基准,其中全部任务在文本环境中评估、39个任务在habitat模拟器中评估。 移动机器人需要在有限计算和内存下独立于远程计算运行,既要进行任务级推理,又要保证响应式物理执行;现有语言模型机器人智能体主要解决‘下一步做什么’,但缺乏统一接口来暴露执行状态、强制执行条件并支持中断。 将任务级模型推理与反应式机器人执行分离:llm actor负责选择技能和参数,预定义行为树技能负责强制执行条件、在每个tick重新检查守卫,并可在不等待下一次模型决策的情况下中断正在运行的动作。 作者通过将任务级选择与执行分离来分析问题:llm actor基于任务、历史与存储结果选择技能或声明完成;监督行为树一次执行一个技能并返回状态与结果;每个物理技能的反应式序列在每个tick重新检查取消、耗时和技能特定守卫,守卫失败则中断分支并请求终止。作者还通过多保真度基准在文本和habitat中评估,并做干预测试与消融来识别有用组件。 bt-agent机载架构:llm actor使用任务、状态和历史选择技能与参数,形成react式推理-行动循环 监督行为树一次启动一个技能,返回结构化反馈,并将actor的完成声明转换为终止提交 每个机器人技能实现为预定义行为树并作为命名工具暴露,其执行逻辑可独立于模型选择进行审查和测试 执行前检查前置条件:验证参数、解析对象引用、检查所需先前观察,过滤不可用物理技能并拒绝不合格调用 物理技能的反应式序列在每个tick重新检查取消、耗时和技能特定守卫;守卫失败会中断当前分支并请求终止 actor不能修改技能实现或守卫,因此技能逻辑可独立于任务级策略进行审查和测试 用摘要限制上下文,并将技能结果保存在类型化对象存储中以便复用 失败反馈允许actor重试、改变动作或报告无法继续的原因;取消任务会中断正在运行的技能 构建161个任务的多保真度基准,任务目标与技能接口在文本环境和模拟器执行之间共享 使用9b模型在四足机器人上展示完全机载运行,覆盖五类任务 干预测试显示本地检查可停止正在进行的导航,而无需等待另一次模型决策,同时智能体保持活跃以重试或报告约束 161个任务的多保真度基准:全部任务在文本中评估,39个任务在habitat中评估 文本评估吞吐量比模拟器高10.9倍 模拟器揭示感知和运动失败如何改变任务结果 相比最强的act/react基线,bt-agent在4b和9b模型上取得最大成功率提升,分别约为10和5个百分点 消融识别出结构化工具调用和有信息量的失败反馈是最有用的组件 较小模型从执行框架支持中获益最多;有用组件取决于任务和推理成本 论文与具身智能、机器人学习、世界模型和系统优化直接相关:它研究在机载有限计算下部署语言模型智能体,将任务推理与反应式执行分离,使用行为树强制执行可执行动作生成与实时控制,并通过多保真度基准在文本和habitat模拟器中进行长时序任务评估和真实机器人评测。 它提供了面向机载机器人部署的架构设计,明确分离任务推理与反应式执行,并用行为树守卫支持实时中断;同时给出161任务多保真度评估方案、吞吐量对比、干预测试和消融结果,对具身智能体、实时控制和真实机器人评测具有直接参考价值。"},{"id":"arxiv:2610.13849:v1","topic":"robot-learning","tier":"browse","scope":"abstract","score":8,"hasFigure":true,"tags":["evaluation","navigation","vision-language"],"searchText":"机器人学习与控制 基于视频扩散与几何引导的预见性3d机器人导航 视频扩散 预见性导航 3d重建 视觉语言模型 slam 深度估计 rrt规划 horizonnav: geometry-guided video diffusion for anticipatory 3d robot navigation horizonnav:面向预见性3d机器人导航的几何引导视频扩散 hajira amjad valerii serpiva viacheslav liubimov didar seyidov dzmitry tsetserukou we present horizonnav, a video diffusion-based framework for anticipatory robot navigation that transforms a single rgb image and a text prompt into a geometrically aligned representation of plausible surrounding 3d space. given the initial observation and a textual description of the reconstruction objective, a vision-language model, guided by designed instructions, interprets the scene and constructs structured prompts for a video diffusion model. the resulting video sequence provides plausible future observations of the environment, which are subsequently processed using monocular orb-slam3 for camera pose estimation and video depth anything for dense depth prediction. our central contribution is a geometry-guided depth alignment stage that combines the estimated camera poses with triangulated visual landmarks to constrain dense depth predictions across multiple views. this alignment improves the geometric consistency of the reconstructed 3d environment, addressing inconsistencies that temporal coherence of the generated video alone cannot resolve. the experimental evaluation of navigation in imagined 3d environment shows that across a 19-scene horizon study, planning-feasible scenes increase from 13/19 at p20 to 15/19 at p81, while successful rrt trials increase from 62/90 to 75/90. in a separate corridor study, 6 of 25 evaluable generated-camera trajectories violate the reconstructed collision constraints; rrt planner recovers feasible alternatives in 5 of those 6 cases. a larger archive contains 58 usable reconstructions from 67 attempted cases, of which 36 support a downstream plan and 22 do not, exposing reconstruction and free-space failure modes rather than hiding them without lidar. across 15 corridor reconstructions, the mean reconstruction error is approximately 0.30 m at matched structural landmarks. 给定单张rgb图像和文本提示,预测周围可行3d空间的几何对齐表示,并在想象出的3d环境中评估导航规划可行性。 机器人导航需要预见过渡环境中的未来观测,但仅靠生成视频的时间一致性无法保证几何一致性,需要几何引导的深度对齐来构建可用于规划的3d环境。 将视觉语言模型引导的视频扩散生成与单目slam位姿估计、密集深度预测以及三角化视觉地标约束相结合,通过几何引导的深度对齐提升多视图稠密深度预测的几何一致性。 材料未说明作者如何分析问题;摘要仅提及通过几何引导的深度对齐来约束多视图稠密深度预测,并指出时间一致性无法解决重建不一致性。 输入单张rgb图像和文本提示,由视觉语言模型在指令引导下解析场景并构建结构化提示 视频扩散模型根据结构化提示生成合理的未来观测视频序列 使用单目orb-slam3处理生成视频以估计相机位姿 使用video depth anything进行稠密深度预测 几何引导的深度对齐阶段:结合估计相机位姿与三角化视觉地标,约束多视图稠密深度预测,提升重建3d环境的几何一致性 19场景horizon研究:规划可行场景从p20的13/19增加到p81的15/19 成功rrt试验从62/90增加到75/90 走廊研究:25条可评估生成相机轨迹中有6条违反重建碰撞约束,rrt规划器在其中5/6情况下恢复可行替代方案 较大存档:67次尝试中有58次可用重建,其中36次支持下游规划,22次不支持 15次走廊重建中,匹配结构地标处的平均重建误差约为0.30米 该工作直接关联具身智能与机器人导航,利用视频扩散生成未来观测、视觉语言模型进行场景理解,并结合slam与深度估计构建3d空间,涉及长时序预测、可执行动作生成(rrt规划)和真实机器人评测相关方向。 展示了视频扩散模型与几何约束结合的预见性导航框架,在想象3d环境中评估规划可行性,对世界模型、长时序预测和实时控制研究者有参考价值,且提供了具体的失败模式分析。"},{"id":"arxiv:2610.13858:v1","topic":"efficient-inference","tier":"browse","scope":"abstract","score":6,"hasFigure":true,"tags":["efficient-inference","vision-language"],"searchText":"高效推理 面向有序序列的可微令牌压缩与合并算子 令牌压缩 令牌合并 可微算子 线性复杂度 视觉语言模型 推理效率 lapmerge: differentiable exact-budget token merging in linear time lapmerge:线性时间内的可微精确预算令牌合并 magdalena tr\\k{e}dowicz aleksandra nowak tomasz steifer {\\l}ukasz struski szymon p{\\l}otka jacek tabor modern vision and language models process ever longer token sequences, and reducing them is the main lever on downstream cost. token compression, however, faces a fundamental trade-off: selecting tokens discards information, while existing merging methods preserve it only through pairwise token-to-token matching or $mn$ token-to-output interactions. we introduce lapmerge, a differentiable merging operator that resolves this trade-off for ordered sequences: a learned mass distribution partitions the sequence into exactly $n$ equal-mass segments under a laplace-kernel density, and prefix/suffix scans aggregate each segment, so both the forward and the backward pass run in $\\mathcal{o}(m+n)$ time. this combination - an exact output budget, end-to-end differentiability, and linear cost - is precisely what previous reducers trade off against one another. the budget can be changed without changing operator parameters, and the learned mass doubles as a token-level map of where the budget is allocated. across vision and vision-language tasks, lapmerge matches or improves on strong token reducers while being up to two orders of magnitude faster at large sequence lengths; it is particularly effective when token order reflects spatial or temporal locality, and works both as a drop-in reduction module and as a trainable architectural component. 针对视觉与语言模型中越来越长的有序令牌序列,在给定精确输出预算下进行可微令牌合并,应用于视觉与视觉语言任务 现代视觉与语言模型的令牌序列不断增长,压缩令牌是降低下游成本的主要手段,但现有令牌压缩方法面临根本性的权衡:选择令牌会丢弃信息,而现有合并方法只能通过成对的令牌匹配或 m×n 的令牌到输出交互来保留信息 通过学习的质量分布,在拉普拉斯核密度下把有序序列划分成恰好 n 个等质量段,并用前缀/后缀扫描聚合每段,从而同时实现精确输出预算、端到端可微性和线性计算成本 作者通过指出既有令牌压缩方法在信息保留方式与计算成本上的权衡,将问题形式化为在有序序列上按学习到的质量分布进行等质量分段与聚合,并用前缀/后缀扫描实现线性时间的前向与反向传播 提出 lapmerge,一个面向有序序列的可微合并算子 学习一个质量分布,在拉普拉斯核密度下将序列划分为恰好 n 个等质量段 使用前缀/后缀扫描聚合每个段 前向与反向传播均为 o(m+n) 时间 预算可在不改变算子参数的情况下更改 学习到的质量同时充当令牌级预算分配图 可作为即插即用的缩减模块,也可作为可训练架构组件 在视觉与视觉语言任务上,lapmerge 匹配或优于强令牌缩减器 在大序列长度下最多快两个数量级 当令牌顺序反映空间或时间局部性时尤其有效 可作为即插即用缩减模块与可训练架构组件使用 该工作属于面向长序列模型的高效令牌压缩与系统优化方向;其线性时间、精确预算与可微合并特性可迁移到具身智能与视觉语言动作模型中长时序观测/动作令牌的压缩,从而影响实时控制与推理效率,但论文本身未涉及机器人动作生成、世界模型或真实机器人评测 若研究关注视觉语言动作模型与世界模型中的长时序令牌序列处理、推理效率与模型压缩,lapmerge 提供了一种同时满足精确预算、可微与线性复杂度的通用令牌合并算子,可能作为可迁移的架构组件或效率优化手段"},{"id":"arxiv:2610.13947:v1","topic":"benchmark","tier":"browse","scope":"abstract","score":6,"hasFigure":true,"tags":["evaluation","simulation"],"searchText":"基准评测(benchmark) 物理落地的铰接式三维资产生成与评测基准 铰接式3d资产 多智能体流水线 物理仿真反馈 生成基准 碰撞与稳定性 质量与材质属性 towards physically grounded articulated 3d assets: a multi-agent pipeline and benchmark 迈向物理落地的铰接式三维资产:多智能体流水线与基准 xudong cai ruijie zhu haoliang shang ruining li marc pollefeys shangzhe wu andrea vedaldi chuanxia zheng in this paper, we study physically grounded articulated 3d asset generation---moving the goal from reproducing how objects look to capturing how they move and function. inspired by the literature on procedural and agentic generation, we present artisan, a system that extends the latest method articraft by introducing a multi-agent pipeline with physical simulation feedback, enabling comprehensive attributes beyond geometry, appearance, and physically plausible articulation, such as collision-free motion, stability under gravity, and accurate mass and material properties. furthermore, we construct a unified benchmark spanning four key aspects: spatial fidelity, physical plausibility, downstream task performance, and overall quality. the benchmark encompasses 100 reference assets from artvip and lightwheel, 50 stability prompts, and 50 abo objects with reference masses, with protocols evaluating various metrics. through extensive evaluation of more than 10 representative models, artisan achieves competitive spatial fidelity while attaining the lowest collision rates and highest stability rates among the evaluated methods. together, our system and benchmark establish insights for advancing 3d generation towards physically plausible, functionally usable assets. 从复现物体外观转向捕捉物体如何运动与发挥功能,生成具备几何、外观、物理合理铰接、无碰撞运动、重力下稳定性、准确质量与材质属性的铰接式三维资产,并在统一基准上评测。 现有铰接式3d资产生成多关注几何与外观,缺乏物理仿真反馈,难以保证碰撞自由、重力稳定性以及质量与材质等物理属性的准确性,也缺少覆盖空间保真度、物理合理性、下游任务性能与整体质量的统一评测基准。 在最新方法 articraft 基础上引入带物理仿真反馈的多智能体流水线,可超越几何、外观与物理合理铰接,获得无碰撞运动、重力稳定性与准确质量、材质属性等更全面的属性,并通过统一基准系统评估。 摘要说明借鉴程序化与智能体生成文献,通过多智能体流水线加物理仿真反馈扩展 articraft;并构建统一基准,从空间保真度、物理合理性、下游任务性能与整体质量四方面,在来自 artvip 与 lightwheel 的100个参考资产、50个稳定性提示词与50个带参考质量的 abo 物体上,用协议评估多种指标。更细粒度的分析方法材料未说明。 在最新方法 articraft 基础上扩展,提出 artisan 系统 引入多智能体流水线并加入物理仿真反馈 生成超越几何、外观、物理合理铰接的属性,如无碰撞运动、重力下稳定性、准确质量与材质属性 构建覆盖空间保真度、物理合理性、下游任务性能与整体质量的统一基准 基准包含来自 artvip 与 lightwheel 的100个参考资产、50个稳定性提示词、50个带参考质量的 abo 物体,并设计协议评估多种指标 对超过10个代表性模型进行广泛评测 artisan 取得有竞争力的空间保真度 在被评测方法中取得最低碰撞率与最高稳定性率 该工作面向具身智能所需的物理可用三维资产,其铰接结构、无碰撞运动、重力稳定性、质量与材质属性与真实机器人操作和仿真环境构建直接相关;多智能体加物理仿真反馈的思路也可迁移到世界模型与物理人工智能中的可交互资产生成,但与视觉语言动作模型、推理效率、模型压缩和实时控制的直接关联较弱。 它提供了物理落地铰接式3d资产的生成流水线与多维度评测基准,包含碰撞率、稳定性率等关键物理指标,并覆盖100个参考资产、50个稳定性提示词和50个带参考质量的abo物体,可为具身智能仿真环境与可交互物体资产构建提供可复用评测协议与基线参考。"},{"id":"arxiv:2610.13910:v1","topic":"benchmark","tier":"explore","scope":"abstract","score":6,"hasFigure":false,"tags":["evaluation","vision-language"],"searchText":"基准评测(benchmark) 视觉语言模型内部表征对空间关系的编码忠实度 视觉语言模型 空间表征 表征忠实度 组合性推理 因果干预 评测基准 when vlms destroy what they know: spatial representations fall below lexical priors 当视觉语言模型摧毁它们已知的信息:空间表征跌破词汇先验 shubh garg chen shani vision-language models (vlms) increasingly analyze and reason about images, yet it remains unclear whether their internal representations faithfully encode the structured relations required for such reasoning. we introduce eics (evaluation-invariant concept stability), a metric for testing whether representations consistently encode concepts under controlled one-concept interventions, and casp-vl (causally controlled spatial perturbations for vision-language models), a benchmark of causally controlled spatial perturbations derived from visual genome scene graphs. across multiple vlm architectures, we find that spatial relations are represented substantially less faithfully than lexical information, even when the same models score well above chance on compositional benchmarks. further analysis shows that the relation is identifiable at the predicate's own tokens but is lost when the sentence is aggregated into a global representation, whether through the (eos) token or by mean pooling. these findings reveal a systematic failure invisible to output-based evaluation: vlms do not preserve, in the representation used downstream, relational information that is present in their own input. 在多个 vlm 架构上,用受控的单概念干预和基于 visual genome 场景图构造的因果控制空间扰动基准,检验模型内部表征是否忠实编码空间关系,并与词汇信息编码及基于输出的组合性基准表现进行对比。 vlm 越来越多用于图像分析与推理,但其内部表征是否忠实编码结构化关系尚不清楚;基于输出的评测可能掩盖表征层面的系统性失败。 空间关系在谓词自身 token 处可被识别,但当句子被聚合为全局表征(eos token 或均值池化)时关系信息丢失;因此模型在下游使用的表征并未保留其自身输入中存在的空间关系信息,且这种失败在基于输出的评测中不可见。 作者提出 eics 指标,通过受控的单概念干预测试表征是否一致编码概念;并构建 casp-vl 基准,基于 visual genome 场景图生成因果控制的空间扰动。作者在多个 vlm 架构上比较空间关系与词汇信息的表征忠实度,并进一步分析谓词 token 级与全局聚合表征(eos token、均值池化)中关系信息的可识别性。 提出 eics(evaluation-invariant concept stability)指标,用于在受控单概念干预下测试表征是否一致编码概念 构建 casp-vl(causally controlled spatial perturbations for vision-language models)基准,从 visual genome 场景图导出因果控制的空间扰动 在多个 vlm 架构上评估空间关系与词汇信息的表征忠实度,并与基于输出的组合性基准得分对照 分析关系信息在谓词自身 token 处与在 eos token 或均值池化得到的全局表征中的可识别性差异 在多个 vlm 架构上,空间关系的表征忠实度显著低于词汇信息,即使同一模型在组合性基准上得分远高于随机水平 进一步分析显示,关系在谓词自身 token 处可识别,但当句子通过 eos token 或均值池化聚合为全局表征时关系信息丢失 该工作直接关系到具身智能与视觉语言动作模型所依赖的空间关系理解:若 vlm 下游使用的全局表征不保留空间关系,则基于此类模型的动作生成、长时序空间预测与真实机器人评测可能建立在不可靠的空间表征之上;其受控干预与表征忠实度度量思路也可迁移到世界模型与物理人工智能中对结构化关系的内部表征评估。 它揭示了一种基于输出的评测无法发现的空间关系表征系统性失败,提醒研究者在具身智能与 vla/世界模型系统中不能仅依赖输出指标判断空间理解能力,并为诊断模型内部是否真正保留可执行、可迁移的空间关系提供了可迁移的评测思路。"}]</script>
+  </section>
+
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>
