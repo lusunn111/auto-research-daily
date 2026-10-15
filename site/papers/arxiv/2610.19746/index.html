@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>面向视觉-语言-动作模型的一次性人类视频引导适配</title>
+  <style>
+    :root {
+      --ink:#16211b; --muted:#5d6a62; --paper:#f3efe6; --card:#fffdfa;
+      --green:#1f5c42; --green-soft:#e8f0e9; --line:#d8d2c5; --accent:#b44d2f;
+      --shadow:0 16px 42px rgba(34,42,36,.07);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.7 system-ui,-apple-system,"Noto Sans SC",sans-serif; }
+    button,input,select { font:inherit; }
+    button { color:inherit; }
+    a { color:var(--green); }
+    [hidden] { display:none !important; }
+    main { width:min(1440px,94vw); margin:0 auto; padding:34px 0 96px; }
+
+    .page-header { border-bottom:1px solid var(--line); padding-bottom:30px; }
+    .masthead { display:flex; justify-content:space-between; gap:20px; align-items:center; color:var(--muted); font-size:.83rem; letter-spacing:.03em; }
+    .masthead nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px 16px; }
+    .masthead nav a { color:var(--muted); text-decoration:none; }
+    .masthead nav a:hover { color:var(--green); text-decoration:underline; }
+    h1 { max-width:1100px; margin:42px 0 20px; font:700 clamp(2.35rem,6vw,5.3rem)/1.04 Georgia,"Noto Serif SC",serif; overflow-wrap:anywhere; }
+    .lede { max-width:920px; color:var(--muted); font-size:1.08rem; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:12px; margin-top:30px; }
+    .stat { padding:14px 16px; border:1px solid var(--line); background:rgba(255,255,255,.45); }
+    .stat strong { display:block; color:var(--green); font-size:1.6rem; line-height:1.2; }
+
+    .gallery-intro { display:flex; justify-content:space-between; gap:30px; align-items:end; margin:50px 0 20px; }
+    .eyebrow { margin:0 0 5px; color:var(--accent); font-size:.78rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+    .gallery-intro h2 { margin:0; font:700 clamp(1.8rem,3vw,2.8rem)/1.15 Georgia,"Noto Serif SC",serif; }
+    .gallery-intro > p { max-width:620px; margin:0; color:var(--muted); }
+
+    .portal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr)); gap:14px; }
+    .portal-card { min-height:178px; display:flex; flex-direction:column; padding:20px; color:var(--ink); border:1px solid var(--line); background:var(--card); text-decoration:none; box-shadow:var(--shadow); transition:.18s ease; }
+    .portal-card:hover { transform:translateY(-3px); border-color:var(--green); }
+    .portal-card strong { font:700 1.28rem/1.35 Georgia,"Noto Serif SC",serif; }
+    .portal-card p { margin:10px 0 18px; color:var(--muted); font-size:.9rem; }
+    .portal-card span { margin-top:auto; color:var(--green); font-weight:800; font-size:.84rem; }
+    .portal-section { margin-top:58px; padding-top:34px; border-top:1px solid var(--line); }
+    .portal-section h2 { margin:0 0 8px; font:700 2rem/1.2 Georgia,"Noto Serif SC",serif; }
+    .portal-section > p { margin:0 0 20px; color:var(--muted); }
+    .portal-subtitle { margin:28px 0 12px; font-size:1rem; }
+
+    .topic-shelves { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:10px; margin-bottom:18px; }
+    .topic-filter { min-height:96px; padding:14px 16px; text-align:left; border:1px solid var(--line); background:rgba(255,253,250,.7); cursor:pointer; transition:.18s ease; }
+    .topic-filter:hover { transform:translateY(-2px); border-color:var(--green); }
+    .topic-filter[aria-pressed="true"] { color:#fff; border-color:var(--green); background:var(--green); box-shadow:0 8px 18px rgba(31,92,66,.18); }
+    .topic-filter strong { display:block; line-height:1.35; }
+    .topic-filter span { display:block; margin-top:6px; color:var(--muted); font-size:.82rem; }
+    .topic-filter[aria-pressed="true"] span { color:rgba(255,255,255,.78); }
+
+    .explorer-controls { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(220px,2fr) repeat(4,minmax(125px,1fr)) auto; gap:10px; padding:14px; border:1px solid var(--line); background:rgba(243,239,230,.95); box-shadow:0 10px 25px rgba(34,42,36,.06); backdrop-filter:blur(12px); }
+    .control { display:grid; gap:4px; color:var(--muted); font-size:.76rem; font-weight:700; }
+    .control input,.control select { width:100%; min-height:42px; padding:8px 10px; color:var(--ink); border:1px solid var(--line); border-radius:0; background:var(--card); }
+    .explorer-actions { display:flex; gap:6px; align-items:end; }
+    .explorer-actions button { min-height:42px; padding:8px 12px; border:1px solid var(--line); background:var(--card); cursor:pointer; white-space:nowrap; }
+    .explorer-actions button:hover { border-color:var(--green); color:var(--green); }
+    .explorer-status { display:flex; justify-content:space-between; gap:20px; align-items:center; margin:18px 0 10px; color:var(--muted); }
+    .explorer-status strong { color:var(--green); font-size:1.2rem; }
+    .active-tag { color:var(--green); font-weight:800; }
+    .noscript-notice,.empty-state { padding:20px; border:1px solid var(--line); background:var(--card); }
+
+    .tier-section { margin-top:36px; }
+    .tier-heading { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; border-bottom:1px solid var(--line); }
+    .tier-heading h2 { margin:0 0 8px; font-size:1.45rem; }
+    .tier-heading p { margin:0 0 8px; color:var(--muted); }
+    .paper-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr)); gap:18px; align-items:start; }
+
+    .paper-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow); }
+    .paper-card__cover { position:relative; height:230px; display:grid; place-items:center; overflow:hidden; border-bottom:1px solid var(--line); background:#f7f7f2; }
+    .paper-card__cover > img { width:100%; height:100%; display:block; object-fit:contain; background:#fff; }
+    .paper-card__cover-caption { position:absolute; left:0; right:0; bottom:0; max-height:58px; overflow:hidden; margin:0; padding:9px 12px; color:#fff; background:linear-gradient(transparent,rgba(12,20,16,.88)); font-size:.76rem; line-height:1.35; }
+    .paper-card__placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:22px; color:var(--green); background:linear-gradient(145deg,#edf3ed,#faf7ef 62%,#e8eee8); }
+    .paper-card__placeholder span { font-weight:800; }
+    .paper-card__placeholder strong { font:700 1.45rem/1.2 Georgia,serif; overflow-wrap:anywhere; }
+    .paper-card__placeholder small { color:var(--muted); }
+    .paper-card__body { display:flex; flex-direction:column; min-height:520px; padding:22px; }
+    .paper-card--compact .paper-card__body { min-height:285px; }
+    .paper-card__rubric { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px; color:var(--muted); font-size:.74rem; }
+    .paper-card__rubric span { padding:2px 7px; border:1px solid var(--line); }
+    .paper-card__rubric .topic-badge { color:var(--green); border-color:var(--green); font-weight:800; }
+    .paper-card h3 { margin:0 0 8px; font-size:1.3rem; line-height:1.38; }
+    .paper-card h3 a { color:var(--ink); text-decoration:none; }
+    .paper-card h3 a:hover { color:var(--green); text-decoration:underline; }
+    .original-title { display:-webkit-box; overflow:hidden; margin:0 0 8px; color:var(--muted); font:italic .88rem/1.45 Georgia,serif; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    .authors { overflow:hidden; margin:0 0 18px; color:var(--muted); font-size:.82rem; text-overflow:ellipsis; white-space:nowrap; }
+    .paper-card__takeaway { padding:14px; border-left:3px solid var(--green); background:var(--green-soft); }
+    .paper-card__takeaway p { margin:0; }
+    .paper-card__takeaway p:last-child { display:-webkit-box; overflow:hidden; -webkit-box-orient:vertical; -webkit-line-clamp:4; }
+    .field-label { margin-bottom:4px !important; color:var(--green); font-size:.75rem; font-weight:800; letter-spacing:.08em; }
+    .paper-card__recommendation { display:-webkit-box; overflow:hidden; margin:14px 0; color:var(--muted); font-size:.9rem; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
+    .paper-card__recommendation strong { color:var(--ink); }
+    .paper-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; padding:0; list-style:none; }
+    .paper-tags a { display:block; padding:3px 8px; color:var(--green); background:#edf3ed; font-size:.75rem; text-decoration:none; }
+    .paper-tags a:hover { text-decoration:underline; }
+
+    .paper-details { margin-top:auto; border-top:1px solid var(--line); }
+    .paper-details summary { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:14px 0 0; color:var(--green); font-weight:800; cursor:pointer; list-style:none; }
+    .paper-details summary::-webkit-details-marker { display:none; }
+    .summary-close { display:none; }
+    .paper-details[open] .summary-open { display:none; }
+    .paper-details[open] .summary-close { display:inline; }
+    .paper-details[open] .summary-arrow { transform:rotate(180deg); }
+    .summary-arrow { transition:transform .2s ease; }
+    .paper-details__meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; margin:22px 0; padding:16px; background:#f6f3ec; font-size:.9rem; }
+    .paper-details__meta p { margin:0; }
+    .paper-links { display:flex; flex-wrap:wrap; gap:14px; }
+    .research-note { display:grid; grid-template-columns:minmax(150px,210px) minmax(0,1fr); gap:10px 20px; margin:22px 0 0; }
+    .research-note dt { color:var(--muted); font-weight:800; }
+    .research-note dd { min-width:0; margin:0; }
+    .research-note ul { margin:0; padding-left:1.25rem; }
+    blockquote { margin:10px 0; padding:10px 14px; border-left:3px solid var(--green); background:#f2f5ef; }
+    .paper-figures { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr)); gap:14px; margin:22px 0 8px; }
+    .paper-figure { margin:0; border:1px solid var(--line); background:#f7f7f2; }
+    .paper-figure__media { min-height:180px; display:grid; place-items:center; background:#fff; overflow:hidden; }
+    .paper-figure img { display:block; width:100%; max-height:480px; object-fit:contain; }
+    .paper-figure figcaption { padding:11px 13px; color:var(--muted); font-size:.84rem; line-height:1.5; }
+    .figure-source { display:block; margin-top:5px; font-size:.8rem; }
+    .figure-error { padding:26px; color:var(--muted); text-align:center; }
+    .copyright,.analysis-scope { color:var(--muted); font-size:.78rem; }
+    .analysis-scope { margin-top:22px; padding-top:12px; border-top:1px solid var(--line); }
+    .detail-layout { margin-top:42px; }
+    .detail-layout .paper-card { width:min(1120px,100%); margin:0 auto; }
+    .detail-layout .paper-card__cover { height:min(520px,55vw); }
+    .detail-layout .paper-card__body { min-height:0; padding:clamp(24px,4vw,44px); }
+
+    .paper-card:has(.paper-details[open]) { grid-column:1/-1; }
+    .paper-card:has(.paper-details[open]) .paper-card__cover { display:none; }
+    .paper-card:has(.paper-details[open]) .paper-card__body { width:min(1120px,100%); min-height:0; margin:0 auto; padding:clamp(24px,4vw,44px); }
+    .paper-card:has(.paper-details[open]) .paper-card__takeaway p:last-child,
+    .paper-card:has(.paper-details[open]) .paper-card__recommendation { display:block; overflow:visible; }
+
+    @media (max-width:1100px) {
+      .stats { grid-template-columns:repeat(3,1fr); }
+      .explorer-controls { grid-template-columns:repeat(3,1fr); }
+      .control--query { grid-column:span 2; }
+    }
+    @media (max-width:760px) {
+      main { width:min(94vw,680px); padding-top:24px; }
+      .masthead,.gallery-intro,.explorer-status { align-items:flex-start; flex-direction:column; }
+      .masthead nav { justify-content:flex-start; }
+      h1 { margin-top:28px; font-size:clamp(1.85rem,9vw,2.5rem); }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .topic-shelves { display:flex; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; }
+      .topic-filter { min-width:190px; scroll-snap-align:start; }
+      .explorer-controls { position:static; grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .control--query,.explorer-actions { grid-column:1/-1; }
+      .explorer-actions { flex-wrap:wrap; }
+      .paper-details__meta,.research-note { grid-template-columns:1fr; }
+      .research-note dt { margin-top:10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div class="masthead">
+      <span>AUTO RESEARCH DAILY · 2026-10-15 17:18</span>
+      <nav aria-label="站点导航">
+        <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/tags/">标签</a><a href="https://lusunn111.github.io/auto-research-daily/archive/">发表归档</a>
+        <a href="https://lusunn111.github.io/auto-research-daily/search/">搜索</a><a href="https://lusunn111.github.io/auto-research-daily/feed.xml">订阅</a>
+      </nav>
+    </div>
+    <h1>面向视觉-语言-动作模型的一次性人类视频引导适配</h1>
+<p class="lede">One-shot Human Video-Guided Adaptation for Vision-Language-Action Models</p>  </header>
+
+  <section class="detail-layout" aria-label="论文完整解读"><article
+  class="paper-card"
+  data-paper-card
+  data-paper-id="arxiv:2610.19746:v1"
+  data-topic="vla"
+>
+<div class="paper-card__cover">
+      <img
+        src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.19746/v1/fig1-panel1.png"
+        alt="Figure 1：Overview of the proposed one-shot human-video-guided VLA adaptation framework. Our framework consists of a phase-aware human video representation module and a video-conditioned adaptation module, which respectively extract task-relevant guidance from a human demonstration in the context of the current robot observation and incorporate the resulting guidance into the VLA policy for action generation. Phase-level auxiliary supervision is used only during training and is not required at inference time."
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        data-paper-figure
+        data-original-url="https://arxiv.org/html/2610.19746v1/overview.png"
+      >
+      <div class="figure-error" hidden data-figure-error>论文图暂时无法加载，可从原文查看。</div>
+      <p class="paper-card__cover-caption"><strong>Figure 1</strong> Overview of the proposed one-shot human-video-guided VLA adaptation framework. Our framework consists of a phase-aware human video representation module and a video-conditioned adaptation module, which respectively extract task-relevant guidance from a human demonstration in the context of the current robot observation and incorporate the resulting guidance into the VLA policy for action generation. Phase-level auxiliary supervision is used only during training and is not required at inference time.</p>
+  </div>
+  <div class="paper-card__body">
+    <div class="paper-card__rubric">
+      <span class="topic-badge">视觉语言动作（VLA）</span>
+      <span>全文级</span>
+      <span>相关性 8/10</span>
+      <span>v1</span>
+    </div>
+
+    <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.19746/">面向视觉-语言-动作模型的一次性人类视频引导适配</a></h3>
+    <p class="original-title" lang="en">One-shot Human Video-Guided Adaptation for Vision-Language-Action Models</p>
+    <p class="authors">Qi Chen · Yuwei Wu · Quan Chen · Kunpeng Gao · Jin Chen · Che Sun · Zhi Gao · Yunde Jia</p>
+
+<div class="paper-card__takeaway">
+      <p class="field-label">核心洞察</p>
+      <p>人类演示视频不必被当作要对齐到机器人本体的模仿轨迹，而可以作为一种任务级执行引导：人类视频提供任务特定的执行指导而非本体对齐的轨迹去模仿，从而在无需目标任务机器人演示或微调的前提下引导预训练 VLA 策略完成跨任务适配。</p>
+    </div>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>论文提出了一次性人类视频引导的 VLA 跨任务适配框架，方法上涉及紧凑视频表示、学习式视觉 token 选择、阶段感知监督与将视频条件注入动作上下文，并配有仿真与真实机器人评测以及多组件消融；对关注 VLA 适配、人类视频引导、真实机器人操作评测与推理输入压缩的研究者有直接参考价值，同时其真实世界大偏移任务 0/5 的结果也提示了当前方法的边界。</p>
+    <ul class="paper-tags" aria-label="研究标签">
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/data/" data-tag-filter="data">具身数据</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
+    </ul>
+
+<details class="paper-details" open>
+      <summary>
+        <span class="summary-open">展开完整解读</span>
+        <span class="summary-close">收起完整解读</span>
+        <span aria-hidden="true" class="summary-arrow">↓</span>
+      </summary>
+
+      <div class="paper-details__meta">
+        <p><strong>模型细分主题：</strong>基于单段人类演示视频的视觉-语言-动作模型跨任务适配</p>
+        <p><strong>模型原始标签：</strong>视觉-语言-动作模型、人类视频引导、跨任务适配、一次性学习、机器人操作、阶段感知表示</p>
+        <p><strong>第一单位：</strong>Beijing Key Laboratory of Intelligent Information Technology, School of Computer Science and Technology, Beijing Institute of Technology</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>首次上传：</strong>2026-10</p>
+        <p class="paper-links">
+          <a href="https://arxiv.org/abs/2610.19746">arXiv 摘要 ↗</a>
+<a href="https://arxiv.org/pdf/2610.19746">PDF ↗</a><a href="https://arxiv.org/html/2610.19746v1">官方 HTML ↗</a>        </p>
+      </div>
+
+      <div class="paper-figures">
+        <figure class="paper-figure">
+          <div class="paper-figure__media">
+            <img
+              src="https://lusunn111.github.io/auto-research-daily/figures/arxiv/2610.19746/v1/fig1-panel1.png"
+              alt="Figure 1：Overview of the proposed one-shot human-video-guided VLA adaptation framework. Our framework consists of a phase-aware human video representation module and a video-conditioned adaptation module, which respectively extract task-relevant guidance from a human demonstration in the context of the current robot observation and incorporate the resulting guidance into the VLA policy for action generation. Phase-level auxiliary supervision is used only during training and is not required at inference time."
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              data-paper-figure
+              data-original-url="https://arxiv.org/html/2610.19746v1/overview.png"
+            >
+            <div class="figure-error" hidden data-figure-error>该论文图暂时无法加载，可从原文查看。</div>
+          </div>
+          <figcaption>
+            <strong>Figure 1.</strong> Overview of the proposed one-shot human-video-guided VLA adaptation framework. Our framework consists of a phase-aware human video representation module and a video-conditioned adaptation module, which respectively extract task-relevant guidance from a human demonstration in the context of the current robot observation and incorporate the resulting guidance into the VLA policy for action generation. Phase-level auxiliary supervision is used only during training and is not required at inference time.
+            <a class="figure-source" href="https://arxiv.org/html/2610.19746v1#S3.F1">来源：论文官方 arXiv HTML ↗</a>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
+
+      <dl class="research-note">
+        <dt>Setting（研究设定）</dt><dd>研究设定：在预训练的 π0.5 VLA 策略基础上，仅给定一段自我中心的人类演示视频（单次、无目标任务的机器人演示、无目标任务微调），使模型适配到训练分布之外的新操作任务；在 RoboTwin 仿真基准以及真实机器人操作任务上进行评测。</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有 VLA 模型虽在大规模机器人数据与基础模型支持下取得进展，但快速适配训练分布之外的新操作任务能力有限；已有方法通常需要任务特定的机器人演示和额外训练，耗费人力与算力，限制了 VLA 向开放世界场景扩展的可扩展性。因此作者希望减少对目标任务机器人数据的依赖。</dd>
+        <dt>Insight（核心洞察）</dt><dd>人类演示视频不必被当作要对齐到机器人本体的模仿轨迹，而可以作为一种任务级执行引导：人类视频提供任务特定的执行指导而非本体对齐的轨迹去模仿，从而在无需目标任务机器人演示或微调的前提下引导预训练 VLA 策略完成跨任务适配。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>如何在只给单段人类演示视频的条件下快速适配到训练分布之外的新任务</li><li>如何避免依赖任务特定的机器人演示和额外训练带来的高昂人力与算力成本</li><li>如何将人类视频信息注入 VLA 的动作条件上下文，同时尽量保留原有动作生成主干的能力</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过在 RoboTwin 基准上划分不同类型的任务迁移（Source 源任务训练、Target-A1 近任务偏移、Target-A2 物体/交互/可供性偏移、Target-B 组合式任务偏移）来刻画跨任务适配难度，并设置配对的 π0.5 基线与一个直接拼接人类视频 token 的 Direct Video Prefix 基线进行对比，以分析简单地提供人类视频上下文是否足以支撑跨任务适配；同时开展消融实验分析各组件贡献。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出 CapPro 框架，使 VLA 策略仅用单段人类演示视频即可适配未见过的新操作任务</li><li>阶段感知的人类视频表示模块：通过学习式视觉 token 选择构建紧凑的视频表示，并在阶段字幕监督下学习任务相关的查询表示</li><li>视频条件适配模块：将紧凑视频表示与查询派生的表示联合注入预训练 VLA 策略的动作条件上下文</li><li>设计为人类演示提供任务特定执行引导，而非本体对齐的模仿轨迹</li><li>无需目标任务机器人演示，也无需目标任务微调</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 RoboTwin 任务划分上进行实验，Source 含 13 个任务，Target-A1 含 6 个近任务偏移任务，Target-A2 含 10 个物体/交互/可供性偏移任务，Target-B 含 10 个组合式任务偏移任务</li><li>Source 训练集每个任务包含 50 条干净轨迹与 500 条随机化机器人轨迹</li><li>每个目标任务在推理时接收一段自我中心人类演示视频作为任务级引导，不使用目标任务机器人演示或目标任务微调</li><li>每个任务在干净与随机化两种设置下各用 100 个 rollout episode 评测，报告任务成功率</li><li>主基线为在相同 Source 机器人数据和相同训练预算下训练的匹配 π0.5 策略；额外包含 Direct Video Prefix 基线，该基线直接将人类视频 token 拼接到 π0.5 前缀，不含 GridS 采样、阶段感知监督或基于查询的引导</li><li>除非另有说明，所有方法均使用 30K 步检查点评测</li><li>结果：CapPro 在未见目标任务组上提升平均性能，同时在源任务上保持可比性能；摘要指出直接拼接人类视频 token 到策略前缀的表现明显更差</li><li>真实世界评测：构建 7 个操作任务，包括 3 个 Source 任务、2 个 Target-A 任务、2 个 Target-B 任务；Source 任务包括将可乐罐放入盒子、将马克笔放入笔架、折叠短袖衣物；Target-A 引入物体层面的变化但保留相关交互模式，包括将饮料纸盒和线缆放入指定盒子；Target-B 包含更大的任务偏移，包括折叠裤子和按视觉属性将工件分拣到对应盒子</li><li>真实世界每个任务用 5 次试验评测；节选提到 Target-B 的折叠裤子与工件分拣显示 0/5 (0%)</li><li>消融研究：w/o GridS（用固定均匀采样替代学习式 GridS 采样器并保持每帧人类视频 token 数不变）、w/o Phase-Aware Caption（用单一任务级字幕替代阶段特定字幕，保留辅助字幕监督分支）、w/o Caption Loss（令 λ_cap = 0 移除辅助字幕目标）、w/o Query-to-Action Guidance（从动作前缀中移除门控查询表示，保留查询分支及其辅助监督）、w/o Human Video Progress（从人类视频表示中移除时间进度嵌入）、w/o Direct Video Path（从动作前缀中移除直接人类视频表示，但保留其在查询与字幕分支中的使用）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>节选明确显示 CapPro 在真实世界 Target-B 任务（折叠裤子、工件分拣）上为 0/5 (0%)，表明在更大任务偏移下仍存在失败</li><li>节选中真实世界评测的描述被截断（“Each task is evaluated over five trials using pr”），未提供完整协议与其余结果</li><li>材料未说明作者以文字形式明确陈述的其他局限</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>该论文直接面向视觉-语言-动作模型（VLA）的跨任务适配与可执行动作生成，关注在真实机器人/仿真操作中利用人类视频作为任务级引导，减少对目标任务机器人演示与微调的依赖，与具身智能、VLA、真实机器人评测等方向高度相关；其紧凑视频表示与视觉 token 选择也与系统优化和推理效率有一定关联，但未直接涉及世界模型或 WAM。</dd>
+        <dt>证据与不确定性</dt>
+        <dd>
+          <p>输入中的全文节选被多处截断（如 RoboTwin 任务细节、真实世界评测协议、消融结果数值与分析章节等），且真实世界除 0/5 外的具体成功率、消融实验结论以及作者对方法缺陷的完整讨论未能获取，因此对实验细节与局限的判断存在不确定性；通讯作者信息在提供材料中也未明确标注。</p>
+          <blockquote><strong>论文目标是仅用一段人类演示视频实现 VLA 对未见过操作任务的适配，且不需要目标任务机器人演示或微调：</strong>we propose CapPro, a framework that enables a VLA policy to adapt to previously unseen manipulation tasks using only a single human demonstration video.</blockquote>
+          <blockquote><strong>方法由阶段感知人类视频表示模块与视频条件适配模块两部分组成：</strong>CapPro consists of two components. First, a phase-aware human video representation module constructs a compact video representation through learned visual token selection and learns task-relevant query representations under phase-caption supervision. Second, a video-conditioned adaptation module jointly incorporates the compact video and query-derived representations into the action-conditioning context of the pretrained VLA policy.</blockquote>
+          <blockquote><strong>人类演示提供的是任务特定执行指导而非本体对齐的模仿轨迹：</strong>the human demonstration provides task-specific execution guidance rather than an embodiment-aligned trajectory to imitate, without requiring target-task robot demonstrations or target-task fine-tuning.</blockquote>
+          <blockquote><strong>实验表明 CapPro 在未见目标任务组上提升平均性能，并在源任务上保持可比性能：</strong>Experiments across source and unseen target tasks show that CapPro improves average performance across unseen target groups while maintaining comparable performance on the source tasks.</blockquote>
+          <blockquote><strong>第一单位是北京理工大学智能信息技术北京市重点实验室：</strong>Beijing Key Laboratory of Intelligent Information Technology, School of Computer Science and Technology, Beijing Institute of Technology.</blockquote>
+          <blockquote><strong>直接拼接人类视频 token 到策略前缀的基线表现明显更差：</strong>while directly concatenating human-video tokens into the policy prefix leads to substantially wor</blockquote>
+          <blockquote><strong>真实世界 Target-B 的折叠裤子与工件分拣任务结果为 0/5 (0%)：</strong>Target-B
+Fold pants
+0/5 (0%)
+Target-B
+Workpiece sorting
+0/5 (0%)</blockquote>
+        </dd>
+      </dl>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+    </details>  </div>
+</article></section>
+</main>
+<script>
+(() => {
+  const explorer = document.querySelector('[data-explorer]');
+  if (!explorer) return;
+  const source = explorer.querySelector('[data-paper-json]');
+  let records = [];
+  try { records = JSON.parse(source?.textContent || '[]'); } catch { return; }
+  const byId = new Map(records.map((record) => [record.id, record]));
+  const validTopics = new Set(records.map((record) => record.topic));
+  const validTags = new Set(records.flatMap((record) => record.tags || []));
+  const validTiers = new Set(['deep_read', 'browse', 'explore']);
+  const validScopes = new Set(['full_text', 'abstract']);
+  const validFigures = new Set(['yes', 'no']);
+  const validScores = new Set([0, 8, 9]);
+  const form = explorer.querySelector('[data-filter-form]');
+  const queryInput = explorer.querySelector('[data-filter-query]');
+  const tierInput = explorer.querySelector('[data-filter-tier]');
+  const scopeInput = explorer.querySelector('[data-filter-scope]');
+  const scoreInput = explorer.querySelector('[data-filter-score]');
+  const figureInput = explorer.querySelector('[data-filter-figure]');
+  const topicButtons = [...explorer.querySelectorAll('[data-topic-choice]')];
+  const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/gu, ' ').trim();
+  let state = { query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' };
+
+  const canonicalState = (candidate) => ({
+    query: candidate.query.trim().length <= 200 ? candidate.query.trim() : '',
+    topic: validTopics.has(candidate.topic) ? candidate.topic : '',
+    tag: validTags.has(candidate.tag) ? candidate.tag : '',
+    tier: validTiers.has(candidate.tier) ? candidate.tier : '',
+    scope: validScopes.has(candidate.scope) ? candidate.scope : '',
+    score: validScores.has(Number(candidate.score)) ? Number(candidate.score) : 0,
+    figure: validFigures.has(candidate.figure) ? candidate.figure : '',
+  });
+  const readUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return canonicalState({ query:params.get('q') || '', topic:params.get('topic') || '', tag:params.get('tag') || '', tier:params.get('tier') || '', scope:params.get('scope') || '', score:params.get('score') || 0, figure:params.get('figure') || '' });
+  };
+  const writeUrl = () => {
+    const params = new URLSearchParams();
+    if (state.query) params.set('q', state.query);
+    if (state.topic) params.set('topic', state.topic);
+    if (state.tag) params.set('tag', state.tag);
+    if (state.tier) params.set('tier', state.tier);
+    if (state.scope) params.set('scope', state.scope);
+    if (state.score) params.set('score', String(state.score));
+    if (state.figure) params.set('figure', state.figure);
+    const query = params.toString();
+    history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+  };
+  const syncControls = () => {
+    queryInput.value = state.query; tierInput.value = state.tier; scopeInput.value = state.scope;
+    scoreInput.value = String(state.score); figureInput.value = state.figure;
+    topicButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.topicChoice === state.topic)));
+    const activeTag = explorer.querySelector('[data-active-tag]');
+    if (activeTag) {
+      const label = explorer.querySelector(`[data-tag-filter="${CSS.escape(state.tag)}"]`)?.textContent?.trim();
+      activeTag.textContent = state.tag ? `· 标签：${label || state.tag}` : '';
+    }
+  };
+  const render = () => {
+    state = canonicalState(state);
+    const query = normalize(state.query);
+    let visibleCount = 0;
+    explorer.querySelectorAll('[data-paper-card]').forEach((card) => {
+      const record = byId.get(card.dataset.paperId);
+      const visible = Boolean(record) && (!query || normalize(record.searchText).includes(query)) && (!state.topic || record.topic === state.topic) && (!state.tag || record.tags.includes(state.tag)) && (!state.tier || record.tier === state.tier) && (!state.scope || record.scope === state.scope) && record.score >= state.score && (!state.figure || (record.hasFigure ? 'yes' : 'no') === state.figure);
+      card.hidden = !visible;
+      if (visible) visibleCount += 1;
+    });
+    explorer.querySelectorAll('[data-tier-section]').forEach((section) => {
+      const count = [...section.querySelectorAll('[data-paper-card]')].filter((card) => !card.hidden).length;
+      section.hidden = count === 0;
+      const counter = section.querySelector('[data-tier-count]');
+      if (counter) counter.textContent = String(count);
+    });
+    explorer.querySelector('[data-result-count]').textContent = String(visibleCount);
+    explorer.querySelector('[data-no-results]').hidden = visibleCount !== 0;
+    syncControls(); writeUrl();
+  };
+
+  state = readUrl(); syncControls(); render();
+  form?.addEventListener('input', () => { state = { ...state, query:queryInput.value, tier:tierInput.value, scope:scopeInput.value, score:Number(scoreInput.value), figure:figureInput.value }; render(); });
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  form?.addEventListener('reset', () => queueMicrotask(() => { state = canonicalState({ query:'', topic:'', tag:'', tier:'', scope:'', score:0, figure:'' }); render(); }));
+  topicButtons.forEach((button) => button.addEventListener('click', () => { state.topic = button.dataset.topicChoice || ''; render(); }));
+  explorer.querySelectorAll('[data-tag-filter]').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); state.tag = link.dataset.tagFilter || ''; render(); form?.scrollIntoView({ behavior:'smooth', block:'start' }); }));
+  explorer.querySelector('[data-expand-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('[data-paper-card]:not([hidden]) .paper-details').forEach((details) => { details.open = true; }); });
+  explorer.querySelector('[data-collapse-visible]')?.addEventListener('click', () => { explorer.querySelectorAll('.paper-details[open]').forEach((details) => { details.open = false; }); });
+})();
+
+document.querySelectorAll('[data-paper-figure]').forEach((image) => {
+  const fail = () => {
+    const original = image.dataset.originalUrl;
+    if (original && image.dataset.remoteFallback !== 'used' && image.src !== original) { image.dataset.remoteFallback = 'used'; image.src = original; return; }
+    image.hidden = true; image.parentElement?.querySelector('[data-figure-error]')?.removeAttribute('hidden');
+  };
+  image.addEventListener('error', fail);
+  if (image.complete && image.naturalWidth === 0) fail();
+});
+</script>
+</body>
+</html>
