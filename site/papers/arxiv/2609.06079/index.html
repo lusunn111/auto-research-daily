@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-20 01:10</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-21 17:30</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -174,7 +174,7 @@
   <section class="detail-layout" aria-label="论文完整解读"><article
   class="paper-card"
   data-paper-card
-  data-paper-id="arxiv:2609.06079:v2"
+  data-paper-id="arxiv:2609.06079:v5"
   data-topic="vla"
 >
 <div class="paper-card__cover">
@@ -188,8 +188,8 @@
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
       <span>摘要级</span>
-      <span>相关性 9/10</span>
-      <span>v2</span>
+      <span>相关性 8/10</span>
+      <span>v5</span>
     </div>
 
     <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2609.06079/">LayerRoute：面向视觉-语言-动作策略的动作条件层级混合路由</a></h3>
@@ -198,9 +198,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>通过动作条件自适应路由，可以动态形成缓存 VLM 表征的混合，并显式复读早期动作表征，从而在极小参数开销下提升 VLA 策略性能。</p>
+      <p>将 VLM 多层表征视为可被动态混合的缓存池，并以动作条件（action-conditioned）路由决定当前动作层访问哪些层表征；同时显式“回读”早期动作状态，使动作计算过程中产生的中间表征可被后续决策复用。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供了一种参数开销极小的 VLA 表征路由机制，可在不显著增加参数的情况下提升现有 StarVLA-π 与 π0.5 在仿真与真实基准上的表现，对 VLA 架构优化、动作生成和实时控制研究有直接参考价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对关注 VLA 架构接口、层间表征利用与参数高效适配的研究者有直接参考价值：它提出可插拔的路由接口，并在两个现有策略上以极小参数增量获得一致提升，且给出路由分配的结构化分析，便于迁移到其他 VLA 与世界动作模型的动作生成模块。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
@@ -217,34 +217,35 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>视觉-语言-动作策略中的自适应表征路由</p>
-        <p><strong>模型原始标签：</strong>VLA、表征路由、混合层级、动作生成、参数高效</p>
+        <p><strong>模型细分主题：</strong>视觉-语言-动作（VLA）策略中的表征路由与自适应层间访问</p>
+        <p><strong>模型原始标签：</strong>VLA、表征路由、混合专家、层间表征、机器人操作、参数高效</p>
         <p><strong>第一单位：</strong>证据未提供</p>
         <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-09</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2609.06079">arXiv 摘要 ↗</a>
-<a href="https://arxiv.org/pdf/2609.06079">PDF ↗</a><a href="https://arxiv.org/html/2609.06079v2">官方 HTML ↗</a>        </p>
+<a href="https://arxiv.org/pdf/2609.06079">PDF ↗</a>        </p>
       </div>
 
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>在视觉-语言-动作（VLA）策略上，通过动作条件路由动态选择 VLM 各层表征混合与复用中间动作状态，用于机器人操作任务的仿真与真实基准评测。</dd>
-        <dt>Motivation（研究动机）</dt><dd>VLM 提供的层级视觉-语义表征从局部视觉几何到抽象语言对齐语义逐层演化，不同操作任务可能需要不同层表征组合；同时动作模块的中间表征在动作计算中演化，可能对后续决策有用。但现有 VLA 接口灵活性有限：VLM 信息以固定层分配暴露给每个动作层，动作中间状态仅通过残差流隐式传播而无显式复用。</dd>
-        <dt>Insight（核心洞察）</dt><dd>通过动作条件自适应路由，可以动态形成缓存 VLM 表征的混合，并显式复读早期动作表征，从而在极小参数开销下提升 VLA 策略性能。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有 VLA 接口对 VLM 层表征访问为固定层分配，缺乏灵活性</li><li>动作中间状态仅通过残差流隐式传播，未显式复用</li><li>不同操作任务可能依赖不同层表征组合，需要自适应选择机制</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>材料未说明作者对问题的具体分析方式；摘要仅指出固定层分配和隐式传播的局限，并说明路由分析揭示了跨动作层与任务设置的结构化分配模式。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>提出 LayerRoute，一种动作条件的表征路由接口，支持自适应访问 VLM 层与动作表征</li><li>Layer Mixture Router：动态形成缓存的 VLM 表征混合</li><li>Action-State Reread：复用较早的动作表征</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在多种仿真与真实世界基准上，LayerRoute 持续提升 StarVLA-π 与 π0.5</li><li>在 LIBERO Long 上取得最高 7.2 的提升</li><li>仅增加 0.31% / 3.87% 额外参数</li><li>消融研究验证了动作条件层级路由的好处</li><li>路由分析揭示了跨动作层与任务设置的结构化分配模式</li></ul></dd>
+        <dt>Setting（研究设定）</dt><dd>研究在预训练视觉语言模型（VLM）驱动的机器人操作 VLA 策略中，如何按不同任务和动作计算阶段动态选择 VLM 各层表征并复用动作中间状态；实验覆盖多种仿真与真实世界基准。</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLM 各层表征从局部视觉几何逐渐演化为抽象的语言对齐语义，不同操作任务可能需要不同的层表征组合；同时动作模块的中间表征在动作计算中不断演化，可能对后续决策有用。但现有 VLA 接口表征访问灵活性有限：VLM 信息以固定层分配暴露给每个动作层，动作中间状态仅通过残差流隐式传播而未被显式复用。</dd>
+        <dt>Insight（核心洞察）</dt><dd>将 VLM 多层表征视为可被动态混合的缓存池，并以动作条件（action-conditioned）路由决定当前动作层访问哪些层表征；同时显式“回读”早期动作状态，使动作计算过程中产生的中间表征可被后续决策复用。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>VLM 各层表征语义层次不同，任务相关的层组合难以预先固定</li><li>现有 VLA 接口对 VLM 层访问是固定分配，缺乏自适应性</li><li>动作模块中间状态仅隐式经残差流传播，未被显式复用</li><li>在引入自适应路由的同时需控制额外参数与推理开销</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>摘要指出作者通过消融研究验证动作条件层级路由的收益，并通过路由分析揭示不同动作层与任务设置下存在结构化的层分配模式；具体分析过程材料未说明。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>提出 LayerRoute，一种动作条件的表征路由接口，用于自适应访问 VLM 层与动作表征</li><li>Layer Mixture Router：动态形成缓存 VLM 表征的混合</li><li>Action-State Reread：复用较早的动作表征</li><li>将该接口接入 StarVLA-π 与 π0.5 策略</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在多种仿真与真实世界基准上，LayerRoute 一致提升 StarVLA-π 与 π0.5</li><li>在 LIBERO Long 上最高取得 7.2 的提升，仅增加 0.31% / 3.87% 额外参数</li><li>消融研究验证了动作条件层级路由的收益</li><li>路由分析揭示了跨动作层与任务设置的结构化分配模式</li></ul></dd>
         <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>该论文直接面向视觉-语言-动作模型，通过动作条件路由增强可执行动作生成能力，涉及长时序任务（LIBERO Long）与参数高效设计，与具身智能、VLA、动作生成和系统优化主题高度相关；但其方法聚焦表征路由而非世界模型或长时序预测本身。</dd>
+        <dt>与你的研究关系</dt><dd>直接关联具身智能中的 VLA 策略设计：通过动作条件路由在 VLM 层间自适应选择表征并显式复用动作中间状态，属于可执行动作生成与表征访问的系统级优化；其低额外参数特性也触及推理效率与模型压缩关注点，但摘要未涉及长时序预测、实时控制时延等指标。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>全文未提供，只能基于摘要判断；第一单位、通讯作者、具体实验设置、真实机器人平台、基线细节及局限均未给出，无法验证数字之外的结论与可复现性。</p>
-          <blockquote><strong>现有 VLA 接口对 VLM 信息暴露为固定层分配，动作中间状态仅隐式传播：</strong>existing VLA interfaces offer limited flexibility in representation access: VLM information is exposed through fixed layer assignments for each action layer, while intermediate action states are only propagated implicitly through residual streams without explicit reuse.</blockquote>
-          <blockquote><strong>提出 LayerRoute 动作条件表征路由接口，包含 Layer Mixture Router 与 Action-State Reread：</strong>We introduce LayerRoute, an action-conditioned representation routing interface that enables adaptive access to VLM layers and action representations. The Layer Mixture Router dynamically forms mixtures of cached VLM representations, while Action-State Reread reuses earlier action representations.</blockquote>
-          <blockquote><strong>在多种仿真与真实基准上持续提升 StarVLA-π 与 π0.5，LIBERO Long 上最高提升 7.2，仅增加 0.31% / 3.87% 额外参数：</strong>Across diverse simulation and real-world benchmarks, LayerRoute consistently improves StarVLA-$\pi$ and $\pi_{0.5}$, achieving up to 7.2 gains on LIBERO Long with only 0.31% / 3.87% additional parameters.</blockquote>
-          <blockquote><strong>消融验证动作条件层级路由收益，路由分析显示结构化分配模式：</strong>Ablation studies validate the benefit of action-conditioned layer routing, while routing analyses reveal structured allocation patterns across action layers and task settings.</blockquote>
+          <p>仅有标题与摘要，缺少全文：真实世界基准的具体任务与评测协议、额外参数与推理时延的权衡、路由机制细节（如何缓存、如何条件化于动作）以及失败案例均未知；7.2 提升的度量单位与统计显著性未在摘要中说明。</p>
+          <blockquote><strong>VLM 各层表征具有从局部视觉几何到抽象语言对齐语义的层次演化，不同操作任务可能需要不同层表征组合：</strong>VLMs provide hierarchical visual-semantic representations that evolve across layers, from local visual geometry to abstract, language-aligned semantics; different manipulation tasks may therefore require different mixtures of layer representations.</blockquote>
+          <blockquote><strong>现有 VLA 接口对 VLM 层是固定分配，动作中间状态未被显式复用：</strong>VLM information is exposed through fixed layer assignments for each action layer, while intermediate action states are only propagated implicitly through residual streams without explicit reuse.</blockquote>
+          <blockquote><strong>LayerRoute 包含 Layer Mixture Router 与 Action-State Reread 两个组件：</strong>The Layer Mixture Router dynamically forms mixtures of cached VLM representations, while Action-State Reread reuses earlier action representations.</blockquote>
+          <blockquote><strong>在 LIBERO Long 上最高提升 7.2，仅增加 0.31% / 3.87% 额外参数：</strong>achieving up to 7.2 gains on LIBERO Long with only 0.31% / 3.87% additional parameters.</blockquote>
+          <blockquote><strong>路由分析揭示跨动作层与任务设置的结构化分配模式：</strong>routing analyses reveal structured allocation patterns across action layers and task settings.</blockquote>
         </dd>
       </dl>
       <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
