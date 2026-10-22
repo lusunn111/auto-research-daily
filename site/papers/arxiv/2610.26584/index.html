@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-21 17:30</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-22 17:33</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,8 +193,8 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>全文级</span>
-      <span>相关性 9/10</span>
+      <span>摘要级</span>
+      <span>相关性 8/10</span>
       <span>v1</span>
     </div>
 
@@ -204,15 +204,15 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>把全身动作块生成拆成按前向运动链推进的多个去噪阶段（先移动与头、再腰部精化、最后全身操作），并通过跨阶段 KV 缓存让后阶段基于前阶段的动作表示进行精化与增广，从而在不从头训练的前提下把强通用 VLA 结构化为分层全身动作流。</p>
+      <p>与其一次性生成完整动作块，不如在共享全身动作空间中按阶段渐进去噪：先生成移动与头部指令，再细化腰部，最后生成全身操作，并通过跨阶段条件传递保留阶段间结构依赖。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对关注 VLA 落地到人形全身控制的研究者有直接参考价值：它给出一种不改动预训练权重主体的结构化适配方案（阶段嵌入加跨阶段 KV 缓存），在六个真机任务与多类分布偏移上验证，并明确讨论了分层去噪带来的延迟代价，这为动作生成结构与推理效率的权衡提供了可迁移的设计范式与真机评测协议。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供了一条将强移动操作VLA适配到人形全身移动操作的可迁移思路：分层动作流加跨阶段KV缓存条件，对关注VLA真实机器人落地、动作生成结构与推理复用的研究者有直接参考价值。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
-      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/evaluation/" data-tag-filter="evaluation">评测与可靠性</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/generalist-robotics/" data-tag-filter="generalist-robotics">通用机器人</a></li>
-      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/policy-learning/" data-tag-filter="policy-learning">策略学习</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
+      <li><a href="https://lusunn111.github.io/auto-research-daily/tags/vision-language/" data-tag-filter="vision-language">视觉语言</a></li>
     </ul>
 
 <details class="paper-details" open>
@@ -223,10 +223,10 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>面向人形机器人全身移动操作的分层动作流 VLA 控制</p>
-        <p><strong>模型原始标签：</strong>VLA、人形机器人、全身移动操作、流匹配、分层动作生成、跨阶段 KV 缓存、真实机器人评测、模仿学习</p>
-        <p><strong>第一单位：</strong>北京大学计算机学院多媒体信息处理国家重点实验室</p>
-        <p><strong>通讯作者：</strong>Jian Tang, Shanghang Zhang, Zhengping Che</p>
+        <p><strong>模型细分主题：</strong>人形机器人全身移动操作的分层视觉语言动作策略</p>
+        <p><strong>模型原始标签：</strong>VLA、人形机器人、全身移动操作、流匹配、分层动作生成、跨阶段KV缓存</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-10</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2610.26584">arXiv 摘要 ↗</a>
@@ -274,26 +274,25 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>在预训练 flow-matching VLA（π0.5）基础上，将其适配到高维人形全身动作空间，用于真实世界中需要协调移动、腰部、头部与双臂的长时序移动操作任务。</dd>
-        <dt>Motivation（研究动机）</dt><dd>通用 VLA 已固定基座、轮式移动和双臂操作上表现良好，但直接用于人形机器人时，单阶段动作生成会把移动、姿态与操作纠缠在一起，基座或腰部动作不准就会引发上身剧烈补偿，损害精度、稳定性与能效。因此需要一种尊重腿-腰-头-臂运动学依赖的动作生成结构，同时保留预训练 VLA 的语义推理能力。</dd>
-        <dt>Insight（核心洞察）</dt><dd>把全身动作块生成拆成按前向运动链推进的多个去噪阶段（先移动与头、再腰部精化、最后全身操作），并通过跨阶段 KV 缓存让后阶段基于前阶段的动作表示进行精化与增广，从而在不从头训练的前提下把强通用 VLA 结构化为分层全身动作流。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>人形全身动作空间维度高，腿、腰、头、臂存在强运动学耦合</li><li>单阶段生成容易产生不稳定基座运动与激进上身补偿</li><li>需在结构化的分层生成与保留预训练 VLA 语义推理能力之间取得平衡</li><li>分层多阶段去噪增加总去噪预算，可能带来部署延迟</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者从人形与固定基座/轮式操作器的差异出发，论证单阶段动作生成器会导致移动、姿态与操作的非结构化纠缠；并以预训练 π0.5 为基座，说明分层去噪加跨阶段 KV 缓存的条件化可保留阶段间结构依赖。材料未给出更细分的定量分析。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>以预训练 flow-matching VLA π0.5 为基础，继承其视觉-语言前缀编码器与动作专家权重</li><li>引入可学习阶段嵌入，把单阶段动作生成器转为分层全身动作流模型</li><li>在共享全身动作空间上渐进去噪：先移动与头部指令，再腰部精化，最后全身操作</li><li>引入跨阶段 KV 缓存条件化机制，使后续阶段基于前阶段的动作表示精化与增广输出</li><li>无需从头训练新模型，降低适配计算成本</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在真实人形机器人上评测六个主任务：Laundry Loading、Clothes Retrieval、Table Tidy、Plant Watering、Ball Tossing、Box Transfer</li><li>另有 Box Carry 作为受控消融任务，用于泛化实验中的分布偏移设定</li><li>基线包括 ACT、π0.5、GR00T N1.7 与 Cosmos Policy，按官方实现与配置尽量复现</li><li>指标为任务里程碑归一化得分 Score(%)=s_achieved/s_max×100，除非另有说明，每方法每设定报告 10 次真机 rollout 的平均归一化得分，产生不安全动作的变体终止并记为“Unsafe”</li><li>摘要称六个真实任务上框架显著提升现有模型在人形移动操作任务上的性能；图 1(c) 展示各基线与本方法在六个真实任务上的平均归一化得分（具体数值材料未给出）</li><li>泛化实验显示 HAF-VLA 在多个偏移设定下得分高于 π0.5，且下降幅度更小：Laundry Loading 未见椅子 40.0（降 26.7）对 π0.5 的 26.7（降 26.7）；Clothes Retrieval 起点偏移 20 cm 为 43.3（降 10.0）对 36.7（降 16.7）；Box Carry 暗光 83.3（降 3.3）对 60.0（降 10.0）、更小物体 76.7（降 10.0）对 50.0（降 20.0）、桌面偏移 30 cm 为 73.3（降 13.3）对 40.0（降 30.0）</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>分层生成过程相比单阶段策略增加了总去噪预算，可能引入额外部署延迟</li><li>方法仍依赖底层基础模型的语义推理与动作先验，当这些先验对未见任务或环境不足时可能失败</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>该论文直接位于具身智能与 VLA 交叉核心：研究如何把通用 VLA 适配到高维人形全身动作空间，涉及可执行动作生成的结构化设计、跨阶段条件化的长时序动作块生成，以及真机实时部署中的去噪预算与延迟权衡；与模型压缩、推理效率、实时控制与真实机器人评测的研究关注点高度重合。</dd>
+        <dt>Setting（研究设定）</dt><dd>将预训练的流匹配VLA策略适配到高维人形全身动作空间，在真实世界人形机器人移动操作任务上进行评测。</dd>
+        <dt>Motivation（研究动机）</dt><dd>通用VLA策略难以适配真实人形机器人的移动操作：人形需协调移动、姿态、视线与双臂操作，高维全身动作空间中不准确的基座或腰部运动会引发不稳定且激进的上半身补偿。</dd>
+        <dt>Insight（核心洞察）</dt><dd>与其一次性生成完整动作块，不如在共享全身动作空间中按阶段渐进去噪：先生成移动与头部指令，再细化腰部，最后生成全身操作，并通过跨阶段条件传递保留阶段间结构依赖。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>高维全身动作空间中移动、姿态、视线与双臂操作的协调</li><li>基座或腰部动作不准确导致上半身不稳定补偿</li><li>保留阶段间结构依赖，使后续阶段能基于前序动作表示进行细化与增广</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>材料未说明</dd>
+        <dt>Method（方法）</dt><dd><ul><li>基于预训练流匹配VLA，继承视觉-语言前缀编码器与动作专家权重</li><li>用可学习阶段嵌入将模型适配到人形全身移动操作</li><li>在共享全身动作空间中渐进去噪：先移动与头部指令，再腰部细化，最后全身操作</li><li>引入跨阶段KV缓存条件机制，让后续阶段基于前序动作表示细化与增广输出</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在六个真实世界任务上实验，摘要称框架显著提升现有模型在人形移动操作任务上的性能；未给出具体数值</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接关联具身智能中的VLA策略与人形真实机器人控制，涉及可执行动作生成与长时序动作块生成的分层分解；系统优化层面体现为跨阶段KV缓存复用与渐进式去噪的推理结构。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>全文仅提供节选，缺少方法细节（阶段划分粒度、KV 缓存实现、训练配置）与主基准的完整数值表；图 1(c) 的具体分数未在文本中给出，因此相对基线的提升幅度只能定性判断。</p>
-          <blockquote><strong>论文以预训练 flow-matching VLA 为基础，继承视觉-语言前缀编码器与动作专家权重，并适配到人形全身移动操作：</strong>Built upon a pretrained flow-matching VLA, HAF-VLA inherits the vision-language prefix encoder and action expert weights, and adapts them to humanoid whole-body loco-manipulation with learnable stage embeddings and cross-stage KV-cache conditioning.</blockquote>
-          <blockquote><strong>核心方法是渐进式去噪共享全身动作空间，并用跨阶段 KV 缓存保持阶段间结构依赖：</strong>we introduce a cross-stage KV cache conditioning mechanism, enabling subsequent action generation stages to refine and augment their outputs based on the action representations from preceding stages.</blockquote>
-          <blockquote><strong>单阶段生成会造成移动、姿态与操作的无结构纠缠，产生不稳定基座运动与上身补偿：</strong>Directly applying a single-stage action generator to humanoid loco-manipulation may entangle locomotion, posture, and manipulation in an unstructured manner, making the policy prone to unstable base motions or aggressive upper-body compensation</blockquote>
-          <blockquote><strong>分层生成增加总去噪预算，可能引入额外部署延迟：</strong>However, the hierarchical generation process increases the total denoising budget compared with a single-stage policy, which may introduce additional deployment latency.</blockquote>
-          <blockquote><strong>方法依赖底层基础模型的语义推理与动作先验，先验不足时可能失败：</strong>Moreover, our method still depends on the semantic reasoning and action priors of the underlying foundation model, and may fail when these priors are insufficient for unseen tasks or environments.</blockquote>
+          <p>仅有标题与摘要，缺少实验数字、第一单位、通讯作者、方法细节（阶段划分粒度、KV缓存实现、训练策略）与局限说明，因此对性能提升幅度与工程代价的判断不确定。</p>
+          <blockquote><strong>人形需协调移动、姿态、视线与双臂操作，且不准确的基座或腰部运动易引发不稳定上半身补偿：</strong>humanoids must coordinate locomotion, posture, gaze, and dual-arm manipulation over a high-dimensional whole-body action space, where inaccurate base or waist motions can easily induce unstable and aggressive upper-body compensation</blockquote>
+          <blockquote><strong>方法在共享全身动作空间中按阶段渐进去噪：</strong>HAF-VLA progressively denoises a shared whole-body action space: first locomotion and head commands, then waist refinement, and finally full-body manipulation</blockquote>
+          <blockquote><strong>通过跨阶段KV缓存条件保留阶段间结构依赖：</strong>we introduce a cross-stage KV cache conditioning mechanism, enabling subsequent action generation stages to refine and augment their outputs based on the action representations from preceding stages</blockquote>
+          <blockquote><strong>在六个真实世界任务上取得显著性能提升：</strong>Experimental results across six real-world tasks demonstrate that our framework significantly enhances the performance of existing models in humanoid loco-manipulation tasks</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>

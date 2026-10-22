@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-21 17:30</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-22 17:33</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,7 +193,7 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>摘要级</span>
+      <span>全文级</span>
       <span>相关性 9/10</span>
       <span>v1</span>
     </div>
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>LLM 主干中的隐藏层和 FFN 中间维度存在大量冗余，剪枝后可通过强化学习恢复策略性能。</p>
+      <p>LLM 主干存在大量中间维度冗余：只剪中间维度可保持较高成功率，额外剪隐藏维度损失更大但可被 RL 显著弥补；维度感知压缩与事后 RL 恢复是互补工具</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该论文针对 VLA 模型在机器人端部署的算力瓶颈，提出结构化剪枝加强化学习恢复的压缩方案，在显著压缩参数的同时提升操作成功率并获得推理加速，对研究 VLA 模型压缩、实时控制和系统优化具有直接参考价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>提供了 VLA 主干容量冗余的定量证据、双维度剪枝保留目标的经验结论，以及压缩后 RL 恢复的完整流程与真实机器人验证，对研究 VLA 部署效率、模型压缩与实时控制的研究者具有直接参考价值</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/model-quantization/" data-tag-filter="model-quantization">模型量化</a></li>
@@ -223,10 +223,10 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>视觉-语言-动作模型的结构化剪枝与强化学习恢复</p>
-        <p><strong>模型原始标签：</strong>VLA、结构化剪枝、强化学习、模型压缩、推理加速、机器人操作</p>
-        <p><strong>第一单位：</strong>证据未提供</p>
-        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>模型细分主题：</strong>视觉-语言-动作模型的结构化剪枝与强化学习性能恢复</p>
+        <p><strong>模型原始标签：</strong>VLA、结构化剪枝、模型压缩、强化学习恢复、PPO、实时推理加速、机器人操作、LIBERO</p>
+        <p><strong>第一单位：</strong>南京大学</p>
+        <p><strong>通讯作者：</strong>Li Du</p>
         <p><strong>首次上传：</strong>2026-10</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2610.26487">arXiv 摘要 ↗</a>
@@ -256,27 +256,27 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>在机器人端计算资源受限的条件下，对视觉-语言-动作（VLA）模型进行压缩以降低推理开销，同时保持或恢复操作性能。</dd>
-        <dt>Motivation（研究动机）</dt><dd>机器人机载计算资源有限，VLA 模型推理成本高；激进的压缩会严重损害操作性能，仅靠监督微调难以恢复。</dd>
-        <dt>Insight（核心洞察）</dt><dd>LLM 主干中的隐藏层和 FFN 中间维度存在大量冗余，剪枝后可通过强化学习恢复策略性能。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>机器人端算力受限导致 VLA 推理成本高</li><li>激进压缩造成操作性能下降，监督微调恢复不足</li><li>结构化剪枝后策略性能的恢复</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>材料未说明作者如何具体分析冗余或性能退化，仅从摘要可知其识别出中间维度存在大量冗余。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>通过剪枝感知微调同时剪枝 LLM 主干的隐藏维度和前馈中间维度</li><li>应用强化学习恢复剪枝后的策略性能</li><li>在 π0.5 模型上实施结构化剪枝与动作恢复</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>将 π0.5 的语言主干从 2.34B 剪枝至 0.09B 参数，全模型从 3.37B 剪枝至 1.12B，分别移除约 96% 和 67% 参数</li><li>在该压缩水平下，强化学习将四个 LIBERO 套件的平均成功率从 84.55% 提升至 93.45%，提升 8.90 个百分点</li><li>压缩后的策略相比未剪枝模型获得 1.98 倍的全策略推理加速</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接面向具身智能中 VLA 模型的推理效率与模型压缩问题，涉及动作生成策略的性能恢复与实时控制所需的推理加速，与系统优化和真实机器人操作评测密切相关。</dd>
+        <dt>Setting（研究设定）</dt><dd>对预训练 VLA 策略 π0.5 的 LLM 主干进行永久性双维度结构化剪枝（隐藏维度与 FFN 中间维度），先经剪枝感知调优与监督微调，再用 PPO 强化学习恢复操作性能，并在 LIBERO、LIBERO-Plus 与 AgileX 双臂真实机器人上评测</dd>
+        <dt>Motivation（研究动机）</dt><dd>机器人机载算力有限，VLA 推理开销大；而激进压缩会使操作性能下降到仅靠监督微调无法恢复的程度，因此需要研究在很小参数预算下如何分配容量并恢复策略能力</dd>
+        <dt>Insight（核心洞察）</dt><dd>LLM 主干存在大量中间维度冗余：只剪中间维度可保持较高成功率，额外剪隐藏维度损失更大但可被 RL 显著弥补；维度感知压缩与事后 RL 恢复是互补工具</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>机器人机载算力受限，VLA 推理成本高</li><li>激进压缩导致操作性能下降，SFT 难以完全恢复</li><li>隐藏维度跨 Transformer 块耦合表示，剪枝需要注意力与 FFN 协同改动</li><li>剪枝后鲁棒性（扰动条件下）仍存在差距</li><li>仅在单一主干与单一中间维度配置上验证</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过在不同保留比例（隐藏/中间维度）下对比未剪枝、PAT-only 与 PAT+RL 的成功率，经验性分析维度敏感性：仅剪中间维度保持高成功率，加入隐藏维度剪枝造成更大损失；并在 LIBERO-Plus 七个扰动维度上分析压缩后的鲁棒性变化，以及通过消融分析掩码学习目标各项（计数、熵、离散性惩罚）的贡献</dd>
+        <dt>Method（方法）</dt><dd><ul><li>将剪枝感知调优（PAT）扩展到同时学习隐藏维度与 FFN 中间维度的通道掩码，使用独立保留目标和正则化掩码学习目标（sigmoid 掩码调度、可微计数惩罚、熵与二值化惩罚）</li><li>依据学习到的掩码进行物理结构化剪枝，移除不活跃通道形成更小的稠密主干</li><li>对压缩策略做监督微调，作为 RL 初始化</li><li>使用 PPO 进行 RL 恢复：冻结剪枝后的 LLM 主干，更新动作专家与价值头，利用任务完成反馈和归一化广义优势估计</li><li>RL 前后配对评估以衡量相对 PAT-only 的提升</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>π0.5 语言主干由 2.34B 降至 0.09B，全模型由 3.37B 降至 1.12B，分别移除约 96% 与 67% 参数</li><li>该压缩水平下 RL 将四个 LIBERO 套件平均成功率从 84.55% 提升到 93.45%，提升 8.90 个百分点</li><li>压缩策略相对未剪枝模型获得 1.98× 全策略推理加速</li><li>LIBERO-Plus 上各保留比例下 RL 带来 +5.52 至 +9.35 个百分点的整体提升，但仍存在相对基线的鲁棒性差距（如 100%/100% 基线 83.98，10%/10% PAT+RL 为 56.81）</li><li>AgileX 双臂平台真实机器人六项任务各 20 次试验评测；20% 中间维度保留时与基线存在 7.50 个百分点差距</li><li>目标函数消融：去掉计数、熵或离散性项分别使平均成功率下降 0.75、0.35、0.40 个百分点</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>在部分激进压缩设置下 LIBERO 上接近或略超未剪枝 RL 基线，但 LIBERO-Plus 上仍存在鲁棒性差距</li><li>评测仅限一个主干与一种中间维度剪枝配置，真实机器人仅六个任务</li><li>未来需更广泛的主干研究、机器人上的隐藏维度与中间维度联合剪枝，以及跨部署平台的能耗测量</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接面向具身智能中 VLA 模型的推理效率、模型压缩与实时控制问题；给出可迁移的结构化剪枝+RL 恢复范式，并包含真实机器人评测，与世界动作模型中紧凑策略部署与系统优化高度相关</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>仅基于标题与摘要，未提供全文；第一单位、通讯作者、具体分析过程、实验细节和作者明确陈述的局限均无法确认。</p>
-          <blockquote><strong>机器人机载算力有限使 VLA 推理成本高，激进压缩会损害操作性能且监督微调恢复不足。：</strong>The limited onboard computing resources of robots make the inference demands of vision-language-action (VLA) models costly to accommodate. Reducing these demands through aggressive compression, however, can degrade manipulation performance beyond what supervised fine-tuning alone recovers.</blockquote>
-          <blockquote><strong>SPAR 同时剪枝 LLM 主干的隐藏维度和前馈中间维度，并用强化学习恢复策略性能。：</strong>We present SPAR (Structural Pruning and Action Recovery), which simultaneously prunes the hidden and feed-forward intermediate dimensions of the large language model (LLM) backbone through pruning-aware tuning, then applies reinforcement learning (RL) to recover policy performance.</blockquote>
-          <blockquote><strong>在 π0.5 上语言主干从 2.34B 降至 0.09B，全模型从 3.37B 降至 1.12B。：</strong>Applied to $\pi_{0.5}$, SPAR reduces the language backbone from 2.34B to 0.09B parameters and the full model from 3.37B to 1.12B, removing approximately 96% and 67% of their parameters, respectively.</blockquote>
-          <blockquote><strong>强化学习将四个 LIBERO 套件的平均成功率从 84.55% 提升至 93.45%。：</strong>At this compression level, RL raises average success across the four LIBERO suites from 84.55% to 93.45%, an 8.90-percentage-point gain.</blockquote>
-          <blockquote><strong>压缩策略相比未剪枝模型获得 1.98 倍推理加速。：</strong>The compressed policy achieves a $1.98\times$ full-policy inference speedup over the unpruned model.</blockquote>
-          <blockquote><strong>结果表明中间维度存在大量冗余，剪枝后强化学习可恢复紧凑策略的操作性能。：</strong>These results identify substantial intermediate-dimension redundancy and show that post-pruning RL can recover manipulation performance in compact policies.</blockquote>
+          <p>全文为节选，部分表格与公式被截断，真实机器人逐任务结果与部分消融数字不完整；相关性判断基于摘要与节选正文，未覆盖完整实验细节</p>
+          <blockquote><strong>SPAR 将语言主干与全模型大幅压缩并给出参数量：</strong>SPAR reduces the language backbone from 2.34B to 0.09B parameters and the full model from 3.37B to 1.12B, removing approximately 96% and 67% of their parameters, respectively.</blockquote>
+          <blockquote><strong>RL 恢复在 LIBERO 上带来 8.90 个百分点提升：</strong>RL raises average success across the four LIBERO suites from 84.55% to 93.45%, an 8.90-percentage-point gain.</blockquote>
+          <blockquote><strong>压缩策略获得 1.98× 推理加速：</strong>The compressed policy achieves a $1.98\times$ full-policy inference speedup over the unpruned model.</blockquote>
+          <blockquote><strong>维度敏感性：仅剪中间维度保持高成功率，额外剪隐藏维度损失更大但可被 RL 缓解：</strong>Pruning only the intermediate dimension preserves high task success, while additional hidden-dimension pruning at a fixed intermediate-dimension retention target causes larger losses that RL can substantially mitigate.</blockquote>
+          <blockquote><strong>作者明确承认 LIBERO-Plus 上仍存在鲁棒性差距及评测范围有限：</strong>Although SPAR approaches or slightly exceeds the unpruned RL baseline on LIBERO under some aggressive compression settings, a robustness gap remains on LIBERO-Plus.</blockquote>
+          <blockquote><strong>RL 阶段冻结剪枝后的主干，仅更新动作专家与价值头：</strong>updating the action expert and value head while keeping the pruned LLM backbone frozen</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
