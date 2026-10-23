@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-22 17:33</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-23 17:29</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,8 +193,8 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>全文级</span>
-      <span>相关性 8/10</span>
+      <span>摘要级</span>
+      <span>相关性 9/10</span>
       <span>v3</span>
     </div>
 
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>重复执行同一任务时，相似性不仅存在于观测和动作轨迹中，还延伸到内部模型状态（FFN输入与神经元激活模式），因此可在上下文阶段复用视觉token输出、在动作阶段复用神经元激活模式，以类人“肌肉记忆”方式避免冗余计算与权重访问。</p>
+      <p>机器人重复执行任务时存在显著的任务相似性，且这种相似性不仅体现在观测与动作轨迹上，还延伸到模型内部状态；因此可借助一种类似人类“肌肉记忆”的跨执行缓存来减少计算与权重访问。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对关注VLA实时推理、模型压缩与系统级加速、真实机器人部署的研究者具有直接参考价值：它提供了具身负载相似性的实证分析、面向计算受限/访存受限两阶段的缓存设计，以及跨模型、跨仿真与真实机器人的加速与成功率保持证据。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作从具身工作负载特性出发做系统级推理优化，提出可迁移的跨执行缓存思路，并在边缘平台与真实机器人上验证加速且不损失成功率，对关注 VLA 实时部署与系统优化的研究者具有直接参考价值。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/robot-manipulation/" data-tag-filter="robot-manipulation">机器人操作</a></li>
@@ -221,10 +221,10 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>视觉-语言-动作（VLA）模型推理加速与系统优化</p>
-        <p><strong>模型原始标签：</strong>VLA推理、缓存复用、扩散去噪加速、实时机器人控制、系统优化、具身工作负载刻画</p>
-        <p><strong>第一单位：</strong>上海交通大学并行与分布式系统研究所（Institute of Parallel and Distributed Systems, Shanghai Jiao Tong University）</p>
-        <p><strong>通讯作者：</strong>Jinyu Gu</p>
+        <p><strong>模型细分主题：</strong>视觉-语言-动作（VLA）模型的实时推理加速与系统优化</p>
+        <p><strong>模型原始标签：</strong>VLA 推理加速、缓存复用、具身工作负载、实时控制、边缘部署、模型内部状态复用</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-09</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2609.19104">arXiv 摘要 ↗</a>
@@ -254,27 +254,26 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>工厂等结构化工作站中机器人重复执行相似任务；策略为双阶段VLA模型（VLM预填充 + 扩散动作专家多步去噪），在RTX 4090与Jetson Thor上做实时推理。</dd>
-        <dt>Motivation（研究动机）</dt><dd>VLA推理延迟直接影响机器人响应速度与运动平滑性；现有推理框架未充分利用具身负载特性，也未针对VLA推理不同阶段的瓶颈（VLM预填充计算受限、去噪访存受限）分别优化。</dd>
-        <dt>Insight（核心洞察）</dt><dd>重复执行同一任务时，相似性不仅存在于观测和动作轨迹中，还延伸到内部模型状态（FFN输入与神经元激活模式），因此可在上下文阶段复用视觉token输出、在动作阶段复用神经元激活模式，以类人“肌肉记忆”方式避免冗余计算与权重访问。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>VLM预填充阶段为计算受限，去噪阶段为访存受限，需要分阶段差异化优化</li><li>缓存的内存占用与访问开销需保持很低，否则抵消加速收益</li><li>跨执行相似性检索的准确性，避免降低任务成功率</li><li>在不同VLA架构（VLM重的π0.5、去噪重的GR00T N1.6、轻量VLM的X-VLA）上通用</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者先刻画具身工作负载，发现重复机器人执行间存在显著任务相似性，并进一步验证该相似性延伸至内部模型状态（FFN输入与神经元激活模式）；随后识别VLA两阶段各自的瓶颈，据此设计双阶段缓存。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>Context Cache：复用视觉token输出，减少VLM预填充计算</li><li>Action Cache：复用神经元激活模式，减少去噪阶段权重访问</li><li>在线缓存重算（online cache recomputation）控制内存占用</li><li>滑动窗口缓存检索（sliding-window cache retrieval）</li><li>连续去噪步间掩码共享（mask sharing）降低访问开销</li><li>针对不同架构组合使用视觉token稀疏与神经元稀疏（如X-VLA在去噪循环内）</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在π0.5、GR00T N1.6、X-VLA三个模型上评估</li><li>仿真基准：LIBERO（Spatial/Object/Goal/Long各10任务，每任务100次种子rollout）与RoboTwin（clean设置50任务，每任务100次rollout）</li><li>真实机器人任务：ALOHA双臂抓取放置、Franka与DOBOT单臂流水线装箱</li><li>RTX 4090上相对FlashRT端到端加速1.20–1.29×，Jetson Thor上1.23–1.42×；摘要总体报告1.29–1.42×加速</li><li>在仿真与真实任务上保持原始成功率（匹配原策略平均准确率）</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>论文明确将在线缓存更新（动态缓存更新）留作未来工作，当前对未见任务先密集执行、待成功episode提供新缓存参考后再转入加速</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接面向具身智能中VLA模型的实时推理与系统优化，关注推理效率与真实机器人评测；其缓存复用思想与长时序重复执行、实时控制密切相关，但并非世界模型或物理预测模型本身。</dd>
+        <dt>Setting（研究设定）</dt><dd>面向工厂重复性操作任务的 VLA 策略推理；在 RTX 4090 与 Jetson Thor 上评估，覆盖 LIBERO、RoboTwin 仿真与真实机器人操作任务。</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLA 推理延迟直接影响机器人响应速度与运动平滑性，但现有推理框架未充分利用具身工作负载的特性，也未区分 VLA 推理不同阶段的瓶颈。</dd>
+        <dt>Insight（核心洞察）</dt><dd>机器人重复执行任务时存在显著的任务相似性，且这种相似性不仅体现在观测与动作轨迹上，还延伸到模型内部状态；因此可借助一种类似人类“肌肉记忆”的跨执行缓存来减少计算与权重访问。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>VLA 推理各阶段瓶颈不同，现有框架未针对性优化</li><li>跨执行复用内部状态时的缓存内存占用与访问开销控制</li><li>在加速推理的同时不降低真实机器人任务成功率</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者先对具身工作负载进行刻画，发现重复执行之间存在显著任务相似性，并进一步指出该相似性延伸至模型内部状态，据此设计双阶段缓存机制。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>刻画具身工作负载，识别重复执行间的任务相似性（含观测、动作轨迹与内部模型状态）</li><li>提出双阶段肌肉记忆缓存：Context Cache 复用视觉 token 输出以减少计算</li><li>Action Cache 复用神经元激活模式以减少权重访问</li><li>通过在线缓存重计算控制内存占用</li><li>采用滑动窗口缓存检索降低访问开销</li><li>在连续去噪步之间共享掩码以进一步降低开销</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 RTX 4090 和 Jetson Thor 上取得 1.29-1.42X 加速</li><li>在 LIBERO、RoboTwin 以及物理操作任务上验证</li><li>在真实机器人上保持原始成功率</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接服务于具身智能中 VLA 策略的实时推理与系统优化：通过复用跨执行的内部状态降低计算与访存开销，提升真实机器人响应性与运动平滑性，与推理效率、实时控制和真实机器人评测重点高度契合。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>全文为节选，部分章节（如第3–5节细节、第6节完整结果表）未提供，因此缓存命中率、各优化贡献的定量拆分与内存开销具体数值无法核实；所有数字仅限于摘要与节选中明确给出的范围。</p>
-          <blockquote><strong>重复执行间相似性延伸到内部模型状态：</strong>We further find that such similarity extends beyond observations and action trajectories to internal model states.</blockquote>
-          <blockquote><strong>双阶段缓存分别降低计算与权重访问：</strong>The Context Cache reuses visual-token outputs to reduce computation, while the Action Cache reuses neuron activation patterns to reduce weight accesses.</blockquote>
-          <blockquote><strong>加速幅度与硬件、基准范围：</strong>rMuscle achieves 1.29-1.42X speedup on RTX 4090 and Jetson Thor across LIBERO, RoboTwin, and physical manipulation tasks, while maintaining the original success rates on real-world robots.</blockquote>
-          <blockquote><strong>第一单位为上海交通大学并行与分布式系统研究所：</strong>Institute of Parallel and Distributed Systems, Shanghai Jiao Tong University</blockquote>
-          <blockquote><strong>通讯作者邮箱：</strong>Corresponding author: gujinyu@sjtu.edu.cn</blockquote>
-          <blockquote><strong>在线缓存更新为未来工作：</strong>We leave online cache updates for future work.</blockquote>
+          <p>仅有标题与摘要，缺少缓存命中率、内存开销量化、不同任务重复度敏感性、失败案例分析及方法适用边界等细节；作者机构与通讯作者信息未提供。</p>
+          <blockquote><strong>VLA 推理延迟影响机器人响应性与运动平滑性，现有框架未充分利用具身工作负载特性：</strong>The inference latency of VLA models directly affects robot responsiveness and motion smoothness. However, existing VLA inference frameworks do not fully exploit the characteristics of embodied workloads</blockquote>
+          <blockquote><strong>重复执行间的相似性延伸到模型内部状态：</strong>such similarity extends beyond observations and action trajectories to internal model states</blockquote>
+          <blockquote><strong>双阶段缓存分别减少计算与权重访问：</strong>The Context Cache reuses visual-token outputs to reduce computation, while the Action Cache reuses neuron activation patterns to reduce weight accesses.</blockquote>
+          <blockquote><strong>通过在线重计算、滑动窗口检索与掩码共享控制缓存开销：</strong>online cache recomputation, sliding-window cache retrieval, and mask sharing across consecutive denoising steps</blockquote>
+          <blockquote><strong>在两类硬件与多类任务上取得加速并保持真实机器人成功率：</strong>rMuscle achieves 1.29-1.42X speedup on RTX 4090 and Jetson Thor across LIBERO, RoboTwin, and physical manipulation tasks, while maintaining the original success rates on real-world robots.</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
