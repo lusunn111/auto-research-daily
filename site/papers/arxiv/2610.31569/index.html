@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-25 17:17</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-26 18:23</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,7 +193,7 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>摘要级</span>
+      <span>全文级</span>
       <span>相关性 8/10</span>
       <span>v1</span>
     </div>
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>用停止与失败两个状态维度编码任务状态，把它们并入动作分块并联合去噪；让状态信号比动作更快去噪，从而在后续动作去噪步骤中以更干净的状态估计为条件，兼顾状态预测精度与动作生成引导。</p>
+      <p>将任务状态表示成停止信号和失败信号两个标量维度并拼接进动作块，在同一 VLA 内联合去噪，可复用视觉、语言与机器人状态特征；让信号比动作更快去噪，可让后续动作去噪步骤条件于更干净的状态估计，同时保持信号预测准确</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作把任务完成与失败判断内嵌到 VLA 动作生成中，并给出无需帧级进度标注的监督构造和状态信号引导动作生成的去噪调度思路，对研究可执行动作生成、执行监控、失败恢复与实时控制的研究者有直接参考价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该工作给出一种低额外开销的做法：在同一 VLA 内联合去噪动作与任务状态信号，并用信号先行去噪引导动作生成，无需逐帧进度标注或外部监控模型；对研究 VLA 执行监控、失败恢复触发、动作生成条件化以及推理效率权衡的研究者有直接参考价值</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/physical-ai/" data-tag-filter="physical-ai">物理智能</a></li>
@@ -223,10 +223,10 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>面向 VLA 策略的任务状态信号学习与动作生成联合去噪</p>
-        <p><strong>模型原始标签：</strong>VLA、任务状态预测、动作分块去噪、扩散策略、真实机器人操作、失败检测</p>
-        <p><strong>第一单位：</strong>证据未提供</p>
-        <p><strong>通讯作者：</strong>证据未提供</p>
+        <p><strong>模型细分主题：</strong>视觉语言动作模型中的任务状态信号预测与动作生成联合去噪</p>
+        <p><strong>模型原始标签：</strong>VLA、任务状态信号、扩散/流匹配策略、动作生成、失败检测、真实机器人操作</p>
+        <p><strong>第一单位：</strong>SJTU（上海交通大学）</p>
+        <p><strong>通讯作者：</strong>Dequan Wang, Yang Gao</p>
         <p><strong>首次上传：</strong>2026-10</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2610.31569">arXiv 摘要 ↗</a>
@@ -274,26 +274,26 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>在单一视觉语言动作模型中，将任务状态信号表示为每个动作分块附加的两个维度，并与机器人动作共同去噪，用于真实世界机器人操作任务。</dd>
-        <dt>Motivation（研究动机）</dt><dd>识别任务完成与失败能让机器人在成功时停止、失败后恢复或重规划；但已有方法需要细粒度监督、外部监控模型或复杂结构，且任务状态信号直接引导动作生成的潜力尚未充分探索。</dd>
-        <dt>Insight（核心洞察）</dt><dd>用停止与失败两个状态维度编码任务状态，把它们并入动作分块并联合去噪；让状态信号比动作更快去噪，从而在后续动作去噪步骤中以更干净的状态估计为条件，兼顾状态预测精度与动作生成引导。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>现有任务状态信号学习依赖细粒度进度标注或外部监控模型</li><li>状态预测与动作生成集成方式复杂</li><li>任务状态信号直接指导动作生成的机制尚不清晰</li><li>缺少帧级进度标注时难以监督状态信号</li><li>需要同时区分执行中、成功完成与失败三种情形</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>摘要指出已有方法依赖细粒度监督、外部监控模型或复杂架构，并把任务状态信号直接引导动作生成的潜力视为研究空白；作者据此提出以停止与失败两个信号维度补充动作分块、联合去噪的紧凑设计。材料未说明更具体的分析过程。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>将任务状态表示为停止信号与失败信号，作为每个动作分块的两个附加维度</li><li>把状态维度与机器人动作一起送入去噪过程</li><li>通过停止与失败信号的组合区分执行中、成功完成与失败</li><li>构造成功、失败与恢复三类轨迹，提供互补监督，从而无需帧级进度标注</li><li>控制状态信号与动作之间的交互，并让状态信号去噪快于动作</li><li>使后续动作去噪步骤以更干净的状态估计为条件，同时保持状态预测准确</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>摘要称在大量真实世界操作实验中，Echo 能准确预测任务状态，并持续提升策略性能</li><li>摘要未给出具体任务、基线、指标数值或消融结果</li></ul></dd>
+        <dt>Setting（研究设定）</dt><dd>在单视觉语言动作模型策略内部，将停止信号与失败信号作为动作块的两个附加维度，与机器人动作一起进行流匹配去噪，用于判断执行中、成功、可恢复失败和终止失败；真实世界操作任务与仿真评测</dd>
+        <dt>Motivation（研究动机）</dt><dd>机器人可靠执行需要判断任务正在进行、已成功或已失败，以决定继续、停止或干预；现有方法依赖细粒度逐帧监督、外部监控模型或复杂架构，且预测的状态信号多只用于监控，未充分用于直接改善动作生成</dd>
+        <dt>Insight（核心洞察）</dt><dd>将任务状态表示成停止信号和失败信号两个标量维度并拼接进动作块，在同一 VLA 内联合去噪，可复用视觉、语言与机器人状态特征；让信号比动作更快去噪，可让后续动作去噪步骤条件于更干净的状态估计，同时保持信号预测准确</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>无需逐帧进度标注地学习任务状态信号</li><li>在同一模型中紧凑地联合状态预测与动作生成</li><li>在直接利用状态信号引导动作生成的同时保持信号预测准确</li><li>避免停止信号与失败信号之间的相互干扰</li><li>在同一序列内支持不同噪声水平（每组独立流时间）</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者指出现有方法的两点局限：信号学习与集成需要细粒度逐帧监督、外部监控模型或复杂架构；预测信号通常只用于监控，改善动作生成的潜力未被充分探索。作者还做一个激励实验：同步去噪基线的中间干净样本估计显示停止与失败信号比动作更早收敛，因此值得更早解析信号以引导后续动作更新</dd>
+        <dt>Method（方法）</dt><dd><ul><li>用停止信号（SS）和失败信号（FS）表示任务状态，二者组合区分执行中、成功、可恢复失败与终止失败</li><li>将 SS 与 FS 作为每个动作块的两个附加维度，与机器人动作一起去噪</li><li>构造成功、失败与恢复轨迹，以互补监督性质学习信号而无需逐帧进度标注</li><li>控制信号与动作的注意力交互：动作 token 关注多模态前缀与两组信号，信号 token 关注动作 token，并阻断 SS 与 FS 之间的直接注意力</li><li>将流时间输入从一个样本一个值扩展为每个生成 token 一个值，使不同组使用各自流时间</li><li>异步去噪：信号比动作更快去噪，到达干净端点后固定其值，后续动作更新可通过注意力使用更干净的状态估计</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>五个真实世界任务：Insert Flower、Capsule Toy、Insert Pen、Make Tanghulu、Open Drawer，覆盖抓取、精细插入与铰接物体交互</li><li>指标：Task Completion Score（0-10 归一化）、Frame-level Macro-F1、Trajectory-level F1；默认每模型每任务 30 次试验</li><li>真实世界实验表明 Echo 能准确预测任务状态并持续提升策略性能</li><li>仿真评测中 Echo 达到 34.76% 任务成功率，同数据训练的仅动作 π0.5 基线为 32.67%；Echo 帧级状态准确率为 89.97%</li></ul></dd>
         <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接关联具身智能中的 VLA 策略执行监控与可执行动作生成：任务状态信号决定停止、恢复与重规划，联合去噪与更快状态去噪涉及推理与生成效率，真实机器人实验对应真实机器人评测需求。</dd>
+        <dt>与你的研究关系</dt><dd>直接面向具身智能中的 VLA 策略与可执行动作生成：把任务完成/失败判断内嵌进动作生成过程，涉及实时执行决策、失败恢复与重规划触发，并关注额外训练与推理开销，与实时控制和系统优化相关；不涉及世界模型或长时序预测</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>仅有标题与摘要，无法核实具体网络结构、训练细节、实验规模、基线对比和定量提升；摘要未给出第一单位、通讯作者及明确局限，因此相关判断主要基于方法描述。</p>
-          <blockquote><strong>Echo 将停止与失败信号作为动作分块的两个维度，并与动作一起去噪：</strong>Echo represents task status with stop and failure signals, added as two dimensions of each action chunk and denoised together with robot actions.</blockquote>
-          <blockquote><strong>两种信号的组合用于区分执行中、成功完成与失败：</strong>Their combination distinguishes ongoing execution, successful completion, and failure.</blockquote>
-          <blockquote><strong>通过构造成功、失败与恢复轨迹，避免帧级进度标注：</strong>Echo constructs successful, failed, and recovery trajectories with complementary supervision properties.</blockquote>
-          <blockquote><strong>状态信号去噪快于动作，使后续动作去噪以更干净的状态估计为条件：</strong>Echo controls interactions between the signals and actions and denoises the signals faster than the actions.</blockquote>
-          <blockquote><strong>真实世界实验表明状态预测准确且策略性能提升：</strong>Extensive real-world manipulation experiments show that Echo accurately predicts task status and consistently improves policy performance.</blockquote>
+          <p>全文为节选，部分方法细节（如轨迹构造与损失的具体形式）和实验表格被截断；摘要只说明真实世界实验表明准确预测与性能提升，未给出真实任务的具体数值；局限未在材料中陈述</p>
+          <blockquote><strong>Echo 将停止与失败信号作为动作块的两个附加维度并与动作一起去噪：</strong>Echo represents task status with stop and failure signals, added as two dimensions of each action chunk and denoised together with robot actions.</blockquote>
+          <blockquote><strong>Echo 无需逐帧进度标注，通过成功、失败与恢复轨迹的互补监督学习信号：</strong>To learn these signals without fine-grained progress annotations, Echo constructs successful, failed, and recovery trajectories with complementary supervision properties.</blockquote>
+          <blockquote><strong>信号比动作更快去噪，使后续动作去噪条件于更干净的状态估计：</strong>Echo controls interactions between the signals and actions and denoises the signals faster than the actions.</blockquote>
+          <blockquote><strong>真实世界操作实验显示状态预测准确且策略性能持续提升：</strong>Extensive real-world manipulation experiments show that Echo accurately predicts task status and consistently improves policy performance.</blockquote>
+          <blockquote><strong>仿真中 Echo 任务成功率高于仅动作基线，并报告了帧级状态准确率：</strong>ves 34.76% task success, compared with 32.67% for the action-only</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
