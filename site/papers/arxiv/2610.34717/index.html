@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-28 00:01</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-29 00:50</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -174,7 +174,7 @@
   <section class="detail-layout" aria-label="论文完整解读"><article
   class="paper-card"
   data-paper-card
-  data-paper-id="arxiv:2610.34717:v1"
+  data-paper-id="arxiv:2610.34717:v2"
   data-topic="vla"
 >
 <div class="paper-card__cover">
@@ -189,7 +189,7 @@
       <span class="topic-badge">视觉语言动作（VLA）</span>
       <span>摘要级</span>
       <span>相关性 9/10</span>
-      <span>v1</span>
+      <span>v2</span>
     </div>
 
     <h3><a href="https://lusunn111.github.io/auto-research-daily/papers/arxiv/2610.34717/">VLA-HWBench：VLA 模型在边缘硬件上运行时的时间去向</a></h3>
@@ -198,9 +198,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>动作生成策略比模型规模更决定延迟；内核融合配合 4 位权重收益最大但覆盖极窄；优化会把时间转移到缩短最少的阶段；优化后 Jetson 上内存带宽只限制处理少量 token 的阶段，其余阶段受软件限制。</p>
+      <p>动作生成策略比模型规模更决定延迟；内核融合加 4 位权重收益最大但覆盖极窄；优化会把时间挤向受益最小的阶段（如 CPU 预处理），优化后 Jetson 上内存带宽只限制处理少量 token 的阶段（如去噪步），其余阶段受软件限制。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>该文提供了跨 18 个 VLA 模型、两种边缘平台的七阶段延迟分解与同模型优化对比，明确指出动作生成策略比模型规模更关键、内核融合与低比特权重收益大但覆盖窄、优化后瓶颈向 CPU 预处理转移，对设计低延迟边缘 VLA、选择动作生成策略和规划系统优化具有直接指导价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对关注 VLA 实时推理、模型压缩与边缘系统优化的研究者，该基准提供了同模型、多阶段、跨平台的延迟归因证据，明确指出动作生成迭代次数比模型规模更关键，并揭示优化后瓶颈向 CPU 预处理与软件未融合内核迁移，可直接指导低延迟 VLA 设计与评测方案。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/action-prediction/" data-tag-filter="action-prediction">动作预测</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
@@ -217,36 +217,36 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>边缘硬件上 VLA 模型推理延迟的系统性基准分析与优化</p>
-        <p><strong>模型原始标签：</strong>VLA、边缘推理、延迟分析、动作生成策略、内核融合、低比特量化、Jetson、AMD Ryzen AI、系统优化、实时控制</p>
+        <p><strong>模型细分主题：</strong>VLA 模型在边缘硬件上的推理延迟分解与优化基准</p>
+        <p><strong>模型原始标签：</strong>VLA、边缘推理、推理延迟、动作生成策略、内核融合、低比特量化、内存带宽、基准测试、Jetson、AMD NPU/CPU</p>
         <p><strong>第一单位：</strong>证据未提供</p>
         <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-10</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2610.34717">arXiv 摘要 ↗</a>
-<a href="https://arxiv.org/pdf/2610.34717">PDF ↗</a><a href="https://arxiv.org/html/2610.34717v1">官方 HTML ↗</a>        </p>
+<a href="https://arxiv.org/pdf/2610.34717">PDF ↗</a><a href="https://arxiv.org/html/2610.34717v2">官方 HTML ↗</a>        </p>
       </div>
 
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>在 NVIDIA Jetson AGX Thor 和 AMD Ryzen AI Max+ PRO 395 两种边缘平台上，对 18 个开源 VLA 模型在官方发布后端与替代后端上的推理进行七阶段延迟分解基准测试。</dd>
-        <dt>Motivation（研究动机）</dt><dd>VLA 模型越来越多地部署在机器人边缘设备上，推理延迟约束闭环控制；但如何协同设计 VLA 模型、推理软件与边缘硬件以实现实时推理尚不清晰，已有研究覆盖的动作生成策略有限、阶段划分粗、且缺乏同模型下的推理优化对比。</dd>
-        <dt>Insight（核心洞察）</dt><dd>动作生成策略比模型规模更决定延迟；内核融合配合 4 位权重收益最大但覆盖极窄；优化会把时间转移到缩短最少的阶段；优化后 Jetson 上内存带宽只限制处理少量 token 的阶段，其余阶段受软件限制。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>动作生成策略对延迟影响巨大且不同策略间延迟差异可达两个数量级</li><li>参数规模只能解释很小部分的延迟方差</li><li>逐 token 解码无法满足闭环控制节奏</li><li>内核融合与低比特权重优化仅覆盖少数模型且仅限 Jetson</li><li>优化后 CPU 预处理占比显著上升成为新瓶颈</li><li>内存带宽与软件实现分别限制不同推理阶段</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者通过七阶段推理分解，在两种边缘硬件上对 18 个开源 VLA 模型跨发布与替代后端进行基准测试，并对比同一模型上的推理优化，从动作生成策略、模型规模、内核融合与低比特权重、阶段时间转移、内存带宽与软件限制等角度分析延迟来源。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>构建覆盖 18 个开源 VLA 模型的边缘推理基准</li><li>在 NVIDIA Jetson AGX Thor 与 AMD Ryzen AI Max+ PRO 395 上对比发布后端与替代后端</li><li>将推理划分为七个阶段进行延迟分解</li><li>分析动作生成策略与模型参数规模对延迟的影响</li><li>对比内核融合与 4 位权重等推理优化在同一模型上的效果</li><li>分析优化后各阶段时间占比转移及内存带宽与软件限制</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在 Jetson 上 19 个配置中有 14 个由动作生成策略主导延迟</li><li>延迟在 Jetson 上相差 82 倍，在 AMD 上相差 157 倍</li><li>参数数量最多解释 15% 的延迟方差</li><li>少步流匹配生成长动作块的模型能跟上控制，逐 token 解码则不能</li><li>内核融合加 4 位权重使 π0.5 和 GR00T N1.7 比使用 torch.compile 的 PyTorch 快 2.6–2.9 倍，但仅这两个模型且仅在 Jetson 上可用</li><li>优化后 GR00T N1.7 调用中 CPU 预处理占比从 12% 升至 39%</li><li>优化后 Jetson 上内存带宽仅限制处理少量 token 的阶段（如去噪步），其余阶段受软件限制</li></ul></dd>
+        <dt>Setting（研究设定）</dt><dd>在 NVIDIA Jetson AGX Thor 与 AMD Ryzen AI Max+ PRO 395 两类边缘平台上，对 18 个开源 VLA 模型进行七阶段推理分解测量，关注闭环机器人控制中的推理时延。</dd>
+        <dt>Motivation（研究动机）</dt><dd>VLA 模型越来越多部署在机器人边缘设备上，推理延迟约束闭环控制；但如何协同设计 VLA 模型、推理软件与边缘硬件以实现实时推理尚不清楚，已有工作报告任务成功率而少报延迟，且动作生成策略覆盖有限、阶段拆分粗糙、缺少同模型上的优化对比。</dd>
+        <dt>Insight（核心洞察）</dt><dd>动作生成策略比模型规模更决定延迟；内核融合加 4 位权重收益最大但覆盖极窄；优化会把时间挤向受益最小的阶段（如 CPU 预处理），优化后 Jetson 上内存带宽只限制处理少量 token 的阶段（如去噪步），其余阶段受软件限制。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>动作生成策略（长动作块少步流匹配 vs 逐 token 解码）对实时性影响巨大</li><li>参数规模最多只能解释 15% 的延迟方差，模型规模不能作为延迟代理</li><li>内核融合与 4 位权重优化仅覆盖两个模型且仅限 Jetson 平台</li><li>优化后 CPU 预处理占比从 12% 升至 39%，成为新的瓶颈</li><li>内存带宽限制少 token 阶段，软件（未融合内核、主机串行预处理）限制其余阶段</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者构建 VLA-HWBench 基准，在两类边缘硬件上测量 18 个开源 VLA 模型，并将推理细分为七个阶段进行时延归因；通过对比不同动作生成策略、模型规模与延迟方差的关系，以及在同一模型上比较推理优化前后的阶段耗时分布，得出三条洞察。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>构建 VLA-HWBench 基准，覆盖 18 个开源 VLA 模型</li><li>在 NVIDIA Jetson AGX Thor 与 AMD Ryzen AI Max+ PRO 395 上测量推理延迟</li><li>将推理过程拆分为七个阶段进行细粒度时延分解</li><li>对比不同动作生成策略（长动作块少步流匹配 vs 逐 token 解码）的延迟表现</li><li>分析参数规模对延迟方差的解释比例</li><li>在同一模型上对比内核融合与 4 位权重等推理优化的效果及阶段耗时迁移</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 Jetson 上，动作生成策略在 19 个配置中的 14 个里主导延迟</li><li>延迟在 Jetson 上相差 82×，在 AMD 上相差 157×</li><li>参数规模最多解释 15% 的延迟方差</li><li>以少量流匹配步生成长动作块的模型能跟上控制，逐 token 解码则不能</li><li>内核融合加 4 位权重使 π0.5 和 GR00T N1.7 比使用 torch.compile 的 PyTorch 快 2.6–2.9×，但仅这两个模型、仅在 Jetson 上可用</li><li>优化后 GR00T N1.7 单次调用中 CPU 预处理占比从 12% 升至 39%</li></ul></dd>
         <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>直接面向具身智能中 VLA 模型在边缘硬件上的实时推理与系统优化，涉及可执行动作生成策略、推理效率、模型压缩（4 位权重）、实时控制与真实边缘平台评测，与世界动作模型和物理人工智能的部署效率高度相关。</dd>
+        <dt>与你的研究关系</dt><dd>直接关联具身智能中 VLA 模型的实时控制与系统优化：给出动作生成策略（长动作块、少迭代流匹配）对闭环时延的决定性作用，七阶段时延分解与内核融合、低比特权重的同模型对比，为 VLA 推理效率、模型压缩与边缘实时部署提供可迁移的测量方法与结论。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>仅基于标题与摘要，未提供全文；第一单位与通讯作者信息缺失；具体实验设置、统计方法与更多模型细节无法核实；部分结论（如 14/19 配置、82 倍与 157 倍延迟差异）的适用范围受摘要描述限制。</p>
-          <blockquote><strong>研究在两种边缘平台上对 18 个开源 VLA 模型进行七阶段推理分解基准测试：</strong>benchmarking 18 open VLA models across released and alternative backends on NVIDIA Jetson AGX Thor and AMD Ryzen AI Max+ PRO 395, with a seven-stage inference breakdown.</blockquote>
+          <p>仅有标题与摘要，未提供全文；无法核实 18 个模型的具体清单、七阶段定义细节、测量协议与统计方法，也无法确认第一单位与通讯作者信息；摘要中的倍数与百分比均为作者陈述，未见到原始实验表格。</p>
+          <blockquote><strong>在边缘平台上对 18 个开源 VLA 模型做七阶段推理分解测量：</strong>we introduce VLA-HWBench, a benchmark that measures 18 open VLA models on NVIDIA Jetson AGX Thor and AMD Ryzen AI Max+ PRO 395, with a seven-stage inference breakdown.</blockquote>
           <blockquote><strong>动作生成策略比模型规模更决定延迟：</strong>First, action-generation strategy matters more than model size.</blockquote>
-          <blockquote><strong>参数数量最多解释 15% 的延迟方差：</strong>parameter count explains at most 15% of latency variance.</blockquote>
-          <blockquote><strong>内核融合加 4 位权重使两个模型显著加速但覆盖范围有限：</strong>Second, kernel fusion with 4-bit weights helps most, running $\pi_{0.5}$ and GR00T N1.7 2.6--2.9$\times$ faster than PyTorch with \texttt{torch.compile}, but it exists for only these two models and only on the Jetson.</blockquote>
-          <blockquote><strong>优化后 CPU 预处理占比显著上升：</strong>Optimization also moves the time to the stages it shortens least, as CPU preprocessing grows from 12\% to 39\% of the GR00T N1.7 call.</blockquote>
-          <blockquote><strong>优化后 Jetson 上内存带宽仅限制处理少量 token 的阶段，其余阶段受软件限制：</strong>Third, after optimization, memory bandwidth limits only the stages that process few tokens on the Jetson, such as the denoising steps, whereas software limits all other stages, from unfused kernels to serial preprocessing on the host CPU.</blockquote>
+          <blockquote><strong>参数规模最多解释 15% 的延迟方差：</strong>parameter count explains at most 15% of latency variance</blockquote>
+          <blockquote><strong>内核融合加 4 位权重使两个模型显著加速但覆盖范围有限：</strong>kernel fusion with 4-bit weights helps most, running $\pi_{0.5}$ and GR00T N1.7 2.6-2.9$\times$ faster than PyTorch with torch.compile, but it exists for only these two models and only on the Jetson.</blockquote>
+          <blockquote><strong>优化使 CPU 预处理占比上升：</strong>CPU preprocessing grows from 12% to 39% of the GR00T N1.7 call.</blockquote>
+          <blockquote><strong>优化后内存带宽只限制少 token 阶段，其余阶段受软件限制：</strong>after optimization, memory bandwidth limits only the stages that process few tokens on the Jetson, such as the denoising steps, whereas software limits all other stages</blockquote>
         </dd>
       </dl>
       <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>

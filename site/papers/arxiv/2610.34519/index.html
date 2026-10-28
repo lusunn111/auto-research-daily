@@ -160,7 +160,7 @@
 <main>
   <header class="page-header">
     <div class="masthead">
-      <span>AUTO RESEARCH DAILY · 2026-10-28 00:01</span>
+      <span>AUTO RESEARCH DAILY · 2026-10-29 00:50</span>
       <nav aria-label="站点导航">
         <a href="https://lusunn111.github.io/auto-research-daily/">今日</a><a href="https://lusunn111.github.io/auto-research-daily/daily/">每日日报</a>
         <a href="https://lusunn111.github.io/auto-research-daily/library/">长期论文库</a><a href="https://lusunn111.github.io/auto-research-daily/topics/">主题</a>
@@ -193,8 +193,8 @@
   <div class="paper-card__body">
     <div class="paper-card__rubric">
       <span class="topic-badge">视觉语言动作（VLA）</span>
-      <span>全文级</span>
-      <span>相关性 8/10</span>
+      <span>摘要级</span>
+      <span>相关性 9/10</span>
       <span>v1</span>
     </div>
 
@@ -204,9 +204,9 @@
 
 <div class="paper-card__takeaway">
       <p class="field-label">核心洞察</p>
-      <p>被跳过 token 该复用还是剪枝取决于其 drift，即自缓存计算以来浅层值的变化；drift 低于阈值时复用不劣于剪枝，超过阈值后复用误差最高达剪枝的 4.4 倍，阈值与骨干相关且可通过同一 token 级诊断逐骨干标定。</p>
+      <p>应跳过的 token 该复用还是剪枝，取决于 token 的 drift（该 token 自缓存计算以来在浅层 value 上的变化）：drift 低于阈值时复用不劣于剪枝，超过阈值时复用带来的动作误差可达剪枝的 4.4 倍；该阈值可按骨干网络标定，据此可把缓存有效性、token 重要性与固定重算预算统一为一个分区问题。</p>
     </div>
-    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>对关注 VLA 实时部署、边缘推理加速与 token 级计算分配的研究者，该文给出了可解释的逐 token 决策依据（drift 与重要性分工）和明确的延迟—成功率权衡数据，且不训练、可直接叠加到现有 VLA 流水线，预算固定即可控延迟的思路对系统优化有直接参考价值。</p>
+    <p class="paper-card__recommendation"><strong>为什么值得看：</strong>它为 VLA 部署提供了一个可操作的 token 级判据（drift 阈值），把延迟预算显式转化为重算 token 数量，兼顾精度与实时性；对关注 VLA 推理加速、边缘实时控制与系统优化的研究者，其“复用/剪枝按 token 分流”的思路可直接迁移到其他视觉-语言-动作骨干与缓存机制。</p>
     <ul class="paper-tags" aria-label="研究标签">
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/efficient-inference/" data-tag-filter="efficient-inference">高效推理</a></li>
       <li><a href="https://lusunn111.github.io/auto-research-daily/tags/model-quantization/" data-tag-filter="model-quantization">模型量化</a></li>
@@ -222,10 +222,10 @@
       </summary>
 
       <div class="paper-details__meta">
-        <p><strong>模型细分主题：</strong>面向嵌入式部署的视觉-语言-动作模型推理加速</p>
-        <p><strong>模型原始标签：</strong>VLA、推理加速、视觉token剪枝、KV缓存复用、边缘部署、机器人操作</p>
-        <p><strong>第一单位：</strong>首尔国立大学电子与计算机工程系</p>
-        <p><strong>通讯作者：</strong>Kyunghan Lee</p>
+        <p><strong>模型细分主题：</strong>视觉-语言-动作模型的免训练推理加速与视觉 token 预算调度</p>
+        <p><strong>模型原始标签：</strong>VLA、推理加速、视觉 token 剪枝、KV 缓存复用、token drift、边缘部署、实时控制、免训练</p>
+        <p><strong>第一单位：</strong>证据未提供</p>
+        <p><strong>通讯作者：</strong>证据未提供</p>
         <p><strong>首次上传：</strong>2026-10</p>
         <p class="paper-links">
           <a href="https://arxiv.org/abs/2610.34519">arXiv 摘要 ↗</a>
@@ -255,29 +255,27 @@
       <p class="copyright">图片来自论文官方 arXiv 页面，仅用于论文导航与学术阅读；版权归论文作者或相关权利人所有。</p>
 
       <dl class="research-note">
-        <dt>Setting（研究设定）</dt><dd>在机器人本体嵌入式板（如 Jetson AGX Orin）上运行视觉-语言-动作模型进行操作任务；每个控制步将数百个视觉 token 与语言指令输入 LLM 骨干，prefill 延迟随输入 token 数增长，需在实时约束下决定跳过 token 的处理方式。</dd>
-        <dt>Motivation（研究动机）</dt><dd>移动操作臂与人形机器人无法依赖工作站或远程服务器，必须在机载嵌入式板实时推理；视觉 token 约占输入序列 90%，是计算与延迟的主要来源，现有免训练加速方法对每个被跳过的 token 只采用剪枝或只采用 KV 复用之一，缺乏对二者选择依据的研究。</dd>
-        <dt>Insight（核心洞察）</dt><dd>被跳过 token 该复用还是剪枝取决于其 drift，即自缓存计算以来浅层值的变化；drift 低于阈值时复用不劣于剪枝，超过阈值后复用误差最高达剪枝的 4.4 倍，阈值与骨干相关且可通过同一 token 级诊断逐骨干标定。</dd>
-        <dt>Challenge（技术挑战）</dt><dd><ul><li>prefill 阶段在嵌入式硬件上是计算受限的，延迟随输入 token 数增长</li><li>远程卸载受网络延迟波动与断连影响，单次延迟或丢包即阻塞控制环</li><li>复用陈旧 KV 缓存会通过注意力把错误上下文传给被重算 token，导致失败</li><li>纯剪枝在预算缩小时丢失任务相关区域，性能随预算下降而持续退化</li><li>drift 阈值依赖骨干、任务与场景变化速度，难以固定</li></ul></dd>
-        <dt>Analyze（问题分析）</dt><dd>作者设计 token 级诊断实验：对同一批 token 分别做一次复用和一次剪枝，将各自产生的动作与全量重计算对比。结果表明复用与剪枝的优劣由 drift 决定，且阈值可逐骨干标定；据此把两类逐 token 信号分工：缓存有效性（drift 低于阈值且有界缓存年龄）决定复用还是剪枝，重要性（动作解码 token 对其注意力）决定有限重算预算的分配方向。</dd>
-        <dt>Method（方法）</dt><dd><ul><li>用 token 级诊断标定每个骨干的 drift 阈值，低于阈值的缓存视为有效</li><li>缓存有效性需同时满足 drift 低于阈值与缓存年龄有界</li><li>按固定重算预算 B 优先重算缓存无效的重要 token</li><li>其余缓存有效的 token 复用，剩余 token 剪枝</li><li>由于重算 token 数固定，预算直接决定 prefill 延迟；剪枝-only 与复用-only 是该方法两个极端</li></ul></dd>
-        <dt>Experiments（实验）</dt><dd><ul><li>在 LIBERO 与 SimplerEnv 两个基准、两个 VLA 骨干上评测，延迟在 Jetson AGX Orin 上测量</li><li>平均成功率与全量重计算相差不超过 3 个百分点，Jetson AGX Orin 上 prefill 延迟最多降低 48%</li><li>仅重算 7% 视觉 token 时，在 LIBERO-Object 上超出最强基线 24.4 个百分点</li><li>预算扫描中 drop-all 在 B=18 时降至 22.4%，keep-all 在 B=18 时降至 0.0%，TRIAGE 在 B=18 时仍达 75.8%</li><li>SimplerEnv 上 TRIAGE 平均 54.5%，全量重计算为 54.8%，SpecPrune-VLA 与 VLA-Pruner 分别落后 4.2 与 6.1 个百分点</li><li>Jetson 上 prefill 为全量重计算的 0.74 倍，端到端与 p99 延迟最低</li></ul></dd>
-        <dt>Limitations（局限）</dt><dd><ul><li>超参数（δ、T、κ、λ、μ）为经验设定而非从第一性原理推导</li><li>区分复用与剪枝的 drift 阈值不固定：OpenVLA 上 drift 从 0.5 起复用变有害，OpenVLA-OFT 上从 0.3 起，且可能随骨干、任务与场景速度漂移，需要部署期自适应调整</li><li>TRIAGE 仅通过 drift 在变化发生之后检测变化，未利用光流、视频编解码运动向量或学习式 patch 选择器提前区分静态与运动区域</li></ul></dd>
-        <dt>与你的研究关系</dt><dd>该工作直接针对 VLA 模型在真实机器人嵌入式平台上的实时推理，涉及可执行动作生成的延迟约束、视觉 token 计算削减与 KV 缓存复用，属于系统优化与具身智能部署的交叉方向；其 token 级诊断与预算化重算机制可迁移到实时控制与模型压缩研究。</dd>
+        <dt>Setting（研究设定）</dt><dd>在无法连接工作站的移动操作机器人与类人机器人所搭载的板载嵌入式计算平台（如 Jetson AGX Orin）上运行 VLA 模型；每个控制步需处理数百个视觉 token，语言骨干的 prefill 延迟成为实时性瓶颈；方法为免训练（training-free）的推理期加速。</dd>
+        <dt>Motivation（研究动机）</dt><dd>现有免训练加速器对每个被跳过的视觉 token 只采用一种策略（剪枝或复用 KV 缓存），二者节省算力相近，但哪一种更能保持动作接近全量重算的效果，此前没有 token 级判据，导致跳过策略的选择是盲目的。</dd>
+        <dt>Insight（核心洞察）</dt><dd>应跳过的 token 该复用还是剪枝，取决于 token 的 drift（该 token 自缓存计算以来在浅层 value 上的变化）：drift 低于阈值时复用不劣于剪枝，超过阈值时复用带来的动作误差可达剪枝的 4.4 倍；该阈值可按骨干网络标定，据此可把缓存有效性、token 重要性与固定重算预算统一为一个分区问题。</dd>
+        <dt>Challenge（技术挑战）</dt><dd><ul><li>板载嵌入设备上 prefill 延迟随每步数百视觉 token 增长，难以满足实时控制</li><li>复用与剪枝节省算力相近但误差行为不同，缺少逐 token 的选择依据</li><li>drift 阈值需按骨干网络分别标定，跨模型迁移性未知</li><li>固定重算预算下需在重要 token 重算、有效缓存复用与其余剪枝三者间做优先级分配</li></ul></dd>
+        <dt>Analyze（问题分析）</dt><dd>作者通过 token 级诊断（token-level diagnostic）比较复用与剪枝两种跳过方式对动作相对全量重算的影响，发现分界由 token 的 drift 决定：在两个被测骨干上，低于阈值的 token 复用不劣于剪枝，超过阈值时复用动作误差最高为剪枝的 4.4 倍；并用同一诊断按骨干标定该阈值。</dd>
+        <dt>Method（方法）</dt><dd><ul><li>对每个被跳过的视觉 token 做 token 级诊断，计算其自缓存以来的浅层 value 漂移（drift）</li><li>设定按骨干标定的 drift 阈值：drift 低于阈值且缓存不过旧时判定缓存有效</li><li>固定重算预算（budget）以直接锁定 prefill 延迟</li><li>在预算内优先重算缓存无效的重要 token</li><li>其余缓存有效的 token 复用 KV 状态，剩余 token 剪枝；剪枝-only 与复用-only 为该方法两个极端</li></ul></dd>
+        <dt>Experiments（实验）</dt><dd><ul><li>在 LIBERO 与 SimplerEnv 上评测，平均成功率与全量重算相差不超过 3 个百分点</li><li>在 Jetson AGX Orin 上 prefill 延迟最高降低 48%</li><li>仅重算 7% 视觉 token 时，在 LIBERO-Object 上比最强基线高 24.4 个百分点</li><li>token 级诊断显示超过 drift 阈值后复用产生的动作误差最高为剪枝的 4.4 倍（两个被测骨干）</li></ul></dd>
+        <dt>Limitations（局限）</dt><dd><ul><li>材料未说明</li></ul></dd>
+        <dt>与你的研究关系</dt><dd>直接对应研究画像中的 VLA 模型推理效率与真实/边缘部署实时控制：针对视觉 token 的 prefill 瓶颈提出免训练加速，同时涉及模型压缩式剪枝与 KV 缓存复用两种系统优化手段，并在机器人操作基准与嵌入板卡上验证。</dd>
         <dt>证据与不确定性</dt>
         <dd>
-          <p>证据主要来自摘要与全文节选，部分方法细节与完整实验表格未全部呈现；drift 阈值等具体数值仅来自节选片段，未涵盖全部骨干与任务的完整结果。</p>
-          <blockquote><strong>被跳过 token 该复用还是剪枝取决于其 drift，超过阈值后复用误差最高达剪枝的 4.4 倍：</strong>reusing tokens below a drift threshold was no worse than pruning them, whereas beyond it, reuse yields up to 4.4x the action error of pruning</blockquote>
-          <blockquote><strong>TRIAGE 将 token 分为重算、复用与剪枝三类，剪枝-only 与复用-only 是其两个极端：</strong>TRIAGE recomputes a fixed budget of tokens, prioritizing important tokens with invalid caches, reuses every other token with a valid cache, and prunes the rest; prune-only and reuse-only methods are the two extremes of this partition</blockquote>
-          <blockquote><strong>预算固定重算 token 数，因此直接决定 prefill 延迟：</strong>Because the budget fixes the number of recomputed tokens, it directly sets the prefill latency.</blockquote>
-          <blockquote><strong>在 Jetson AGX Orin 上 prefill 延迟最多降低 48%，平均成功率与全量重计算相差不超过 3 个百分点：</strong>TRIAGE stays within 3 pp of full recomputation in average success rate while cutting prefill latency on a Jetson AGX Orin by up to 48%</blockquote>
-          <blockquote><strong>仅重算 7% 视觉 token 时在 LIBERO-Object 上超出最强基线 24.4 个百分点：</strong>with only 7% of visual tokens recomputed, it beats the strongest baseline by 24.4 pp on LIBERO-Object</blockquote>
-          <blockquote><strong>drift 阈值不固定，OpenVLA 与 OpenVLA-OFT 上分别从 0.5 与 0.3 起复用变有害：</strong>reuse became harmful from a drift of 0.5 on OpenVLA but from 0.3 on OpenVLA-OFT</blockquote>
-          <blockquote><strong>超参数为经验设定而非第一性原理推导：</strong>their values are set empirically rather than derived from first principles</blockquote>
-          <blockquote><strong>纯剪枝 drop-all 在 B=18 时降至 22.4%，而 TRIAGE 仍达 75.8%：</strong>Drop-all degrades steadily as the budget shrinks, reaching 22.4% at</blockquote>
+          <p>仅有标题与摘要，无全文：drift 阈值标定的具体流程、预算取值与延迟-成功率曲线、基线细节及作者自述局限均不可知；实验仅在两个骨干和仿真基准（LIBERO、SimplerEnv）上报告，真机结论未知。</p>
+          <blockquote><strong>现有免训练加速器对每个被跳过 token 只使用剪枝或复用中的一种：</strong>yet existing methods apply only one of them to every skipped token</blockquote>
+          <blockquote><strong>选择复用还是剪枝取决于 token 的 drift：</strong>which option keeps the action closer to full recomputation depends on the token&#39;s drift</blockquote>
+          <blockquote><strong>超过 drift 阈值时复用带来的动作误差可达剪枝的 4.4 倍：</strong>beyond it, reuse yields up to 4.4x the action error of pruning</blockquote>
+          <blockquote><strong>固定预算直接决定 prefill 延迟：</strong>Because the budget fixes the number of recomputed tokens, it directly sets the prefill latency.</blockquote>
+          <blockquote><strong>平均成功率与全量重算相差 3 个百分点以内，Jetson AGX Orin 上延迟最高降低 48%：</strong>TRIAGE stays within 3 pp of full recomputation in average success rate while cutting prefill latency on a Jetson AGX Orin by up to 48%</blockquote>
+          <blockquote><strong>仅重算 7% 视觉 token 时在 LIBERO-Object 上比最强基线高 24.4 个百分点：</strong>with only 7% of visual tokens recomputed, it beats the strongest baseline by 24.4 pp on LIBERO-Object</blockquote>
         </dd>
       </dl>
-      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；读取了全文节选。证据范围不足的内容不应视为全文结论。</p>
+      <p class="analysis-scope">本条由 deepseek-v4-flash 分析；仅依据标题与摘要。证据范围不足的内容不应视为全文结论。</p>
     </details>  </div>
 </article></section>
 </main>
