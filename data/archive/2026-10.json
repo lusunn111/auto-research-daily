@@ -2145,8 +2145,40 @@
         "uncertainty": "仅依据标题与摘要，无法核实第一单位、通讯作者、方法细节、实验设置与作者陈述的局限；摘要中的数字均按原文引用，未做独立验证。",
         "why_recommended": "该工作指出扩散策略的 I/O 受限特性，并给出投机解码加时序自适应调度的加速方案，同时提供仿真与真实机器人上的延迟、NFE 与成功率数据，对关注动作生成实时性、推理加速与真实评测的研究者具有直接参考价值。"
       },
-      "figure_gallery": null,
-      "final_score": 0.6788183397443569,
+      "figure_gallery": {
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
+        "figures": [
+          {
+            "caption": "Vanilla Diffusion Policy (DP) vs. Our TS-DP . For embodied tasks, DP completes a task through multiple interactions with the environment, generating several segments of actions. Each segment typically requires hundreds of model calls for denoising, making the process highly time-consuming. TS-DP introduces a customized speculative decoding framework for temporal-complexity-aware accelerating DP. A lightweight drafter generates multiple denoising results, which are verified in parallel by the DP for near-lossless acceleration. A scheduler further adjusts key speculative decoding parameters—such as the number of drafts and the acceptance rate—based on the complexity of different task phases, achieving adaptive and efficient acceleration.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2512.15773/v2/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2512.15773v2/overview.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2512.15773v2#S1.F1"
+          },
+          {
+            "caption": "The framework of TS-DP . TS-DP is the first temporal-aware speculative decoding framework designed to accelerate Diffusion Policy. ① Decision stage: A PPO-based scheduler evaluates time-varying task difficulty using past observations and actions, and produces adaptive speculative parameters. It operates in parallel with the observation encoder, adding no extra inference latency. ② Denoising stage: Guided by the scheduler, a lightweight drafter executes multiple denoising steps sequentially, effectively replacing expensive DP calls and reducing computational load. ③ Verification stage: DP verifies all drafted steps in parallel, accepting those that pass validation and correcting the first rejected draft via reflection-maximal coupling to better align it with the target distribution. ④ Reward generation: Based on task progress, the framework provides process rewards that encourage the scheduler to produce more valid drafts, and a final success-driven reward upon task completion, jointly guiding the scheduler toward efficient and successful task execution.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2512.15773/v2/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2512.15773v2/framework.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2512.15773v2#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2512.15773v2",
+        "status": "available"
+      },
+      "final_score": 0.656320432627715,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:57.550245Z",
         "input_hash": "a49971496c4ae11c129d2ab2dccde5653e03d2b775d8b89851838cbde0ce6ef4",
@@ -2185,17 +2217,17 @@
           "url": "https://arxiv.org/abs/2512.15773",
           "version": 2
         },
-        "rank": 55,
+        "rank": 54,
         "score": {
-          "base_score": 0.49785152680792155,
-          "exploration": 0.4701778301765163,
+          "base_score": 0.4569462411412999,
+          "exploration": 0.21103314931125924,
           "matched_terms": [
             "diffusion policy",
             "speculative decoding"
           ],
           "negative_terms": [],
           "personal": 0.575800134309821,
-          "recency": 0.6716268630815834,
+          "recency": 0.5217186872806241,
           "topic": 0.3558885629791202
         }
       },
@@ -2203,95 +2235,84 @@
     },
     "arxiv:2512.23864:v5": {
       "analysis": {
-        "analysis": "作者从 VLA 接触无感知这一局限出发，分析认为低维力信号不足以描述接触位置与动态，进而提出以高分辨率触觉图像作为“微观视觉”，并通过运动学与相机标定建立触觉与腕部及第三视角之间的空间对应关系，以统一多模态表示；同时指出数据瓶颈，采用高保真数字孪生仿真缓解数据规模问题。",
+        "analysis": "材料未说明作者如何具体分析问题；摘要仅指出VLA缺乏接触感知、低维触觉信号不足以刻画高分辨率动力学，以及触觉数据稀缺与传感器易损等动机性判断。",
         "challenges": [
-          "视觉与触觉在表示和语义上差异大，直接融合难以有效推理",
-          "触觉传感器昂贵易损，导致数据稀缺、难以扩展",
-          "高分辨率触觉图像预测与多尺度空间对齐困难",
-          "需要提前预测接触演化以指导动作修正"
+          "VLA模型缺乏对物理接触的感知，难以处理力、纹理与滑移推理",
+          "低维触觉信号无法刻画高分辨率接触动力学",
+          "触觉数据稀缺",
+          "触觉传感器易磨损"
         ],
         "corresponding_authors": [
-          "Shihan Lu",
-          "Han Liu"
+          "证据未提供"
         ],
         "evidence": [
           {
-            "claim": "VLA 模型缺乏触觉感知，在富接触任务中表现受限",
+            "claim": "现有VLA模型无法感知物理接触，在需推理力、纹理与滑移的富接触操作中表现不佳",
             "location": "abstract",
             "quote": "yet they remain blind to physical contact. Consequently, they struggle with contact-rich manipulation tasks that require reasoning about force, texture, and slip."
           },
           {
-            "claim": "核心方法是用触觉世界模型预测未来触觉并以草稿动作和预测后果为条件精炼动作",
+            "claim": "低维触觉信号无法捕捉高分辨率接触动力学",
             "location": "abstract",
-            "quote": "By anticipating upcoming tactile states, DreamTacVLA acquires a rich model of contact physics and conditions its actions on both real observations and imagined consequences."
+            "quote": "While some approaches incorporate low-dimensional tactile signals, they fail to capture the high-resolution dynamics essential for such interactions."
           },
           {
-            "claim": "融合多尺度视觉与触觉的分层感知与 HSA 对齐",
+            "claim": "方法采用触觉图像、腕部视觉与第三人称视觉的分层感知，并用HSA损失对齐触觉token",
             "location": "abstract",
-            "quote": "we first train a unified policy with a Hierarchical Spatial Alignment (HSA) loss that aligns tactile tokens with their spatial counterparts in the wrist and third-person views."
+            "quote": "Our model adopts a hierarchical perception scheme in which high-resolution tactile images serve as micro-vision inputs coupled with wrist-camera local vision and third-person macro vision."
           },
           {
-            "claim": "构建数字孪生与真实实验混合的大规模数据集以缓解触觉数据稀缺",
+            "claim": "用预测未来触觉信号的触觉世界模型微调系统",
             "location": "abstract",
-            "quote": "we construct a hybrid large-scale dataset sourced from both high-fidelity digital twin and real-world experiments."
+            "quote": "we finetune the system with a tactile world model that predicts future tactile signals"
           },
           {
-            "claim": "在富接触任务上超过现有 VLA 基线，成功率最高 95%",
+            "claim": "构建数字孪生与真实实验的混合大规模数据集以缓解触觉数据稀缺与传感器易损",
+            "location": "abstract",
+            "quote": "we construct a hybrid large-scale dataset sourced from both high-fidelity digital twin and real-world experiments"
+          },
+          {
+            "claim": "在富接触操作任务上优于SOTA VLA基线，成功率最高95%",
             "location": "abstract",
             "quote": "it outperforms state-of-the-art VLA baselines, achieving up to 95% success"
-          },
-          {
-            "claim": "作者自述两遍推理增加延迟，限制高频控制",
-            "location": "supplied_full_text",
-            "quote": "The Think–Dream–Act pipeline adds inference latency, since it requires a draft policy pass followed by a world-model rollout before the final action, potentially limiting its applicability to high-frequency control."
-          },
-          {
-            "claim": "世界模型预训练后冻结，限制对未见接触的适应",
-            "location": "supplied_full_text",
-            "quote": "Finally, the world model remains frozen after pretraining, bounding its adaptation to unseen contact interactions."
           }
         ],
         "experiments": [
-          "在四个富接触操作任务上，DreamTacVLA 优于有触觉和无触觉的最先进 VLA 与模仿学习基线，成功率最高达 95%",
-          "仿真与真实世界均取得接近完美的表现（依据结论表述）",
-          "消融实验确认触觉空间对齐与触觉预测带来的互补收益",
-          "世界模型规模实验：成功率随容量从 68.5%（300M）提升到 79.2%（600M）再到 85.1%（1B），300M 到 600M 增益最大（+10.7%）",
-          "数据规模实验：在 20%–100% 数据子集上训练，成功率随数据增加而提升，约在 60% 后趋于平台"
+          "在富接触操作任务上优于当前最优VLA基线",
+          "成功率最高达95%"
         ],
-        "first_affiliation": "Northwestern University",
-        "insight": "让策略在执行动作前先由触觉世界模型“想象”该草稿动作将产生的未来触觉状态，使动作同时以当前观测和预想的接触后果为条件，从而在富接触任务中实现前瞻性接触推理。",
+        "first_affiliation": "证据未提供",
+        "insight": "让VLA模型通过学习预测未来触觉信号来获得对接触物理的表征，并把动作条件化于真实观测与想象出的触觉后果之上，从而在决策中内化接触动力学。",
         "limitations": [
-          "Think–Dream–Act 增加推理延迟，需要先草稿策略前向再世界模型 rollout，可能限制高频控制适用性",
-          "评估仅限四个富接触任务与 DIGIT 触觉传感器，未探索对其他传感器和更广任务分布的泛化",
-          "世界模型预训练后保持冻结，限制了其对未见接触交互的适应"
+          "材料未说明"
         ],
         "method": [
-          "分层感知：将高分辨率触觉图像作为微观视觉，与腕部局部视觉、第三视角宏观视觉结合",
-          "第一阶段用分层空间对齐（HSA）损失训练统一策略，使触觉 token 与腕部及第三视角中的空间对应物对齐，输出草稿动作",
-          "第二阶段用预训练触觉世界模型（冻结的 V-JEPA 2）根据当前触觉图像与草稿动作预测未来触觉嵌入，形成接触预测潜变量",
-          "Think–Dream–Act 两遍推理：先以空触觉预测生成草稿动作，再结合预测触觉结果精炼出最终动作",
-          "构建数字孪生与真实实验混合的大规模触觉数据集"
+          "采用分层感知方案：高分辨率触觉图像作为微视觉输入，结合腕部相机的局部视觉与第三人称宏观视觉",
+          "先以分层空间对齐（HSA）损失训练统一策略，将触觉token与腕部及第三人称视图中的空间对应物对齐",
+          "再用预测未来触觉信号的触觉世界模型对系统进行微调，以加深对细粒度接触动力学的理解",
+          "构建来自高保真数字孪生与真实世界实验的混合大规模数据集，以缓解触觉数据稀缺与传感器易损问题",
+          "以预测即将到来的触觉状态为条件生成动作，使策略同时依赖真实观测与想象后果"
         ],
-        "motivation": "现有 VLA 模型擅长视觉引导任务，但缺乏触觉感知，对力、纹理和滑移不敏感，因此在富接触任务中容易失败；已有的低维力/力矩触觉方案信息稀疏，无法刻画接触位置与动力学。",
-        "primary_topic": "结合触觉世界模型的视觉-语言-动作（VLA）富接触操作",
-        "relation_to_research": "该工作直接处于具身智能与 VLA 交叉方向：把触觉模态引入 VLA 以增强可执行动作生成，并以内嵌触觉世界模型进行未来预测，使动作以前瞻的接触后果为条件；其两遍 Think–Dream–Act 推理与延迟问题也直接关联实时控制与推理效率这一系统优化关注点，同时涉及多模态表征对齐与数据规模问题。",
-        "relevance_score": 9,
-        "setting": "富接触机器人操作任务（插入等四类任务、九个物体），视觉-语言-动作模型在第三视角、腕部相机和高分辨率触觉图像输入下生成动作，并使用数字孪生与真实实验构建的混合大规模数据集训练。",
+        "motivation": "现有VLA模型能够借助网络规模知识泛化到机器人控制，但它们无法感知物理接触，因此在需要推理力、纹理和滑移的富接触操作中表现不佳；已有引入低维触觉信号的方法无法捕捉此类交互所需的高分辨率动力学。",
+        "primary_topic": "将高分辨率触觉感知与触觉世界模型融入视觉-语言-动作模型的富接触操作",
+        "relation_to_research": "该工作直接关联具身智能与视觉-语言-动作模型，并通过触觉世界模型实现对未来触觉状态的预测，属于世界模型与可执行动作生成的结合；其多尺度感知融合与预测式条件策略对实时接触丰富控制与真实机器人评测具有参考价值，但与模型压缩、推理效率等系统优化议题的关联在摘要中未体现。",
+        "relevance_score": 8,
+        "setting": "富接触机器人操作任务，需要推理力、纹理与滑移；模型融合高分辨率触觉图像、腕部局部视觉与第三人称宏观视觉，并能预测未来触觉信号。",
         "tags": [
           "VLA",
           "触觉感知",
+          "接触丰富操作",
           "触觉世界模型",
-          "富接触操作",
-          "未来触觉预测",
+          "多模态融合",
           "数字孪生数据",
-          "多模态对齐"
+          "机器人操作"
         ],
-        "title_zh": "学会感受未来：DreamTacVLA 面向富接触操作",
-        "uncertainty": "全文仅为节选，部分方法细节（如 HSA 损失具体形式、世界模型预测目标、实机任务定义与评测协议）被截断；实验数字主要来自节选片段而非完整表格；作者列表与贡献标注在节选中排版混乱，通讯作者依据邮箱对应关系判断，可能存在偏差。",
-        "why_recommended": "对关注 VLA 如何突破纯视觉局限、世界模型如何服务于动作生成、以及多模态（触觉）表征对齐的研究者具有直接参考价值；其两遍推理带来的延迟问题、世界模型冻结与规模/数据缩放结论，也为推理效率、实时控制和模型设计取舍提供了具体分析素材。"
+        "title_zh": "学习感知未来：面向富接触操作的DreamTacVLA",
+        "uncertainty": "仅有标题与摘要，缺少方法细节、基线设置、任务清单、数据规模与统计显著性等信息；第一单位与通讯作者均未提供；95%成功率的具体任务范围与比较口径不明确。",
+        "why_recommended": "它展示了把世界模型式的未来触觉预测接入VLA策略的具体路径，并给出富接触操作上的成功率提升，可为触觉多模态融合、长时序接触动力学建模与真实机器人操作评测提供可迁移的设计思路。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Hybrid tactile dataset and DreamTacVLA inference pipeline. (Top) We collect a large-scale tactile dataset spanning four manipulation tasks and nine objects, comprising 2 million tactile frames. (Bottom) Our Think–Dream–Act employs a two-pass inference process. In the Think stage, the policy proposes a draft action based on the current observation and a null tactile prediction. In the Dream stage, a frozen V-JEPA 2 world model forecasts the tactile outcome of the draft action. In the Act stage, the policy integrates both the current observation and predicted tactile outcome to refine the action, enabling fine-grained corrections during contact-rich manipulation.",
@@ -2323,13 +2344,13 @@
         "html_url": "https://arxiv.org/html/2512.23864v5",
         "status": "available"
       },
-      "final_score": 0.781483447139663,
+      "final_score": 0.7049204610367178,
       "provenance": {
-        "analyzed_at": "2026-10-28T16:53:37.880310Z",
-        "input_hash": "51d22e6e9c52bb59f35332f252727c68dd84c72d84e577529ddb59414a9d2d84",
+        "analyzed_at": "2026-10-29T17:07:32.597946Z",
+        "input_hash": "8098a8432366f707249b91cdd43b993633062c7936ab5dffdb0385799e809e1d",
         "model": "deepseek-v4-flash",
         "prompt_version": "paper-analysis-v1",
-        "reading_scope": "full_text"
+        "reading_scope": "abstract"
       },
       "ranked": {
         "paper": {
@@ -2357,10 +2378,10 @@
           "url": "https://arxiv.org/abs/2512.23864",
           "version": 5
         },
-        "rank": 6,
+        "rank": 11,
         "score": {
-          "base_score": 0.6845153584357508,
-          "exploration": 0.5091422258746472,
+          "base_score": 0.6271281109758504,
+          "exploration": 0.08695158048575896,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -2368,11 +2389,132 @@
           ],
           "negative_terms": [],
           "personal": 0.63886895510299,
-          "recency": 0.679573282741629,
+          "recency": 0.5278914535315122,
           "topic": 0.7947222222222222
         }
       },
-      "tier": "deep_read"
+      "tier": "browse"
+    },
+    "arxiv:2601.11460:v3": {
+      "analysis": {
+        "analysis": "摘要说明作者以十一个双臂任务、两个数据集为对象，比较结构化语义-几何表示与更简单的序列模型，并指出结构化表示相对序列模型的优势随动作顺序和对象参与情况的任务可变性增大而增大；具体分析手段材料未说明。",
+        "challenges": [
+          "同时捕捉离散语义任务结构与连续几何关系的时序演化",
+          "动作顺序与对象参与情况在演示间高度可变",
+          "表示需支持对任务进程的推理",
+          "跨具身迁移且机器人数据稀缺",
+          "从预测的动作与运动到可执行机器人规划的衔接"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "方法联合编码对象身份、对象间语义关系与每对象运动历史，采用MPNN编码器与Transformer解码器",
+            "location": "abstract",
+            "quote": "We introduce a semantic-geometric graph-based task representation that jointly encodes object identities, inter-object semantic relations, and per-object motion histories, via a Message Passing Neural Network (MPNN) encoder and a Transformer-based decoder."
+          },
+          {
+            "claim": "编码器仅基于时序场景图，产生与动作标签解耦的表示",
+            "location": "abstract",
+            "quote": "The encoder operates solely on the temporal scene graph, producing structured representations decoupled from action labels."
+          },
+          {
+            "claim": "通过仅微调解码器实现编码器跨具身复用",
+            "location": "abstract",
+            "quote": "enabling encoder reuse across embodiments through decoder-only finetuning on a small robot dataset"
+          },
+          {
+            "claim": "结构化表示的优势随任务可变性增大而增大",
+            "location": "abstract",
+            "quote": "the benefit of structured semantic--geometric representations over simpler sequence-based models grows with task variability in action ordering and object involvement"
+          },
+          {
+            "claim": "真实机器人两项双臂任务全部成功并优于多个基线",
+            "location": "abstract",
+            "quote": "achieving full task success on two real-robot bimanual tasks and outperforming graph ablations, Transformer, decoder-only, and finetuned vision-language model baselines"
+          }
+        ],
+        "experiments": [
+          "在两个数据集的十一个双臂任务上评估；结构化语义-几何表示相对更简单序列模型的增益，随动作顺序与对象参与情况的任务可变性增大而增大",
+          "真实机器人两项双臂任务达到全部任务成功",
+          "优于图消融、Transformer、仅解码器及微调视觉语言模型基线"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "将对象身份、对象间语义关系和每个对象的运动历史联合编码为语义-几何图，并通过编码器-解码器解耦，可以学到任务无关表示，从而借助少量机器人数据的解码器微调实现跨具身复用。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "构建以对象为中心的时序场景图，编码对象身份、对象间语义关系与每对象运动历史",
+          "用消息传递神经网络（MPNN）编码器仅对时序场景图编码，得到与动作标签解耦的结构化表示",
+          "用 Transformer 解码器以动作上下文为条件，预测未来动作、关联对象与对象运动",
+          "通过在小型机器人数据集上仅微调解码器，实现编码器跨具身复用",
+          "部署时将动作与运动预测同学习到的概率运动基元耦合，形成规划器"
+        ],
+        "motivation": "双臂操作中动作顺序、对象参与情况和交互几何在不同执行之间差异显著，已有方法难以同时捕捉离散的语义任务结构，以及以对象为中心的几何关系随时间的演化；而且需要一种能够支持任务进程推理的表示形式。",
+        "primary_topic": "双臂操作的结构化任务表示与动作规划",
+        "relation_to_research": "直接关联具身智能中的可执行动作生成与真实机器人评测；其以对象为中心的场景图编码和未来动作与运动预测属于面向操作的世界模型式预测与结构化任务表示；编码器-解码器解耦与仅解码器微调涉及跨具身的数据高效适配；未涉及推理效率、模型压缩或实时控制的具体结论。",
+        "relevance_score": 7,
+        "setting": "从人类演示中学习结构化的任务表示，用于双臂操作；编码器仅以时序场景图为输入，学习与动作标签解耦的任务无关表示；解码器以动作上下文为条件，预测未来动作、涉及对象与对象运动；部署时规划器将预测与学习到的概率运动基元结合，生成机器人动作。",
+        "tags": [
+          "双臂操作",
+          "人类演示学习",
+          "语义-几何图表示",
+          "消息传递神经网络",
+          "Transformer",
+          "概率运动基元",
+          "任务规划"
+        ],
+        "title_zh": "面向双臂操作的任务语义-几何表示：从人类演示到机器人动作规划",
+        "uncertainty": "仅有标题与摘要，缺少数据集规模、成功率数值以外的定量指标、实时性、训练成本、失败模式及作者自述局限；第一单位与通讯作者信息未提供；增益随任务可变性增大的结论缺少具体实验细节。",
+        "why_recommended": "为双臂操作提供可复用的语义-几何任务表示与预测-规划接口，并给出真实机器人全成功的部署证据；解耦表示与仅解码器微调的思路对机器人数据稀缺下的跨具身迁移有参考价值，也可作为结构化表示与序列模型、视觉语言模型基线对比的实证参照。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5673862495503272,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:08:21.582893Z",
+        "input_hash": "03afbcc2f2ca5fb075c586c01c7b623a2e51e7a921a6ee302a19c760c33beb4a",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Learning structured task representations from human demonstrations is essential for bimanual manipulation, where action ordering, object involvement, and interaction geometry vary significantly across executions. A key challenge lies in jointly capturing the discrete semantic task structure and the temporal evolution of object-centric geometric relations in a form that supports reasoning over task progression. We introduce a semantic-geometric graph-based task representation that jointly encodes object identities, inter-object semantic relations, and per-object motion histories, via a Message Passing Neural Network (MPNN) encoder and a Transformer-based decoder. The encoder operates solely on the temporal scene graph, producing structured representations decoupled from action labels. The decoder then conditions on action-context to forecast future actions, associated objects, and object motions. This decoupling learns task-agnostic representations, enabling encoder reuse across embodiments through decoder-only finetuning on a small robot dataset. Across eleven bimanual tasks from two datasets, we find that the benefit of structured semantic--geometric representations over simpler sequence-based models grows with task variability in action ordering and object involvement. At deployment, a planner couples the action and motion predictions with learned Probabilistic Movement Primitives, achieving full task success on two real-robot bimanual tasks and outperforming graph ablations, Transformer, decoder-only, and finetuned vision-language model baselines.",
+          "authors": [
+            "Franziska Herbert",
+            "Vignesh Prasad",
+            "Han Liu",
+            "Dorothea Koert",
+            "Georgia Chalvatzaki"
+          ],
+          "canonical_id": "2601.11460",
+          "categories": [
+            "cs.RO",
+            "cs.LG"
+          ],
+          "comment": "9 pages, 7 figures, preprint version of paper accepted at IEEE RA-L 2026",
+          "pdf_url": "https://arxiv.org/pdf/2601.11460",
+          "published_at": "2026-01-16T17:35:00Z",
+          "source": "arxiv",
+          "title": "Semantic-Geometric Task Representations for Bimanual Manipulation from Human Demonstrations to Robot Action Planning",
+          "updated_at": "2026-10-26T18:41:08Z",
+          "url": "https://arxiv.org/abs/2601.11460",
+          "version": 3
+        },
+        "rank": 52,
+        "score": {
+          "base_score": 0.4588840900915039,
+          "exploration": 0.5679435813768229,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5685909726404945,
+          "recency": 0.48028917351323697,
+          "topic": 0.28055679118364396
+        }
+      },
+      "tier": "browse"
     },
     "arxiv:2601.14628:v2": {
       "analysis": {
@@ -3868,8 +4010,40 @@
         "uncertainty": "仅依据标题与摘要，未提供全文；无法核实具体实验数字、第一单位、通讯作者及作者明确陈述的局限。",
         "why_recommended": "对关注VLA部署效率、免训练增强、长时序操作和真实机器人评测的研究者有直接参考价值，且方法不依赖额外传感器或微调，具备较好的可迁移性。"
       },
-      "figure_gallery": null,
-      "final_score": 0.6895747770820749,
+      "figure_gallery": {
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
+        "figures": [
+          {
+            "caption": "Empirical motivation for AWARE (OpenVLA-OFT on LIBERO). (a) Observation subspace footprint diminishes across network depth, halving by layer 26 across all suites. (b) Action Entropy across all 56 action chunk elements: near steps settle early in middle layers while distant steps retain elevated predictive entropy until deep layers, forming a clear decision wavefront (white dashed isocontour) that motivates element-wise observation routing.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2602.18020/v3/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2602.18020v3/footprint.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2602.18020v3#S1.F1"
+          },
+          {
+            "caption": "Overall framework of AWARE . At every layer the language head reads each element of the predicted action representations and gives its Action Entropy. The observation features form a key-value memory that the element queries through its FFN input, and the retrieved features enter its FFN output at the next layer with weight w t , n ( ℓ + 1 ) = α ​ ℓ L − 1 ​ ℋ t , n ( ℓ ) w^{(\\ell+1)}_{t,n}=\\alpha\\,\\tfrac{\\ell}{L-1}\\,\\mathcal{H}^{(\\ell)}_{t,n} . Nothing is switched on or off, and the memory is read at every layer.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2602.18020/v3/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2602.18020v3/aware_pipeline.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2602.18020v3#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2602.18020v3",
+        "status": "available"
+      },
+      "final_score": 0.6904614018371127,
       "provenance": {
         "analyzed_at": "2026-10-28T16:53:59.660175Z",
         "input_hash": "1a1c0b9e30f8818d7e82c8f3bda2c81cf3fca2decd360ef28b4288a79454df53",
@@ -3912,10 +4086,10 @@
           "url": "https://arxiv.org/abs/2602.18020",
           "version": 3
         },
-        "rank": 17,
+        "rank": 12,
         "score": {
-          "base_score": 0.5992268674219543,
-          "exploration": 0.2046763319373022,
+          "base_score": 0.600838912431114,
+          "exploration": 0.3697989750390048,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -3923,7 +4097,7 @@
           ],
           "negative_terms": [],
           "personal": 0.5136944623897931,
-          "recency": 0.6675678290991068,
+          "recency": 0.5185656360890015,
           "topic": 0.8023998378368756
         }
       },
@@ -6171,93 +6345,123 @@
     },
     "arxiv:2603.19233:v5": {
       "analysis": {
-        "analysis": "作者构建可解释性流程，通过把任务 A 的激活注入动作专家、同时让策略观察任务 B 的场景，进行因果干预，并在真实 UR10e 与多个仿真基准上以大规模 rollout 统计验证。",
+        "analysis": "作者构建可解释性流水线：用 SAE 分解动作相关激活、用频率加权对比选择（Cohen's d × 激活频率）识别概念特征、用线性探针检验动作信息是否线性可解码，并通过跨任务激活注入、替换式写回、层置零与随机方向对照等因果干预，比较不同架构中视觉通路与语言通路对动作生成的贡献。",
         "challenges": [
-          "策略对场景微小位移高度敏感且脆弱",
-          "需要在不破坏行为的前提下定位并写回可解释特征",
-          "需要区分目标选择与动作生成的内部通路",
-          "需要将机制发现迁移到真实机器人验证因果关系"
+          "现有 VLA 可解释性工作多为单架构、单方向干预且固定任务，无法回答“跨任务时视觉与语言谁在驱动动作”的问题",
+          "面向语言模型的 SAE 方法不能直接迁移到 VLA：动作 token 具有阶段性时间结构，池化方式会破坏行为；离散 token 动作头会阻断 SAE 插入",
+          "跨架构干预效果不统一（如 pi0.5 注入覆盖率高而 SmolVLA、GR00T N1.5 明显衰减），需要按架构分别分析融合方式",
+          "仿真结果难以直接外推到真机，硬件验证覆盖面有限"
         ],
         "corresponding_authors": [
-          "证据未提供"
+          "Peng Wang"
         ],
         "evidence": [
           {
-            "claim": "注入任务 A 的激活使 pi0.5 执行任务 A 的运动轨迹",
+            "claim": "注入任务 A 的激活可使 pi0.5 在观察任务 B 场景时执行任务 A 的运动轨迹，说明被注入的程序与场景解耦",
             "location": "abstract",
-            "quote": "Injecting task A's activations into the action expert while the policy looks at task B's scene makes pi0.5 execute task A's motor trajectory in 99.6\\% of episodes ($n{=}1{,}968$)."
+            "quote": "Injecting task A's activations into the action expert while the policy looks at task B's scene makes pi0.5 execute task A's motor trajectory in 99.6\\% of episodes"
           },
           {
-            "claim": "注入的程序绑定绝对工作空间坐标并忽略可见场景",
+            "claim": "该运动程序绑定绝对工作空间坐标并在真机上复现",
             "location": "abstract",
             "quote": "The injected program is bound to absolute workspace coordinates and ignores the visible scene"
           },
           {
-            "claim": "真实 UR10e 上定向重放可重定向任务，且对照处于地板水平",
+            "claim": "真机上定向重放可改写任务，而对照接近地板",
             "location": "abstract",
             "quote": "directed replay redirects the commanded task in 26/26 rollouts in one direction and 18/26 in the other, with no-injection and random-direction controls at the floor"
           },
           {
-            "claim": "源物体移动后机械臂在记录坐标处抓取与释放",
+            "claim": "语言被编码但在视觉足以定目标时权重较低",
             "location": "abstract",
-            "quote": "once the source object is moved 10--15\\,cm the arm grasps and releases at the recorded coordinates in 50/50 trials"
+            "quote": "every architecture encodes the instruction, and four of the five weight it below vision whenever the scene alone identifies the goal"
           },
           {
-            "claim": "多基准多模型大规模实验得到三条进一步发现",
+            "claim": "目标选择与运动生成分离到 VLM 与 expert 通路",
             "location": "abstract",
-            "quote": "Applying the same interventions to six VLAs on LIBERO, MetaWorld, SimplerEnv, and ALOHA over 420{,}000+ rollouts yields three further findings"
+            "quote": "goal selection and motor generation separate into VLM and expert pathways wherever the two are distinguishable"
           },
           {
-            "claim": "发布 Action Atlas 交互平台与代码",
-            "location": "abstract",
-            "quote": "We release \\textbf{Action Atlas} (https://action-atlas.com), an interactive platform covering all 520+ trained SAEs, 79 identified concepts, and the scored UR10e rollouts."
+            "claim": "跨架构结论来自仿真，硬件覆盖有限",
+            "location": "supplied_full_text",
+            "quote": "Simulation carries all cross-architecture results, and hardware covers a single model and task pair"
+          },
+          {
+            "claim": "pi0.5 上均值池化会严重破坏行为",
+            "location": "supplied_full_text",
+            "quote": "mean-pooling across the 50 action tokens collapses approach, manipulation, and terminal phases into one vector and drops rollout success from 89.9% to 3.3%"
           }
         ],
         "experiments": [
-          "注入任务 A 激活后，pi0.5 在 99.6% 的回合（n=1,968）执行任务 A 的运动轨迹",
-          "在真实 UR10e 上，定向重放在一个方向 26/26 成功重定向，另一方向 18/26，无注入与随机方向对照均处于地板水平",
-          "源物体移动 10–15 cm 后，机械臂在 50/50 试次中于记录坐标抓取与释放，有错误方块时抓错、无方块时抓空",
-          "在四个基准、六个 VLA、420,000+ rollouts 上：所有架构都编码指令，五个中有四个在仅凭场景即可确定目标时对指令的权重低于视觉",
-          "标准替换写回下，能保留行为的 SAE 池化与架构相关（pi0.5 按 token，SmolVLA 不敏感），目标选择与动作生成在有区分度的架构中分离为 VLM 与专家通路"
+          "pi0.5：向 action expert 注入任务 A 激活而策略观察任务 B 场景时，99.6% 的 episode（n=1,968）执行任务 A 的运动轨迹；该效应在 SmolVLA 降至 52.1%、GR00T N1.5 降至 57.0%",
+          "视觉通路主导动作生成：在空提示下注入基线视觉通路激活可将余弦相似度恢复到 ≥0.99、任务成功率恢复到 14–80%；置零任一层使 X-VLA 与 GR00T-DiT 降为 0%，SmolVLA 可容忍单层 expert 置零（19.2–76.5%）",
+          "pi0.5 上对 50 个动作 token 做均值池化会把成功率从 89.9% 降至 3.3%（四个 LIBERO 套件总平均，归一化 MSE ≤0.05，R²>0.95），per-layer libero_object 扫描同样从 93.8% 跌至 8.9%",
+          "真实 UR10e：定向注入在 26/26 与 18/26 次 rollout 中改写任务，无注入与随机方向对照接近地板（0/24、0/25、0/25、1/23）；源物体移动 10–15 cm 后 50/50 次试验在记录坐标处抓放，有错误积木时抓错、无物体时抓空",
+          "跨五 VLA + ACT、四基准、420,000+ rollouts 的三项发现：所有架构都编码指令，但五个中有四个在场景本身可确定目标时对指令权重低于视觉；标准替换写回下保持行为的 SAE 池化是架构特定的（pi0.5 per-token，SmolVLA 不敏感）；目标选择与动作生成在 VLM 与 expert 通路间分离",
+          "注：摘要与正文在受试 VLA 数量上表述不一致（摘要一处称六个、另处称五个加 ACT 对照）"
         ],
-        "first_affiliation": "证据未提供",
-        "insight": "被注入的动作程序绑定在绝对工作空间坐标上，并忽略可见场景；这一机制可以解释同时期基准所报告的扰动脆弱性。",
+        "first_affiliation": "Case Western Reserve University",
+        "insight": "VLA 微调出的行为是一种绑定绝对工作空间坐标的运动程序，由视觉通路进行选择、由 action expert 通路执行；指令确实被编码，但当视觉场景本身足以确定目标时，多数架构对指令的权重低于视觉。这正是位置扰动脆弱性的机制性解释。",
         "limitations": [
-          "材料未说明"
+          "跨架构结论全部来自仿真，硬件验证仅覆盖单一模型与单一任务对"
         ],
         "method": [
-          "构建激活注入的可解释性流程，把任务 A 的激活注入动作专家并观察任务 B 场景",
-          "在真实 UR10e 上做定向重放（directed replay），并设置无注入与随机方向对照组",
-          "在六个 VLA 模型上，跨 LIBERO、MetaWorld、SimplerEnv、ALOHA 施加相同干预",
-          "训练 520+ 个 SAE 并识别 79 个概念，比较不同架构下保留行为的 SAE 池化方式",
-          "发布交互平台 Action Atlas，包含 SAE、概念与 UR10e rollout 评分"
+          "在动作相关激活上训练 TopK 稀疏自编码器（k=64 活跃特征，扩展因子 m=4d 或 8d），跨五种 VLA 共训练 520+ 个 SAE，识别 79 个操作概念",
+          "通过跨任务激活注入（把任务 A 的激活注入 action expert，同时让策略观察任务 B 的场景）检验运动程序是否与场景解耦",
+          "采用频率加权对比选择 score_f = d_f × freq_f 定位概念特异特征，并用 Cohen's d 衡量概念存在与缺失任务间的激活差异",
+          "训练逐动作维度的岭回归线性探针，并通过投影掉探针方向来验证因果性",
+          "以动作余弦相似度、任务成功率、带余弦容差带的 override rate（τ=0.05）及 tie-inclusive override 作为评价指标",
+          "在真实 UR10e 上复现定向重放、无注入与随机方向对照，并移动源物体 10–15 cm 检验坐标绑定",
+          "发布 Action Atlas 交互平台，涵盖全部 520+ 训练 SAE、79 个概念与 UR10e 评分 rollout"
         ],
-        "motivation": "微调后的 VLA 策略对场景微小变化（如篮子左移五厘米）极为脆弱，作者希望从机制层面弄清策略实际在计算什么，从而解释这种扰动脆弱性。",
-        "primary_topic": "视觉-语言-动作模型的机制可解释性与扰动脆弱性",
-        "relation_to_research": "该工作直接剖析 VLA 策略的可执行动作生成机制，揭示动作程序与绝对坐标绑定、指令与视觉的权重分配以及 VLM 与专家通路的分工，为具身智能中的鲁棒性、泛化与模型内部结构优化提供机制证据。",
+        "motivation": "微调后的 VLA 策略在训练分布内成功率很高，但目标物体仅平移几厘米就会失败；与经典机器人学中可检视的运动学/控制模型不同，操作者缺乏诊断此类失败的原理性手段。作者追问：策略在执行时究竟是在听从指令识别“操作什么”，还是在回放绑定绝对坐标的运动程序、只命中“训练分布把物体放在哪里”。",
+        "primary_topic": "VLA 策略的机制可解释性：坐标绑定运动程序与语言/视觉通路分工",
+        "relation_to_research": "直接关联具身智能与 VLA 方向：揭示了 VLA 可执行动作生成的机制（坐标绑定运动程序、视觉主导、VLM 选目标/专家执行的通路分工），为世界动作模型类方法的动作生成与长时序控制提供机制依据；同时给出 SAE 池化、模型干预等分析工具，与系统优化中的模型压缩和真实机器人评测（UR10e 真机复核）相关。",
         "relevance_score": 8,
-        "setting": "在微调的 VLA 策略（pi0.5）及六个 VLA 模型上，跨 LIBERO、MetaWorld、SimplerEnv、ALOHA 仿真基准与真实 UR10e 机械臂，开展激活层面的因果干预实验。",
+        "setting": "对六种视觉-语言-动作策略（pi0.5、OpenVLA-OFT、X-VLA、SmolVLA、GR00T N1.5 以及无语言对照 ACT）进行机制级干预分析，在 LIBERO、MetaWorld、SimplerEnv、ALOHA 四个仿真基准上做了 420,000+ 次 rollout，并在真实 UR10e 机械臂上复核主结论。",
         "tags": [
-          "VLA",
-          "机制可解释性",
+          "VLA 可解释性",
           "稀疏自编码器",
           "激活注入",
-          "机器人操作",
-          "鲁棒性",
-          "pi0.5"
+          "坐标绑定",
+          "真实机器人 UR10e",
+          "LIBERO",
+          "MetaWorld",
+          "SimplerEnv",
+          "ALOHA",
+          "鲁棒性"
         ],
-        "title_zh": "并非所有特征生而平等：视觉-语言-动作模型的机制研究",
-        "uncertainty": "仅有标题与摘要，未提供全文；第一单位、通讯作者、具体实验设置细节与作者明示局限均不可得，部分结论（如 SAE 池化的架构特异性）需阅读全文确认。",
-        "why_recommended": "对关注 VLA 可执行动作生成、真实机器人评测与鲁棒性根因的研究者，该文提供大规模因果干预证据与可复用的激活注入/SAE 分析工具（Action Atlas），有助于定位脆弱性来源并指导架构与训练优化。"
+        "title_zh": "并非所有特征都生而平等：视觉-语言-动作模型的机制研究",
+        "uncertainty": "输入为摘要与部分全文节选，正文实验细节（如各架构 override 的 tie-inclusive 数值表、探针结果、附录中的扩展局限与三条可证伪预测）未完整给出；摘要与节选中关于受试 VLA 数量（六个 vs 五个加 ACT）存在表述不一致，故对实验覆盖范围的判断有一定不确定。",
+        "why_recommended": "对关注 VLA 鲁棒性与可执行动作生成的研究者，本文提供了“扰动脆弱性源于坐标绑定程序”的机制解释，能指导数据增广、架构设计与语言条件使用；其跨架构因果干预流水线与 Action Atlas 平台可直接复用于诊断和比较自身模型；SAE 池化与写回的架构依赖结论也提醒模型压缩/特征编辑类工作不能跨架构照搬。"
       },
-      "figure_gallery": null,
-      "final_score": 0.6920531315040537,
+      "figure_gallery": {
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
+        "figures": [
+          {
+            "caption": "Methodology overview. Top: record a VLA’s activations during a successful rollout and replay them under cross-task injection and counterfactual prompts. Middle: per-token SAEs decompose the same activations into features. Bottom: features are clustered, searched, and validated by ablation and steering in Action Atlas.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2603.19233/v5/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2603.19233v5/figures/fig_system_arch.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2603.19233v5#S3.F1"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2603.19233v5",
+        "status": "available"
+      },
+      "final_score": 0.7377085724974658,
       "provenance": {
-        "analyzed_at": "2026-10-27T16:04:33.517624Z",
-        "input_hash": "3759b5fcaf754d8d37375015a75dfcb1a7e8f3a36f6274540ffe514969190f16",
+        "analyzed_at": "2026-10-29T17:07:26.252365Z",
+        "input_hash": "66fd509bdd279acebf7b6b86cf46632844ddfd67eca5f1d4d90a00eb861d5e8a",
         "model": "deepseek-v4-flash",
         "prompt_version": "paper-analysis-v1",
-        "reading_scope": "abstract"
+        "reading_scope": "full_text"
       },
       "ranked": {
         "paper": {
@@ -6280,10 +6484,10 @@
           "url": "https://arxiv.org/abs/2603.19233",
           "version": 5
         },
-        "rank": 26,
+        "rank": 4,
         "score": {
-          "base_score": 0.6037329663710067,
-          "exploration": 0.02810081928459174,
+          "base_score": 0.6867428590863013,
+          "exploration": 0.9951317873305172,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -6291,11 +6495,11 @@
           ],
           "negative_terms": [],
           "personal": 0.6815427029936072,
-          "recency": 0.6134904690083097,
+          "recency": 0.4765584281153306,
           "topic": 0.6653703462702666
         }
       },
-      "tier": "browse"
+      "tier": "deep_read"
     },
     "arxiv:2603.25044:v3": {
       "analysis": {
@@ -8347,7 +8551,7 @@
         "why_recommended": "该工作把失败数据转化为恢复监督，并给出部署期无需在线检测器的价值条件化方案，同时提出 FRBench 与真实双臂评测，对关注 VLA 鲁棒性、长时序操作与真实机器人评测的研究者有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Recovery-driven trajectory utilization. Prior VLAs mainly imitate successful demonstrations and often fail under execution drift. RePO-VLA assigns distinct supervision to success, recovery, and failure trajectories, enabling autonomous correction from adverse states.",
@@ -8379,7 +8583,7 @@
         "html_url": "https://arxiv.org/html/2605.09410v2",
         "status": "available"
       },
-      "final_score": 0.7215169612566585,
+      "final_score": 0.715808000716288,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:15.660792Z",
         "input_hash": "22a75491ac0f5ae5d61b720208a1bd8821b2474115f196382acb4e3eee65b17b",
@@ -8425,10 +8629,10 @@
           "url": "https://arxiv.org/abs/2605.09410",
           "version": 2
         },
-        "rank": 27,
+        "rank": 17,
         "score": {
-          "base_score": 0.5754853841030155,
-          "exploration": 0.17100956750870167,
+          "base_score": 0.5651054558477964,
+          "exploration": 0.20509375944444339,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -8436,7 +8640,7 @@
           ],
           "negative_terms": [],
           "personal": 0.5436946045986133,
-          "recency": 0.6177531341858077,
+          "recency": 0.4798696596978751,
           "topic": 0.7198472624691101
         }
       },
@@ -9720,7 +9924,7 @@
         "why_recommended": "有助于研究者了解具身世界模型评测从仅视觉、离线、仿真走向多模态、交互式与真实平台的扩展方向，为世界模型训练与系统优化提供评测参照。"
       },
       "figure_gallery": null,
-      "final_score": 0.6515305967809151,
+      "final_score": 0.6690237895927176,
       "provenance": {
         "analyzed_at": "2026-10-27T16:05:33.216332Z",
         "input_hash": "c41f03cf1d0c1ad7cdf3ba5bc7b9e1b56d51fd0a6f1cd806bbd16661acd581c0",
@@ -9776,20 +9980,20 @@
           "url": "https://arxiv.org/abs/2605.17912",
           "version": 2
         },
-        "rank": 40,
+        "rank": 13,
         "score": {
-          "base_score": 0.5300556305107547,
-          "exploration": 0.31684873066068936,
+          "base_score": 0.5618614356231226,
+          "exploration": 0.9510351101964504,
           "matched_terms": [
             "embodied intelligence"
           ],
           "negative_terms": [],
           "personal": 0.5333095993167762,
-          "recency": 0.7900643775213644,
+          "recency": 0.4739360491092829,
           "topic": 0.5125
         }
       },
-      "tier": "browse"
+      "tier": "explore"
     },
     "arxiv:2605.19294:v3": {
       "analysis": {
@@ -11392,6 +11596,136 @@
       },
       "tier": "browse"
     },
+    "arxiv:2606.01621:v3": {
+      "analysis": {
+        "analysis": "材料未说明作者如何具体分析问题，仅从摘要可知其指出现有动作预测接口的歧义性、短时绑定与低效性，并据此提出像素级导航范式。",
+        "challenges": [
+          "低层动作预测接口存在歧义且与短时运动基元绑定",
+          "重复查询VLM导致推理效率低下",
+          "长时序导航需要有效的记忆机制",
+          "预训练VLM需要适配像素级可导航区域定位任务"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有VLM导航方法多将导航建模为低层动作预测，存在歧义、短时绑定和低效问题",
+            "location": "abstract",
+            "quote": "Yet most VLM-based methods cast navigation as low-level action prediction, an interface that is ambiguous, tied to short-horizon motion primitives, and inefficient due to repeated VLM querying."
+          },
+          {
+            "claim": "Goal2Pixel将VLN-CE重新表述为可导航像素定位，并以图像平面作为统一空间接口",
+            "location": "abstract",
+            "quote": "We propose Goal2Pixel, a pure pixel-based paradigm that reformulates VLN-CE as navigable pixel grounding. Rather than predicting actions, Goal2Pixel uses the image plane as a unified spatial interface between VLM reasoning and robot motion: the model predicts a visible navigable pixel, which is back-projected into a 3D waypoint for forward navigation."
+          },
+          {
+            "claim": "非前进动作通过辅助区域编码",
+            "location": "abstract",
+            "quote": "Non-forward actions are encoded by auxiliary left/right/bottom regions for turning and stopping."
+          },
+          {
+            "claim": "ViKeyMem支持长时序导航并降低训练成本超过50%",
+            "location": "abstract",
+            "quote": "To support long-horizon navigation, we propose ViKeyMem, a visibility-aware keyframe memory, achieving a favorable performance-efficiency trade-off while reducing training cost by over 50%."
+          },
+          {
+            "claim": "在R2R-CE Val-Unseen上达到54.1% SR和52.5% SPL，每回合仅7.75次VLM调用",
+            "location": "abstract",
+            "quote": "On R2R-CE Val-Unseen, it achieves 54.1% SR and 52.5% SPL with only 7.75 VLM calls per episode."
+          },
+          {
+            "claim": "与直接动作预测相比，SR提升21.2个百分点且VLM调用减少6倍",
+            "location": "abstract",
+            "quote": "Compared with direct action prediction, Goal2Pixel improves SR by 21.2 percentage points while requiring 6 times fewer VLM calls."
+          }
+        ],
+        "experiments": [
+          "在不使用外部数据训练的方法中，Goal2Pixel在R2R-CE和RxR-CE上取得有竞争力的最先进性能",
+          "在R2R-CE Val-Unseen上，达到54.1% SR和52.5% SPL，每回合仅需7.75次VLM调用",
+          "与直接动作预测相比，Goal2Pixel将SR提升21.2个百分点，同时VLM调用次数减少6倍",
+          "ViKeyMem在性能与效率之间取得有利权衡，并将训练成本降低超过50%"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "将图像平面作为VLM推理与机器人运动之间的统一空间接口：模型不直接预测动作，而是预测一个可见的可导航像素，再将其反投影为三维路标以引导前进；非前进动作（左转、右转、停止）通过图像辅助区域编码。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出Goal2Pixel，一种纯像素范式，将VLN-CE重新表述为可导航像素定位",
+          "使用图像平面作为VLM推理与机器人运动的统一空间接口",
+          "模型预测一个可见的可导航像素，将其反投影为三维路标用于前进导航",
+          "通过辅助的左/右/底部区域编码转向和停止等非前进动作",
+          "提出ViKeyMem，一种可见性感知的关键帧记忆，以支持长时序导航并降低训练成本",
+          "引入语义嵌入和坐标感知辅助损失，使预训练VLM适配可导航像素定位"
+        ],
+        "motivation": "现有基于VLM的导航方法大多把导航建模为低层动作预测，这种接口存在歧义、与短时运动基元绑定，并且因重复查询VLM而效率低下。作者希望找到一种更明确、更高效的空间接口来连接VLM推理与机器人运动。",
+        "primary_topic": "视觉语言导航中的像素级可导航区域定位",
+        "relation_to_research": "该论文与具身智能中的可执行动作生成、实时控制与系统优化直接相关：它用像素级路标替代低层动作预测，降低了VLM调用频率，提升了推理效率，并涉及长时序导航记忆机制，可迁移至视觉语言动作模型与世界模型中的空间接口设计。",
+        "relevance_score": 7,
+        "setting": "在连续环境中的视觉语言导航（VLN-CE）任务中，基于预训练视觉语言模型（VLM），在不使用外部数据训练的条件下，研究如何将导航目标转化为图像平面上的可导航像素，并实现长时序导航与高效推理。",
+        "tags": [
+          "视觉语言导航",
+          "视觉语言模型",
+          "像素级定位",
+          "关键帧记忆",
+          "机器人导航"
+        ],
+        "title_zh": "Goal2Pixel：将目标锚定至像素的视觉语言导航",
+        "uncertainty": "仅依据标题与摘要判断，未提供全文，无法核实具体实现细节、实验设置、基线对比条件及作者明确陈述的局限；第一单位与通讯作者信息未提供。",
+        "why_recommended": "对于关注具身智能中动作生成接口、VLM推理效率与长时序导航的研究者，该论文提供了一种将目标锚定到像素并以三维路标驱动机器人运动的替代范式，其实验表明在显著减少VLM调用的同时提升导航成功率，具有明确的系统优化与评测参考价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5675071690492421,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:08:14.677981Z",
+        "input_hash": "f851420d72b52f443e77cbdc1fda3296467a576b391ef021421c77a9a888bedd",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Vision-language models (VLMs) have become a common foundation for vision-and-language navigation in continuous environments (VLN-CE). Yet most VLM-based methods cast navigation as low-level action prediction, an interface that is ambiguous, tied to short-horizon motion primitives, and inefficient due to repeated VLM querying. We propose Goal2Pixel, a pure pixel-based paradigm that reformulates VLN-CE as navigable pixel grounding. Rather than predicting actions, Goal2Pixel uses the image plane as a unified spatial interface between VLM reasoning and robot motion: the model predicts a visible navigable pixel, which is back-projected into a 3D waypoint for forward navigation. Non-forward actions are encoded by auxiliary left/right/bottom regions for turning and stopping. To support long-horizon navigation, we propose ViKeyMem, a visibility-aware keyframe memory, achieving a favorable performance-efficiency trade-off while reducing training cost by over 50%. To adapt pretrained VLMs to navigable pixel grounding, we introduce semantic embeddings and coordinate-aware auxiliary losses. Among methods trained without external data, Goal2Pixel achieves competitive state-of-the-art performance on R2R-CE and RxR-CE. On R2R-CE Val-Unseen, it achieves 54.1% SR and 52.5% SPL with only 7.75 VLM calls per episode. Compared with direct action prediction, Goal2Pixel improves SR by 21.2 percentage points while requiring 6 times fewer VLM calls. Project Page: https://baobao0926.github.io/Goal2Pixel/.",
+          "authors": [
+            "Muyi Bao",
+            "Yuxin Cai",
+            "Hang Xu",
+            "Zongtai Li",
+            "Jinxi He",
+            "Jingfan Tang",
+            "Chen Lv",
+            "Ji Zhang",
+            "Yaqi Xie",
+            "Wenshan Wang"
+          ],
+          "canonical_id": "2606.01621",
+          "categories": [
+            "cs.CV",
+            "cs.RO"
+          ],
+          "comment": "8 pages",
+          "pdf_url": "https://arxiv.org/pdf/2606.01621",
+          "published_at": "2026-06-01T03:12:58Z",
+          "source": "arxiv",
+          "title": "Goal2Pixel: Grounding Goals to Pixels for Vision-Language Navigation",
+          "updated_at": "2026-10-27T04:27:12Z",
+          "url": "https://arxiv.org/abs/2606.01621",
+          "version": 3
+        },
+        "rank": 44,
+        "score": {
+          "base_score": 0.45910394372589475,
+          "exploration": 0.9088841573055894,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.5341176635168773,
+          "recency": 0.5317301120865371,
+          "topic": 0.21339876629739235
+        }
+      },
+      "tier": "explore"
+    },
     "arxiv:2606.01950:v2": {
       "analysis": {
         "analysis": "摘要未说明具体的分析手段；作者通过在多物体动力学与机器人末端执行器交互的合成数据集上分析预测性能来评估方法。",
@@ -11651,6 +11985,138 @@
         }
       },
       "tier": "explore"
+    },
+    "arxiv:2606.03385:v2": {
+      "analysis": {
+        "analysis": "材料未说明作者如何具体分析问题；摘要仅说明其以失败归因模型对失败轨迹给出失败模式分布，并据此分别定位抓取侧与规划侧问题。",
+        "challenges": [
+          "抓取与规划耦合导致失败来源难以分离",
+          "失败归因需泛化到未见抓取并输出稳定分布",
+          "抓取候选需兼顾任务兼容性与稳定性",
+          "规划瓶颈可能集中在高风险初始状态",
+          "需在多种基学习器（RL、IL、扩散策略、VLA）上验证通用性"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "论文提出两阶段“先抓取后规划”框架，并以选定抓取为条件进行运动规划",
+            "location": "abstract",
+            "quote": "we propose GTP-FA (Grasp-Then-Plan with Failure Attribution), a task-oriented two-stage 'grasp-then-plan' framework that generates grasp candidates and performs downstream motion planning conditioned on the selected grasp."
+          },
+          {
+            "claim": "论文学习失败归因模型，对失败轨迹输出失败模式分布并泛化到未见抓取",
+            "location": "abstract",
+            "quote": "Given a failed manipulation trajectory, we learn a failure attribution model that generalizes to unseen grasps and produces a stable distribution over failure modes for diagnosis-guided optimization."
+          },
+          {
+            "claim": "抓取侧通过任务先验与风险惩罚优化抓取候选",
+            "location": "abstract",
+            "quote": "we inject task-level priors and risk penalties into grasp candidate scoring and optimization to suppress unstable or task-incompatible grasps"
+          },
+          {
+            "claim": "规划侧针对高风险初始状态进行数据收集与微调",
+            "location": "abstract",
+            "quote": "on the planning side, we target high-risk initial states through data collection and fine-tuning to address genuine planning bottlenecks"
+          },
+          {
+            "claim": "在仿真与真实机器人实验中，GTP-FA 提升多种基学习器并提高总体成功率",
+            "location": "abstract",
+            "quote": "we evaluate the proposed framework in both simulation and real-robot experiments, and show that GTP-FA improves the corresponding base learners across RL, IL, diffusion-policy, and VLA-based settings, achieving substantially higher overall task success rates."
+          }
+        ],
+        "experiments": [
+          "在仿真和真实机器人实验中评估 GTP-FA",
+          "在 RL、IL、扩散策略和 VLA 基学习器设置下，GTP-FA 均提升对应基学习器",
+          "总体任务成功率显著提高；摘要未给出具体数值"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "若能从失败轨迹中学习可泛化到未见抓取的失败归因模型，得到稳定的失败模式分布，就能以诊断驱动方式分别优化抓取与规划模块，而不是盲目调参或整体重训。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出 GTP-FA 两阶段“先抓取后规划”框架：先生成抓取候选，再以选定抓取为条件进行下游运动规划",
+          "学习失败归因模型：输入失败操作轨迹，输出失败模式分布，并泛化到未见抓取",
+          "抓取侧优化：在抓取候选评分与优化中注入任务级先验和风险惩罚，抑制不稳定或任务不兼容的抓取",
+          "规划侧优化：针对高风险初始状态进行数据收集与微调，以解决真实规划瓶颈",
+          "以归因结果进行诊断驱动的两模块联合优化"
+        ],
+        "motivation": "抓取与运动规划紧密耦合，导致操作失败时难以判断真正来源，只能低效试错；作者希望实现高效的长时序操作，并提升任务成功率。",
+        "primary_topic": "机器人操作中的抓取-规划两阶段框架与失败归因驱动的优化",
+        "relation_to_research": "与具身智能和机器人操作直接相关，涉及可执行动作生成（抓取与规划）、VLA 基学习器上的方法增强以及真实机器人评测；但不聚焦世界模型、长时序预测、推理效率或模型压缩，系统优化层面也仅涉及诊断驱动的模块优化。",
+        "relevance_score": 6,
+        "setting": "面向长时序机器人操作任务，将任务分解为“抓取候选生成”和“以选定抓取为条件的下游运动规划”两个阶段，并利用失败轨迹的归因结果诊断并优化两个模块。",
+        "tags": [
+          "机器人操作",
+          "抓取生成",
+          "运动规划",
+          "失败归因",
+          "长时序任务",
+          "VLA",
+          "扩散策略",
+          "真实机器人评测"
+        ],
+        "title_zh": "先抓取后规划与失败归因：面向精确且可泛化机器人操作的两阶段闭环框架",
+        "uncertainty": "仅有标题与摘要，缺少方法细节、实验数值、失败归因模型结构、真实机器人平台与任务设置等信息；第一单位与通讯作者无法确认。",
+        "why_recommended": "该工作把失败归因引入抓取-规划耦合系统，提供了一种可迁移到 VLA/扩散策略等操作策略上的诊断式优化思路，并包含仿真与真实机器人评测，对关注可执行动作生成与真实机器人闭环改进的研究者有参考价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5816880552437462,
+      "provenance": {
+        "analyzed_at": "2026-10-28T16:54:33.491402Z",
+        "input_hash": "4e0a4abfae42797d63824500a1c742882eecdb25312f14a1c456a27597511a10",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "In robotic manipulation, the tight coupling between grasping and motion planning often obscures the true source of failure, leading to inefficient trial-and-error. To enable efficient long-horizon manipulation, we propose GTP-FA (Grasp-Then-Plan with Failure Attribution), a task-oriented two-stage 'grasp-then-plan' framework that generates grasp candidates and performs downstream motion planning conditioned on the selected grasp. Given a failed manipulation trajectory, we learn a failure attribution model that generalizes to unseen grasps and produces a stable distribution over failure modes for diagnosis-guided optimization. Based on these attribution results, we then optimize both modules in a diagnosis-driven manner: on the grasping side, we inject task-level priors and risk penalties into grasp candidate scoring and optimization to suppress unstable or task-incompatible grasps; on the planning side, we target high-risk initial states through data collection and fine-tuning to address genuine planning bottlenecks. We evaluate the proposed framework in both simulation and real-robot experiments, and show that GTP-FA improves the corresponding base learners across RL, IL, diffusion-policy, and VLA-based settings, achieving substantially higher overall task success rates.",
+          "authors": [
+            "Jiahao Xu",
+            "Peiyuan Wang",
+            "Hanzhuo Zhang",
+            "Zihao Yu",
+            "Tianyu Fu",
+            "Hao Chen",
+            "Xuanhao Xiang",
+            "Zixuan Li",
+            "Jianbo Yu",
+            "Chenchen Fu",
+            "Wanyuan Wang"
+          ],
+          "canonical_id": "2606.03385",
+          "categories": [
+            "cs.RO",
+            "cs.AI"
+          ],
+          "comment": "Accepted at NeurIPS 2026. 34 pages. Revised after peer review with additional experiments, updated results, and updated author information. Project page: https://sites.google.com/view/gtp-fa/",
+          "pdf_url": "https://arxiv.org/pdf/2606.03385",
+          "published_at": "2026-06-02T09:29:03Z",
+          "source": "arxiv",
+          "title": "Grasp-Then-Plan with Failure Attribution: A Closed Two-Stage Framework for Precise and Generalizable Robotic Manipulation",
+          "updated_at": "2026-10-27T01:42:48Z",
+          "url": "https://arxiv.org/abs/2606.03385",
+          "version": 2
+        },
+        "rank": 18,
+        "score": {
+          "base_score": 0.5667055549886294,
+          "exploration": 0.6900846920680023,
+          "matched_terms": [
+            "VLA",
+            "robotic manipulation",
+            "diffusion policy"
+          ],
+          "negative_terms": [],
+          "personal": 0.5937614561099174,
+          "recency": 0.5167681833472586,
+          "topic": 0.5109360348504013
+        }
+      },
+      "tier": "browse"
     },
     "arxiv:2606.03784:v3": {
       "analysis": {
@@ -12386,8 +12852,40 @@
         "uncertainty": "仅提供标题与摘要，缺少方法细节、任务设置、基线定义、统计显著性与局限性信息；第一单位与通讯作者无法确认。",
         "why_recommended": "该工作把力信号贯穿感知、预测与执行三层，提出力感知世界动作模型与闭环残差修正，并在真实接触丰富任务上报告显著成功率提升，对世界动作模型、力感知操作与实时闭环控制研究具有直接参考价值。"
       },
-      "figure_gallery": null,
-      "final_score": 0.6949345088712802,
+      "figure_gallery": {
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
+        "figures": [
+          {
+            "caption": "Comparison between force-conditioned prediction and our method. (left) Adding force as additional observation alone fails to correct contact deviation while (right) systematic force integration in three levels restores proper contact for successful wiping.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2606.08555/v3/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2606.08555v3/teaser_1.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2606.08555v3#S1.F1"
+          },
+          {
+            "caption": "Overview of FAWAM. FAWAM incorporates force signals through force-conditioned action generation, future force prediction, and online residual correction. (a) The Force-Envisioned Action Model conditions on visual, language and force inputs to jointly predict action chunks and future force trajectories. (b) The Force-Guided Residual Correction module learns from human interventions and corrects the base action online with a residual action and an intervention gate.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2606.08555/v3/fig2-panel1.png",
+                "original_url": "https://arxiv.org/html/2606.08555v3/overview_2.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2606.08555v3#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2606.08555v3",
+        "status": "available"
+      },
+      "final_score": 0.6796168052684536,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:20.718625Z",
         "input_hash": "3e4293b0cad5ddbbd91f4c914535beef09da862ac0ce18c42190848791a5541e",
@@ -12418,17 +12916,17 @@
           "url": "https://arxiv.org/abs/2606.08555",
           "version": 3
         },
-        "rank": 32,
+        "rank": 26,
         "score": {
-          "base_score": 0.5271536524932365,
-          "exploration": 0.5216113014140067,
+          "base_score": 0.4993032823062792,
+          "exploration": 0.39372883569074296,
           "matched_terms": [
             "world action model",
             "robotic manipulation"
           ],
           "negative_terms": [],
           "personal": 0.4298562713998812,
-          "recency": 0.6748215553015156,
+          "recency": 0.5242003191552059,
           "topic": 0.6116429848335365
         }
       },
@@ -21288,6 +21786,125 @@
         }
       },
       "tier": "deep_read"
+    },
+    "arxiv:2609.05282:v2": {
+      "analysis": {
+        "analysis": "材料未说明；摘要只提出假设：柔顺控制促进物理交互，触觉历史捕捉持续拿取意图，两者结合能带来最可靠、最舒适的交接。",
+        "challenges": [
+          "视觉难以区分真实拿取意图与意外接触或瞬时交互",
+          "释放时机需要在安全、舒适与及时之间折中",
+          "交接过程中交互力控制与意图推断必须协同",
+          "缺少触觉或缺少柔顺控制时性能下降"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "论文将人机交接视为本质上的多模态问题",
+            "location": "abstract",
+            "quote": "we treat human-robot handover as an intrinsically multimodal problem"
+          },
+          {
+            "claim": "方法将VLA模型与柔顺控制器耦合以降低传递过程中的交互力",
+            "location": "abstract",
+            "quote": "Our approach couples a VLA model with a compliance controller that reduces interaction forces during object transfer."
+          },
+          {
+            "claim": "VLA微调输入包含RGB、时序编码触觉与本体感知",
+            "location": "abstract",
+            "quote": "We finetune the VLA model with human demonstrations using RGB observation, temporally encoded tactile feedback and proprioception."
+          },
+          {
+            "claim": "在真人受试者研究中与无触觉、有触觉但无柔顺控制两个基线对比",
+            "location": "abstract",
+            "quote": "We evaluate the complete system in a human-subject study against two baselines: one without tactile feedback and one using tactile feedback without compliance control."
+          },
+          {
+            "claim": "两个组件互补并显著优于基线",
+            "location": "abstract",
+            "quote": "The results show that the two components provide complementary benefits and substantially outperform the baselines."
+          }
+        ],
+        "experiments": [
+          "开展真人受试者研究，对比完整系统与两个基线（无触觉反馈；有触觉反馈但无柔顺控制）",
+          "通过客观指标和专门设计的问卷测量性能",
+          "摘要报告：两个组件带来互补收益，并显著优于基线；具体数值未给出"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "将VLA模型与柔顺控制器耦合：柔顺控制降低物体传递过程中的交互力，从而促进物理交互；时序编码的触觉历史用来捕捉持续存在的“拿取意图”；两者互补。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "将VLA模型与柔顺控制器耦合，在物体传递过程中降低交互力",
+          "使用人类示范对VLA模型进行微调",
+          "模型输入为RGB观测、时序编码的触觉反馈与本体感知",
+          "在真人受试者研究中与两个基线对比：一个不使用触觉反馈，另一个使用触觉反馈但不做柔顺控制"
+        ],
+        "motivation": "仅依赖视觉观测无法区分真正的“拿取意图”与意外接触、弱抓取、方向错误的作用力或瞬时交互，因此交接时机的判断本质上是一个多模态问题。",
+        "primary_topic": "多模态视觉-语言-动作（VLA）模型驱动的机器人到人交接",
+        "relation_to_research": "该工作把VLA模型用于可执行动作生成（交接与释放），融合本体感知与触觉等多模态信息，并强调真实机器人上的人机评测；其柔顺控制与低层交互力调节属于实时控制与系统集成层面，与具身智能和真实机器人评测高度相关。但它不涉及世界模型、长时序预测、模型压缩或推理效率。",
+        "relevance_score": 7,
+        "setting": "机器人将物体交给人类：机器人需要推断人类何时准备好接收，并在合适时机安全、舒适地释放物体；系统在双臂机器人平台上进行真人受试者评测。",
+        "tags": [
+          "机器人到人交接",
+          "VLA模型",
+          "触觉反馈",
+          "时序编码",
+          "柔顺控制",
+          "多模态感知",
+          "人机交互"
+        ],
+        "title_zh": "面向意图感知的人到机器人双臂交接的时序触觉编码与柔顺控制",
+        "uncertainty": "仅有标题与摘要，无法得知具体网络结构、时序触觉编码方式、柔顺控制实现、任务与物体、受试者规模及任何定量结果；第一单位与通讯作者信息未提供。",
+        "why_recommended": "对关注VLA落地到物理交互、多模态触觉反馈、柔顺控制与真人评测的研究者有直接参考价值：它展示了如何用时序触觉与低层柔顺控制弥补纯视觉意图推断的不足，并提供带消融性质的双基线真人实验设计。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5834673775745334,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:07:54.812243Z",
+        "input_hash": "66b7f70d3d8ff1f6790d3790ed6aa9a83bdaccd816925f51fc1bfa71a944c55f",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Reliable robot-to-human handover requires the robot to infer when the person is ready to receive the object and release it safely, comfortably, and at the right time. This is challenging because visual observations alone may not disambiguate clear taking intent from accidental contact, weak grasping, wrong-direction forces, or transient interactions. In this work we treat human-robot handover as an intrinsically multimodal problem. Our approach couples a VLA model with a compliance controller that reduces interaction forces during object transfer. We finetune the VLA model with human demonstrations using RGB observation, temporally encoded tactile feedback and proprioception. We evaluate the complete system in a human-subject study against two baselines: one without tactile feedback and one using tactile feedback without compliance control. We hypothesize that combining compliance and temporal tactile encoding yields the most reliable and comfortable handovers, as compliance facilitates physical interaction while tactile history captures sustained taking intent. Performance is measured through objective metrics and an ad-hoc questionnaire. The results show that the two components provide complementary benefits and substantially outperform the baselines. Project page: https://hsp-iit.github.io/temporal-tactile-bimanual-handover/.",
+          "authors": [
+            "Pasquale Marra",
+            "Stefano Berti",
+            "Gabriele Mario Caddeo",
+            "Lorenzo Natale"
+          ],
+          "canonical_id": "2609.05282",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2609.05282",
+          "published_at": "2026-09-04T15:34:47Z",
+          "source": "arxiv",
+          "title": "Temporal Tactile Encoding and Compliance for Intent-Aware Robot-to-Human Bimanual Handover",
+          "updated_at": "2026-10-27T08:19:31Z",
+          "url": "https://arxiv.org/abs/2609.05282",
+          "version": 2
+        },
+        "rank": 34,
+        "score": {
+          "base_score": 0.48812250468096974,
+          "exploration": 0.6583075550862226,
+          "matched_terms": [
+            "VLA"
+          ],
+          "negative_terms": [],
+          "personal": 0.5518789012863126,
+          "recency": 0.5536146168026977,
+          "topic": 0.33881366260924856
+        }
+      },
+      "tier": "browse"
     },
     "arxiv:2609.06079:v5": {
       "analysis": {
@@ -50966,6 +51583,125 @@
       },
       "tier": "browse"
     },
+    "arxiv:2610.09857:v2": {
+      "analysis": {
+        "analysis": "作者构建MILD数据集（真实世界与仿真）并在仪器化真实录制上对视觉惯性与fiducial辅助系统做基准测试，揭示TCP相对轨迹误差与时间覆盖率的巨大差异；通过消融分离精度与可导出性，并用MILD-Sim回放研究提供任务相关的容差参考以解释误差量级。",
+        "challenges": [
+          "近距离操作与相机遮挡下的时间完整定位",
+          "缺乏面向操作接口的定位评测基准",
+          "无预测绘fiducial地图的标记增强示教工作空间",
+          "同一标称任务下不同系统误差与时间覆盖率差异大"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有SLAM基准偏重导航，操作数据集更关注策略学习而非定位评测，缺乏操作接口定位基准。",
+            "location": "abstract",
+            "quote": "Existing SLAM benchmarks emphasize navigation motions, whereas manipulation datasets prioritize policy learning over localization evaluation."
+          },
+          {
+            "claim": "论文提出MILD数据集，含真实世界86条传感器序列与Isaac Sim仿真子集。",
+            "location": "abstract",
+            "quote": "The real-world subset provides 86 sensor sequences from Insta360 X5 and Insight9 across 15 repeated tabletop tasks"
+          },
+          {
+            "claim": "AprilVINS结合鱼眼视觉惯性与序列局部AprilTag几何，无需预测绘fiducial地图。",
+            "location": "abstract",
+            "quote": "AprilVINS, which combines fisheye visual-inertial estimation with sequence-local AprilTag geometry"
+          },
+          {
+            "claim": "AprilVINS(full)达到毫米级TCP相对APE RMSE，而无tag因子的鱼眼VIO仍为厘米级。",
+            "location": "abstract",
+            "quote": "reaches millimeter-level SE(3)-aligned TCP-relative APE RMSE with high time completion"
+          }
+        ],
+        "experiments": [
+          "基准测试显示视觉惯性与fiducial辅助系统在同一标称任务下TCP相对轨迹误差与时间覆盖率差异很大",
+          "Insta360 AprilTag4录制上，AprilVINS(full)在统一协议与序列特定配置下达到毫米级SE(3)对齐TCP相对APE RMSE，具有高时间完成率，且报告误差低于各自协议下测试的其他路线",
+          "无tag因子的鱼眼VIO仍停留在厘米级",
+          "消融分离精度与可导出性",
+          "MILD-Sim回放研究提供任务特定容差参考以解释误差量级"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "操作示教采集需要专门的定位诊断基准；在没有预先测绘的基准标记地图时，可将鱼眼视觉惯性估计与序列局部AprilTag几何结合，并把先验准入与受保护导出分离，从而在保持时间覆盖率的同时显著降低TCP相对轨迹误差。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出MILD操作接口定位数据集：真实子集含Insta360 X5与Insight9的86条传感器序列，覆盖15个重复桌面任务，含标定资产与逐次执行的机器人末端参考轨迹",
+          "提出MILD-Sim仿真子集，在Isaac Sim中扩展任务覆盖，用于受控的操作回放研究",
+          "在仪器化真实录制上基准测试视觉惯性与fiducial辅助系统，比较TCP相对轨迹误差与时间覆盖率",
+          "提出AprilVINS：结合鱼眼视觉惯性估计与序列局部AprilTag几何，无需预测绘fiducial地图；分离先验准入与联合优化状态的受保护导出",
+          "在Insta360 AprilTag4录制上以统一协议和序列特定配置评测AprilVINS(full)，并做消融分离精度与可导出性"
+        ],
+        "motivation": "机器人示教学习在近距离操作和相机遮挡时需要准确且时间上完整的末端执行器定位；现有SLAM基准偏重导航运动，而操作数据集更关注策略学习而非定位评测，缺乏针对操作接口的定位评测基准。",
+        "primary_topic": "面向机器人操作示教数据采集的末端执行器定位与基准评测",
+        "relation_to_research": "该工作直接服务于具身智能中机器人操作示教数据的采集质量，尤其涉及可执行动作轨迹的末端定位精度与时间完整性；与世界模型/物理人工智能中的真实机器人评测和数据采集系统优化相关，但不涉及动作生成模型本身。",
+        "relevance_score": 7,
+        "setting": "UMI风格手持/示教式机器人操作数据采集中的近距离操作与相机遮挡场景；包含真实世界多传感器序列与Isaac Sim仿真回放两类设定。",
+        "tags": [
+          "末端执行器定位",
+          "视觉惯性里程计",
+          "AprilTag",
+          "示教数据采集",
+          "UMI",
+          "SLAM基准"
+        ],
+        "title_zh": "面向UMI风格机器人操作示教的精确末端执行器定位",
+        "uncertainty": "仅依据标题与摘要，未提供全文；第一单位、通讯作者、具体数值细节、局限与代码发布状态均无法确认；相关性判断基于其作为示教数据采集定位支撑的角色，而非核心动作生成或世界模型方法。",
+        "why_recommended": "对需要从人类示教或手持采集设备获取高精度末端轨迹的具身智能研究有直接价值：提供了操作场景定位基准与无预测绘标记的融合定位方法，并给出精度与时间覆盖率的诊断框架，可用于评估示教数据质量与真实机器人评测管线。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5720941619841309,
+      "provenance": {
+        "analyzed_at": "2026-10-28T16:54:36.681993Z",
+        "input_hash": "97b6e6a7849b8349c75a0f4afbe24186d984cbfdd519d97ac826407e505748c5",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Robot demonstration learning requires accurate and temporally complete end-effector localization during close-range manipulation and camera occlusion. Existing SLAM benchmarks emphasize navigation motions, whereas manipulation datasets prioritize policy learning over localization evaluation. We introduce MILD, a Manipulation-Interface Localization Dataset with real-world and simulation sequences. The real-world subset provides 86 sensor sequences from Insta360 X5 and Insight9 across 15 repeated tabletop tasks, calibration assets, and a per-execution robot end-effector reference trajectory. The simulation subset, MILD-Sim, extends task coverage in Isaac Sim for controlled manipulation-replay studies. Benchmarking visual-inertial and fiducial-aided systems on instrumented real-world recordings reveals large differences in both TCP-relative trajectory error and temporal coverage, even under the same nominal task. To support marker-augmented teaching workspaces without a pre-surveyed fiducial map, we present AprilVINS, which combines fisheye visual-inertial estimation with sequence-local AprilTag geometry and separates prior admission from guarded export of the jointly optimized state. On Insta360 AprilTag4 recordings, AprilVINS(full) under a unified protocol with sequence-specific profiles reaches millimeter-level SE(3)-aligned TCP-relative APE RMSE with high time completion and lower reported error than the tested routes under their respective protocols, whereas fisheye VIO without tag factors remains at centimeter scale. Ablations separate accuracy from exportability, and a MILD-Sim replay study provides task-specific tolerance references for interpreting those error magnitudes. Together, MILD and AprilVINS provide a diagnostic benchmarking framework for UMI-style demonstration collection. Code, datasets, and evaluation manifests will be released upon acceptance.",
+          "authors": [
+            "Junjie Zhang",
+            "Deteng Zhang",
+            "Zhisong Xu",
+            "Bo Sun",
+            "Liuyang Li",
+            "Yihong Tian",
+            "Jie Yin"
+          ],
+          "canonical_id": "2610.09857",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "9 pages, 8 figures, 5 tables. Project page: https://mild-web.github.io",
+          "pdf_url": "https://arxiv.org/pdf/2610.09857",
+          "published_at": "2026-10-07T11:14:14Z",
+          "source": "arxiv",
+          "title": "Towards Accurate End-Effector Localization for UMI-Style Robotic Manipulation Teaching",
+          "updated_at": "2026-10-27T01:43:02Z",
+          "url": "https://arxiv.org/abs/2610.09857",
+          "version": 2
+        },
+        "rank": 35,
+        "score": {
+          "base_score": 0.4674439308802379,
+          "exploration": 0.7170162380553597,
+          "matched_terms": [
+            "robotic manipulation"
+          ],
+          "negative_terms": [],
+          "personal": 0.5189955644154571,
+          "recency": 0.5167891176675887,
+          "topic": 0.3157582609171067
+        }
+      },
+      "tier": "browse"
+    },
     "arxiv:2610.09940:v1": {
       "analysis": {
         "analysis": "摘要以三类失败（与具身控制不匹配、干扰动作学习、教师错误标定）刻画问题，并据此把框架按预训练、策略学习、部署三个阶段分别设计对策；具体分析过程材料未说明。",
@@ -66590,7 +67326,7 @@
         "why_recommended": "该文挑战“机器人动作必须用连续向量”的共识，指出离散策略的真正瓶颈是因子化误差，并给出迭代离散流与分布锐化等干预手段，可为VLA动作头设计、推理效率与实时控制权衡提供直接参考"
       },
       "figure_gallery": null,
-      "final_score": 0.6760478853672307,
+      "final_score": 0.6667929975464166,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:21.803384Z",
         "input_hash": "43d173d8f4ddc1479acf73dccaf7ae29627ec7d34725160d1c60c405f04d3327",
@@ -66624,17 +67360,17 @@
           "url": "https://arxiv.org/abs/2610.20429",
           "version": 2
         },
-        "rank": 25,
+        "rank": 14,
         "score": {
-          "base_score": 0.5746325188495104,
-          "exploration": 0.8529271255642994,
+          "base_score": 0.5578054500843939,
+          "exploration": 0.8337565319891191,
           "matched_terms": [
             "VLA",
             "flow matching"
           ],
           "negative_terms": [],
           "personal": 0.5017595246967695,
-          "recency": 0.6680064508448352,
+          "recency": 0.5189063567688507,
           "topic": 0.5621353574144303
         }
       },
@@ -77026,6 +77762,129 @@
           "personal": 0.5322904693969119,
           "recency": 0.5711850013408247,
           "topic": 0.8895
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2610.25459:v2": {
+      "analysis": {
+        "analysis": "材料未说明作者如何分析问题，仅说明按五类能力轴组织任务、为每个任务配备域外变体并在统一协议下评测。",
+        "challenges": [
+          "灵巧操作基准缺失导致模型能力刻画不足",
+          "需同时覆盖泛化、指令跟随、少演示、长时序和记忆等多维能力",
+          "需在受控视觉与空间变化下系统评估鲁棒性",
+          "需支持高自由度双手具身形态并保证演示成功有效"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有灵巧操作基准研究很少，导致模型灵巧操作能力刻画不足。",
+            "location": "abstract",
+            "quote": "However, few studies have developed benchmarks specifically tailored for dexterous manipulation, leaving the dexterous manipulation capabilities of existing models insufficiently characterized."
+          },
+          {
+            "claim": "基准包含106个任务，按五个能力轴组织：泛化、指令跟随、少演示、长时序、记忆。",
+            "location": "abstract",
+            "quote": "the benchmark comprises 106 tasks organized along five capability axes: generalization, instruction following, limited demonstrations, long horizon, and memory."
+          },
+          {
+            "claim": "每个任务配有受控视觉与空间变化的域外变体用于鲁棒性评估。",
+            "location": "abstract",
+            "quote": "Each task is paired with an out-of-domain variant featuring controlled visual and spatial changes, allowing systematic assessment of robustness."
+          },
+          {
+            "claim": "基准支持两种具身，并提供8,080条经成功验证的遥操作演示，共625万帧。",
+            "location": "abstract",
+            "quote": "the benchmark supports two embodiments and provides 8,080 success-validated teleoperated demonstrations, totaling 6.25 million frames."
+          },
+          {
+            "claim": "在统一协议下评测七个近期VLA模型并建立基线。",
+            "location": "abstract",
+            "quote": "We evaluate seven recent Vision-Language-Action models under a unified protocol, establishing baselines for capability-specific performance, robustness, and data efficiency."
+          }
+        ],
+        "experiments": [
+          "在统一协议下评测七个近期Vision-Language-Action模型，建立按能力划分的性能、鲁棒性与数据效率基线",
+          "摘要未给出具体数值结果"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过广泛任务覆盖、多维能力轴评测与高自由度手部具身形态相结合，并在统一协议下评测多个近期VLA模型，可以系统刻画灵巧操作的能力边界、鲁棒性与数据效率。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "构建包含106个任务的仿真基准，按泛化、指令跟随、少演示、长时序、记忆五个能力轴组织",
+          "为每个任务配对域外变体，引入受控视觉与空间变化以评估鲁棒性",
+          "支持两种具身形态",
+          "提供8,080条经成功验证的遥操作演示，共625万帧",
+          "在统一协议下评测七个近期VLA模型并建立基线"
+        ],
+        "motivation": "研究者对机器人动作模型中的双手灵巧操作关注日增，但专门面向灵巧操作的基准研究很少，导致现有模型的灵巧操作能力刻画不足。",
+        "primary_topic": "面向双手灵巧操作的仿真基准与VLA模型评测",
+        "relation_to_research": "该基准直接服务于具身智能与视觉语言动作模型研究，聚焦双手灵巧操作中的可执行动作生成、长时序任务与记忆能力评测；其域外变体设计关联鲁棒性评估，统一协议下的VLA基线可为动作模型比较提供参照，但与模型压缩、推理效率、实时控制等系统优化方向的直接关联在摘要中未体现。",
+        "relevance_score": 8,
+        "setting": "在仿真环境中构建双手高自由度灵巧操作基准，包含106个任务，覆盖泛化、指令跟随、少演示、长时序与记忆五类能力轴；每个任务配有受控视觉与空间变化的域外变体，支持两种具身形态，并提供8,080条经成功验证的遥操作演示，共625万帧。",
+        "tags": [
+          "双手灵巧操作",
+          "仿真基准",
+          "视觉语言动作模型",
+          "鲁棒性评测",
+          "数据效率",
+          "长时序任务"
+        ],
+        "title_zh": "BiDex-100：覆盖100余个仿真任务的双手灵巧操作综合基准",
+        "uncertainty": "仅有标题与摘要，无法确认任务难度分布、评测指标细节、两种具身形态具体配置、七个VLA模型名单及具体数值结果；作者未陈述局限，故局限项只能标注材料未说明；第一单位与通讯作者信息未提供。",
+        "why_recommended": "对关注VLA模型在灵巧操作上真实能力边界的研究者，该基准提供了多维能力轴、鲁棒性变体与统一评测协议，可作为方法评测与对比的参照平台；长时序与记忆能力轴的设置也与长时序预测研究相关。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.633601357358472,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:07:46.620500Z",
+        "input_hash": "b0ab44d77b000ec05861f8a86325ece4f671fdaa9a95c8c2d3fda7fd6baa22d8",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Bimanual manipulation with dexterous hands has attracted growing attention in research on robotic action models. However, few studies have developed benchmarks specifically tailored for dexterous manipulation, leaving the dexterous manipulation capabilities of existing models insufficiently characterized. In this paper, we present BiDex-100, a simulation benchmark for bimanual dexterous manipulation that combines broad task coverage, multi-dimensional evaluation, and high-DoF hand embodiments. Concretely, the benchmark comprises 106 tasks organized along five capability axes: generalization, instruction following, limited demonstrations, long horizon, and memory. Each task is paired with an out-of-domain variant featuring controlled visual and spatial changes, allowing systematic assessment of robustness. In addition, the benchmark supports two embodiments and provides 8,080 success-validated teleoperated demonstrations, totaling 6.25 million frames. We evaluate seven recent Vision-Language-Action models under a unified protocol, establishing baselines for capability-specific performance, robustness, and data efficiency. The website is available at https://robbyant-research.github.io/BiDex-100/.",
+          "authors": [
+            "Yong Wang",
+            "Kecheng Zheng",
+            "Xing Zhu",
+            "Chao Xu",
+            "Yujun Shen",
+            "Shengze Cai"
+          ],
+          "canonical_id": "2610.25459",
+          "categories": [
+            "cs.RO",
+            "cs.CV",
+            "cs.LG"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2610.25459",
+          "published_at": "2026-10-18T18:44:05Z",
+          "source": "arxiv",
+          "title": "BiDex-100: A Comprehensive Benchmark for Bimanual Dexterous Manipulation Across 100+ Simulation Tasks",
+          "updated_at": "2026-10-27T12:34:31Z",
+          "url": "https://arxiv.org/abs/2610.25459",
+          "version": 2
+        },
+        "rank": 24,
+        "score": {
+          "base_score": 0.49745701337904,
+          "exploration": 0.5341371548893233,
+          "matched_terms": [
+            "vision-language-action",
+            "vision language action"
+          ],
+          "negative_terms": [],
+          "personal": 0.4959063391439915,
+          "recency": 0.5786742090109253,
+          "topic": 0.46576578392634005
         }
       },
       "tier": "browse"
@@ -89904,7 +90763,7 @@
         "why_recommended": "该文以受控消融而非单纯刷成功率的方式剖析世界建模对动作学习的真实贡献，区分“熟悉任务上的执行改进”与“可靠迁移”，并给出分布偏移下收益不持续的负面证据，有助于研究者避免把 WAM 的成功率提升误读为泛化能力；其训练期轻量预测器方案也为降低对大型视频 DiT 的依赖提供了可迁移思路。"
       },
       "figure_gallery": null,
-      "final_score": 0.6728644362288243,
+      "final_score": 0.6173172575805729,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:13.935937Z",
         "input_hash": "8b2f1436e122d00ff803881cab93585c8994a7026cfc3887e29d8555fe4eae99",
@@ -89937,20 +90796,20 @@
           "url": "https://arxiv.org/abs/2610.34593",
           "version": 2
         },
-        "rank": 23,
+        "rank": 41,
         "score": {
-          "base_score": 0.568844429506953,
-          "exploration": 0.995666621802957,
+          "base_score": 0.4678495592374051,
+          "exploration": 0.15773277003576008,
           "matched_terms": [
             "world action model"
           ],
           "negative_terms": [],
           "personal": 0.4937128787122568,
-          "recency": 0.7706704061678638,
+          "recency": 0.5986555552395808,
           "topic": 0.48582837511244414
         }
       },
-      "tier": "explore"
+      "tier": "browse"
     },
     "arxiv:2610.34649:v1": {
       "analysis": {
@@ -91393,8 +92252,40 @@
         "uncertainty": "仅有标题与摘要，无法确认方法细节（工具接口形式、GRPO奖励设计、仿真任务规模）、96.7%成功率对应的任务数量与评测协议，以及“匹配GPT-6 Astra”的具体比较条件；作者局限也未提供。",
         "why_recommended": "它给出了一条“预训练负责理解、仿真负责控制”的低成本路线，在零真实数据条件下报告了与强基线相当的真实机器人成功率，并展示跨本体与新目标的组合泛化，对关注VLA训练数据来源、仿真到现实迁移和推理成本的研究者有参考价值。"
       },
-      "figure_gallery": null,
-      "final_score": 0.6569648399574052,
+      "figure_gallery": {
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
+        "figures": [
+          {
+            "caption": "Motion learned in simulation carries over to new real tasks that need reasoning. Left : two of the simulated training tasks. These simple pick and place, stacking, and reorientation tasks with everyday objects teach the model only how to move. Right : the same model, trained exclusively in simulation, tested zero-shot on a real bi-manual robot. Without using any real robot data in training, ZAP generalizes to completely new objects (test tube), new goals (choosing a different hole in the rack), new strategies (mid-air handoff), and complex skills and reasoning (drawing an X on a tic-tac-toe board, playing chess). These tasks show the model composing reasoning from pretraining with motion learned in simulation.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2610.35817/v2/fig1-panel1.jpg",
+                "original_url": "https://arxiv.org/html/2610.35817v2/figures/teaser/sim_top.jpg"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2610.35817v2#S0.F1"
+          },
+          {
+            "caption": "Three scenes, one shared interface. Left to right: separate banana-in-bowl episodes on the simulated bi-manual YAM, the real YAM, and a simulated single-arm Franka, an embodiment never seen in training. From the agent’s perspective, the only thing that changes is the system prompt specifying the details of the robot and camera layouts. Across all three settings, ZAP uses the same interface: camera images annotated with SAM 3.1 masks and numbered boxes, 3D object readouts, end-effector pose commands, and controller feedback. The box below shows one step from the Franka episode: a 3D object readout, the agent’s move_to command, and the motion controller’s response. Both YAM settings use these same formats.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2610.35817/v2/fig2-panel1.jpg",
+                "original_url": "https://arxiv.org/html/2610.35817v2/figures/interface/yam_sim.jpg"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2610.35817v2#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2610.35817v2",
+        "status": "available"
+      },
+      "final_score": 0.672363848097693,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:26.983933Z",
         "input_hash": "f95a168b4a3cf54dc853c9237a05527d9e20292bff502bf2b3512917c17d5e72",
@@ -91437,16 +92328,16 @@
           "url": "https://arxiv.org/abs/2610.35817",
           "version": 2
         },
-        "rank": 36,
+        "rank": 15,
         "score": {
-          "base_score": 0.5399360726498275,
-          "exploration": 0.14083919529899935,
+          "base_score": 0.5679342692685327,
+          "exploration": 0.5937757924018428,
           "matched_terms": [
             "VLA"
           ],
           "negative_terms": [],
           "personal": 0.5986033863766058,
-          "recency": 0.774880860211641,
+          "recency": 0.6019262292958507,
           "topic": 0.5114072663694023
         }
       },
@@ -91535,7 +92426,7 @@
         "why_recommended": "该报告提供了少见的成对、全回合评测，系统刻画了前沿MLLM智能体相对VLA/WAM策略的优势区间与失败机制，并给出harness设计的可操作改进方向（策略调用决策、子目标传递、恢复控制时抓取维持），对可执行动作生成、长时序任务、推理/token效率与真实/仿真机器人评测均有直接参考价值"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Overview of the GPT-6-Astra control loop on EBench and executor timelines on a Microwave test scene. The input prompt combines the task instruction with a detailed task description annotated from a single training episode. The timeline bars compare active executors across an episode under direct control and under the harness with π 0.5 \\pi_{0.5} , with blue segments executed by the agent and purple segments by π 0.5 \\pi_{0.5} , and with keyframes showing right-wrist camera views from that episode at the marked steps.",
@@ -91554,7 +92445,7 @@
         "html_url": "https://arxiv.org/html/2610.35832v1",
         "status": "available"
       },
-      "final_score": 0.7729677868572556,
+      "final_score": 0.7963230521501564,
       "provenance": {
         "analyzed_at": "2026-10-27T16:04:11.354364Z",
         "input_hash": "db0407e9dba8d4ae7a3bc9db0d250ef9aa89e6a9b663b1d522925b62f700be0b",
@@ -91596,10 +92487,10 @@
           "url": "https://arxiv.org/abs/2610.35832",
           "version": 1
         },
-        "rank": 9,
+        "rank": 2,
         "score": {
-          "base_score": 0.6690323397404647,
-          "exploration": 0.26476218268016005,
+          "base_score": 0.7114964584548298,
+          "exploration": 0.8262122431551905,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -91608,7 +92499,7 @@
           ],
           "negative_terms": [],
           "personal": 0.5801276397600021,
-          "recency": 0.6129386469172888,
+          "recency": 0.4761297735859108,
           "topic": 0.9148709111106252
         }
       },
@@ -91701,8 +92592,13 @@
         "uncertainty": "仅有标题与摘要，缺少全文：第一单位与通讯作者无法确认；具体网络结构、imagination tokens 的构造方式、蒸馏细节、评测任务与基线配置、加速比与延迟的测量条件均未知；摘要未陈述局限性，故局限判断缺失。",
         "why_recommended": "该工作针对世界动作模型部署中的核心瓶颈——扩散去噪步数带来的延迟——提出了明确的机制性解释（缺少结构化动作先验）与对应设计（imagination tokens 初始化 + 未来条件特权蒸馏），并在自动驾驶与具身控制两类设定上报告了约 3 倍加速与 40ms 级实时推理，对关注动作生成效率、单步扩散策略与真实实时控制的研究者具有直接参考价值。"
       },
-      "figure_gallery": null,
-      "final_score": 0.6938810259519106,
+      "figure_gallery": {
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
+        "figures": [],
+        "html_url": "https://arxiv.org/html/2610.35850v1",
+        "status": "not_found"
+      },
+      "final_score": 0.7204810471946552,
       "provenance": {
         "analyzed_at": "2026-10-27T16:05:07.909377Z",
         "input_hash": "0ea978e535564e51e3b3b558e8558c2210e86816d52bbeb1dda3b39f0d4e44b7",
@@ -91736,17 +92632,17 @@
           "url": "https://arxiv.org/abs/2610.35850",
           "version": 1
         },
-        "rank": 45,
+        "rank": 16,
         "score": {
-          "base_score": 0.5252382290034736,
-          "exploration": 0.06968550899992555,
+          "base_score": 0.573601903990282,
+          "exploration": 0.6902764896209127,
           "matched_terms": [
             "world action model",
             "efficient inference"
           ],
           "negative_terms": [],
           "personal": 0.5763015323987363,
-          "recency": 0.6135898852404966,
+          "recency": 0.4766356544875947,
           "topic": 0.5645
         }
       },
@@ -91931,6 +92827,163 @@
       },
       "tier": "browse"
     },
+    "arxiv:2610.36013:v1": {
+      "analysis": {
+        "analysis": "摘要未说明具体问题分析方式；仅表述以渐进训练（具身预训练、领域专家智能体蒸馏、多教师在线策略蒸馏 MOPD）与评分细则引导的递归自我改进（RSI）数据飞轮来应对上述挑战。",
+        "challenges": [
+          "长时序多技能协调与任务级可靠性",
+          "紧凑模型难以复现强大多模态智能体的推理与外部经验",
+          "操作与导航跨域决策能力的统一与整合",
+          "在降低推理与执行开销的同时保持跨域任务性能",
+          "将执行证据转化为可用的训练信号（评分细则、逐步提醒、已验证轨迹）"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "论文提出轻量统一具身智能体，用共享高层决策模型协调操作与导航，并集成任务理解、规划、进度跟踪与反馈驱动恢复",
+            "location": "abstract",
+            "quote": "We introduce OmniBrain-0, a lightweight unified embodied agent that coordinates manipulation and navigation through a shared high-level decision model, integrating task understanding, planning, progress tracking, and feedback-driven recovery."
+          },
+          {
+            "claim": "统一发生在学习到的决策模型内部，而非仅在工具接口层面",
+            "location": "abstract",
+            "quote": "Unification therefore occurs within the learned decision model rather than only at the tool interface."
+          },
+          {
+            "claim": "采用渐进训练：具身预训练、领域专用智能体蒸馏与多教师在线策略蒸馏（MOPD）",
+            "location": "abstract",
+            "quote": "Our progressive training framework combines embodied pretraining, domain-specialized agent distillation, and multi-teacher on-policy distillation (MOPD)."
+          },
+          {
+            "claim": "提出 Rubric-Guided Recursive Self-Improvement 数据飞轮，由 Meta-Agent 将执行证据转为评分细则、步骤级提醒与已验证轨迹，再经 MOPD 重新整合",
+            "location": "abstract",
+            "quote": "We further introduce Rubric-Guided Recursive Self-Improvement (RSI), a data flywheel in which a Meta-Agent turns execution evidence into refined rubrics, step-level reminders, and verified trajectories for domain-expert updates before their reconsolidation into OmniBrain-0 through MOPD."
+          },
+          {
+            "claim": "在多个仿真基准与真实世界操作任务上评测，且推理与执行开销显著低于闭源教师",
+            "location": "abstract",
+            "quote": "OmniBrain-0 combines strong cross-domain task performance with substantially lower inference and execution overhead than its closed-source teacher, demonstrating efficient transfer and consolidation of embodied capabilities into a compact unified agent."
+          },
+          {
+            "claim": "强大多模态智能体依赖昂贵推理与外部经验，紧凑模型难以复现",
+            "location": "abstract",
+            "quote": "powerful multimodal agents rely on costly reasoning and external experience that compact models struggle to reproduce."
+          }
+        ],
+        "experiments": [
+          "在 LIBERO-Pro、LIBERO-Plus、RoboCasa365、RoboTwin 2.0、R2R-CE Val-Unseen 以及多个真实世界操作任务上评测",
+          "摘要结论：OmniBrain-0 兼具强跨域任务性能，且推理与执行开销显著低于其闭源教师，表明具身能力可高效迁移并整合进紧凑统一智能体；摘要未给出具体数值"
+        ],
+        "first_affiliation": "小米具身智能团队（Xiaomi Embodied Intelligence Team）；摘要未给出单位信息，作者列表中列出的单位为澳门大学、清华大学",
+        "insight": "统一不应只发生在工具接口层面，而应发生在学习到的决策模型内部；通过渐进训练把强教师的交互经验蒸馏进操作与导航专家，再将这些决策能力整合进单一紧凑智能体。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "统一高层决策模型协调操作与导航，集成任务理解、规划、进度跟踪与反馈驱动恢复",
+          "渐进训练框架：具身预训练 → 领域专用智能体蒸馏 → 多教师在线策略蒸馏（MOPD）",
+          "先把强教师的交互经验蒸馏到操作与导航专家，再经 MOPD 将专家决策能力整合进 OmniBrain-0",
+          "统一发生在学习到的决策模型内部，而非仅在工具接口层面",
+          "Rubric-Guided Recursive Self-Improvement（RSI）：Meta-Agent 把执行证据转化为精炼评分细则、步骤级提醒与已验证轨迹，用于更新领域专家，再经 MOPD 重新整合进 OmniBrain-0"
+        ],
+        "motivation": "通用具身智能要求机器人在长时序中协调多种技能、跟踪任务进度并恢复失败；专用策略无法保证任务级可靠性，而强大多模态智能体依赖昂贵推理与外部经验，紧凑模型难以复现这些能力。",
+        "primary_topic": "轻量级统一具身智能体：整合操作与导航的高层决策、任务规划与失败恢复",
+        "relation_to_research": "直接关联具身智能与视觉语言动作/世界动作模型中的高层决策与可执行动作生成：以统一智能体实现长时序规划、进度跟踪与失败恢复；其蒸馏与整合路线服务于模型压缩与推理效率，并包含真实机器人操作评测，与实时控制和系统优化关注点相邻。",
+        "relevance_score": 8,
+        "setting": "面向长时序通用具身任务，用一个共享的高层决策模型协调操作与导航技能，需跟踪任务进度并从失败中恢复；模型被定位为轻量、紧凑的统一智能体，而非依赖昂贵推理的强大多模态智能体。",
+        "tags": [
+          "具身智能体",
+          "多教师在线策略蒸馏",
+          "智能体蒸馏",
+          "任务规划",
+          "进度跟踪",
+          "失败恢复",
+          "操作与导航统一",
+          "数据飞轮",
+          "推理效率",
+          "真实机器人评测"
+        ],
+        "title_zh": "OmniBrain-0：面向具身智能的统一智能体模型",
+        "uncertainty": "仅有标题与摘要，缺少具体方法细节、训练数据规模、各基准数值、真实机器人任务设置与失败案例分析；作者单位信息在摘要中未给出，仅能依据作者列表；通讯作者与作者明确陈述的局限均无法确认。",
+        "why_recommended": "提供了一条可迁移的“强教师经验 → 领域专家 → 紧凑统一智能体”的渐进蒸馏与数据飞轮路线，并强调统一发生在决策模型内部而非工具接口；对关注长时序具身决策、跨操作/导航统一、推理开销压缩与真实机器人评测的研究者有直接参考价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.6326449633787667,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:07:47.975436Z",
+        "input_hash": "f3e262090a45a92dc502a6fd0c0adb56dd85560534b724c8131d2fe85246c758",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "General-purpose embodied intelligence requires robots to coordinate diverse skills over long horizons, track task progress, and recover from failures. Specialist policies alone do not ensure task-level reliability, while powerful multimodal agents rely on costly reasoning and external experience that compact models struggle to reproduce. We introduce OmniBrain-0, a lightweight unified embodied agent that coordinates manipulation and navigation through a shared high-level decision model, integrating task understanding, planning, progress tracking, and feedback-driven recovery. Our progressive training framework combines embodied pretraining, domain-specialized agent distillation, and multi-teacher on-policy distillation (MOPD). It distills powerful teachers' interaction experience into manipulation and navigation experts, then consolidates their decision capabilities into OmniBrain-0. Unification therefore occurs within the learned decision model rather than only at the tool interface. We further introduce Rubric-Guided Recursive Self-Improvement (RSI), a data flywheel in which a Meta-Agent turns execution evidence into refined rubrics, step-level reminders, and verified trajectories for domain-expert updates before their reconsolidation into OmniBrain-0 through MOPD. We evaluate OmniBrain-0 on LIBERO-Pro, LIBERO-Plus, RoboCasa365, RoboTwin 2.0, and R2R-CE Val-Unseen, as well as multiple real-world manipulation tasks. OmniBrain-0 combines strong cross-domain task performance with substantially lower inference and execution overhead than its closed-source teacher, demonstrating efficient transfer and consolidation of embodied capabilities into a compact unified agent.",
+          "authors": [
+            "Xiaomi Embodied Intelligence Team: Yuechen Luo",
+            "Chong He",
+            "Fang Li",
+            "Shaoqing Xu",
+            "Jingkai Wang",
+            "Menglun Su",
+            "Jiaxin Liu",
+            "Shengyin Jiang",
+            "Zhiyi Lai",
+            "Long Chen",
+            "Longlong Wang",
+            "Liang Hu",
+            "Haochen Liu",
+            "Yuncheng Jiang",
+            "Hongwei Xie",
+            "Jieming Cui",
+            "Hanbing Li",
+            "Junjie Huang",
+            "Zhixiang Duan",
+            "Hexin Zhang",
+            "Weixiang Liang",
+            "Ying Gong",
+            "Yuhan Wang",
+            "Yong Pan",
+            "Pengna Li",
+            "Kangyi Wu",
+            "Ken Deng",
+            "Kun Ma",
+            "Fuxi Wen",
+            "Zhi-xin Yang",
+            "Hangjun Ye (University of Macau",
+            "Tsinghua University)"
+          ],
+          "canonical_id": "2610.36013",
+          "categories": [
+            "cs.CL",
+            "cs.CV"
+          ],
+          "comment": "Technical Report; 40 pages, 27 figures, 8 tables; Project Page at https://public-bots.github.io/OmniBrain-0/",
+          "pdf_url": "https://arxiv.org/pdf/2610.36013",
+          "published_at": "2026-10-26T17:15:41Z",
+          "source": "arxiv",
+          "title": "OmniBrain-0: A Unified Agentic Model for Embodied Intelligence",
+          "updated_at": "2026-10-26T17:15:41Z",
+          "url": "https://arxiv.org/abs/2610.36013",
+          "version": 1
+        },
+        "rank": 30,
+        "score": {
+          "base_score": 0.49571811523412135,
+          "exploration": 0.9617036723569291,
+          "matched_terms": [
+            "embodied intelligence"
+          ],
+          "negative_terms": [],
+          "personal": 0.4968392491922349,
+          "recency": 0.47321664073754516,
+          "topic": 0.36756691939476643
+        }
+      },
+      "tier": "explore"
+    },
     "arxiv:2610.36068:v1": {
       "analysis": {
         "analysis": "摘要指出世界模型是被动的单向替代模拟器，未被利用的是可回滚与反事实分叉的能力；因此作者把问题重构为：在关键决策点回溯、分叉替代动作、对比结果以归因成功，并把反事实结果蒸馏为动作级监督，同时用真实转移校正世界模型动力学。更细的分析过程材料未说明。",
@@ -92017,7 +93070,7 @@
         "why_recommended": "它给出世界模型作为反事实引擎的具体用法（回滚、分叉、归因、动作级蒸馏），并在三个真实机器人任务上给出相对最强基线的绝对成功率提升，还展示了世界模型与真实机器人异步执行的系统工程与测试时物理对齐，对关注世界模型驱动策略改进、真实机器人闭环训练与系统优化的研究者有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "From real-world interaction to learning in world models. (a) Real-world RL incurs costly physical interaction. (b) Forward-rollout world-model RL spends much of its interaction budget on less informative exploration. (c) Our proposed Rollback enables high-value exploration and dense supervision through experience-backtracking tree search, while real-world feedback refines the world model.",
@@ -92049,7 +93102,7 @@
         "html_url": "https://arxiv.org/html/2610.36068v1",
         "status": "available"
       },
-      "final_score": 0.6999520421097829,
+      "final_score": 0.6945041692011589,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:29.509849Z",
         "input_hash": "75649774c8fe71ec71a39ea871e843ea7910f718f17cf1f68dcf23ec21d22391",
@@ -92093,17 +93146,128 @@
           "url": "https://arxiv.org/abs/2610.36068",
           "version": 1
         },
-        "rank": 40,
+        "rank": 29,
         "score": {
-          "base_score": 0.5362764401996053,
-          "exploration": 0.3234445524810137,
+          "base_score": 0.5263712167293796,
+          "exploration": 0.3614389128111577,
           "matched_terms": [
             "action-conditioned world model"
           ],
           "negative_terms": [],
           "personal": 0.5847924774986681,
-          "recency": 0.6140037007710327,
+          "recency": 0.47695710573863176,
           "topic": 0.5125
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2610.36285:v1": {
+      "analysis": {
+        "analysis": "材料未说明作者如何具体分析问题；摘要只说明了方法设计的动机与评测取向。",
+        "challenges": [
+          "判断命令是否持续的预测如果出错，就会漏掉指令依赖的转向或停止",
+          "需要融合时序观测、语言指令、执行历史与缓存的VLA置信度",
+          "降低调用次数必须同时覆盖调度开销，才能真正节省推理时间",
+          "复用命令时需要保持与基线一致的动作序列和导航性能"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "ASPEN通过预测命令持续来减少VLA调用与推理时间，同时保持导航性能",
+            "location": "abstract",
+            "quote": "ASPEN reduces VLA calls by 9.5% and estimated inference time by 8.1%, including scheduling overhead. It maintains comparable navigation performance"
+          },
+          {
+            "claim": "命令持续预测器融合时序观测、语言指令、执行历史与缓存VLA置信度",
+            "location": "abstract",
+            "quote": "A lightweight multimodal predictor combines temporal observations, language instructions, execution history, and cached VLA confidence."
+          },
+          {
+            "claim": "评测基于冻结的NaVILA与RxR-CE val-unseen",
+            "location": "abstract",
+            "quote": "Evaluated with frozen NaVILA on cross-dataset RxR-CE val-unseen"
+          }
+        ],
+        "experiments": [
+          "在跨数据集RxR-CE val-unseen上，用冻结的NaVILA进行评测",
+          "VLA调用次数减少9.5%",
+          "估计推理时间减少8.1%，已包含调度开销",
+          "导航性能与基线相当",
+          "92.1%的episode保持了与基线完全相同的动作序列"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "可以学习预测基础策略是否会再次发出上一条命令，也就是命令的持续程度，并用轻量多模态预测器作为是否复用的触发条件，从而在不改动基础策略的前提下减少VLA推理调用。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出ASPEN，一种基于命令持续预测的事件触发调度器",
+          "命令持续预测估计冻结的基础策略是否会重新发出上一条命令",
+          "轻量多模态预测器输入时序观测、语言指令、执行历史与缓存VLA置信度",
+          "在可触发调度的命令边界上，如果预测的持续程度足够高，就复用命令",
+          "否则触发VLA重新进行语义推理"
+        ],
+        "motivation": "导航VLA策略即使下一条命令不变，也会反复执行开销很大的语义推理；直接复用命令虽然能省计算，但可能漏掉依赖指令的转向或停止。",
+        "primary_topic": "导航VLA策略的高效语义推理调度",
+        "relation_to_research": "该工作面向具身导航VLA的推理效率与实时控制问题，通过命令持续预测减少昂贵的语义推理调用，与VLA系统优化、可执行动作生成与实时控制评测直接相关；但它不涉及世界模型或长时序预测建模。",
+        "relevance_score": 7,
+        "setting": "在冻结的导航VLA基础策略（NaVILA）之上，加入一个事件触发调度器，用来决定每个命令边界是否复用上一条命令，还是触发一次新的语义推理；评测在跨数据集RxR-CE val-unseen上进行。",
+        "tags": [
+          "导航VLA",
+          "命令持续预测",
+          "事件触发调度",
+          "推理效率",
+          "模型复用",
+          "具身导航"
+        ],
+        "title_zh": "ASPEN：面向高效导航VLA的自适应语义推理与命令持续预测",
+        "uncertainty": "证据仅来自标题与摘要，缺少方法细节、预测器结构、阈值设定、失败案例分析以及更广泛数据集与真实机器人平台上的评测信息；第一单位与通讯作者信息未提供。",
+        "why_recommended": "它提供了一种不改动基础VLA、在外部调度层降低推理调用的系统优化思路，并给出调用次数、时间开销与动作序列一致性的量化评测，对关注VLA部署效率与真实机器人实时性的研究者具有可迁移价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5797780724722787,
+      "provenance": {
+        "analyzed_at": "2026-10-28T16:54:27.331478Z",
+        "input_hash": "529d80d359354886a8cf7acb91f0d62cdb2d810cef28bcb8d2648d69d7222388",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Navigation vision-language-action (VLA) policies repeatedly invoke costly semantic reasoning even when the next command remains unchanged. Command reuse can reduce computation but risks missing instruction-dependent turns or stops. We introduce ASPEN, an event-triggered scheduler based on command persistence prediction: estimating whether the frozen base policy would reissue its previous command. A lightweight multimodal predictor combines temporal observations, language instructions, execution history, and cached VLA confidence. At eligible command boundaries, sufficient predicted persistence permits command reuse. Otherwise, ASPEN triggers fresh semantic reasoning from the VLA. Evaluated with frozen NaVILA on cross-dataset RxR-CE val-unseen, ASPEN reduces VLA calls by 9.5% and estimated inference time by 8.1%, including scheduling overhead. It maintains comparable navigation performance and preserves identical baseline action sequences on 92.1% of episodes.",
+          "authors": [
+            "Vieri N. Akustia",
+            "Bin Hu"
+          ],
+          "canonical_id": "2610.36285",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2610.36285",
+          "published_at": "2026-10-26T21:10:50Z",
+          "source": "arxiv",
+          "title": "ASPEN: Adaptive Semantic Reasoning via Command Persistence Prediction for Efficient Navigation VLAs",
+          "updated_at": "2026-10-26T21:10:50Z",
+          "url": "https://arxiv.org/abs/2610.36285",
+          "version": 1
+        },
+        "rank": 21,
+        "score": {
+          "base_score": 0.481414677222325,
+          "exploration": 0.2344485401630312,
+          "matched_terms": [
+            "vision-language-action",
+            "vision language action",
+            "VLA"
+          ],
+          "negative_terms": [],
+          "personal": 0.36401970633787606,
+          "recency": 0.4929353111155335,
+          "topic": 0.6996212121212122
         }
       },
       "tier": "browse"
@@ -92190,7 +93354,7 @@
         "why_recommended": "该基准为 VLA 与世界动作模型提供了统一算力预算下的可复现对比，并用真实机械臂验证了仿真排序的可信度（同时给出仿真高估成功率的警示）；其中“LLM 写代码 + 学习抓取策略”的组合达到 83.2% 的结论，对具身智能系统的规划-执行分层设计与真实机器人评测方法具有直接参考价值。"
       },
       "figure_gallery": null,
-      "final_score": 0.6800286209119866,
+      "final_score": 0.6519185046931963,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:20.654461Z",
         "input_hash": "102414a8c9b55833ce54a34d2290576705778545f6e9020c311c8ced0bb9623a",
@@ -92217,18 +93381,396 @@
           "url": "https://arxiv.org/abs/2610.36420",
           "version": 1
         },
-        "rank": 28,
+        "rank": 27,
         "score": {
-          "base_score": 0.5818702198399754,
-          "exploration": 0.6928852023576652,
+          "base_score": 0.5307609176239934,
+          "exploration": 0.32771382822705325,
           "matched_terms": [
             "VLA",
             "world action model"
           ],
           "negative_terms": [],
           "personal": 0.5823414315582898,
-          "recency": 0.6537662018626603,
+          "recency": 0.5078445538334505,
           "topic": 0.5290041006191788
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2610.36624:v1": {
+      "analysis": {
+        "analysis": "作者分析了 WAM 中视觉监督的空间分配问题，并指出聚焦动态区域能大幅提升策略性能；具体分析方法和度量在摘要中未说明。",
+        "challenges": [
+          "视觉预训练目标未区分区域对控制任务的重要性",
+          "在不引入外部教师或额外模态的前提下获得运动线索",
+          "在共享视频扩散主干中增加辅助预测而不破坏原有视频-动作联合预测",
+          "非对称噪声分配需要设计得当，否则会破坏静态上下文的可利用性"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "标准视觉预测对所有区域一视同仁，而区域相关性不同",
+            "location": "abstract",
+            "quote": "Yet standard visual prediction inherited from video pretraining treats all visual regions uniformly, despite their differing relevance to robotic control."
+          },
+          {
+            "claim": "聚焦动态区域的监督可显著提升策略性能",
+            "location": "abstract",
+            "quote": "focusing supervision on dynamic regions can substantially improve policy performance"
+          },
+          {
+            "claim": "MoGAP 对区域非对称加噪，以静态区域为上下文重建动态区域",
+            "location": "abstract",
+            "quote": "MoGAP allocates noise asymmetrically across regions, training the model to reconstruct more heavily corrupted dynamic regions using less corrupted static regions as context."
+          },
+          {
+            "claim": "辅助路径仅用于训练，并共享视频扩散主干",
+            "location": "abstract",
+            "quote": "MoGAP is trained alongside standard video-action prediction through a training-only auxiliary prediction path within the shared video diffusion backbone."
+          },
+          {
+            "claim": "运动线索来自训练视频，无需外部教师或额外模态",
+            "location": "abstract",
+            "quote": "It uses motion cues derived directly from training videos, requiring neither an external teacher nor additional modalities."
+          },
+          {
+            "claim": "GR-1 基准上两个 WAM 架构成功率均有提升",
+            "location": "abstract",
+            "quote": "increasing success rates on the GR-1 tabletop benchmark from 38.8% to 47.5% for Fast-WAM (Wan2.2-5B) and from 52.3% to 62.3% for Cosmos3-Nano"
+          }
+        ],
+        "experiments": [
+          "在多个机器人操作基准和多种 WAM 架构上，MoGAP 一致提升策略性能",
+          "GR-1 桌面基准上，Fast-WAM（Wan2.2-5B）成功率从 38.8% 提升到 47.5%",
+          "GR-1 桌面基准上，Cosmos3-Nano 成功率从 52.3% 提升到 62.3%"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "把视觉监督集中在动态区域，也就是与机器人动作强相关的区域，可以显著改善策略表现；让模型利用较少破坏的静态区域作为上下文，去重建破坏更重的动态区域，是一种有效的适配信号。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "提出 Motion-Guided Asymmetric Prediction（MoGAP），在 WAM 训练中增加以运动为重点的视觉预测任务",
+          "在不同区域非对称地分配噪声：动态区域加噪更重，静态区域加噪较轻，作为重建上下文",
+          "通过仅在训练时启用的辅助预测路径实现，与标准视频-动作预测共享同一视频扩散主干",
+          "运动线索直接来源于训练视频，不需要外部教师或额外模态"
+        ],
+        "motivation": "从视频预训练继承的标准视觉预测目标对所有视觉区域一视同仁，但不同区域对机器人控制的相关性不同；作者希望探究监督的空间分配是否以及如何影响策略性能。",
+        "primary_topic": "面向机器人控制的世界动作模型（WAM）视觉监督空间分配",
+        "relation_to_research": "该工作直接属于世界动作模型（WAM）方向，研究视频生成预训练表征如何适配机器人控制，涉及视觉-动作联合预测与监督信号设计，与具身智能中的可执行动作生成和视频世界模型紧密相关；摘要未涉及推理效率、模型压缩或实时控制。",
+        "relevance_score": 8,
+        "setting": "在预训练视频扩散主干上构建世界动作模型（WAM），同时预测未来视觉观测与动作，并把视频表征适配到目标机器人操作域；研究视觉预测监督在空间上应如何分配。",
+        "tags": [
+          "世界动作模型",
+          "视频生成预训练",
+          "机器人操作策略",
+          "扩散模型",
+          "运动引导监督",
+          "非对称加噪",
+          "表征适配"
+        ],
+        "title_zh": "通过运动引导的非对称预测将视频模型适配于机器人控制",
+        "uncertainty": "仅有标题与摘要：第一单位、通讯作者、具体分析方法、基准集合、任务类型、是否影响推理开销以及作者自述局限均无法确认；运动线索的具体提取方式与非对称噪声方案细节未知。",
+        "why_recommended": "它提供了一种训练期即可落地、无需额外模态的监督重分配思路，能显著提升现有 WAM 架构在操作任务上的成功率，对研究世界动作模型适配、视觉监督设计与视频预训练迁移的研究者有直接参考价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.6333999825864891,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:07:57.589226Z",
+        "input_hash": "503f94f38d6fccc583cdb6174b2cd194b6d706039e52581da78bcfc20d451a69",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "World Action Models (WAMs) leverage pretrained video generative models for robotic control by jointly predicting future visual observations and actions. The visual prediction objective plays a key role in adapting pretrained video representations to the target robot domain. Yet standard visual prediction inherited from video pretraining treats all visual regions uniformly, despite their differing relevance to robotic control. We therefore investigate the spatial allocation of visual supervision in WAMs and show that focusing supervision on dynamic regions can substantially improve policy performance. Building on this finding, we introduce Motion-Guided Asymmetric Prediction (MoGAP), which augments WAM training with motion-focused visual prediction. MoGAP allocates noise asymmetrically across regions, training the model to reconstruct more heavily corrupted dynamic regions using less corrupted static regions as context. MoGAP is trained alongside standard video-action prediction through a training-only auxiliary prediction path within the shared video diffusion backbone. It uses motion cues derived directly from training videos, requiring neither an external teacher nor additional modalities. Across robot manipulation benchmarks and WAM architectures, MoGAP consistently improves policy performance, increasing success rates on the GR-1 tabletop benchmark from 38.8% to 47.5% for Fast-WAM (Wan2.2-5B) and from 52.3% to 62.3% for Cosmos3-Nano.",
+          "authors": [
+            "Taeyoung Kim",
+            "Junyoung Sung",
+            "Heeseung Kwon",
+            "Minseop Kim",
+            "Jinwoo Shin"
+          ],
+          "canonical_id": "2610.36624",
+          "categories": [
+            "cs.CV",
+            "cs.AI"
+          ],
+          "comment": "Project page: https://ismty0805.github.io/mogap/",
+          "pdf_url": "https://arxiv.org/pdf/2610.36624",
+          "published_at": "2026-10-27T04:27:20Z",
+          "source": "arxiv",
+          "title": "Adapting Video Models for Robot Control via Motion-guided Asymmetric Prediction",
+          "updated_at": "2026-10-27T04:27:20Z",
+          "url": "https://arxiv.org/abs/2610.36624",
+          "version": 1
+        },
+        "rank": 36,
+        "score": {
+          "base_score": 0.49709087742998,
+          "exploration": 0.6086334339871838,
+          "matched_terms": [
+            "world action model"
+          ],
+          "negative_terms": [],
+          "personal": 0.5038169795854487,
+          "recency": 0.531742420796408,
+          "topic": 0.44667328896619674
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2610.36694:v1": {
+      "analysis": {
+        "analysis": "作者从源-目标协方差失配出发分析传输路径，并在高斯端点模型下给出理论分析，说明该调度调整可以降低速度预测风险的上界；材料未说明更具体的问题分析与推导过程。",
+        "challenges": [
+          "多任务运动需求差异大时，共享单一源先验与线性路径限制策略表达",
+          "如何在不改网络架构的前提下引入任务条件化生成",
+          "如何在减少积分步数的同时保持或提升成功率",
+          "如何将源与调度设计迁移到大规模预训练流策略",
+          "真实机器人上标准流匹配成功率低"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "现有流式多任务策略共享单一高斯源先验与统一线性传输路径",
+            "location": "abstract",
+            "quote": "Flow-based policies for language-conditioned multi-task manipulation commonly share a single $\\textit{Gaussian}$ source prior and a common linear transport path across tasks."
+          },
+          {
+            "claim": "TOPS 在不改网络架构的前提下按任务调整源先验与插值调度",
+            "location": "abstract",
+            "quote": "which adapts the flow source prior and interpolation schedule to each task without modifying the network architecture"
+          },
+          {
+            "claim": "用逆映射专家动作序列构造多模态任务源，由语言指令选择生成起点",
+            "location": "abstract",
+            "quote": "TOPS first constructs multimodal task sources from reverse-mapped expert action sequences, allowing language instructions to select where generation begins."
+          },
+          {
+            "claim": "依据协方差失配调整去噪快慢节奏",
+            "location": "abstract",
+            "quote": "Guided by source-target covariance mismatch, it then slows the transition toward expert actions early in denoising and accelerates it later along directions requiring expansion."
+          },
+          {
+            "claim": "理论分析表明该调度可降低速度预测风险上界",
+            "location": "abstract",
+            "quote": "our analysis shows that this schedule adjustment can lower an upper bound on velocity-prediction risk"
+          },
+          {
+            "claim": "单步积分将 LIBERO-10 成功率从 53.44% 提升到 69.67%，推理时间约为基线六分之一",
+            "location": "abstract",
+            "quote": "Using one integration step, TOPS raises LIBERO-10 success from $53.44\\%$ to $69.67\\%$ compared with ten-step Standard Flow Matching (FM), while reducing inference time to approximately one-sixth of the baseline."
+          },
+          {
+            "claim": "真实机器人上抽屉开启任务从 20% 提升到 80%",
+            "location": "abstract",
+            "quote": "including an increase from $20\\%$ with standard FM to $80\\%$ with TOPS on the upper-drawer opening task"
+          }
+        ],
+        "experiments": [
+          "在 LIBERO、LIBERO-Plus 与 CALVIN 上，在分布内、扰动和跨环境设置中均报告性能提升，并具有更好的数据效率",
+          "单步积分下 TOPS 将 LIBERO-10 成功率从十步标准 Flow Matching 的 53.44% 提升到 69.67%，推理时间约为基线的六分之一",
+          "迁移到大规模流式 π0.5 策略时，在全部四个评估设置上取得一致增益",
+          "真实机器人实验中任务成功率提升，上抽屉开启任务从标准 FM 的 20% 提升到 TOPS 的 80%"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "生成从哪里开始（源先验）以及去噪过程如何分配速度（插值调度）应当随任务而定；用逆映射的专家动作序列构造多模态任务源，可让语言指令选择生成起点，并依据源-目标协方差失配来调整快慢节奏。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "从逆映射的专家动作序列构造多模态任务源，使语言指令选择生成起点",
+          "依据源-目标协方差失配调整插值调度：去噪早期放慢向专家动作的过渡，后期在需要扩张的方向上加速",
+          "保持网络架构不变，仅重塑流源与传输调度",
+          "在高斯端点模型下分析该调度可降低速度预测风险上界"
+        ],
+        "motivation": "现有基于流的策略在跨任务时共用单一高斯源先验和统一线性传输路径，难以可靠执行运动需求差异明显的多个任务；作者希望在不改变网络架构的前提下，让源先验与插值调度随任务自适应。",
+        "primary_topic": "面向语言条件多任务机器人操作的流匹配策略的源先验与传输调度",
+        "relation_to_research": "直接关联视觉语言动作模型与可执行动作生成：在语言条件多任务操作中改造流匹配的生成起点与传输调度，单步积分显著降低推理时间，契合推理效率与实时控制需求，并提供真实机器人评测；同时与动作生成中的长时序/多步去噪调度和策略系统优化相关，但不涉及世界模型或物理仿真建模。",
+        "relevance_score": 8,
+        "setting": "语言条件多任务机器人操作策略，其中各任务共享同一个高斯源先验和同一条线性传输路径；评估覆盖 LIBERO、LIBERO-Plus、CALVIN，以及真实机器人抽屉开启任务，并迁移到大规模流式策略 π0.5。",
+        "tags": [
+          "流匹配",
+          "多任务机器人操作",
+          "语言条件策略",
+          "任务导向先验",
+          "插值调度",
+          "推理效率",
+          "视觉语言动作模型",
+          "真实机器人评测"
+        ],
+        "title_zh": "TOPS：重塑流源与传输以实现多任务机器人操作",
+        "uncertainty": "仅有标题与摘要，缺少方法细节、基线配置、统计显著性与真实实验规模；理论分析的具体假设与适用边界、π0.5 迁移的四个设置具体内容均未提供，因此对结论稳健性的判断存在不确定性。",
+        "why_recommended": "它提供了一种不改网络结构、仅改源先验与调度即可提升多任务操作成功率并把推理压到单步（约六分之一时间）的轻量方案，且有理论风险上界分析与真实机器人验证，对关注 VLA 策略效率与多任务动作生成的研究者具有直接可迁移价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.6133635045071713,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:08:00.062929Z",
+        "input_hash": "fbeffd66d9ddd9a651474080dfba5566a2d5a039c38b02721ee6ed665d30cec7",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Flow-based policies for language-conditioned multi-task manipulation commonly share a single $\\textit{Gaussian}$ source prior and a common linear transport path across tasks. However, reliably executing multiple tasks with distinct motion requirements remains challenging for a shared policy. We introduce $\\textbf{TOPS}$ ($\\textbf{T}$ask-$\\textbf{O}$riented $\\textbf{P}$riors and $\\textbf{S}$chedules), which adapts the flow source prior and interpolation schedule to each task without modifying the network architecture. TOPS first constructs multimodal task sources from reverse-mapped expert action sequences, allowing language instructions to select where generation begins. Guided by source-target covariance mismatch, it then slows the transition toward expert actions early in denoising and accelerates it later along directions requiring expansion. Under a $\\textit{Gaussian}$ endpoint model, our analysis shows that this schedule adjustment can lower an upper bound on velocity-prediction risk. Experiments on LIBERO, LIBERO-Plus, and CALVIN demonstrate improved performance across in-distribution, perturbation and cross-environment settings, alongside better data efficiency. Using one integration step, TOPS raises LIBERO-10 success from $53.44\\%$ to $69.67\\%$ compared with ten-step Standard Flow Matching (FM), while reducing inference time to approximately one-sixth of the baseline. TOPS also yields consistent gains when transferred to the large-scale flow-based $\\pi_{0.5}$ policy across all four evaluated settings. Real-world experiments further demonstrate improved task success, including an increase from $20\\%$ with standard FM to $80\\%$ with TOPS on the upper-drawer opening task.",
+          "authors": [
+            "Tuo An",
+            "Chuhao Zhou",
+            "Jiahua Dong",
+            "Jingliang Li",
+            "Jiaqi Bai",
+            "Jindou Jia",
+            "Jianfei Yang"
+          ],
+          "canonical_id": "2610.36694",
+          "categories": [
+            "cs.RO",
+            "cs.AI"
+          ],
+          "comment": "Under review",
+          "pdf_url": "https://arxiv.org/pdf/2610.36694",
+          "published_at": "2026-10-27T06:11:55Z",
+          "source": "arxiv",
+          "title": "TOPS: Reshaping Flow Source and Transport for Multi-Task Robot Manipulation",
+          "updated_at": "2026-10-27T06:11:55Z",
+          "url": "https://arxiv.org/abs/2610.36694",
+          "version": 1
+        },
+        "rank": 39,
+        "score": {
+          "base_score": 0.4606609172857657,
+          "exploration": 0.8049584492148087,
+          "matched_terms": [
+            "flow matching"
+          ],
+          "negative_terms": [],
+          "personal": 0.5172904141135567,
+          "recency": 0.5414853596191748,
+          "topic": 0.2663881430036194
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2610.36761:v1": {
+      "analysis": {
+        "analysis": "材料未说明作者如何具体分析问题；摘要仅指出执行接口挑战与协调、可追溯性挑战，并据此提出四组件框架。",
+        "challenges": [
+          "混合动作空间：连续机器人轨迹与类型化仪器 API 调用的联合生成",
+          "将角色级操作映射到异构设备并协调执行",
+          "在执行期间（含扩展等待期）进行安全监控",
+          "记录带时间戳的因果事件以保证可追溯性",
+          "缺乏覆盖物理结果、时序、可复现性、安全违规与故障恢复的情景级评测协议"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "论文提出包含 LAM、OpenSDL、Safe-SDL 与 L3-Bench 的可追溯框架。",
+            "location": "abstract",
+            "quote": "we propose a traceable framework comprising four components: LAM (Lab Action Model), OpenSDL, Safe-SDL, and L3-Bench."
+          },
+          {
+            "claim": "LAM 扩展视觉语言动作范式以生成连续机器人轨迹与类型化仪器 API 调用。",
+            "location": "abstract",
+            "quote": "LAM is a proposed measurement-conditioned policy architecture that extends vision-language-action paradigms to generate both continuous robot trajectories and typed instrument API calls."
+          },
+          {
+            "claim": "Safe-SDL 结合派发前检查与执行期间信号时序逻辑监控。",
+            "location": "abstract",
+            "quote": "The proposed Safe-SDL runtime gate combines pre-dispatch schema and resource checks with signal temporal logic monitoring during execution, including extended waiting periods."
+          },
+          {
+            "claim": "L3-Bench 是覆盖物理结果、时序、可复现性、安全违规与故障恢复的情景级评测协议。",
+            "location": "abstract",
+            "quote": "L3-Bench (Level-3 Laboratory Benchmark) specifies an episode-level evaluation protocol covering physical outcomes, timing, reproducibility, safety violations, and fault recovery."
+          }
+        ],
+        "experiments": [
+          "摘要未给出具体实验数字或结果；仅说明 L3-Bench 指定了覆盖物理结果、时序、可复现性、安全违规与故障恢复的情景级评测协议。"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "通过一个可追溯的四组件框架，将测量条件化的混合动作生成、异构设备执行协调、运行时安全监控与情景级评测统一起来，使 SDL 工作流可审计。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "LAM（Lab Action Model）：测量条件化的策略架构，扩展视觉语言动作范式，生成连续机器人轨迹与类型化仪器 API 调用。",
+          "OpenSDL：执行基底，包含初始控制实现，将角色级操作映射到异构设备、协调执行并记录带时间戳的因果事件。",
+          "Safe-SDL：运行时门控，结合派发前的模式与资源检查，以及执行期间（含扩展等待期）的信号时序逻辑监控。",
+          "L3-Bench：情景级评测协议，覆盖物理结果、时序、可复现性、安全违规与故障恢复。"
+        ],
+        "motivation": "将灵活机器人控制与实验室仪器暴露的类型化 API 及连续测量集成，仍是一个执行接口挑战；同时 SDL 工作流存在协调与可追溯性问题。",
+        "primary_topic": "面向自驱动实验室的混合动作生成与可审计安全执行框架",
+        "relation_to_research": "该论文将视觉语言动作范式扩展到自驱动实验室的混合动作生成（连续轨迹+类型化 API 调用），并涉及执行协调、安全监控与评测协议，与具身智能中的可执行动作生成、真实机器人评测和系统优化相关；但未涉及世界模型、长时序预测、模型压缩或实时控制效率等核心主题。",
+        "relevance_score": 6,
+        "setting": "自驱动实验室（SDL）闭环系统，同时需要生成连续机器人轨迹与类型化仪器 API 调用，并在执行中监控安全与记录因果事件。",
+        "tags": [
+          "自驱动实验室",
+          "视觉语言动作模型",
+          "混合动作生成",
+          "安全执行",
+          "可审计性",
+          "基准评测"
+        ],
+        "title_zh": "让自驱动实验室可审计：混合动作、测量与安全执行的统一框架",
+        "uncertainty": "仅依据标题与摘要判断，未提供全文；无法确认 LAM 的具体架构、OpenSDL 的实现细节、Safe-SDL 的监控机制以及 L3-Bench 的实际实验数据与结论。",
+        "why_recommended": "对关注具身智能在科学实验自动化中的落地、混合动作接口设计、安全执行门控与可审计评测协议的研究者有参考价值，尤其可启发真实机器人评测中物理结果、时序与故障恢复的度量设计。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.552157604978348,
+      "provenance": {
+        "analyzed_at": "2026-10-28T16:54:05.539690Z",
+        "input_hash": "3b1780744ff738d70f58ecc80fe6d3280c130012cb78ec5131ecb80ad72c1010",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Self-driving laboratories (SDLs) are laboratory systems that couple experimental planning, automated execution, and measurement feedback in a closed loop. Integrating flexible robot control with the typed application programming interfaces (APIs) and continuous measurements exposed by laboratory instruments remains an execution-interface challenge. To address this challenge, we propose a traceable framework comprising four components: LAM (Lab Action Model), OpenSDL, Safe-SDL, and L3-Bench. LAM is a proposed measurement-conditioned policy architecture that extends vision-language-action paradigms to generate both continuous robot trajectories and typed instrument API calls. OpenSDL is an execution substrate with an initial control implementation, designed to map role-level operations to heterogeneous devices, coordinate execution, and record timestamped causal events. The proposed Safe-SDL runtime gate combines pre-dispatch schema and resource checks with signal temporal logic monitoring during execution, including extended waiting periods. L3-Bench (Level-3 Laboratory Benchmark) specifies an episode-level evaluation protocol covering physical outcomes, timing, reproducibility, safety violations, and fault recovery. Together, these components provide an end-to-end design for linking hybrid action generation, monitored device execution, measurement feedback, and experimental evaluation, addressing coordination and traceability challenges in SDL workflows.",
+          "authors": [
+            "Zihan Zhang",
+            "Zeyu Wu",
+            "Xin Zhang",
+            "Mingyu Luo",
+            "Haohui Que",
+            "Tong Zhu"
+          ],
+          "canonical_id": "2610.36761",
+          "categories": [
+            "cs.RO",
+            "cs.AI"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2610.36761",
+          "published_at": "2026-10-27T07:17:24Z",
+          "source": "arxiv",
+          "title": "Making Self-Driving Laboratories Auditable:A Unified Framework for Hybrid Actions,Measurements, and Safe Execution",
+          "updated_at": "2026-10-27T07:17:24Z",
+          "url": "https://arxiv.org/abs/2610.36761",
+          "version": 1
+        },
+        "rank": 20,
+        "score": {
+          "base_score": 0.5130138272333599,
+          "exploration": 0.30137706658127766,
+          "matched_terms": [
+            "vision-language-action",
+            "vision language action"
+          ],
+          "negative_terms": [],
+          "personal": 0.50393869525647,
+          "recency": 0.5476764339787186,
+          "topic": 0.5752458980341393
         }
       },
       "tier": "browse"
@@ -92302,7 +93844,7 @@
         "why_recommended": "该方案展示了以评估驱动的示范修正与专家续接来修复 VLA 策略系统性失败模式的实用流程，并强调逐指令检查点比较，对 VLA 训练数据构建与评测协议设计有直接参考价值。"
       },
       "figure_gallery": null,
-      "final_score": 0.6452231444901844,
+      "final_score": 0.6317216371766683,
       "provenance": {
         "analyzed_at": "2026-10-28T16:55:05.698144Z",
         "input_hash": "c9911d3054aaf28b8c0198abad0146b47bc56bb84afc924e9533a8a8f5a47638",
@@ -92334,21 +93876,134 @@
           "url": "https://arxiv.org/abs/2610.36765",
           "version": 1
         },
-        "rank": 57,
+        "rank": 48,
         "score": {
-          "base_score": 0.5185875354366987,
-          "exploration": 0.27295185646473646,
+          "base_score": 0.4940393403212151,
+          "exploration": 0.18495873647980818,
           "matched_terms": [
             "vision-language-action",
             "vision language action"
           ],
           "negative_terms": [],
           "personal": 0.5943754090888804,
-          "recency": 0.7055901326520801,
+          "recency": 0.5481013014821724,
           "topic": 0.43789829267148805
         }
       },
       "tier": "browse"
+    },
+    "arxiv:2610.36789:v1": {
+      "analysis": {
+        "analysis": "材料未说明。",
+        "challenges": [
+          "类人运动学复杂度、机械鲁棒性、负载能力与控制简洁性之间的权衡",
+          "非结构化环境中的灵巧操作需求",
+          "多关节运动传播与功能自由度解耦的控制难题"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "Torch-Hand 具有 21 个自由度并复现人手关节结构与运动层级。",
+            "location": "abstract",
+            "quote": "replicates the joint structure and motion hierarchy of the human hand with 21 degrees of freedom (DOF)"
+          },
+          {
+            "claim": "该手采用完全基于连杆的传动架构，而非腱驱动或混合驱动。",
+            "location": "abstract",
+            "quote": "Unlike tendon-driven or hybrid actuation approaches, Torch-Hand adopts an entirely linkage-based transmission architecture."
+          },
+          {
+            "claim": "执行器集成于手掌并采用类串行机器人布局，使电机运动与关节运动学直接对应。",
+            "location": "abstract",
+            "quote": "all actuators integrated within the palm and arranged in a serial-robot-like configuration that establishes a direct correspondence between motor motion and joint kinematics"
+          },
+          {
+            "claim": "实验评估了工作空间、指尖轨迹、拇指对掌、抓取分类覆盖、抓取力、负载能力与任务级操作。",
+            "location": "abstract",
+            "quote": "Comprehensive experiments assess reachable workspace, coordinated fingertip trajectories, thumb opposition, 33-grasp taxonomy coverage, grasping force, payload capacity and task-level manipulation."
+          }
+        ],
+        "experiments": [
+          "综合实验评估可达工作空间、协调指尖轨迹、拇指对掌、33 种抓取分类覆盖、抓取力、负载能力与任务级操作。"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "采用纯连杆传动架构与类串行机器人执行器布局，可在保持紧凑类人形态的同时实现高抓取力与负载能力，并使电机运动与关节运动学直接对应，从而提升控制可解性。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "设计 Torch-Hand 全关节人形灵巧手，复现人手关节结构与运动层级，共 21 个自由度。",
+          "拇指具有五个自由度并集成多轴 CMC 运动，其余四指各四个自由度。",
+          "采用完全基于连杆的传动架构，而非腱驱动或混合驱动。",
+          "集成螺旋连杆驱动，在高抓取力与大负载能力下保持紧凑类人形态。",
+          "所有执行器集成于手掌内，并采用类串行机器人布局，使电机运动与关节运动学直接对应。",
+          "通过机械解耦功能自由度减少非预期关节间运动传播，同时允许可独立寻址的自由度在复杂操作中主动协调为耦合多关节运动模式。"
+        ],
+        "motivation": "现有灵巧手设计在类人运动学复杂度、机械鲁棒性、负载能力与控制简洁性之间存在持续权衡，限制了非结构化环境中的灵巧操作。",
+        "primary_topic": "面向具身智能的人形灵巧手硬件设计与连杆驱动",
+        "relation_to_research": "该工作为具身智能提供灵巧手硬件基础，与视觉语言动作模型和世界动作模型所需的高层意图到物理交互的执行末端直接相关；其连杆驱动与控制可解性设计也涉及系统优化与实时控制层面的硬件约束，但不涉及动作生成算法、长时序预测或模型压缩。",
+        "relevance_score": 7,
+        "setting": "面向非结构化环境中的灵巧操作，设计并评估一种全关节人形灵巧手硬件平台。",
+        "tags": [
+          "灵巧手",
+          "人形机器人",
+          "连杆驱动",
+          "关节结构",
+          "具身智能硬件"
+        ],
+        "title_zh": "一种具有类人关节结构的全关节人形灵巧手，采用连杆驱动实现",
+        "uncertainty": "仅有标题与摘要，缺少全文中的具体实验数值、第一单位、通讯作者与作者明确陈述的局限，因此部分字段只能标注证据未提供或材料未说明。",
+        "why_recommended": "对关注真实机器人末端执行器、灵巧操作硬件约束与高层动作可执行性的研究者具有参考价值，可帮助理解硬件自由度、驱动架构与控制简洁性如何影响具身操作系统的设计边界。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.5655098329318189,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:08:07.478531Z",
+        "input_hash": "a848aafaefde01f4f7cf5dfe4f18e15a499d625e2700785256f3724d5ddb4b8c",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Humanoid dexterous hands are a core component of embodied intelligence, enabling robots to translate high-level intent into rich and adaptive physical interaction. However, existing designs remain constrained by a persistent trade-off among anthropomorphic kinematic complexity, mechanical robustness, load capacity and control simplicity, limiting dexterous manipulation in unstructured environments. Here we present Torch-Hand, a fully articulated humanoid dexterous hand that replicates the joint structure and motion hierarchy of the human hand with 21 degrees of freedom (DOF), comprising a highly articulated five-DOF thumb and four DOF in each of the remaining fingers. The differentiated thumb integrates multi-axis CMC motion to provide broad opposition and flexible contact orientation relative to the four fingers. Unlike tendon-driven or hybrid actuation approaches, Torch-Hand adopts an entirely linkage-based transmission architecture. By integrating screw-linkage actuation, the hand achieves high grasping force and substantial payload capacity while maintaining a compact anthropomorphic form. Its actuation architecture is optimized for control tractability, with all actuators integrated within the palm and arranged in a serial-robot-like configuration that establishes a direct correspondence between motor motion and joint kinematics. This architecture mechanically decouples functional DOF to reduce unintended inter-joint motion propagation, while allowing independently addressable DOF to be actively coordinated into coupled multi-joint motion patterns during complex manipulation. Comprehensive experiments assess reachable workspace, coordinated fingertip trajectories, thumb opposition, 33-grasp taxonomy coverage, grasping force, payload capacity and task-level manipulation. These results establish Torch-Hand as a robust hardware foundation for dexterous embodied manipulation.",
+          "authors": [
+            "Jihao Li",
+            "Jianguo Wang",
+            "Haotian Guo",
+            "Yanzhe Wang",
+            "Guodong Lu",
+            "Huixu Dong"
+          ],
+          "canonical_id": "2610.36789",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": null,
+          "pdf_url": "https://arxiv.org/pdf/2610.36789",
+          "published_at": "2026-10-27T07:53:51Z",
+          "source": "arxiv",
+          "title": "A fully articulated humanoid dexterous hand with human-level joint structure enabled by linkage-based actuation",
+          "updated_at": "2026-10-27T07:53:51Z",
+          "url": "https://arxiv.org/abs/2610.36789",
+          "version": 1
+        },
+        "rank": 42,
+        "score": {
+          "base_score": 0.4554724235123979,
+          "exploration": 0.8537584382920769,
+          "matched_terms": [
+            "embodied intelligence"
+          ],
+          "negative_terms": [],
+          "personal": 0.5102849667397378,
+          "recency": 0.5511531879771803,
+          "topic": 0.24386578815025756
+        }
+      },
+      "tier": "explore"
     },
     "arxiv:2610.36791:v1": {
       "analysis": {
@@ -92571,7 +94226,7 @@
         "why_recommended": "它提供了一条把视频扩散骨干改造为高效动作策略的路径：动作即 patch token、共享骨干、多目标扩散训练、单步 DDIM 推理，对关注动作生成效率、模型复用与实时控制的研究者有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Tapestry overview. The model is trained across video, joint video/action, and action-only diffusion. At deployment, it bypasses heavy video decoding to predict actions in a single step, delivering the speed and memory efficiency required for real-time robotic control.",
@@ -92590,7 +94245,7 @@
         "html_url": "https://arxiv.org/html/2610.36823v1",
         "status": "available"
       },
-      "final_score": 0.7424521857860176,
+      "final_score": 0.6980674150579074,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:08.864987Z",
         "input_hash": "3de357613b4c3b928d76279894839e2886e29858261a80b3ec675a88c2f03b44",
@@ -92626,17 +94281,17 @@
           "url": "https://arxiv.org/abs/2610.36823",
           "version": 1
         },
-        "rank": 19,
+        "rank": 25,
         "score": {
-          "base_score": 0.6135494287018501,
-          "exploration": 0.7477103567023585,
+          "base_score": 0.5328498455598315,
+          "exploration": 0.09989757148295975,
           "matched_terms": [
             "world action model",
             "video generation"
           ],
           "negative_terms": [],
           "personal": 0.599745173822269,
-          "recency": 0.713180648115932,
+          "recency": 0.553997601915145,
           "topic": 0.5645
         }
       },
@@ -92716,7 +94371,7 @@
         "why_recommended": "对研究世界动作模型如何选择预测目标、如何避免视频重建目标与动作表征错配、以及如何在引入辅助监督的同时保持推理效率的研究者具有直接参考价值；其分布外泛化与有限示范下的结论也值得在具身智能评测中进一步验证。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Overview of Trace-WAM. (a) Motion annotations from simulation and real-world demonstrations provide auxiliary 3D motion supervision for Trace-WAM. The model jointly learns video, motion, and action prediction; future video and motion prediction are used only during training. (b) Benchmark performance and real-world policy executions.",
@@ -92735,7 +94390,7 @@
         "html_url": "https://arxiv.org/html/2610.36840v1",
         "status": "available"
       },
-      "final_score": 0.7367394124711599,
+      "final_score": 0.7089124265725284,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:12.048686Z",
         "input_hash": "dab842b7b29566db0399fc1e2fbc02183a437c76385c1321e41bf980e375fc69",
@@ -92772,109 +94427,232 @@
           "url": "https://arxiv.org/abs/2610.36840",
           "version": 1
         },
-        "rank": 24,
+        "rank": 22,
         "score": {
-          "base_score": 0.6031625681293817,
-          "exploration": 0.7757758092157456,
+          "base_score": 0.5525680483136879,
+          "exploration": 0.42942319517044275,
           "matched_terms": [
             "world action model"
           ],
           "negative_terms": [],
           "personal": 0.6104631977033398,
-          "recency": 0.7150154824130429,
+          "recency": 0.5554228983014063,
           "topic": 0.5125
         }
       },
       "tier": "browse"
     },
-    "arxiv:2610.37091:v1": {
+    "arxiv:2610.36925:v1": {
       "analysis": {
-        "analysis": "作者以参数量与预训练依赖为对照维度，指出主流 WAM 依赖十亿参数视觉语言或视频生成主干；并以消融说明潜在世界模型在训练数据或训练时间受限时带来显著收益。材料未说明更细的分析过程。",
+        "analysis": "材料未说明作者如何具体分析问题；摘要仅指出交互分布偏移与大型模型更新成本高是核心难点，并据此提出潜在空间框架。",
         "challenges": [
-          "十亿参数级 WAM 的训练成本与推理延迟过高",
-          "紧凑模型在缺乏大规模预训练时如何保持多任务操作性",
-          "潜空间未来预测需编码未来场景的空间布局",
-          "需在真实双臂机器人上兼顾动作精度与低延迟"
+          "策略更新导致智能体交互分布偏移，世界模型需持续适应",
+          "持续更新大型预训练模型计算开销高",
+          "需要高效利用VLM既有的表示与世界知识驱动策略改进"
         ],
         "corresponding_authors": [
           "证据未提供"
         ],
         "evidence": [
           {
-            "claim": "现有 WAM 多依赖十亿参数主干，训练成本高、推理延迟大，这是本文动机。",
+            "claim": "论文将VLM重构为循环潜在转移算子，使其能在潜在空间中预测、调整与行动",
             "location": "abstract",
-            "quote": "However, most WAMs build on billion-parameter vision-language or video-generation backbones, which incur high training cost and inference latency."
+            "quote": "we introduce Dwell, a model-based reinforcement learning (RL) framework that reframes a VLM as a recurrent latent transition operator, endowing it with the ability to predict, adjust, and act in latent space"
           },
           {
-            "claim": "GAWM 在冻结 DINOv3 编码器潜空间预测未来观测，并将各相机视角特征压缩为少量 token。",
+            "claim": "VLM同时充当世界模型与策略，并从真实交互与潜在想象中学习",
             "location": "abstract",
-            "quote": "GAWM (Geometry-Aware World Model), a compact multi-task WAM that predicts future observations in the latent space of a frozen DINOv3 encoder. GAWM compresses the features of each camera view into a small set of tokens."
+            "quote": "Leveraging the VLM's own representations and its dual role as both world model and policy, the agent continually learns from real interactions to anticipate and evaluate action outcomes, and from latent imagination to improve its behavior"
           },
           {
-            "claim": "预测器以任务为条件而非动作条件，预测两个未来时域的 token，并以未来帧稠密 patch 特征监督。",
+            "claim": "在五个交互式视觉环境中取得可训练方法中的最强总体性能并降低想象计算量",
             "location": "abstract",
-            "quote": "A lightweight predictor, conditioned on the task rather than on actions, forecasts these tokens at two future horizons. The forecast is supervised with the dense patch features of future frames"
+            "quote": "Across five interactive visual environments, Dwell achieves the strongest overall performance among trainable methods while substantially reducing the compute required for imagination"
           },
           {
-            "claim": "动作解码器从当前与预测 token 直接回归未来动作块。",
+            "claim": "核心主张是世界模型应预测对动作有用的未来而非重建未来",
             "location": "abstract",
-            "quote": "An action decoder directly regresses a chunk of future actions from the current and predicted tokens."
-          },
-          {
-            "claim": "少于 100M 参数、无机器人或视频预训练，在 RoboTwin 2.0 上超过十亿参数 WAM，在 LIBERO 上与十亿参数 VLA 相当。",
-            "location": "abstract",
-            "quote": "With fewer than 100M parameters and no robot or video pretraining, GAWM outperforms billion-parameter WAMs on RoboTwin 2.0 and performs comparably to billion-parameter VLAs on LIBERO."
-          },
-          {
-            "claim": "双臂机器人上动作预测误差低于微调十亿参数 VLA，推理延迟显著更低。",
-            "location": "abstract",
-            "quote": "On a dual-arm robot, it achieves lower action-prediction error on held-out demonstrations than a fine-tuned billion-parameter VLA, with substantially lower inference latency."
-          },
-          {
-            "claim": "消融显示潜在世界模型在训练数据或训练时间有限时显著提升性能。",
-            "location": "abstract",
-            "quote": "Ablation studies show that the latent world model substantially improves performance when training data or training time is limited."
+            "quote": "effective world models for VLM agents need not reconstruct the future; they need to predict futures that are useful for action"
           }
         ],
         "experiments": [
-          "在 RoboTwin 2.0 上，少于 100M 参数且无机器人或视频预训练，性能超过十亿参数 WAM",
-          "在 LIBERO 上与十亿参数 VLA 表现相当",
-          "在双臂机器人上，对留出演示的动作预测误差低于微调的十亿参数 VLA，且推理延迟显著更低",
-          "消融研究显示，当训练数据或训练时间有限时，潜在世界模型显著提升性能"
+          "在五个交互式视觉环境中评估，Dwell在可训练方法中取得最强总体性能",
+          "显著降低想象所需计算量",
+          "结果支持：面向VLM智能体的有效世界模型无需重建未来，只需预测对动作有用的未来"
         ],
         "first_affiliation": "证据未提供",
-        "insight": "借助冻结的强视觉编码器潜在空间，并用任务条件而非动作条件的轻量预测器在少量 token 上预测两个未来时域，可以在远小于 100M 参数、无机器人或视频预训练的条件下获得有效的未来表征与动作生成能力。",
+        "insight": "有效的VLM世界模型不必重建未来，而应预测对动作有用的未来；可把VLM视为循环潜在转移算子，在潜在空间中预测、调整与行动。",
         "limitations": [
           "材料未说明"
         ],
         "method": [
-          "以冻结 DINOv3 编码器的潜空间作为未来观测预测空间",
-          "将每个相机视角的特征压缩为少量 token",
-          "用轻量预测器以任务为条件（而非动作条件）在两个未来时域预测这些 token",
-          "用未来帧的稠密 patch 特征监督预测，使其编码未来场景空间布局",
-          "动作解码器从当前 token 与预测 token 直接回归一段未来动作"
+          "提出Dwell，一个模型驱动强化学习框架",
+          "将VLM重构为循环潜在转移算子，使其能在潜在空间中预测、调整与行动",
+          "利用VLM自身表示，并让其同时承担世界模型与策略双重角色",
+          "从真实交互中持续学习以预测和评估动作后果",
+          "从潜在想象中学习以改进行为策略"
         ],
-        "motivation": "现有大多数世界动作模型（WAM）依赖十亿参数级的视觉语言或视频生成主干，导致训练成本高、推理延迟大，难以满足真实机器人对实时性与部署成本的要求。",
-        "primary_topic": "紧凑潜在世界-动作模型用于多任务机器人操作",
-        "relation_to_research": "直接对应世界动作模型（WAM）与具身智能方向：在潜空间做长时域未来预测，并以紧凑模型实现可执行动作分块生成、低推理延迟与真实双臂机器人评测，同时涉及模型压缩与实时控制。",
+        "motivation": "预训练VLM已内化丰富世界知识，但这些知识很少用于通过在线交互推动策略改进；同时策略更新会改变交互分布、要求世界模型随之适应，而持续更新大型预训练模型的计算代价又高。",
+        "primary_topic": "基于VLM的潜在世界模型与模型驱动强化学习",
+        "relation_to_research": "直接关联世界模型与具身智能体：把VLM的潜在表示用作动作条件的世界模型，服务于策略改进、长时序后果预测与推理效率；对实时控制与真实机器人评测的适配性在摘要中未给出。",
+        "relevance_score": 8,
+        "setting": "在五个交互式视觉环境中，让预训练VLM智能体依据真实交互与潜在想象持续学习策略，其中VLM同时充当世界模型与策略。",
+        "tags": [
+          "视觉语言智能体",
+          "潜在世界模型",
+          "模型驱动强化学习",
+          "潜在想象",
+          "策略改进",
+          "计算效率"
+        ],
+        "title_zh": "视觉语言智能体可在自身潜在世界中学习",
+        "uncertainty": "仅依据标题与摘要，未见全文；五个环境的具体类型、基线、降本幅度、是否涉及真实机器人，以及是否会带来分布偏移和潜在表示的训练稳定性问题，均无法确认。",
+        "why_recommended": "提供了一种“潜在空间想象而非像素重建”的世界模型路线，兼顾动作可用性与计算效率，对VLM驱动的具身策略学习、世界动作模型设计和系统开销优化有直接参考价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.647312604958143,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:07:40.678678Z",
+        "input_hash": "c8516162f25d046d172ce117b497622cb1ffb70db0bea8f63f334828fcbfa475",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Learning from experience is essential for building the next generation of agents that continually expand their capabilities. Pretrained vision-language models (VLMs) already internalize rich world knowledge, yet this knowledge is rarely leveraged to drive policy improvement through online interaction. Realizing this potential efficiently remains challenging, as policy updates shift the agent's interaction distribution, requiring the world model to adapt accordingly, while continually updating large pretrained models is computationally expensive. To address this challenge, we introduce Dwell, a model-based reinforcement learning (RL) framework that reframes a VLM as a recurrent latent transition operator, endowing it with the ability to predict, adjust, and act in latent space. Leveraging the VLM's own representations and its dual role as both world model and policy, the agent continually learns from real interactions to anticipate and evaluate action outcomes, and from latent imagination to improve its behavior. Across five interactive visual environments, Dwell achieves the strongest overall performance among trainable methods while substantially reducing the compute required for imagination, showing that effective world models for VLM agents need not reconstruct the future; they need to predict futures that are useful for action. Our code is publicly available at https://github.com/Tom111-lhx/Dwell",
+          "authors": [
+            "Haoxi Li",
+            "Sikai Bai",
+            "Jianfei Ma",
+            "Qinglin Hou",
+            "Xiaocheng Lu",
+            "Tao Han",
+            "Jie Zhang",
+            "Song Guo"
+          ],
+          "canonical_id": "2610.36925",
+          "categories": [
+            "cs.AI"
+          ],
+          "comment": "17 pages, 4 figures",
+          "pdf_url": "https://arxiv.org/pdf/2610.36925",
+          "published_at": "2026-10-27T09:51:08Z",
+          "source": "arxiv",
+          "title": "Vision-Language Agents Can Learn in Their Own Latent Worlds",
+          "updated_at": "2026-10-27T09:51:08Z",
+          "url": "https://arxiv.org/abs/2610.36925",
+          "version": 1
+        },
+        "rank": 28,
+        "score": {
+          "base_score": 0.5223865544693508,
+          "exploration": 0.7713794095412254,
+          "matched_terms": [],
+          "negative_terms": [],
+          "personal": 0.593341552912996,
+          "recency": 0.5624906312786576,
+          "topic": 0.348559575932898
+        }
+      },
+      "tier": "browse"
+    },
+    "arxiv:2610.37091:v1": {
+      "analysis": {
+        "analysis": "作者将现有 WAM 归纳为依赖 5B 参数 Wan 2.2 视频生成器或 2.1B 参数 VLA 骨干，指出其成本与延迟问题，并以模型规模—成功率对比图（图1）说明紧凑方法在固定任务集上的可行性；通过消融量化世界模型贡献，并用 per-patch 余弦相似度与动作解码器跨注意力分析预测内容与使用时序。",
+        "challenges": [
+          "十亿参数级 WAM/VLA 训练成本高、推理延迟大，难以机载部署",
+          "视频生成式 WAM 将大量容量耗费在与控制无关的外观细节上，且需迭代去噪",
+          "紧凑模型需在不依赖大规模预训练的情况下同时保证多任务成功率与低延迟",
+          "潜在预测需编码未来场景空间布局，才能有效支撑动作解码",
+          "真实双臂平台上动作预测精度与推理实时性的平衡"
+        ],
+        "corresponding_authors": [
+          "Xiang Gao"
+        ],
+        "evidence": [
+          {
+            "claim": "现有 WAM 多建立在十亿参数级骨干上，训练成本与推理延迟高",
+            "location": "abstract",
+            "quote": "However, most WAMs build on billion-parameter vision-language or video-generation backbones, which incur high training cost and inference latency."
+          },
+          {
+            "claim": "GAWM 在冻结 DINOv3 编码器潜在空间中预测未来观测，并以任务而非动作作为预测器条件",
+            "location": "abstract",
+            "quote": "GAWM (Geometry-Aware World Model), a compact multi-task WAM that predicts future observations in the latent space of a frozen DINOv3 encoder."
+          },
+          {
+            "claim": "GAWM 少于 1 亿参数且无机器人或视频预训练，在 RoboTwin 2.0 上超过十亿参数 WAM，在 LIBERO 上与十亿参数 VLA 相当",
+            "location": "abstract",
+            "quote": "With fewer than 100M parameters and no robot or video pretraining, GAWM outperforms billion-parameter WAMs on RoboTwin 2.0 and performs comparably to billion-parameter VLAs on LIBERO."
+          },
+          {
+            "claim": "真实机器人上动作预测误差低于微调的十亿参数 VLA，且推理延迟显著更低",
+            "location": "abstract",
+            "quote": "On a dual-arm robot, it achieves lower action-prediction error on held-out demonstrations than a fine-tuned billion-parameter VLA, with substantially lower inference latency."
+          },
+          {
+            "claim": "消融显示世界模型在训练数据或训练时间受限时带来大幅提升",
+            "location": "abstract",
+            "quote": "Ablation studies show that the latent world model substantially improves performance when training data or training time is limited."
+          },
+          {
+            "claim": "GAWM-S 在 RoboTwin 2.0 干净与随机化设置下成功率为 93.9% 与 93.1%",
+            "location": "supplied_full_text",
+            "quote": "achieves success rates of 93.9% and 93.1% in the clean and randomized settings of RoboTwin 2.0"
+          },
+          {
+            "claim": "真实机器人上 GAWM-S 每次查询 9.3 ms，π0.5 为 63.8 ms，参数分别为 77M 与 3.4B",
+            "location": "supplied_full_text",
+            "quote": "With 77M rather than 3.4B parameters, GAWM-S requires 9.3 ms per query and"
+          },
+          {
+            "claim": "作者明确局限：面向封闭任务集、不解释语言指令",
+            "location": "supplied_full_text",
+            "quote": "GAWM targets a closed set of tasks, each identified by a code derived from its demonstrations, and does not interpret language instructions."
+          }
+        ],
+        "experiments": [
+          "RoboTwin 2.0：GAWM-S 在干净与随机化设置下成功率分别为 93.9% 与 93.1%，优于十亿参数 WAM；在图中为最小且表现最好的方法",
+          "LIBERO：GAWM-S 以 38M 参数达到 95.6%，高于 3.2B 参数的 π0（使用 Extended 数据）",
+          "真实双臂机器人（天机 Marvin Pro，每臂 7 自由度，头相机加两个腕相机，四任务仅目标瓶不同，340 条遥操作示教，15 Hz）：在留出示教上动作预测误差低于微调的十亿参数 VLA，推理延迟显著更低；全动作块误差 0.088 rad（16 步），低于 π0.5 的 0.101–0.106 rad（20 步）；黄瓶任务 50 次闭环试验成功 46 次（92%），π0.5（60k）为 39 次（78%）；GAWM-S 77M 参数每次查询 9.3 ms，π0.5 为 3.4B 参数 63.8 ms",
+          "消融：世界模型在训练数据或训练时间受限时带来大幅性能提升",
+          "预测分析：解码预测与真实未来特征的 per-patch 余弦相似度在 +16 帧为 0.970、+32 帧为 0.967，当前帧为 0.929 与 0.892；预测在 75% 与 91% 的锚点上更接近真实未来",
+          "注意力分析：动作块首步主要关注当前 token，h1 附近步骤关注近端预测，末步远端预测占比从首步 20% 升至 44%，且对每个锚点成立"
+        ],
+        "first_affiliation": "Genisom AI，北京，中国",
+        "insight": "在封闭任务集上，一个少于 1 亿参数、无机器人或视频预训练的任务条件化潜在预测器，即可为反应式策略提供现有 WAM 从十亿参数骨干中获得的前瞻能力；关键在于在冻结编码器的潜在空间中预测未来 token 并以稠密 patch 特征监督，而非生成未来视频帧。",
+        "limitations": [
+          "GAWM 面向封闭任务集，每个任务由来自其示教的码标识，不解释语言指令；作者计划结合大语言模型将开放指令映射到已知任务"
+        ],
+        "method": [
+          "冻结 DINOv3 编码器加查询适配器，将每个相机视角压缩为 64 个视觉 token 并堆叠为 z_t",
+          "轻量潜在预测器以任务码 g_k（而非动作）为条件，预测两个未来时间视野的 token",
+          "训练时用未来帧的稠密 patch 特征经 patch 解码器监督预测，要求其编码未来场景空间布局",
+          "动作解码器从当前 token、预测 token、机器人状态与任务码直接回归一段未来动作块",
+          "总参数少于 100M，且不使用机器人或视频预训练"
+        ],
+        "motivation": "现有世界动作模型多建立在十亿参数级视觉语言或视频生成骨干上，训练成本高、推理延迟大（如 LingBot-VA 每次查询 4.5 s），难以部署到机载计算机；而许多实际部署机器人只执行固定任务集，更看重可靠、低延迟执行，因此需要紧凑的多任务 WAM。",
+        "primary_topic": "紧凑潜在世界动作模型用于多任务机器人操作",
+        "relation_to_research": "直接对应世界动作模型（WAM）与物理人工智能方向：以 JEPA 式潜在世界模型替代视频生成骨干，兼顾长时序潜在预测（两个未来视野）与推理效率、模型压缩（<100M 参数）和真实机器人实时控制（9.3 ms/查询），并给出真实双臂机器人闭环评测，与可执行动作生成、实时控制与真实机器人评测的研究重点高度重合。",
         "relevance_score": 9,
-        "setting": "多任务机器人操作；在冻结的 DINOv3 编码器的潜空间中预测未来观测，并以动作分块形式直接回归未来动作；不进行机器人或视频预训练。",
+        "setting": "在封闭任务集上的多任务模仿学习：策略由任务码而非语言指令条件化，在冻结的DINOv3编码器潜在空间中预测未来观测，并直接从当前与预测 token 回归动作块；在 LIBERO、RoboTwin 2.0 仿真基准与双臂真实机器人上评测。",
         "tags": [
           "世界动作模型",
           "潜在世界模型",
-          "机器人操作",
-          "多任务学习",
+          "JEPA",
+          "紧凑策略",
+          "多任务操作",
           "动作分块回归",
-          "模型压缩",
-          "实时推理",
+          "实时控制",
           "DINOv3"
         ],
-        "title_zh": "GAWM：一种用于多任务机器人操作的紧凑潜在世界-动作模型",
-        "uncertainty": "仅有标题与摘要，缺少方法细节（如 token 压缩方式、两个未来时域的具体取值、动作分块长度）、实验数字与局限陈述，因此对性能幅度与适用边界的判断不确定。",
-        "why_recommended": "提供了一条以冻结视觉编码器潜空间 + 轻量任务条件预测器替代十亿参数主干的紧凑 WAM 路线，并用 RoboTwin 2.0、LIBERO 与真实双臂机器人的对比与消融支撑其在参数效率、推理延迟与受限训练条件下的价值，对轻量化 WAM/VLA 与实时机器人控制研究具有直接参考意义。"
+        "title_zh": "GAWM：面向多任务机器人操作的紧凑潜在世界动作模型",
+        "uncertainty": "全文为节选，部分表格与基线细节（如表 I、部分实验设置与引用编号对应关系）未完整呈现；真实机器人数据仅来自作者自有平台与四任务设置，结论向更广泛任务与开放指令场景的泛化程度无法从材料判断。",
+        "why_recommended": "为世界动作模型提供了一条紧凑、低延迟、无需大骨干的替代路线，并给出参数—成功率、延迟与真实机器人闭环证据；其消融表明世界模型在数据或训练时间受限时收益显著，对关注世界模型效率、模型压缩与实时机器人部署的研究者具有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Overview of GAWM. A frozen DINOv3 encoder and a query adapter encode each camera view into 64 visual tokens, stacked into z t z_{t} . The latent predictor, conditioned on the task code g k g_{k} , forecasts these tokens at two future horizons, and the action decoder directly regresses a chunk of future actions from the current tokens, the forecast, the robot state and the task code. Dashed panel: training only; a patch decoder maps the forecast to the encoder’s patch features of the recorded future frames (thumbnails as in Fig. 4 ).",
@@ -92893,13 +94671,13 @@
         "html_url": "https://arxiv.org/html/2610.37091v1",
         "status": "available"
       },
-      "final_score": 0.7445088295603842,
+      "final_score": 0.7768005697316392,
       "provenance": {
-        "analyzed_at": "2026-10-28T16:54:06.033663Z",
-        "input_hash": "db13bfd41818703f0fe964a57a69c19283f09aef2dcdf47c4b05546a9566f6e4",
+        "analyzed_at": "2026-10-29T17:07:35.296105Z",
+        "input_hash": "b9ad6e0d3f0189c02c19b74a5d993df8fdf76fdd1b017e5b540bcb4f28c1cc57",
         "model": "deepseek-v4-flash",
         "prompt_version": "paper-analysis-v1",
-        "reading_scope": "abstract"
+        "reading_scope": "full_text"
       },
       "ranked": {
         "paper": {
@@ -92925,10 +94703,10 @@
           "url": "https://arxiv.org/abs/2610.37091",
           "version": 1
         },
-        "rank": 20,
+        "rank": 6,
         "score": {
-          "base_score": 0.6172887810188803,
-          "exploration": 0.15771191981771426,
+          "base_score": 0.6760010358757076,
+          "exploration": 0.9099859665118757,
           "matched_terms": [
             "VLA",
             "world action model",
@@ -92936,11 +94714,152 @@
           ],
           "negative_terms": [],
           "personal": 0.6068344567379518,
-          "recency": 0.7399208350503058,
+          "recency": 0.5747693369244181,
           "topic": 0.727
         }
       },
-      "tier": "browse"
+      "tier": "deep_read"
+    },
+    "arxiv:2610.37170:v1": {
+      "analysis": {
+        "analysis": "作者把每条 episode 依据关节与相机记录放到“已启动—够到球—搬运—交付”四阶段阶梯上，据此定位不同数据量下失败转移的环节；对同一 checkpoint 重复测试以量化 10 个 episode block 作为测量单元的噪声，并区分种子间变异与测量噪声；还用录像对人工评分做审计。作者明确承认固定训练长度带来的数据量与训练次数混淆，并说明哪些结论在该混淆下仍成立。",
+        "challenges": [
+          "小样本真机评测噪声大：同一 checkpoint 重复测试在 10 个 episode 上平均相差 2 个成功，需要把种子间差异与测量噪声分离",
+          "训练长度在每个配方内固定，导致数据量与数据被重复见的次数（训练步数效应）混淆",
+          "部分策略（SmolVLA、Diffusion Policy）受启动失败主导，掩盖了策略本身的抓取能力差异",
+          "π0.5 的低秩适应（LoRA）在 110 个 episode 中仅成功 4 个，说明微调配方选择对可用性影响巨大",
+          "在 100 条示教以上 ACT 领先的幅度，该研究未能完全解释"
+        ],
+        "corresponding_authors": [
+          "证据未提供"
+        ],
+        "evidence": [
+          {
+            "claim": "ACT 从 12 条示教的 1/40 成功提升到 100 条的 37/40",
+            "location": "abstract",
+            "quote": "ACT, trained from scratch, rose from 1 success in 40 episodes at 12 demonstrations to 37 in 40 at 100."
+          },
+          {
+            "claim": "π0.5 的动作专家微调在数据稀缺时最佳，之后稳定在约 70%",
+            "location": "abstract",
+            "quote": "$\\pi_{0.5}$ with its action expert fine-tuned was the best policy when data was scarce (16 of 40 at 12 demonstrations, 28 of 40 at 25) and then stayed near 70%"
+          },
+          {
+            "claim": "SmolVLA 在 47% 的 episode 中机械臂完全不启动",
+            "location": "abstract",
+            "quote": "SmolVLA's arm never started moving in 47% of episodes"
+          },
+          {
+            "claim": "π0.5 的微调配方比数据量更重要：LoRA 110 个中仅成功 4 个，动作专家微调 200 个中成功 130 个",
+            "location": "abstract",
+            "quote": "low-rank adaptation succeeded in 4 of 110 episodes, against 130 of 200 for action-expert fine-tuning"
+          },
+          {
+            "claim": "四阶段失败阶梯显示 ACT 随数据增加失败从够到转向抓取再转向无失败，π0.5 残留失败集中在抓取",
+            "location": "abstract",
+            "quote": "for ACT more data moves failures from reaching, to grasping, to none, while the failures $\\pi_{0.5}$ retains are in grasping"
+          },
+          {
+            "claim": "10-episode block 作为测量单元噪声较大，同一 checkpoint 两次测试平均相差 2 个成功",
+            "location": "abstract",
+            "quote": "the same checkpoint tested twice differs by 2 successes in 10 on average"
+          },
+          {
+            "claim": "作者承认固定训练长度导致数据量与训练次数混淆",
+            "location": "abstract",
+            "quote": "Training length was fixed within each recipe, so the amount of data and the number of times it was seen change together"
+          }
+        ],
+        "experiments": [
+          "ACT 从零训练：12 条示教时 40 个 episode 中成功 1 个，100 条时成功 37/40",
+          "π0.5 使用动作专家微调在数据稀缺时最佳：12 条时 16/40，25 条时 28/40，之后稳定在约 70%",
+          "从 100 条示教起 ACT 领先，领先幅度该研究未完全解释",
+          "SmolVLA 与 Diffusion Policy 峰值约 50%；SmolVLA 在 47% 的 episode 中机械臂完全未启动；Diffusion Policy 在从示教中裁掉空闲引导段之前几乎从不启动",
+          "π0.5 的微调配方比数据量更关键：低秩适应 110 个 episode 中成功 4 个，动作专家微调 200 个中成功 130 个",
+          "失败阶梯显示 ACT 随数据增加，失败从“够到”转向“抓取”再转向“无失败”；π0.5 残留的失败集中在抓取",
+          "测量可靠性：同一 checkpoint 测两次，在 10 个 episode 上平均相差 2 个成功"
+        ],
+        "first_affiliation": "证据未提供",
+        "insight": "数据量与策略架构、微调配方之间存在交互：从零训练的 ACT 从 12 到 100 条示教成功率大幅上升，并在 100 条之后领先；预训练 VLA（π0.5）的优势集中在数据稀缺区间；π0.5 的微调方式比数据量更关键；片段级的四阶段失败阶梯能揭示数据增加把失败从“够到”推进到“抓取”再推进到“无失败”的机制。",
+        "limitations": [
+          "训练长度在每个配方内固定，数据量与数据被重复见的次数一起变化，构成混淆；作者仅声明哪些结论在该混淆下仍成立",
+          "ACT 在 100 条示教以上领先的幅度未被该研究完全解释",
+          "只涉及单一任务、单一机械臂平台"
+        ],
+        "method": [
+          "为四种策略各固定一套训练配方，在 12/25/50/100/200 条示教的嵌套子集上分别训练",
+          "在真实 SO-101 机械臂上对固定物体摆放集合进行统一计分评测，共 1,340 个 episode、126 个 block",
+          "对 π0.5 比较低秩适应与动作专家（action expert）微调两种配方",
+          "基于关节和相机记录构建四阶段失败阶梯（started / reached / carried / delivered）进行失败归因",
+          "量化 10-episode block 作为测量单元的可靠性（重复测试差异），并分离种子间变异与测量噪声",
+          "用录像审计人工评分",
+          "显式讨论“数据量—训练步数”混淆对结论的影响范围"
+        ],
+        "motivation": "低成本机械臂上常用的模仿学习策略众多，但在相同任务、相同评测协议下，数据量如何影响各策略的真实成功率以及各策略失败在哪个阶段，缺乏统一、可复核的实测比较；同时小样本评测本身作为测量手段是否可靠也值得检验。",
+        "primary_topic": "模仿学习策略的数据规模扩展与真实机器人评测",
+        "relation_to_research": "直接关系到具身智能中视觉语言动作模型（SmolVLA、π0.5）与经典模仿学习策略（ACT、Diffusion Policy）在真实机器人上的可执行动作生成、数据效率与微调策略比较；其真机评测方法学（四阶段失败阶梯、block 级噪声、评分审计）可迁移到真实机器人评测与系统优化实践；但其重点不在长时序预测、世界模型或物理人工智能预测建模。",
+        "relevance_score": 8,
+        "setting": "在一个含干扰物的单任务抓取放置（pick-and-place）场景中，使用 12、25、50、100、200 条遥操作示教的嵌套子集，分别训练 ACT、Diffusion Policy、SmolVLA 和 π0.5 四种模仿学习策略；每种策略固定一套训练配方，并在真实 SO-101 低成本机械臂固定的物体摆放集合上评测（126 个 block，共 1,340 个计分 episode）。",
+        "tags": [
+          "模仿学习",
+          "数据规模扩展",
+          "真实机器人评测",
+          "ACT",
+          "Diffusion Policy",
+          "SmolVLA",
+          "π0.5",
+          "SO-101",
+          "微调策略",
+          "失败模式分析"
+        ],
+        "title_zh": "从 12 到 200 条示教：ACT、Diffusion Policy、SmolVLA 与 π0.5 在低成本机械臂上的规模扩展研究",
+        "uncertainty": "仅有标题与摘要，无法确认示教采集设置、超参数细节、统计检验方法、完整结果表与作者对混淆影响的具体界定；第一单位、通讯作者等元信息未提供；“约 70%”等表述为摘要原文口径，未给出精确数值。",
+        "why_recommended": "为真实机器人模仿学习提供了难得的统一协议、多种子、上千 episode 的实测数据，并给出可直接复用的评测方法学（失败阶段归因、测量噪声量化、种子变异分离）与微调配方敏感性证据（LoRA 与动作专家微调差异巨大），对 VLA 落地选型、数据预算决策和真实机器人评测设计具有参考价值。"
+      },
+      "figure_gallery": null,
+      "final_score": 0.662598441476336,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:07:43.298652Z",
+        "input_hash": "cce31f8575eaf777397a6992cfb8540b16a8b431ed44879aa57e7c57c393d831",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "abstract"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "We trained four widely used imitation-learning policies, ACT, Diffusion Policy, SmolVLA and $\\pi_{0.5}$, on nested subsets of 12, 25, 50, 100 and 200 teleoperated demonstrations of one pick-and-place task with distractor objects, using one fixed training recipe per policy. Every trained model was then run on a physical SO-101 arm on a fixed set of object placements: 1,340 scored episodes in 126 blocks. ACT, trained from scratch, rose from 1 success in 40 episodes at 12 demonstrations to 37 in 40 at 100. $\\pi_{0.5}$ with its action expert fine-tuned was the best policy when data was scarce (16 of 40 at 12 demonstrations, 28 of 40 at 25) and then stayed near 70%; from 100 demonstrations ACT was ahead, by a margin this study does not fully resolve. SmolVLA and Diffusion Policy peaked near 50%, and both were affected by a failure to start: SmolVLA's arm never started moving in 47% of episodes, and Diffusion Policy hardly ever started until an idle lead-in was trimmed from the demonstrations. For $\\pi_{0.5}$ the fine-tuning recipe mattered more than the amount of data: low-rank adaptation succeeded in 4 of 110 episodes, against 130 of 200 for action-expert fine-tuning. From the joint and camera recordings we place every episode on a four-stage ladder (started, reached the ball, carried it, delivered it) and show that for ACT more data moves failures from reaching, to grasping, to none, while the failures $\\pi_{0.5}$ retains are in grasping. We also measure how weak a ten-episode block is as a measurement (the same checkpoint tested twice differs by 2 successes in 10 on average), separate seed-to-seed variation from that noise, and audit the human scoring against the recordings. Training length was fixed within each recipe, so the amount of data and the number of times it was seen change together; we state which conclusions survive that confound and which do not.",
+          "authors": [
+            "Simon Cowling"
+          ],
+          "canonical_id": "2610.37170",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "31 pages, 5 figures, 19 tables",
+          "pdf_url": "https://arxiv.org/pdf/2610.37170",
+          "published_at": "2026-10-27T12:57:43Z",
+          "source": "arxiv",
+          "title": "From 12 to 200 Demonstrations: How ACT, Diffusion Policy, SmolVLA and $\\pi_{0.5}$ Scale on a Low-Cost Arm",
+          "updated_at": "2026-10-27T12:57:43Z",
+          "url": "https://arxiv.org/abs/2610.37170",
+          "version": 1
+        },
+        "rank": 23,
+        "score": {
+          "base_score": 0.550178984502429,
+          "exploration": 0.8099508003504245,
+          "matched_terms": [
+            "VLA",
+            "diffusion policy",
+            "imitation learning"
+          ],
+          "negative_terms": [],
+          "personal": 0.5959849087897774,
+          "recency": 0.5810096803529782,
+          "topic": 0.40825636421911077
+        }
+      },
+      "tier": "explore"
     },
     "arxiv:2610.37196:v1": {
       "analysis": {
@@ -93018,7 +94937,7 @@
         "why_recommended": "为 WAM 的测试时选择提供了可复现的测量协议和失败门控选择方法，量化了可选上限并展示闭环成功率提升，对研究世界模型辅助策略改进和系统优化有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Overview. (a) From a bitwise-reproducible snapshot at s t b s_{t_{b}} , each of K K candidate chunks is executed and continued J J times by the policy. O 1 O^{1} (orange) takes the best realized outcome in each column; O L O^{L} (blue) selects on the other columns and scores on the held-out one. Here every column contains a success, yet only one candidate succeeds in every continuation. (b) At steps 0, 32, and 64, a failure gate reads the representation of the imagined policy chunk a a ; only when its score q q exceeds θ \\theta are twelve axis offsets of a a imagined with the same noise and ranked. Both readouts are trained on branch outcomes (dashed) rather than taken from the value head; the frames in (b) come from the episode of Fig. 5 .",
@@ -93037,7 +94956,7 @@
         "html_url": "https://arxiv.org/html/2610.37196v1",
         "status": "available"
       },
-      "final_score": 0.704456930323569,
+      "final_score": 0.6923069425137625,
       "provenance": {
         "analyzed_at": "2026-10-28T16:54:53.537773Z",
         "input_hash": "6313e17c1de2972e73d7afe14e686d0916351d8f93122dd70fefe834f5c4cf44",
@@ -93074,16 +94993,16 @@
           "url": "https://arxiv.org/abs/2610.37196",
           "version": 1
         },
-        "rank": 56,
+        "rank": 40,
         "score": {
-          "base_score": 0.5444671460428526,
-          "exploration": 0.4830205868601094,
+          "base_score": 0.5223762591159317,
+          "exploration": 0.42962484461210987,
           "matched_terms": [
             "world action model"
           ],
           "negative_terms": [],
           "personal": 0.6599258934864196,
-          "recency": 0.7505015348570657,
+          "recency": 0.5829884078358547,
           "topic": 0.3547093765778466
         }
       },
@@ -93172,7 +95091,7 @@
         "why_recommended": "它提供了一条免微调的测试时扩展路线：利用运动基元图检索补足 VLA 在分布外视觉扰动下的几何先验，并在三种主流 VLA 架构和真实部署上报告显著提升，对关注 VLA 鲁棒执行、测试时方法与真实机器人评测的研究者有直接参考价值。"
       },
       "figure_gallery": null,
-      "final_score": 0.7130664954446027,
+      "final_score": 0.6541111242952895,
       "provenance": {
         "analyzed_at": "2026-10-28T16:53:44.719465Z",
         "input_hash": "d542d1bb2d500de8dcb4bbefb3d173025630bb3f0968d3ec84eb0f8337327777",
@@ -93217,10 +95136,10 @@
           "url": "https://arxiv.org/abs/2610.37215",
           "version": 1
         },
-        "rank": 11,
+        "rank": 19,
         "score": {
-          "base_score": 0.6419390826265502,
-          "exploration": 0.9764072978920838,
+          "base_score": 0.534747498718708,
+          "exploration": 0.0723320796251324,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -93228,11 +95147,11 @@
           ],
           "negative_terms": [],
           "personal": 0.5188834859084237,
-          "recency": 0.7519687905678105,
+          "recency": 0.5841281697563391,
           "topic": 0.673154014633629
         }
       },
-      "tier": "explore"
+      "tier": "browse"
     },
     "arxiv:2610.37219:v1": {
       "analysis": {
@@ -93318,7 +95237,7 @@
         "why_recommended": "该论文将VLA与WAM的争论拆解为可实验分离的设计选择，证明前瞻特征监督可在不进行视觉生成、不增加推理机制的情况下提升控制，并给出跨backbone的统一配方和大规模训练成本降低数据，对世界模型与动作策略的系统设计有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "The three choices that separate VLAs, WAMs, and JAM: backbone initialization, the objective on recorded future observations, and the modules kept at inference. (a) The VLA reference uses no future objective, only the action loss ℒ act \\mathcal{L}_{\\mathrm{act}} . (b) WAMs add visual generation loss ℒ G \\mathcal{L}_{\\mathrm{G}} . The dashed loop shows generated future observations entering the action expert in some WAMs. (c) JAM uses foresight loss ℒ F \\mathcal{L}_{\\mathrm{F}} across pretraining families, discards its supervision branch, and retains the corresponding action path.",
@@ -93350,7 +95269,7 @@
         "html_url": "https://arxiv.org/html/2610.37219v1",
         "status": "available"
       },
-      "final_score": 0.7994220883329992,
+      "final_score": 0.7900026040418314,
       "provenance": {
         "analyzed_at": "2026-10-28T16:53:36.610500Z",
         "input_hash": "097f1d19d1c3af82896a02679ea11644dd5a3a3476413f5aaf3966b1578605b1",
@@ -93383,8 +95302,8 @@
         },
         "rank": 3,
         "score": {
-          "base_score": 0.7171310696963622,
-          "exploration": 0.13727563104550106,
+          "base_score": 0.7000047346215116,
+          "exploration": 0.13387961398094766,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -93393,7 +95312,7 @@
           ],
           "negative_terms": [],
           "personal": 0.6182103544151618,
-          "recency": 0.7520884710498915,
+          "recency": 0.5842211373659398,
           "topic": 1.0
         }
       },
@@ -93476,7 +95395,7 @@
         "why_recommended": "该文提供了一种降低机器人数据依赖的技能迁移范式：把可复用运动结构与具身实现分离，用约100条机器人示教即完成人形落地，并给出跨数据集与真实人形演示的验证。对关注可执行动作生成、跨具身迁移、轻量适配与真实机器人评测的研究者有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "Proposed Motion Primitives for Action Composition and Transfer (M-PACT) pipeline.",
@@ -93508,7 +95427,7 @@
         "html_url": "https://arxiv.org/html/2610.37330v1",
         "status": "available"
       },
-      "final_score": 0.7219222979540778,
+      "final_score": 0.7160673628261092,
       "provenance": {
         "analyzed_at": "2026-10-28T16:53:55.561011Z",
         "input_hash": "ce76b8c74c5929312cc997cc14d628c88e56a94fab70683047e61761c9e34ffd",
@@ -93542,10 +95461,10 @@
           "url": "https://arxiv.org/abs/2610.37330",
           "version": 1
         },
-        "rank": 10,
+        "rank": 7,
         "score": {
-          "base_score": 0.6580405417346868,
-          "exploration": 0.09364993582121181,
+          "base_score": 0.6473952051383801,
+          "exploration": 0.15705839777041652,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -93554,7 +95473,7 @@
           ],
           "negative_terms": [],
           "personal": 0.567660821102737,
-          "recency": 0.761024313907322,
+          "recency": 0.5911624859950495,
           "topic": 0.9060735636160053
         }
       },
@@ -93644,7 +95563,7 @@
         "why_recommended": "提供了一种不重训 VLA、以轻量推理时模块提升动态避障与安全性的思路，含仿真与真实机器人结果及消融分析，对关注 VLA 部署安全、实时反应控制和系统级模块化设计的研究者有直接参考价值"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "This figure illustrates the biological motivation behind our method. The left side depicts the interaction between higher-level motor control and lower-level sensorimotor regulation: task-directed motor commands are continuously shaped by rapid responses to immediate physical conditions. In this functional analogy, higher-level task control and motor coordination correspond to the base VLA, while the brainstem-inspired lower-level regulation corresponds to our proposed VLA-Stem . The right side shows how VLA-Stem adapts the VLA-directed motion to bypass an obstacle while continuing toward the target object.",
@@ -93676,7 +95595,7 @@
         "html_url": "https://arxiv.org/html/2610.37378v1",
         "status": "available"
       },
-      "final_score": 0.7238406719657631,
+      "final_score": 0.7148115369736159,
       "provenance": {
         "analyzed_at": "2026-10-28T16:53:35.581580Z",
         "input_hash": "0d9f174f7629447812576cdb2d79f197ab9a2297b5d401cf85be4929ac8531cf",
@@ -93711,10 +95630,10 @@
           "url": "https://arxiv.org/abs/2610.37378",
           "version": 1
         },
-        "rank": 4,
+        "rank": 5,
         "score": {
-          "base_score": 0.6615284944832055,
-          "exploration": 0.5590402935122043,
+          "base_score": 0.645111885406574,
+          "exploration": 0.565622541517872,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -93722,7 +95641,7 @@
           ],
           "negative_terms": [],
           "personal": 0.5453208032542096,
-          "recency": 0.7649961086717705,
+          "recency": 0.5942477698997888,
           "topic": 0.8106585508583248
         }
       },
@@ -93730,79 +95649,105 @@
     },
     "arxiv:2610.37381:v1": {
       "analysis": {
-        "analysis": "材料未说明作者如何具体分析问题；摘要仅说明用直接预测未来 RGB、深度、光流特征并以冻结视频世界模型作辅助监督来学习物理 token，并通过消融考察世界模型监督、子任务条件、未来物体位姿监督与 ECoT 训练的影响。",
+        "analysis": "论文先指出 VLA 物理理解有限以及视频世界模型在线生成延迟高的问题，再沿“训练期视频预测塑形紧凑表征、部署期不生成视频”的路线设计方法；通过消融分别考察世界模型辅助监督对未来预测的影响，以及子任务条件、未来物体位姿监督和 ECoT 训练对动作成功率的影响。",
         "challenges": [
-          "VLA 模型对物理动力学理解不足",
-          "在线视频世界模型生成会引入高延迟，不利于实时控制",
-          "在仅有公开数据、无额外大规模机器人私有数据的条件下训练动力学表征",
-          "未来动力学表征学习如何有效迁移到动作成功率提升"
+          "VLA 对物理动力学与物体属性理解不足",
+          "在线视频世界模型生成带来控制回路高延迟",
+          "如何让紧凑 token 同时编码未来外观、几何与运动",
+          "异构轨迹与跨具身数据的标准化与扩充",
+          "在保持策略轻量的同时引入世界模型监督"
         ],
         "corresponding_authors": [
-          "证据未提供"
+          "Zenan Zhou",
+          "Wentao Zhang"
         ],
         "evidence": [
           {
-            "claim": "VLA 模型对物理动力学理解有限，而在线生成未来视频会给控制回路带来高延迟，因此本文提出用轻量物理动力学模块避免在线视频生成",
+            "claim": "论文的核心动机是 VLA 物理动力学理解有限，而在线视频世界模型会引入高延迟",
             "location": "abstract",
-            "quote": "Video world models can capture scene dynamics, yet generating future videos introduces high latency into the control loop. We introduce PDRVLA, whose lightweight Physical Dynamics Module extracts physical tokens from vision--language features to condition action generation without online video generation."
+            "quote": "Video world models can capture scene dynamics, yet generating future videos introduces high latency into the control loop."
           },
           {
-            "claim": "该模块通过直接预测未来 RGB、深度与光流特征学习，并以冻结预训练视频世界模型作辅助监督",
+            "claim": "轻量物理动力学模块从视觉-语言特征中提取物理 token 以条件化动作生成，且无需在线视频生成",
+            "location": "abstract",
+            "quote": "whose lightweight Physical Dynamics Module extracts physical tokens from vision–language features to condition action generation without online video generation"
+          },
+          {
+            "claim": "模块通过预测未来 RGB、深度、光流特征学习，并由冻结视频世界模型提供辅助监督",
             "location": "abstract",
             "quote": "The module learns through direct prediction of future RGB, depth, and optical-flow features, with auxiliary supervision through a frozen pretrained video world model."
           },
           {
-            "claim": "训练完全基于公开数据，并经人到机器人合成、子任务标注与 ECoT 标注扩充",
+            "claim": "四个仿真基准成功率分别为 99.3%、89.9%、93.6%、81.5%",
             "location": "abstract",
-            "quote": "Training relies entirely on publicly available data, expanded through human-to-robot synthesis, subtask annotation, and embodied chain-of-thought (ECoT) annotation."
+            "quote": "PDRVLA achieves success rates of 99.3% on LIBERO, 89.9% on LIBERO-Plus, 93.6% on RoboTwin~2.0, and 81.5% on SimplerEnv."
           },
           {
-            "claim": "在四个仿真基准上的成功率分别为 99.3%、89.9%、93.6%、81.5%",
-            "location": "abstract",
-            "quote": "Across four simulation benchmarks, PDRVLA achieves success rates of 99.3% on LIBERO, 89.9% on LIBERO-Plus, 93.6% on RoboTwin~2.0, and 81.5% on SimplerEnv."
+            "claim": "部署时策略使用学到的物理 token，但不运行视频模型或预测头",
+            "location": "supplied_full_text",
+            "quote": "at deployment, the policy uses the learned physical tokens without running the video model or prediction heads"
           },
           {
-            "claim": "消融表明世界模型监督改善了未来预测，并评估了子任务条件、未来物体位姿监督与 ECoT 训练对动作成功率的影响",
-            "location": "abstract",
-            "quote": "Ablations show improved future prediction with world-model supervision and evaluate how subtask conditioning, future object-pose supervision, and ECoT training affect action success."
+            "claim": "未来物体位姿监督使总体成功率从 89.93% 提升到 90.12%",
+            "location": "supplied_full_text",
+            "quote": "Object-pose supervision increases overall success from 89.93% to 90.12%, a gain of 0.19 percentage points."
+          },
+          {
+            "claim": "LIBERO-Long 上低于 LingBot-VA 的 98.5%",
+            "location": "supplied_full_text",
+            "quote": "On Long, its success rate is 97.6%, below LingBot-VA’s 98.5%."
+          },
+          {
+            "claim": "未来工作将探索 RGB、深度、光流之外的预测目标",
+            "location": "supplied_full_text",
+            "quote": "Future work will explore predictive targets beyond RGB, depth, and optical flow, including object-centric geometry, contact states, and material properties."
           }
         ],
         "experiments": [
-          "在四个仿真基准上评测：LIBERO 成功率 99.3%，LIBERO-Plus 89.9%，RoboTwin 2.0 93.6%，SimplerEnv 81.5%",
-          "消融显示世界模型监督改善了未来预测",
-          "消融考察了子任务条件、未来物体位姿监督与 ECoT 训练对动作成功率的影响（摘要未给出具体数字）"
+          "四个仿真基准成功率：LIBERO 99.3%、LIBERO-Plus 89.9%、RoboTwin 2.0 93.6%、SimplerEnv 81.5%，为对比方法中最高聚合成功率",
+          "LIBERO 细分：Spatial 100.0%、Object 99.8%、Goal 99.8%、Long 97.6%（低于 LingBot-VA 的 98.5%）",
+          "消融显示世界模型辅助监督相比仅直接监督提升了未来预测精度",
+          "未来物体位姿监督使总体成功率从 89.93% 升至 90.12%（+0.19 个百分点），在相机视角、传感器噪声、物体布局扰动下提升，视角变化下最大提升 1.38 个百分点；在光照变化（-0.87）与机器人初始状态变化（-0.64）等四类下下降",
+          "还评估了子任务条件与 ECoT 训练对动作成功率的影响",
+          "SimplerEnv 微调设置：在完整 Bridge 训练集上 50,000 次更新、全局批大小 128"
         ],
-        "first_affiliation": "证据未提供",
-        "insight": "核心洞察：可以用轻量的物理动力学模块（Physical Dynamics Module）从视觉-语言特征中抽取物理 token 来条件化动作生成，从而获得动力学先验，避免在线生成未来视频带来的高延迟；该模块通过直接预测未来的 RGB、深度和光流特征来学习，并以冻结的预训练视频世界模型提供辅助监督。",
+        "first_affiliation": "北京大学（Peking University，与京东 JD.com 共同署名）",
+        "insight": "可以把未来预测只当作训练期的表征塑形手段：用轻量物理动力学模块从中间层 VLM 特征中抽取固定数量的物理 token 来条件化动作专家，从而在获得物理动力学先验的同时避免推理时的视频生成延迟。",
         "limitations": [
-          "材料未说明"
+          "作者在结论中提出的未来方向隐含当前预测目标仅限 RGB、深度、光流，尚未覆盖物体中心几何、接触状态与材质属性",
+          "LIBERO-Long 上成功率（97.6%）低于 LingBot-VA（98.5%）"
         ],
         "method": [
-          "提出 PDRVLA，包含轻量物理动力学模块，从视觉-语言特征中抽取物理 token 以条件化动作生成",
-          "不进行在线视频生成，以规避控制回路中的高延迟",
-          "物理动力学模块通过直接预测未来 RGB、深度与光流特征进行学习",
-          "以冻结的预训练视频世界模型作为辅助监督",
-          "训练完全基于公开数据，并通过人到机器人合成、子任务标注与具身思维链（ECoT）标注扩充数据"
+          "轻量 Physical Dynamics Module 从中间层 VLM 特征中抽取一组固定数量的物理 token",
+          "动作专家结合物理 token 与最终层 VLM 特征生成动作",
+          "直接监督：以未来 RGB、深度、光流的潜特征为预测目标",
+          "辅助监督：以物理 token 为条件的冻结预训练视频世界模型提供时序预测监督",
+          "联合策略训练期间持续进行直接未来预测，部署时不运行视频生成器",
+          "完全基于公开数据构建跨具身语料，整合真实机器人、手持 UMI 与仿真演示及通用/机器人 VL 数据",
+          "数据管线统一异构轨迹，并通过第一人称人-to-机器人合成扩展具身覆盖",
+          "加入子任务标注与具身思维链（ECoT）标注，联合学习动作与关于任务阶段、场景上下文、进度和下一动作的语言回答"
         ],
-        "motivation": "研究动机：现有 VLA 模型对物理动力学的理解有限，而视频世界模型虽然能刻画场景动态，但在控制回路中生成未来视频会引入较高的延迟。",
-        "primary_topic": "面向机器人操作的视觉-语言-动作模型中的物理动力学表征学习",
-        "relation_to_research": "该工作直接面向具身智能中的 VLA 动作生成，并以世界模型提供表征监督而非在线视频生成，属于世界模型与 VLA 结合的轻量路线；其避免在线视频生成的设计与推理效率、实时控制需求相关。摘要未涉及模型压缩或长时序预测的具体机制。",
-        "relevance_score": 8,
-        "setting": "研究设定：从视觉观测与语言指令生成机器人动作；在不进行在线视频生成的前提下，将物理动力学表征注入 VLA 模型的动作生成流程；训练数据全部来自公开数据，并通过人到机器人的合成、子任务标注和具身思维链（ECoT）标注进行扩充；在四个仿真基准上评测。",
+        "motivation": "VLA 模型对物理动力学的理解有限（论文引用分析称多个 VLA 策略对物体物理属性编码弱、对质量变化适应不可靠）；而视频世界模型虽能刻画场景演化，却会在线生成未来视频，给控制回路带来高延迟。",
+        "primary_topic": "以未来预测作为训练监督、在部署时保持轻量的 VLA 物理动力学表征学习",
+        "relation_to_research": "直接命中具身智能与 VLA 主线：以世界模型监督改进可执行动作生成，同时针对推理效率与实时控制诉求做到部署时无视频生成、策略保持轻量；涉及长时序预测表征、跨具身数据合成与仿真真实评测，与物理人工智能和世界动作模型（WAM）方向高度相邻。",
+        "relevance_score": 9,
+        "setting": "从视觉观测和语言指令生成机器人动作的 VLA 策略；训练阶段借助未来 RGB、深度、光流特征预测和冻结视频世界模型监督，部署阶段不运行视频生成器与预测头，仅用学习到的物理 token 条件化动作生成；在四个仿真基准上评测。",
         "tags": [
           "VLA",
           "物理动力学表征",
-          "世界模型监督",
-          "动作生成",
-          "机器人操作",
-          "ECoT"
+          "视频世界模型",
+          "未来特征预测",
+          "推理时无视频生成",
+          "跨具身数据合成",
+          "具身思维链",
+          "机器人操作"
         ],
-        "title_zh": "PDRVLA：一种具有物理动力学表征的视觉-语言-动作模型",
-        "uncertainty": "仅有标题与摘要，无法确认物理动力学模块的具体结构、物理 token 维度、训练目标权重、推理开销与实时性数据、真实机器人评测情况以及作者明确陈述的局限；第一单位与通讯作者信息未提供。",
-        "why_recommended": "对关注 VLA 如何低成本注入物理/世界模型先验、以及如何避免在线视频生成延迟的研究者有直接参考价值；其物理 token 条件化与冻结世界模型辅助监督的做法可迁移到动作生成与实时控制系统设计，且给出了多基准成功率与影响动作成功率的消融维度。"
+        "title_zh": "PDRVLA：具有物理动力学表征的视觉-语言-动作模型",
+        "uncertainty": "全文仅为节选，方法细节（物理 token 数量、模块结构、各消融完整数值）、真实机器人评测情况以及部分表格数字（如部分细分结果被截断）无法核实；相关性与结论判断主要依据摘要与可见章节。",
+        "why_recommended": "它给出了一种兼顾世界模型物理先验与低延迟控制的可行折中：把未来预测限制在训练期、以紧凑 token 注入策略，并配有四个基准的强结果与针对性消融，对研究 VLA 动力学表征、推理效率与训练监督设计均有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "PDRVLA overview. (a) Simplified architecture. (b) Success rates on four simulation benchmarks.",
@@ -93821,13 +95766,13 @@
         "html_url": "https://arxiv.org/html/2610.37381v1",
         "status": "available"
       },
-      "final_score": 0.7128759024329997,
+      "final_score": 0.7519575923774433,
       "provenance": {
-        "analyzed_at": "2026-10-28T16:53:53.900934Z",
-        "input_hash": "5ef194c1b9d6d66757fdd60fd4fd7994143b7b4005b8da86122b445ddb1950c7",
+        "analyzed_at": "2026-10-29T17:07:34.061949Z",
+        "input_hash": "a2258e7b8d1a2d2bf2266030599ff31eb8c1168a6a22a0e780b547f043c53efd",
         "model": "deepseek-v4-flash",
         "prompt_version": "paper-analysis-v1",
-        "reading_scope": "abstract"
+        "reading_scope": "full_text"
       },
       "ranked": {
         "paper": {
@@ -93864,10 +95809,10 @@
           "url": "https://arxiv.org/abs/2610.37381",
           "version": 1
         },
-        "rank": 14,
+        "rank": 10,
         "score": {
-          "base_score": 0.6415925498781812,
-          "exploration": 0.24917567879486613,
+          "base_score": 0.6308319861408059,
+          "exploration": 0.31236828789689336,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -93876,11 +95821,185 @@
           ],
           "negative_terms": [],
           "personal": 0.5085066915717186,
-          "recency": 0.7652197079142115,
+          "recency": 0.5944214614384328,
           "topic": 0.8895
         }
       },
-      "tier": "browse"
+      "tier": "deep_read"
+    },
+    "arxiv:2610.37518:v1": {
+      "analysis": {
+        "analysis": "作者从多机器人设定与单机器人控制的三个差异（观测分布、控制分离而决策耦合、观测不完整）出发，指出直接拼接相机token与独立策略各自的缺陷，并据此提出共享世界状态、位姿感知查询交换与掩码视图协同训练三项设计。",
+        "challenges": [
+          "分布式观测：各相机随机器人移动且只覆盖部分工作空间，不同相机的图像块不对应同一物理位置",
+          "控制分离但决策耦合：机器人具身与动作空间可能不同，但各自动作依赖其他机器人的位置与行为",
+          "观测常不完整：一个机器人的相机可能被其他机器人或被操作物体遮挡",
+          "视图拼接本身无法建立工作空间坐标下的对应关系",
+          "完整观测训练下模型缺乏利用队友视角的激励"
+        ],
+        "corresponding_authors": [
+          "Yongbin Zheng"
+        ],
+        "evidence": [
+          {
+            "claim": "论文提出以共享世界状态φ为核心的多机器人世界动作模型",
+            "location": "abstract",
+            "quote": "World Dreamer v5-lite is a multi-robot world-action model built around a shared world state"
+          },
+          {
+            "claim": "共享世界状态由预训练视频编码器的标定特征按工作空间坐标填充，且空间尺寸随视图增加保持不变",
+            "location": "abstract",
+            "quote": "Calibrated features from a pretrained video encoder populate this state in workspace coordinates; its spatial size remains fixed as views are added."
+          },
+          {
+            "claim": "每个机器人一个查询，查询读取共享状态并交换位姿感知信息，动作流保持分离",
+            "location": "abstract",
+            "quote": "The queries read the shared state and exchange pose-aware information, while their action streams remain separate."
+          },
+          {
+            "claim": "掩码视图协同训练从两个视觉分支扣留选定相机视图但保留所有动作目标",
+            "location": "abstract",
+            "quote": "Masked-view cooperative training withholds selected camera views from both visual branches while retaining all action targets."
+          },
+          {
+            "claim": "在RoboFactory上平均成功率74.0%，比最强基线高23.7个百分点",
+            "location": "abstract",
+            "quote": "On RoboFactory, World Dreamer v5-lite achieves 74.0% mean success, 23.7 percentage points above the strongest evaluated baseline."
+          },
+          {
+            "claim": "四项真实机器人任务平均成功率78.8%，领先13.8个百分点",
+            "location": "abstract",
+            "quote": "Across four real-robot tasks, it reaches 78.8% mean success, a margin of 13.8 points."
+          },
+          {
+            "claim": "RoboCasa365总体成功率58.08%",
+            "location": "abstract",
+            "quote": "It also reaches 58.08% overall on RoboCasa365."
+          },
+          {
+            "claim": "视觉语言主干由Qwen3-VL初始化，输入嵌入与语言建模头冻结",
+            "location": "supplied_full_text",
+            "quote": "The vision–language backbone is initialized from Qwen3-VL"
+          }
+        ],
+        "experiments": [
+          "预训练语料包含20种仿真机器人操作轨迹、RoboFactory轨迹与LeKiwi、OpenArm真实机器人轨迹，覆盖单臂与双臂配置、60余种任务、超过10,000小时交互",
+          "RoboFactory：在Place Food（两机器人）、Camera Alignment（三机器人）、Take Photo（四机器人）上平均成功率74.0%，比最强基线π0.5的50.3%高23.7个百分点；三项任务分别超出36、11、24个百分点",
+          "真实机器人四项任务（Block transfer、Cap unscrewing、Starfruit bagging、Block passing）平均成功率78.8%，比π0.5的65.0%高13.8个百分点",
+          "RoboCasa365总体成功率58.08%，其中Atomic-Seen 80.8%、Composite-Seen 60.0%、Composite-Unseen 30.6%",
+          "RoboFactory按协议每任务评估100种场景配置，评估回合未包含在训练数据中"
+        ],
+        "first_affiliation": "World Agents",
+        "insight": "以一个所有机器人共同读取的共享世界状态φ作为团队的统一空间参照：由预训练视频编码器的标定特征在工作空间坐标中填充φ且其空间尺寸随视图增加保持固定，配合每个机器人一个查询、位姿感知的信息交换与各自独立的动作流，实现“多对一、一对多”的视觉信息流；再用掩码视图协同训练强制模型依赖队友观测。",
+        "limitations": [
+          "材料未说明"
+        ],
+        "method": [
+          "由预训练视频编码器产生标定特征，按工作空间坐标聚合为共享世界状态φ，其空间尺寸在增加视图时保持固定",
+          "视觉语言模型提供场景上下文，并为每个机器人产生一个查询；查询读取共享φ并交换位姿感知信息",
+          "各机器人动作流保持独立，由基于流的动作解码器结合VLM输出、φ、本体感知与多机器人噪声动作预测每个机器人的流速度",
+          "掩码视图协同训练：从两个视觉分支中同时扣留选定相机视图，但保留所有机器人的动作目标，以暴露不完整视觉覆盖",
+          "总损失为0.5倍动作损失、0.2倍未来视频潜变量损失与λ_field倍场损失的加权和，其中λ_field从0.1线性降至0.02",
+          "视觉语言主干由Qwen3-VL初始化，视觉编码器与语言模型参与训练，输入嵌入与语言建模头冻结；使用bfloat16与DeepSpeed ZeRO Stage 2",
+          "动作维度差异由动作掩码处理，缺失相机由视图掩码处理"
+        ],
+        "motivation": "现有VLA与世界动作模型大多面向单机器人；仅拼接多相机token并不能在工作空间坐标上建立视图间的空间对应；独立策略虽保留机器人特定控制，却无法利用队友相机观测；即使具备跨机器人共享信息能力，完整观测训练下机器人也缺乏使用他者视角的动机。",
+        "primary_topic": "多机器人世界动作模型与共享世界状态",
+        "relation_to_research": "该论文直接属于世界动作模型方向：将世界状态预测与动作生成耦合，并面向多机器人具身控制；其共享世界状态设计、掩码视图训练与流匹配动作解码器与可执行动作生成、长时序/未来视频潜变量监督、实时多机器人控制及真实机器人评测均高度相关。",
+        "relevance_score": 9,
+        "setting": "多机器人操作控制：每个机器人携带自身相机，观测分布式且可能被遮挡，各机器人动作空间可能不同，需在共享工作空间内预测各自独立的动作序列；预训练覆盖20种仿真机器人、RoboFactory与真实机器人轨迹。",
+        "tags": [
+          "世界动作模型",
+          "多机器人协作",
+          "视觉语言动作模型",
+          "共享世界状态",
+          "掩码视图训练",
+          "流匹配动作解码"
+        ],
+        "title_zh": "World Dreamer v5-lite：一个梦想家驱动的多机器人世界动作模型",
+        "uncertainty": "全文节选缺少方法细节的完整推导与部分实验表格数据，且部分实验数据引用来自其他方法；作者未明确陈述局限，故局限判断不确定性较高；第一单位与通讯作者依据节选中的机构标注与致谢信息推断。",
+        "why_recommended": "它提供了一个可迁移的“共享世界状态+每机器人查询”架构来解决多视图空间对应与跨机器人信息共享问题，掩码视图协同训练是提升机器人利用队友观测的通用训练技巧；同时在多机器人基准与真实机器人上给出相对强基线的大幅提升，对世界动作模型与多机器人VLA研究具有直接参考价值。"
+      },
+      "figure_gallery": {
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
+        "figures": [
+          {
+            "caption": "Overall architecture of World Dreamer v5-lite. Multi-robot images and language tokens enter the vision–language model (VLM) before the learnable agent queries, yielding a scene-prefix key/value (KV) cache and one hidden state per robot query. The video strip depicts a temporal window: observed video latents are encoded and combined with camera geometry to build the shared world state ϕ \\boldsymbol{\\phi} ; future latents supply training supervision only. The Action Decoder uses the VLM outputs, ϕ \\boldsymbol{\\phi} , proprioception, and multi-robot noisy actions to predict a flow velocity for each robot.",
+            "label": "Figure 1",
+            "number": 1,
+            "panels": [
+              {
+                "cached_path": "figures/arxiv/2610.37518/v1/fig1-panel1.png",
+                "original_url": "https://arxiv.org/html/2610.37518v1/fig/fig1_labels.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2610.37518v1#S1.F1"
+          },
+          {
+            "caption": "Constructing the shared world state ϕ \\boldsymbol{\\phi} . Observed video tokens from available views are placed in 3D using the intrinsics K K , the extrinsics, and optional depth. Each token is fused with its geometric embedding ( + + ) and written to the XY, XZ, and YZ planes. The right-hand panels schematically show how ϕ \\boldsymbol{\\phi} is updated over successive observed frames.",
+            "label": "Figure 2",
+            "number": 2,
+            "panels": [
+              {
+                "cached_path": null,
+                "original_url": "https://arxiv.org/html/2610.37518v1/fig/fig2_labels.png"
+              }
+            ],
+            "source": "arxiv_html",
+            "source_url": "https://arxiv.org/html/2610.37518v1#S3.F2"
+          }
+        ],
+        "html_url": "https://arxiv.org/html/2610.37518v1",
+        "status": "available"
+      },
+      "final_score": 0.7502543697516113,
+      "provenance": {
+        "analyzed_at": "2026-10-29T17:07:23.865061Z",
+        "input_hash": "9d14a4651771430f240c4e7f200edd09488094051398f6a712e2dd5c3c85f854",
+        "model": "deepseek-v4-flash",
+        "prompt_version": "paper-analysis-v1",
+        "reading_scope": "full_text"
+      },
+      "ranked": {
+        "paper": {
+          "abstract": "Multi-robot control requires integrating distributed camera views while predicting separate action sequences. Most vision-language-action and world-action models target one robot. Combining multiple views alone does not establish spatial correspondence between them. World Dreamer v5-lite is a multi-robot world-action model built around a shared world state for robot-specific action prediction. Calibrated features from a pretrained video encoder populate this state in workspace coordinates; its spatial size remains fixed as views are added. A vision-language model provides scene context and one query per robot. The queries read the shared state and exchange pose-aware information, while their action streams remain separate. Masked-view cooperative training withholds selected camera views from both visual branches while retaining all action targets. This encourages the use of observations shared by other robots. Pretraining uses more than 10,000 hours of trajectories from 20 simulated robot types, RoboFactory, and real robots. On RoboFactory, World Dreamer v5-lite achieves 74.0% mean success, 23.7 percentage points above the strongest evaluated baseline. Across four real-robot tasks, it reaches 78.8% mean success, a margin of 13.8 points. It also reaches 58.08% overall on RoboCasa365.",
+          "authors": [
+            "Guoning Wu",
+            "Zijian Cai",
+            "Yuhang Zhang",
+            "Ying Liu",
+            "Yongbin Zheng (World Agents)"
+          ],
+          "canonical_id": "2610.37518",
+          "categories": [
+            "cs.RO"
+          ],
+          "comment": "10 pages, 4 figures. Guoning Wu and Zijian Cai share first authorship. Yongbin Zheng is the corresponding author",
+          "pdf_url": "https://arxiv.org/pdf/2610.37518",
+          "published_at": "2026-10-27T16:40:10Z",
+          "source": "arxiv",
+          "title": "World Dreamer v5-lite: A Multi-Robot World Action Model with One Dreamer",
+          "updated_at": "2026-10-27T16:40:10Z",
+          "url": "https://arxiv.org/abs/2610.37518",
+          "version": 1
+        },
+        "rank": 9,
+        "score": {
+          "base_score": 0.6277352177302021,
+          "exploration": 0.45530822371011365,
+          "matched_terms": [
+            "vision-language-action",
+            "vision language action",
+            "world action model"
+          ],
+          "negative_terms": [],
+          "personal": 0.5082015297324882,
+          "recency": 0.6038870697957115,
+          "topic": 0.8375
+        }
+      },
+      "tier": "deep_read"
     },
     "arxiv:2610.37666:v1": {
       "analysis": {
@@ -93969,7 +96088,7 @@
         "why_recommended": "该工作提出将世界想象作为强化信号而非部署时预测器，为利用无动作标注人类视频扩展 VLA 行为覆盖提供了可迁移范式；其 CoD 跨具身离散动作表示与技能组合实验对可执行动作生成和真实机器人评测有直接参考价值。"
       },
       "figure_gallery": {
-        "checked_at": "2026-10-29T00:50:29.894215+08:00",
+        "checked_at": "2026-10-30T01:05:19.604669+08:00",
         "figures": [
           {
             "caption": "We introduce ThinkWorld , a vision-language-action framework that learns transferable Chain-of-Dynamics (CoD) reasoning from diverse human and robot experiences. CoD captures action-induced dynamics across embodiments and is reinforced through future imagination, enabling robust generalization in the real world and skill composition guided by human videos.",
@@ -94001,7 +96120,7 @@
         "html_url": "https://arxiv.org/html/2610.37666v1",
         "status": "available"
       },
-      "final_score": 0.8184898998108026,
+      "final_score": 0.8133532266352465,
       "provenance": {
         "analyzed_at": "2026-10-28T16:53:46.884869Z",
         "input_hash": "81fc7ca9c71c171e87ca221d2fc2063d6057b2a48f1672e7a75837ecc5667f0d",
@@ -94038,8 +96157,8 @@
         },
         "rank": 1,
         "score": {
-          "base_score": 0.7517998178378226,
-          "exploration": 0.33561298367516457,
+          "base_score": 0.7424604120640843,
+          "exploration": 0.41815459850190767,
           "matched_terms": [
             "vision-language-action",
             "vision language action",
@@ -94048,7 +96167,7 @@
           ],
           "negative_terms": [],
           "personal": 0.643144112792023,
-          "recency": 0.7882366871389582,
+          "recency": 0.612301014574832,
           "topic": 1.0
         }
       },
@@ -94056,5 +96175,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-29T00:50:29.894215+08:00"
+  "updated_at": "2026-10-30T01:05:19.604669+08:00"
 }
